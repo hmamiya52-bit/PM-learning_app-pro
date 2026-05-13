@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>PM Learning App — カラーサンプル</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif; margin: 0; padding: 24px 32px; color: #1f2937; background: #f8fafc; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 24px 0 8px; padding-top: 16px; border-top: 1px solid #e2e8f0; }
+  p.lead { color: #64748b; margin: 0 0 16px; font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .swatch { border-radius: 8px; padding: 14px 14px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.06); }
+  .swatch .label { font-weight: 700; font-size: 13px; }
+  .swatch .hex { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px; opacity: 0.85; margin-top: 2px; }
+  .swatch .desc { font-size: 11px; opacity: 0.85; margin-top: 6px; line-height: 1.4; }
+  .palette-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .preview-card { background: white; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; }
+  .preview-card h3 { margin: 0 0 12px; font-size: 14px; }
+  .btn { display: inline-block; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+  .btn + .btn { margin-left: 8px; }
+  .card-sample { padding: 16px; border-radius: 10px; margin-top: 12px; }
+  .text-sample { font-weight: 700; font-size: 16px; }
+  .small { font-size: 11px; opacity: 0.85; margin-top: 4px; }
+  .header-mock { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; color: white; font-weight: 700; font-size: 13px; }
+  .header-mock .icon { width: 24px; height: 24px; border-radius: 4px; background: white; color: var(--bcolor, #9d5b8b); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+  .combo { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: start; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: white; margin-bottom: 12px; }
+  .combo .name { font-weight: 700; font-size: 13px; }
+  .combo .name .hex-list { font-family: ui-monospace, monospace; font-size: 11px; color: #64748b; font-weight: 500; margin-top: 6px; line-height: 1.6; }
+  .combo .demo { display: flex; flex-direction: column; gap: 8px; }
+  .demo-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<h1>PM Learning App — ブランドカラーサンプル</h1>
+<p class="lead">ベースカラー <strong style="color:#9d5b8b;">#9d5b8b</strong> を中心に、ダーク／ライトのバリエーション候補を提示します。基本設計書 §6.1 の決定に使用してください。</p>
+
+<h2>1. ベースカラー（確定）</h2>
+<div class="grid">
+  <div class="swatch" style="background:#9d5b8b;color:white;">
+    <div class="label">brand DEFAULT</div>
+    <div class="hex">#9d5b8b</div>
+    <div class="desc">ボタン・ヘッダ・アクセント色のベース</div>
+  </div>
+</div>
+
+<h2>2. ダークバリエーション候補（hover・focus・border強調用）</h2>
+<p class="lead">ボタンのhover時、アクティブ状態のテキスト、強調枠線などに使用。</p>
+<div class="grid">
+  <div class="swatch" style="background:#834471;color:white;">
+    <div class="label">D1: brand-dark（やや暗）</div>
+    <div class="hex">#834471</div>
+    <div class="desc">基本から約10%暗。彩度ほぼ維持。穏やかな差。</div>
+  </div>
+  <div class="swatch" style="background:#7d4570;color:white;">
+    <div class="label">D2: brand-dark（中暗）★暫定推奨</div>
+    <div class="hex">#7d4570</div>
+    <div class="desc">基本設計書暫定値。汎用的にバランス良し。</div>
+  </div>
+  <div class="swatch" style="background:#6e3d62;color:white;">
+    <div class="label">D3: brand-dark（暗）</div>
+    <div class="hex">#6e3d62</div>
+    <div class="desc">明確に暗い。コントラスト強め。</div>
+  </div>
+  <div class="swatch" style="background:#5e3354;color:white;">
+    <div class="label">D4: brand-darker（最暗）</div>
+    <div class="hex">#5e3354</div>
+    <div class="desc">テキスト用・強コントラスト。ボタンには重い。</div>
+  </div>
+</div>
+
+<h2>3. ライトバリエーション候補（背景・hover背景・タグ用）</h2>
+<p class="lead">カード背景、選択中の薄い塗り、タグ・バッジの淡い背景などに使用。</p>
+<div class="grid">
+  <div class="swatch" style="background:#faf2f7;color:#834471;">
+    <div class="label">L1: brand-50（極淡）</div>
+    <div class="hex">#faf2f7</div>
+    <div class="desc">ほぼ白。広い背景でも目障りにならない。</div>
+  </div>
+  <div class="swatch" style="background:#f5e9f1;color:#834471;">
+    <div class="label">L2: brand-100（淡）★暫定推奨</div>
+    <div class="hex">#f5e9f1</div>
+    <div class="desc">基本設計書暫定値。バッジ・hover背景に最適。</div>
+  </div>
+  <div class="swatch" style="background:#ebd2e1;color:#5e3354;">
+    <div class="label">L3: brand-200（中淡）</div>
+    <div class="hex">#ebd2e1</div>
+    <div class="desc">タグの濃いめの背景・選択状態に適する。</div>
+  </div>
+  <div class="swatch" style="background:#d9b9cd;color:#5e3354;">
+    <div class="label">L4: brand-300（淡-中）</div>
+    <div class="hex">#d9b9cd</div>
+    <div class="desc">区切り線・薄い枠線・無効状態に使用可能。</div>
+  </div>
+</div>
+
+<h2>4. 推奨パレット（3組合せ案）</h2>
+<p class="lead">実際にUIにあてた様子。ヘッダ・カード・ボタンの組み合わせで比較してください。</p>
+
+<!-- Combo A: 推奨（暫定推奨そのまま） -->
+<div class="combo" style="--bcolor:#9d5b8b;">
+  <div class="name">A案: 暫定推奨セット
+    <div class="hex-list">
+      base &nbsp;&nbsp;#9d5b8b<br>
+      dark &nbsp;&nbsp;#7d4570 (D2)<br>
+      light&nbsp;&nbsp;#f5e9f1 (L2)<br>
+      darker #5e3354 (D4) text用
+    </div>
+  </div>
+  <div class="demo">
+    <div class="header-mock" style="background:#9d5b8b;"><span class="icon">PM</span>PM Learning App</div>
+    <div class="demo-row">
+      <button class="btn" style="background:#9d5b8b;color:white;">プライマリ</button>
+      <button class="btn" style="background:#7d4570;color:white;">プライマリhover</button>
+      <button class="btn" style="background:#f5e9f1;color:#7d4570;">タグ</button>
+      <span style="color:#5e3354;font-weight:700;">強調テキスト</span>
+    </div>
+    <div class="card-sample" style="background:#f5e9f1;border:1px solid #ebd2e1;">
+      <div class="text-sample" style="color:#7d4570;">カード見出し</div>
+      <div class="small" style="color:#5e3354;">背景L2・テキストD2／darker</div>
+    </div>
+  </div>
+</div>
+
+<!-- Combo B: コントラスト強め -->
+<div class="combo" style="--bcolor:#9d5b8b;">
+  <div class="name">B案: コントラスト強め
+    <div class="hex-list">
+      base &nbsp;&nbsp;#9d5b8b<br>
+      dark &nbsp;&nbsp;#6e3d62 (D3)<br>
+      light&nbsp;&nbsp;#faf2f7 (L1)<br>
+      accent #ebd2e1 (L3) for badges
+    </div>
+  </div>
+  <div class="demo">
+    <div class="header-mock" style="background:#9d5b8b;"><span class="icon">PM</span>PM Learning App</div>
+    <div class="demo-row">
+      <button class="btn" style="background:#9d5b8b;color:white;">プライマリ</button>
+      <button class="btn" style="background:#6e3d62;color:white;">プライマリhover</button>
+      <button class="btn" style="background:#ebd2e1;color:#6e3d62;">タグ</button>
+      <span style="color:#6e3d62;font-weight:700;">強調テキスト</span>
+    </div>
+    <div class="card-sample" style="background:#faf2f7;border:1px solid #ebd2e1;">
+      <div class="text-sample" style="color:#6e3d62;">カード見出し</div>
+      <div class="small" style="color:#6e3d62;">背景L1・テキストD3</div>
+    </div>
+  </div>
+</div>
+
+<!-- Combo C: 柔らかめ -->
+<div class="combo" style="--bcolor:#9d5b8b;">
+  <div class="name">C案: 柔らかめ
+    <div class="hex-list">
+      base &nbsp;&nbsp;#9d5b8b<br>
+      dark &nbsp;&nbsp;#834471 (D1)<br>
+      light&nbsp;&nbsp;#f5e9f1 (L2)<br>
+      hover &nbsp;#ebd2e1 (L3)
+    </div>
+  </div>
+  <div class="demo">
+    <div class="header-mock" style="background:#9d5b8b;"><span class="icon">PM</span>PM Learning App</div>
+    <div class="demo-row">
+      <button class="btn" style="background:#9d5b8b;color:white;">プライマリ</button>
+      <button class="btn" style="background:#834471;color:white;">プライマリhover</button>
+      <button class="btn" style="background:#f5e9f1;color:#834471;">タグ</button>
+      <span style="color:#834471;font-weight:700;">強調テキスト</span>
+    </div>
+    <div class="card-sample" style="background:#f5e9f1;border:1px solid #f5e9f1;">
+      <div class="text-sample" style="color:#834471;">カード見出し</div>
+      <div class="small" style="color:#834471;">背景L2・テキストD1（最も柔らかい印象）</div>
+    </div>
+  </div>
+</div>
+
+<h2>5. 実画面イメージ（A案で組んだホーム例）</h2>
+<div style="background:#f8fafc;border-radius:12px;padding:0;border:1px solid #e2e8f0;overflow:hidden;max-width:560px;">
+  <div style="background:#9d5b8b;color:white;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+    <div style="width:32px;height:32px;background:white;border-radius:6px;color:#9d5b8b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;">PM</div>
+    <div style="font-weight:700;font-size:14px;">PM Learning App</div>
+  </div>
+  <div style="padding:16px;">
+    <div style="background:white;border-radius:10px;padding:14px;border:1px solid #e2e8f0;">
+      <div style="font-weight:700;color:#1f2937;font-size:14px;">ノートモード</div>
+      <div style="color:#64748b;font-size:12px;margin-top:4px;">分野別の重要知識まとめ</div>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="background:#f5e9f1;color:#7d4570;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;">ステークホルダー</span>
+        <span style="background:#f5e9f1;color:#7d4570;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;">12カテゴリ</span>
+      </div>
+      <button style="margin-top:12px;background:#9d5b8b;color:white;border:none;padding:8px 14px;border-radius:6px;font-weight:700;font-size:13px;">学習を始める</button>
+    </div>
+  </div>
+</div>
+
+<p class="lead" style="margin-top:24px;">どの案で進めるか、または個別の色変更要望（例: もっと暗くしたい／もっと淡くしたい）があれば教えてください。</p>
+
+</body>
+</html>

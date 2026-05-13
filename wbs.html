@@ -1,0 +1,933 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>PM Learning App — WBS（作業分解構造）</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", "Hiragino Sans", "Meiryo", sans-serif;
+    margin: 0;
+    padding: 24px 32px;
+    color: #1f2937;
+    background: #f8fafc;
+    line-height: 1.5;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; color: #5e3354; }
+  h2 { font-size: 17px; margin: 24px 0 10px; padding: 8px 12px; border-radius: 6px; color: white; }
+  .lead { color: #64748b; margin: 0 0 24px; font-size: 13px; }
+
+  /* Phase Color Coding */
+  .ph-0 { background: #6b7280; }       /* gray (準備) */
+  .ph-1 { background: #9d5b8b; }       /* brand (フェーズ1) */
+  .ph-1-5 { background: #f59e0b; }     /* amber (パイロット) */
+  .ph-2 { background: #10b981; }       /* emerald (フェーズ2) */
+
+  /* Filter Bar */
+  .filter-bar {
+    background: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    font-size: 13px;
+  }
+  .filter-bar label { font-weight: 600; }
+  .filter-bar button {
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .filter-bar button.active { background: #9d5b8b; color: white; border-color: #9d5b8b; }
+  .filter-bar button:hover { background: #f5e9f1; }
+  .filter-bar button.active:hover { background: #7d4570; }
+
+  /* Summary */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .summary-card {
+    background: white;
+    padding: 14px;
+    border-radius: 8px;
+    border-left: 4px solid #9d5b8b;
+  }
+  .summary-card .label { font-size: 11px; color: #64748b; }
+  .summary-card .value { font-size: 22px; font-weight: 700; color: #1f2937; margin-top: 2px; }
+  .summary-card .sub { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+  /* WBS Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 24px;
+  }
+  th {
+    background: #f1f5f9;
+    color: #334155;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 2px solid #cbd5e1;
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 12px;
+    vertical-align: top;
+  }
+  tr.task-row:hover { background: #f9fafb; }
+  tr.phase-header td {
+    background: #fafafa;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-bottom: 2px solid #cbd5e1;
+  }
+  tr.process-header td {
+    background: #fcfcfd;
+    font-weight: 600;
+    color: #475569;
+    padding-left: 24px;
+    border-left: 3px solid #cbd5e1;
+  }
+
+  /* Task ID styling */
+  .task-id {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+  }
+  .task-id.ph-0 { background: #f3f4f6; color: #6b7280; }
+  .task-id.ph-1 { background: #f5e9f1; color: #7d4570; }
+  .task-id.ph-1-5 { background: #fef3c7; color: #92400e; }
+  .task-id.ph-2 { background: #d1fae5; color: #065f46; }
+
+  /* Assignee badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .badge.claude { background: #ddd6fe; color: #5b21b6; }
+  .badge.codex { background: #cffafe; color: #155e75; }
+  .badge.gemini { background: #fee2e2; color: #991b1b; }
+  .badge.user { background: #fef3c7; color: #92400e; }
+
+  /* Duration column */
+  .duration {
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+    color: #475569;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .duration .range { color: #94a3b8; font-size: 10px; }
+
+  /* Dependency / phase column */
+  .deps {
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  /* Cells */
+  td.col-name { min-width: 240px; }
+  td.col-deliverable { color: #64748b; font-size: 11px; }
+
+  /* Footer */
+  footer {
+    margin-top: 32px;
+    padding: 16px;
+    background: white;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 11px;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Phase totals row */
+  tr.phase-total td {
+    background: #fefce8;
+    font-weight: 700;
+    color: #713f12;
+  }
+
+  /* Hidden by filter */
+  tr.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h1>PM Learning App — WBS（作業分解構造）</h1>
+<p class="lead">
+  プロジェクト全フェーズの作業分解構造。タスクID／担当／工数／成果物／前提条件を一覧化。
+  詳細は <code>detailed_design.md v0.14</code> を参照。
+</p>
+
+<!-- ===== Summary Cards ===== -->
+<div class="summary">
+  <div class="summary-card" style="border-left-color:#6b7280;">
+    <div class="label">フェーズ0 着手準備</div>
+    <div class="value">0.5d</div>
+    <div class="sub">4タスク</div>
+  </div>
+  <div class="summary-card" style="border-left-color:#9d5b8b;">
+    <div class="label">フェーズ1 骨組み実装</div>
+    <div class="value">8.5d</div>
+    <div class="sub">8タスク + サブステップ多数</div>
+  </div>
+  <div class="summary-card" style="border-left-color:#f59e0b;">
+    <div class="label">フェーズ1.5 パイロット</div>
+    <div class="value">2-3週間</div>
+    <div class="sub">6タスク（試用期間含む）</div>
+  </div>
+  <div class="summary-card" style="border-left-color:#10b981;">
+    <div class="label">フェーズ2 残コンテンツ</div>
+    <div class="value">27-40d</div>
+    <div class="sub">7タスク</div>
+  </div>
+  <div class="summary-card" style="border-left-color:#374151;">
+    <div class="label">プロジェクト全体</div>
+    <div class="value">約2-4ヶ月</div>
+    <div class="sub">並行作業考慮の現実的見込み</div>
+  </div>
+</div>
+
+<!-- ===== Filter Bar ===== -->
+<div class="filter-bar">
+  <label>担当者:</label>
+  <button class="filter-btn active" data-filter="all">すべて</button>
+  <button class="filter-btn" data-filter="claude">🅒 Claude</button>
+  <button class="filter-btn" data-filter="codex">🅧 Codex</button>
+  <button class="filter-btn" data-filter="gemini">Gemini</button>
+  <button class="filter-btn" data-filter="user">ユーザ</button>
+  <span style="margin-left:auto;color:#94a3b8;font-size:11px;">担当複数の場合はAND判定</span>
+</div>
+
+<!-- ===== WBS Table ===== -->
+<table>
+<thead>
+  <tr>
+    <th style="width:80px;">タスクID</th>
+    <th class="col-name">タスク名</th>
+    <th>担当者</th>
+    <th>工数</th>
+    <th>成果物</th>
+    <th>前提</th>
+  </tr>
+</thead>
+<tbody id="wbs-body">
+
+<!-- ============================================== -->
+<!-- フェーズ0: 着手準備 -->
+<!-- ============================================== -->
+<tr><td colspan="6" style="padding:0;"><h2 class="ph-0" style="margin:24px 0 0;">フェーズ0｜着手準備（0.5日）</h2></td></tr>
+
+<tr class="process-header"><td colspan="6">[工程] 環境準備・調査</td></tr>
+
+<tr class="task-row" data-assignees="user">
+  <td><span class="task-id ph-0">F0-1</span></td>
+  <td class="col-name">npm/node 動作確認</td>
+  <td><span class="badge user">ユーザ</span></td>
+  <td class="duration">0.1d<br><span class="range">~30分</span></td>
+  <td class="col-deliverable">node v24以降、npm v11以降が動作</td>
+  <td class="deps">—</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-0">F0-2</span></td>
+  <td class="col-name">tasks/ ディレクトリ構造作成</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.1d<br><span class="range">~30分</span></td>
+  <td class="col-deliverable">tasks/codex, tasks/reviews, tasks/questions</td>
+  <td class="deps">F0-1</td>
+</tr>
+<tr class="task-row" data-assignees="user">
+  <td><span class="task-id ph-0">F0-3</span></td>
+  <td class="col-name">パイロットカテゴリ選定確認</td>
+  <td><span class="badge user">ユーザ</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">「ステークホルダー」確定（決定済み）</td>
+  <td class="deps">—</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-0">F0-4</span></td>
+  <td class="col-name">IPA著作権規約確認（完了済）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">memory/risks.md R1 に記載</td>
+  <td class="deps">—</td>
+</tr>
+
+<!-- ============================================== -->
+<!-- フェーズ1: 骨組み実装 -->
+<!-- ============================================== -->
+<tr><td colspan="6" style="padding:0;"><h2 class="ph-1" style="margin:24px 0 0;">フェーズ1｜骨組み実装（約8.5日）</h2></td></tr>
+
+<!-- F1-P-1: NW実装精読 -->
+<tr class="process-header"><td colspan="6">[工程] NW実装読み合わせ（v0.14新設）</td></tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P-1</span></td>
+  <td class="col-name">NW実装精読セッション<br><small style="color:#94a3b8;">主要11ファイル精読、設計書との差分洗い出し</small></td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.5d<br><span class="range">~4h</span></td>
+  <td class="col-deliverable">tasks/nw-readthrough.md（差分10件以下）</td>
+  <td class="deps">F0完了</td>
+</tr>
+
+<!-- F1-P0: スキャフォールド -->
+<tr class="process-header"><td colspan="6">[工程] スキャフォールド（F1-P0、計1.5日）</td></tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P0-S1</span></td>
+  <td class="col-name">NWファイルをPMリポジトリにコピー</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">PMリポジトリにNWベースのコード</td>
+  <td class="deps">F1-P-1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S2</span></td>
+  <td class="col-name">NW固有ファイルの削除</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">Protocols.tsx等、削除対象ファイル除去</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P0-S3</span></td>
+  <td class="col-name">package.json 更新（@zxing/library^0.22.0）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">PM用package.json + peer依存解決</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S4</span></td>
+  <td class="col-name">tailwind.config.js brand色追加</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">brand DEFAULT/light/dark/darker 定義</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S5</span></td>
+  <td class="col-name">vite.config.ts PWA manifest 更新</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">name/theme_color等をPM用に</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S6</span></td>
+  <td class="col-name">index.html title・theme-color 更新</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">タイトル「PM Learning App」</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S7</span></td>
+  <td class="col-name">LocalStorage キー prefix 一括置換</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">nwsp: → pmap: 全置換、_v1サフィックス</td>
+  <td class="deps">F1-P0-S2</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S8</span></td>
+  <td class="col-name">NotFound.tsx 作成（v0.14追加）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">404ページコンポーネント</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P0-S9</span></td>
+  <td class="col-name">App.tsx 開発版ルート構成書き換え</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">AuthGuardなし、22ルート</td>
+  <td class="deps">F1-P0-S2,S8</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P0-S10</span></td>
+  <td class="col-name">ロゴSVG作成（3行テキスト）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">src/assets/logo.svg、文字色#9d5b8b</td>
+  <td class="deps">F1-P0-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S11</span></td>
+  <td class="col-name">PWAアイコンPNG生成（sharp利用）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">pwa-192/512.png、favicon-32.png</td>
+  <td class="deps">F1-P0-S10</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P0-S12</span></td>
+  <td class="col-name">npm install + npm run dev 起動確認</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">localhost:5173 でホーム表示</td>
+  <td class="deps">F1-P0-S11</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P0-S13</span></td>
+  <td class="col-name">Vitest 導入・lib層テスト雛形（v0.14 E2追加）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.15d</td>
+  <td class="col-deliverable">vitest.config + 既存lib層のテスト1〜2本</td>
+  <td class="deps">F1-P0-S12</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P0-S14</span></td>
+  <td class="col-name">storageSafe.ts 作成（v0.14 E4追加）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">QuotaExceededError対応のsafeSetItem</td>
+  <td class="deps">F1-P0-S12</td>
+</tr>
+
+<!-- F1-P1: カテゴリ・サイドバー -->
+<tr class="process-header"><td colspan="6">[工程] カテゴリ定義・サイドバー再構成（F1-P1、計0.5日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P1-S1</span></td>
+  <td class="col-name">categories.ts 12カテゴリ投入</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">PM 12カテゴリ定義</td>
+  <td class="deps">F1-P0完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P1-S2</span></td>
+  <td class="col-name">Layout.tsx サイドバー15項目再構成</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">プロトコル/コラム削除、論述/午前II追加</td>
+  <td class="deps">F1-P1-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P1-S3</span></td>
+  <td class="col-name">Home.tsx メニューカード再構成</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">14カードのMENU_CARDS配列</td>
+  <td class="deps">F1-P1-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P1-S4</span></td>
+  <td class="col-name">Notes.tsx NOTE_CATEGORY_IDS差し替え</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">12カテゴリID</td>
+  <td class="deps">F1-P1-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P1-S5</span></td>
+  <td class="col-name">NoteDetail.tsx スタブ化＋PreparingNotice</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">NOTE_DB空、準備中表示</td>
+  <td class="deps">F1-P1-S4</td>
+</tr>
+
+<!-- F1-P2: 重要マーク -->
+<tr class="process-header"><td colspan="6">[工程] 重要マーク機能（F1-P2、計1日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P2-S1</span></td>
+  <td class="col-name">types/index.ts isImportant 削除</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">Question型からisImportant削除</td>
+  <td class="deps">F1-P1完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P2-S2</span></td>
+  <td class="col-name">lib/importantMarks.ts 実装</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">CRUD API（toggle/clear/list）</td>
+  <td class="deps">F1-P2-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P2-S3</span></td>
+  <td class="col-name">ImportantToggle.tsx 実装（v0.14 E6フリッカー対策込み）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.15d</td>
+  <td class="col-deliverable">☆トグルボタンコンポーネント</td>
+  <td class="deps">F1-P2-S2</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P2-S4</span></td>
+  <td class="col-name">Quiz.tsx 重要モード集計ロジック修正</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">?mode=important で q-* prefix抽出</td>
+  <td class="deps">F1-P2-S2</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P2-S5</span></td>
+  <td class="col-name">ImportantMarks.tsx 設定画面</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">/settings/important 一覧・解除</td>
+  <td class="deps">F1-P2-S2</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P2-S6</span></td>
+  <td class="col-name">ImportantTutorialTooltip 実装（v0.14 U5追加）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.15d</td>
+  <td class="col-deliverable">初回1度だけのチュートリアル</td>
+  <td class="deps">F1-P2-S3</td>
+</tr>
+
+<!-- F1-P3: 午後I骨組み -->
+<tr class="process-header"><td colspan="6">[工程] 午後I 骨組み（F1-P3、計0.5日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P3-S1</span></td>
+  <td class="col-name">types ProblemSection を 'PM1' のみに</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">型定義変更</td>
+  <td class="deps">F1-P0完了</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P3-S2</span></td>
+  <td class="col-name">data/afternoonProblems.ts サンプル2件</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">R6-PM1-1, R6-PM1-2</td>
+  <td class="deps">F1-P3-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P3-S3</span></td>
+  <td class="col-name">officialAnswers/scoringMap サンプル</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">サンプル投入</td>
+  <td class="deps">F1-P3-S2</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P3-S4</span></td>
+  <td class="col-name">AfternoonProblems.tsx G2タブ削除</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.25d</td>
+  <td class="col-deliverable">PM1のみ表示</td>
+  <td class="deps">F1-P3-S2</td>
+</tr>
+
+<!-- F1-P4: 公式午前II 骨組み -->
+<tr class="process-header"><td colspan="6">[工程] 公式午前II モード骨組み（F1-P4、計2日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S1</span></td>
+  <td class="col-name">types追加（OfficialMorningQuestion等）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">型定義</td>
+  <td class="deps">F1-P0完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1">F1-P4-S2</span></td>
+  <td class="col-name">lib/morningRecords.ts 実装</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.3d</td>
+  <td class="col-deliverable">CRUD + 正答率算出</td>
+  <td class="deps">F1-P4-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S3</span></td>
+  <td class="col-name">officialMorningQuestions.ts サンプル</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">1年度×3問</td>
+  <td class="deps">F1-P4-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P4-S4</span></td>
+  <td class="col-name">OfficialMorningQuiz.tsx（トップ画面）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">年度カード+ランダム+問題数+フィルタ</td>
+  <td class="deps">F1-P4-S2,S3</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P4-S5</span></td>
+  <td class="col-name">OfficialMorningSession.tsx（出題画面）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">4択+正誤+解説+☆+進捗</td>
+  <td class="deps">F1-P4-S4</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S6</span></td>
+  <td class="col-name">OfficialMorningSummary.tsx</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">正答率+誤答リスト</td>
+  <td class="deps">F1-P4-S5</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S7</span></td>
+  <td class="col-name">App.tsx /morning ルート追加</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">3ルート登録</td>
+  <td class="deps">F1-P4-S6</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S8</span></td>
+  <td class="col-name">IpaCopyrightFooter コンポーネント</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.05d</td>
+  <td class="col-deliverable">著作権フッタ</td>
+  <td class="deps">F1-P4-S7</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P4-S9</span></td>
+  <td class="col-name">sync/adapters.ts に morning:records 追加</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">同期対象キー追加</td>
+  <td class="deps">F1-P4-S2</td>
+</tr>
+
+<!-- F1-P5: 論述 骨組み -->
+<tr class="process-header"><td colspan="6">[工程] 論述トレーニング 骨組み（F1-P5、計2日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S1</span></td>
+  <td class="col-name">types追加（EssayProblem/Attempt等）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">型定義</td>
+  <td class="deps">F1-P0完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P5-S2</span></td>
+  <td class="col-name">lib/essay.ts 実装（タイマー復帰込み）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.3d</td>
+  <td class="col-deliverable">CRUD + elapsedSecOf</td>
+  <td class="deps">F1-P5-S1</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S3</span></td>
+  <td class="col-name">essayProblems.ts サンプル</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">1〜2問</td>
+  <td class="deps">F1-P5-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P5-S4</span></td>
+  <td class="col-name">EssayTimer.tsx</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">スタート/一時停止/再開</td>
+  <td class="deps">F1-P5-S2</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S5</span></td>
+  <td class="col-name">EssayCharCounter / EssaySelfReview / EssayAttemptHistory</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.3d</td>
+  <td class="col-deliverable">3コンポーネント</td>
+  <td class="deps">F1-P5-S2</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S6</span></td>
+  <td class="col-name">EssayList.tsx</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">論述問題一覧</td>
+  <td class="deps">F1-P5-S2</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P5-S7</span></td>
+  <td class="col-name">EssayTraining.tsx（自動保存3秒debounce込み v0.14 U2）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">5フェーズ画面+自動保存+復帰モーダル</td>
+  <td class="deps">F1-P5-S2,S4,S5</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S8</span></td>
+  <td class="col-name">EssayAttemptDetail.tsx</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.15d</td>
+  <td class="col-deliverable">履歴詳細表示</td>
+  <td class="deps">F1-P5-S5</td>
+</tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P5-S9</span></td>
+  <td class="col-name">gamification/activityLog/sync更新</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.15d</td>
+  <td class="col-deliverable">essay_complete対応</td>
+  <td class="deps">F1-P5-S2</td>
+</tr>
+
+<!-- F1-P6: ブランド適用・初回デプロイ -->
+<tr class="process-header"><td colspan="6">[工程] ブランド適用・初回デプロイ（F1-P6、計0.5日）</td></tr>
+<tr class="task-row" data-assignees="codex">
+  <td><span class="task-id ph-1">F1-P6-S1</span></td>
+  <td class="col-name">青系Tailwindクラス機械置換（22種）</td>
+  <td><span class="badge codex">🅧 Codex</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">grep結果 0件</td>
+  <td class="deps">F1-P5完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P6-S2</span></td>
+  <td class="col-name">badges.ts NW固有用語整理</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.1d</td>
+  <td class="col-deliverable">NW午後II関連削除</td>
+  <td class="deps">F1-P6-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-1">F1-P6-S3</span></td>
+  <td class="col-name">Vercel初期セットアップ・初回デプロイ</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.2d</td>
+  <td class="col-deliverable">mamiya-pmapp.vercel.app 公開</td>
+  <td class="deps">F1-P6-S2</td>
+</tr>
+
+<tr class="phase-total">
+  <td colspan="3">フェーズ1 合計</td>
+  <td class="duration">8.5d</td>
+  <td colspan="2">骨組み完成 → mamiya-pmapp.vercel.app 公開（v0.1.x Beta）</td>
+</tr>
+
+<!-- ============================================== -->
+<!-- フェーズ1.5: パイロット運用 -->
+<!-- ============================================== -->
+<tr><td colspan="6" style="padding:0;"><h2 class="ph-1-5" style="margin:24px 0 0;">フェーズ1.5｜パイロット運用（2-3週間）</h2></td></tr>
+
+<tr class="process-header"><td colspan="6">[工程] パイロットコンテンツ作成・試用</td></tr>
+
+<tr class="task-row" data-assignees="user">
+  <td><span class="task-id ph-1-5">F1.5-P1</span></td>
+  <td class="col-name">パイロット用カテゴリ選定（確定済）</td>
+  <td><span class="badge user">ユーザ</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">「ステークホルダー」確定</td>
+  <td class="deps">F1完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex gemini user">
+  <td><span class="task-id ph-1-5">F1.5-P2</span></td>
+  <td class="col-name">パイロットノート作成（30セクション以上）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td class="duration">1.5d</td>
+  <td class="col-deliverable">ノート完成（4段階レビュー後）</td>
+  <td class="deps">F1.5-P1</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex gemini user">
+  <td><span class="task-id ph-1-5">F1.5-P3</span></td>
+  <td class="col-name">パイロットクイズ作成（50問）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td class="duration">1d</td>
+  <td class="col-deliverable">50問+解説+検証pass</td>
+  <td class="deps">F1.5-P2</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1-5">F1.5-P4</span></td>
+  <td class="col-name">パイロット用 公式午前II（10〜25問）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">1d</td>
+  <td class="col-deliverable">独自解説完成</td>
+  <td class="deps">F1.5-P1</td>
+</tr>
+<tr class="task-row" data-assignees="user">
+  <td><span class="task-id ph-1-5">F1.5-P5</span></td>
+  <td class="col-name">ユーザ試用期間</td>
+  <td><span class="badge user">ユーザ</span></td>
+  <td class="duration">7-14d<br><span class="range">カレンダー上</span></td>
+  <td class="col-deliverable">フィードバックリスト</td>
+  <td class="deps">F1.5-P3,P4</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-1-5">F1.5-P6</span></td>
+  <td class="col-name">フィードバック反映・致命バグ修正</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">1-3d</td>
+  <td class="col-deliverable">致命バグ0件、UX改善</td>
+  <td class="deps">F1.5-P5</td>
+</tr>
+
+<tr class="phase-total">
+  <td colspan="3">フェーズ1.5 合計</td>
+  <td class="duration">2-3週間</td>
+  <td colspan="2">Go/No-Go判定 → フェーズ2着手 or 設計再検討（v0.5.x）</td>
+</tr>
+
+<!-- ============================================== -->
+<!-- フェーズ2: 残コンテンツ投入 -->
+<!-- ============================================== -->
+<tr><td colspan="6" style="padding:0;"><h2 class="ph-2" style="margin:24px 0 0;">フェーズ2｜残コンテンツ投入＋正式版（27-40日）</h2></td></tr>
+
+<tr class="process-header"><td colspan="6">[工程] コンテンツ大量投入</td></tr>
+
+<tr class="task-row" data-assignees="claude codex gemini user">
+  <td><span class="task-id ph-2">F2-P1</span></td>
+  <td class="col-name">残り11カテゴリのノート本文作成</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td class="duration">7-12d<br><span class="range">各0.7-1d</span></td>
+  <td class="col-deliverable">12カテゴリ全ノート完成</td>
+  <td class="deps">F1.5完了</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex gemini user">
+  <td><span class="task-id ph-2">F2-P2</span></td>
+  <td class="col-name">残り11カテゴリのクイズ（550問）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td class="duration">5-8d<br><span class="range">各カテゴリ50問</span></td>
+  <td class="col-deliverable">600問総数+検証pass</td>
+  <td class="deps">F2-P1</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-2">F2-P3</span></td>
+  <td class="col-name">公式午前II 全年度（H25〜現行 約325問）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">7-10d<br><span class="range">OCR+独自解説</span></td>
+  <td class="col-deliverable">全325問+解説</td>
+  <td class="deps">F1.5完了（並行可）</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-2">F2-P4</span></td>
+  <td class="col-name">午後I 全年度（公式解答+配点マップ）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">4-6d<br><span class="range">13年×2-3問</span></td>
+  <td class="col-deliverable">officialAnswers + scoringMap</td>
+  <td class="deps">F1.5完了（並行可）</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-2">F2-P5</span></td>
+  <td class="col-name">論述問題インデックス（午後II H25〜）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">1d</td>
+  <td class="col-deliverable">EssayProblemデータ完成</td>
+  <td class="deps">F1.5完了（並行可）</td>
+</tr>
+<tr class="task-row" data-assignees="claude codex gemini user">
+  <td><span class="task-id ph-2">F2-P6</span></td>
+  <td class="col-name">PMBOK第8版差分カテゴリ（pmbok8-diff）</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td class="duration">1.5d</td>
+  <td class="col-deliverable">第8版追加要素ノート</td>
+  <td class="deps">F2-P1</td>
+</tr>
+
+<tr class="process-header"><td colspan="6">[工程] 仕上げ・正式版リリース</td></tr>
+<tr class="task-row" data-assignees="claude codex">
+  <td><span class="task-id ph-2">F2-P7-S1</span></td>
+  <td class="col-name">バッジ条件 PM用に再設計</td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">論述系バッジ追加</td>
+  <td class="deps">F2-P1〜P6完了</td>
+</tr>
+<tr class="task-row" data-assignees="codex claude">
+  <td><span class="task-id ph-2">F2-P7-S2</span></td>
+  <td class="col-name">QAチェックリスト全項目消化</td>
+  <td><span class="badge codex">🅧</span><span class="badge claude">🅒</span></td>
+  <td class="duration">1d</td>
+  <td class="col-deliverable">F1+F2 QA pass</td>
+  <td class="deps">F2-P7-S1</td>
+</tr>
+<tr class="task-row" data-assignees="claude">
+  <td><span class="task-id ph-2">F2-P7-S3</span></td>
+  <td class="col-name">致命バグ修正・正式版リリース（v1.0.0）</td>
+  <td><span class="badge claude">🅒 Claude</span></td>
+  <td class="duration">0.5d</td>
+  <td class="col-deliverable">vercel --prod デプロイ完了</td>
+  <td class="deps">F2-P7-S2</td>
+</tr>
+
+<tr class="phase-total">
+  <td colspan="3">フェーズ2 合計</td>
+  <td class="duration">27-40d</td>
+  <td colspan="2">v1.0.0 正式版リリース</td>
+</tr>
+
+</tbody>
+</table>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <p>
+    <strong>注釈:</strong>
+    工数は <em>Claudeセッション実行時間ベース</em>。並行プロジェクト・休憩を考慮した経過日数は約 <strong>2-4ヶ月</strong> を想定。
+    各タスクの詳細・Go/No-Go判定基準は
+    <code>detailed_design.md v0.14</code> §2 を参照。
+  </p>
+  <p>
+    <strong>担当者凡例:</strong>
+    <span class="badge claude">🅒 Claude</span> 設計判断・複雑実装・コンテンツ生成 /
+    <span class="badge codex">🅧 Codex</span> 機械的実装・テンプレ通りの作業 /
+    <span class="badge gemini">Gemini</span> コンテンツの第三者レビュー /
+    <span class="badge user">ユーザ</span> 判断・選定・最終確認・パイロット試用
+  </p>
+  <p>
+    <strong>フェーズ間ルール:</strong>
+    各フェーズ末に Go/No-Go判定。No-Go時は前フェーズに戻って修正。
+    Claude/Codex 同時編集禁止（ターン制 + git pull/push 必須）。
+  </p>
+  <p style="margin-top:12px;color:#94a3b8;">
+    生成日: 2026-05-07 / detailed_design v0.14 ベース / WBS v1.0
+  </p>
+</footer>
+
+<script>
+  // Filter functionality
+  const buttons = document.querySelectorAll('.filter-btn')
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      const filter = btn.dataset.filter
+      const rows = document.querySelectorAll('tr.task-row')
+      rows.forEach(row => {
+        if (filter === 'all') {
+          row.classList.remove('hidden')
+        } else {
+          const assignees = row.dataset.assignees || ''
+          if (assignees.includes(filter)) {
+            row.classList.remove('hidden')
+          } else {
+            row.classList.add('hidden')
+          }
+        }
+      })
+    })
+  })
+</script>
+
+</body>
+</html>
