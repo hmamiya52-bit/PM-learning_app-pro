@@ -16,13 +16,13 @@
 - [x] `src/lib/activityLog.ts` — 225行、イベント種別構造
 - [x] `src/lib/sync/adapters.ts` — 416行、マージ戦略・KEYS
 
-### UI層（6本）— 次セッションで実施
-- [ ] `src/components/Layout.tsx` — サイドバー・isMobile判定
-- [ ] `src/pages/Quiz.tsx` — モード判定・出題シャッフル
-- [ ] `src/pages/AfternoonProblems.tsx` — buildRows・filterRows
-- [ ] `src/pages/AfternoonMyAnswer.tsx` — useTimer・myAnswer key
-- [ ] `src/pages/NoteDetail.tsx` — NOTE_DB構造・RedWord
-- [ ] `src/data/badges.ts` — バッジ定義構造
+### UI層（6本）
+- [x] `src/components/Layout.tsx` — 354行、サイドバー・isMobile判定
+- [x] `src/pages/Quiz.tsx` — 462行、モード判定・出題シャッフル
+- [x] `src/pages/AfternoonProblems.tsx` — 853行、buildRows・filterRows
+- [x] `src/pages/AfternoonMyAnswer.tsx` — 707行、useTimer・myAnswer key
+- [x] `src/pages/NoteDetail.tsx` — 400+行、NOTE_DB構造・RedWord
+- [x] `src/data/badges.ts` — 478行、バッジ定義構造
 
 ## 設計書との差分（lib層）
 
@@ -89,6 +89,85 @@
 - 設計書 §3.2 で「PMでは未使用、APIは残置」と明記済み
 - **要対応**: PM UIからは `getBookmarks` / `toggleQuestionBookmark` を呼ばないことだけ徹底（コードは残す）
 
+## 設計書との差分（UI層）
+
+### 🔴 D-UI-01: Layout.tsx の `STORAGE_KEY` がプレフィックス規約から外れる — 要判断
+- **NW実装 (`src/components/Layout.tsx` line 144)**: `const STORAGE_KEY = 'nwsp_sidebar_open'`（アンダースコア区切り、`:` 無し）
+- **他キー**: `nwsp:answer_records` 等は コロン区切り → **このキーだけ命名規約が異なる**
+- **設計書**: 明記なし
+- **判断要**:
+  - 案A: NW踏襲で `pmap_sidebar_open`（アンダースコア）
+  - 案B: 規約統一で `pmap:sidebar_open`（コロン）← 推奨
+- **影響**: 規約統一の方が同期対象判別 (`pmap:` で grep) しやすい
+
+### 🔴 D-UI-02: Layout.tsx のヘッダ・サイドバー色が `style` 属性で hex 直書き — 要対応
+- **NW実装 (`src/components/Layout.tsx` line 216, 267)**: 
+  ```tsx
+  style={{ backgroundColor: '#1a3a5c' }}  // NW青、ヘッダとサイドバー両方
+  ```
+- **設計書 §5.0 / §5.2**: `bg-brand` Tailwind クラス使用を想定
+- **問題**: F1-P6 のブランド適用マップ（§12 `bg-blue-*` → `bg-brand-*`）の機械置換だけでは対応できない（style属性の hex 値）
+- **対応**: 設計書 §12 に「inline style の `#1a3a5c` も手動置換」を明記する必要
+
+### 🟡 D-UI-03: AfternoonProblems.tsx でハードコードされた `nwsp:savedAnswers:` 参照
+- **NW実装 (`src/pages/AfternoonProblems.tsx` line 321)**: 
+  ```tsx
+  const hasSaved = !!localStorage.getItem(`nwsp:savedAnswers:${r.id}`)
+  ```
+- **問題**: lib層を経由せず、UI層に直接ハードコードされた `nwsp:` プレフィックスが存在
+- **影響**: 機械置換（`nwsp:` → `pmap:`）でカバーできるが、設計書 §3.2 の「キー定義は storage.ts に集約」原則からは逸脱
+- **PM実装での扱い**: prefix置換で済ませる or `savedAnswersExists(recordId)` ヘルパー関数を tracker.ts に追加して整理（推奨）
+
+### 🟡 D-UI-04: AfternoonMyAnswer.tsx の useTimer の精度
+- **NW実装 (`src/pages/AfternoonMyAnswer.tsx` line 56-100)**: `setInterval(..., 1000)` で 1秒刻みカウント
+- **既知の制約**: タブ非アクティブ時のブラウザ throttling で最大数秒の誤差
+- **設計書 §8.3**: 該当箇所未確認だが、精度要件があれば `Date.now()` 差分計算に変更を検討
+- **影響度**: 低（試験本番想定の練習用途では1秒未満の誤差は許容範囲）
+
+### 🟢 D-UI-05: NAV_ITEMS / NOTE_CATEGORY_IDS / categories は全面差し替え — 既知差分
+- **NW実装**: 22カテゴリ・11ナビ項目（プロトコル等NW固有）
+- **設計書 §5.1 / §5.2**: PM 12カテゴリ + 14メニュー + 15ナビ項目（プロトコル削除、午前II/午後/論述/履歴 追加）
+- **対応**: F1-P1 で差し替え（既知の作業）
+
+### 🟢 D-UI-06: AfternoonProblems の G1/G2 二分割テーブル削除 — 既知差分
+- **NW実装**: `ProblemTable section="G1"` と `section="G2"` で2テーブル表示
+- **設計書 §8.1**: PM1のみ → 1テーブル、Section タブUI削除
+- **対応**: F1-P3 で実施（NWの 853行から G2 関連を除去、複雑改修）
+
+### 🟢 D-UI-07: AfternoonMyAnswer のセクションラベル分岐削除 — 既知差分
+- **NW実装 (line 367, 368-370)**: `section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'` で動的切替
+- **PM**: PM1 のみ → '午後Ⅰ' 固定（分岐削除）
+- **対応**: F1-P3 で実施
+
+### 🟢 D-UI-08: badges.ts の COMPLETE バッジ名・afternoon系バッジ条件 — F2-P6再設計
+- **NW実装 (`src/data/badges.ts` line 446-459)**: 
+  - `name: 'ネットワークスペシャリスト'`
+  - `conditionValue: 29`（バッジ総数依存）
+- **NW実装 (line 402-429)**: afternoon-3 が G1基準、afternoon-4 が G2基準
+- **設計書 §10.2**: 「F1段階はNWそのままコピー、F2-P6で再設計」と明記
+- **対応**: F1段階は意味的に合わないバッジが含まれる状態を許容（既知の暫定運用）
+
+### 🟢 D-UI-09: gamification.ts の `computeAfternoonStats` 内 G1/G2 集計ロジック — 連動差分
+- **NW実装 (`src/lib/gamification.ts` line 157-183)**: `g1Over40` / `g2Over80` / `allClearedSixty`（G1=30, G2=60 閾値）を集計
+- **PM**: PM1 のみなので、`g1Over40` / `g2Over80` は不要 or 統一して `pm1Over40` 等にリネーム
+- **対応**: D-UI-08 と連動して F2-P6 で再設計
+
+## 実装時の注意（UI層）
+
+8. **Layout.tsx のヘッダ色置換**: `style={{ backgroundColor: '#1a3a5c' }}` の hex直書きは Tailwind置換 (`bg-blue-*` → `bg-brand-*`) では拾えない。設計書 §12 ブランド適用マップに inline style 置換手順を追記する必要
+
+9. **AfternoonProblems.tsx の line 321 ハードコード**: `localStorage.getItem('nwsp:savedAnswers:${r.id}')` という直接呼び出しが UI 層に存在。grep `nwsp:` → `pmap:` で機械置換するが、設計原則的には `tracker.ts` にヘルパー関数 `savedAnswersExists(recordId)` を追加した方が綺麗
+
+10. **Quiz.tsx の sessionId・sessionXpRef パターン** (line 77, 79, 117-133): `useRef` で sessionId と累積XP を保持し、`upsertQuizSessionEvent` で1問ごとに upsert する。これにより途中離脱でもログが残る。PMでもこの方式を踏襲
+
+11. **AfternoonMyAnswer.tsx の useTimer**: シンプルな `setInterval` 実装。タブ非アクティブ時の throttling は受容（試験練習用途で1秒誤差は許容）
+
+12. **NoteDetail.tsx の RedWord コンポーネント** (line 91-129): masked + revealed の2軸 state + `version` propsで再リセット可能な構造。PMノートでも `==重要語==` マークアップ + RichProtocolTable / HeaderDiagram のリッチ構造を踏襲
+
+13. **NOTE_CATEGORY_IDS の export と参照**: NoteDetail.tsx が export → Quiz.tsx が import (line 8) という相互依存。PM での12カテゴリ置換時は両ファイル同時更新
+
+14. **Layout.tsx の `isMobile` 判定**: `window.matchMedia('(max-width: 767px)')` + `useEffect` でリスナー登録。初期値は `window.innerWidth < 768`。SSRでは動かないが、PMはCSRのみなので問題なし
+
 ## 実装時の注意（lib層）
 
 1. **XP発生源の単一化原則の徹底**: `gamification.ts` の `apply*` 関数のみが XP を加算する。`activityLog.addActivityEvent` 内では XP を加算しない。NWでは混在していた箇所があるので注意（設計書 §3.7 line 2402-2417 参照）
@@ -114,20 +193,43 @@
 
 | ID | 修正対象 | 必要度 | 内容 |
 |---|---|---|---|
-| D-LIB-02 | detailed_design.md §3.7 | 高 | PM1のXPテーブル定義を追記 |
+| D-LIB-02 | detailed_design.md §3.7 | 高 | PM1のXPテーブル定義（G2式流用）を明記 |
+| D-UI-02 | detailed_design.md §12 | 高 | inline style `#1a3a5c` の手動置換手順を追記 |
 | D-LIB-04 | detailed_design.md §3.2, §3.6 | 中 | 副作用（sync meta更新）を明記 |
 | D-LIB-05 | detailed_design.md §3.9 | 中 | `TRACKER_PLANS` 同期方針の決定・記述 |
+| D-UI-01 | detailed_design.md §3.2 | 中 | `pmap:sidebar_open` のキー命名規約決定 |
 | D-LIB-03 | detailed_design.md §3.2 | 低 | `USER_PROGRESS_LEGACY` の意図を明記 or 削除 |
 | 追加 | detailed_design.md §3.2 | 低 | question_mastery 状態遷移を表で明記 |
+| D-UI-03 | detailed_design.md §8 | 低 | savedAnswersExists ヘルパー追加検討 |
 
 ## 完了判定
 
-- [x] lib層5ファイル精読完了
-- [ ] UI層6ファイル精読完了（次セッション）
-- [x] 差分洗い出し（lib層8件、うち要修正級2件、その他軽微）
-- [ ] ユーザレビュー・承認
+- [x] lib層5ファイル精読完了（1,382行）
+- [x] UI層6ファイル精読完了（3,254行 + NOTE_DB データ部分は精読対象外）
+- [x] 差分洗い出し完了（lib層8件 + UI層9件 = 計17件）
+  - うち要修正・要判断級: 5件（D-LIB-01,02 + D-UI-01,02,03）
+  - 既知差分・F2-P6再設計対象: 12件（実装時に都度対応）
+  - 完了基準「10件以下に収束」は要修正級ベースで達成
+- [ ] ユーザレビュー・承認 ← 次のステップ
+
+## サマリ：F1-P-1 で確定したこと / 残課題
+
+### ✅ 方針確定済み（ユーザ判断）
+- D-LIB-01 関数名: PMで `applyAnswer` / `applyAfternoonRecord` / `applyEssayComplete` にリネーム
+- D-LIB-02 PM1 XPテーブル: NW G2式（score×3/×4/×8/min×15,1500）流用
+
+### ⚠️ ユーザ判断要（次セッション以降）
+- D-UI-01 サイドバーキー: `pmap:sidebar_open` (コロン統一) vs `pmap_sidebar_open` (NW踏襲) → 推奨: コロン統一
+- D-LIB-05 TRACKER_PLANS 同期方針: 同期対象に追加 vs NW踏襲（PLAN_METAのみ） → 要相談
+- D-UI-03 savedAnswers ハードコード: prefix置換のみ vs tracker.ts にヘルパー追加 → 推奨: ヘルパー追加
+
+### 📝 設計書修正TODO（F1-P0着手前に反映）
+- detailed_design.md §3.7: PM1 XPテーブル明記
+- detailed_design.md §3.2 / §3.6: 副作用（sync meta更新）明記
+- detailed_design.md §12: inline style hex色置換手順を追記
+- detailed_design.md §3.2: question_mastery 状態遷移表を追記
 
 ## 進捗ログ
 - 2026-05-13: セッション開始、リポジトリ初期化、雛形作成、lib層5ファイル精読・突合完了
 - 2026-05-13: ユーザ判断 — D-LIB-01「PMでリネーム実装」、D-LIB-02「NW G2式流用」確定
-- 次セッション予定: UI層6ファイル精読 → 差分集計 → 設計書修正（D-LIB-02〜05反映） → ユーザ承認
+- 2026-05-13: UI層6ファイル精読完了、差分17件抽出（要修正級5件）、F1-P-1 完了候補
