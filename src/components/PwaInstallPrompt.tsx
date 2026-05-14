@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-const DISMISSED_KEY = 'nwsp_pwa_dismissed'
+const DISMISSED_KEY = 'pmap:install_prompt_dismissed'
 const DISMISS_DURATION_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 interface BeforeInstallPromptEvent extends Event {

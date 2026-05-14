@@ -10,8 +10,8 @@ export interface PracticeRecord {
 
 type PlanMap = Record<string, string>  // problemId → YYYY-MM-DD
 
-const RECORDS_KEY = 'nwsp:tracker:records'
-const PLANS_KEY = 'nwsp:tracker:plans'
+const RECORDS_KEY = 'pmap:tracker:records'
+const PLANS_KEY = 'pmap:tracker:plans'
 
 function genId(): string {
   return crypto.randomUUID()

@@ -3,6 +3,14 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          DEFAULT: '#9d5b8b',
+          light: '#f5e9f1',
+          dark: '#7d4570',
+          darker: '#5e3354',
+        },
+      },
       fontFamily: {
         // Tailwind の font-sans / font-mono を Meiryo UI 系に統一。
         // Windows 環境では実際に "Meiryo UI" が当たり、

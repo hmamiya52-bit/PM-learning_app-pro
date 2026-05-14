@@ -54,9 +54,9 @@ export interface DaySummary {
 // Storage
 // ----------------------------------------------------------------
 
-const KEY = 'nwsp:activityLog'
-const DAILY_XP_LEDGER_KEY = 'nwsp:sync:daily_xp_ledger'
-const SYNC_META_KEY = 'nwsp:sync:meta'
+const KEY = 'pmap:activityLog'
+const DAILY_XP_LEDGER_KEY = 'pmap:sync:daily_xp_ledger'
+const SYNC_META_KEY = 'pmap:sync:meta'
 const MAX_EVENTS = 500
 
 type DailyXpLedger = Record<string, Record<string, number>>

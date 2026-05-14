@@ -39,7 +39,6 @@ import { securityQuestions } from './security'
 import { loadBalancerQuestions } from './load-balancer'
 import { sdnQuestions } from './sdn'
 import { proxyQuestions } from './proxy'
-import { protocolReviewQuestions } from './protocol-review'
 
 export type { Question }
 
@@ -68,5 +67,4 @@ export const questions: Question[] = [
   ...loadBalancerQuestions,
   ...sdnQuestions,
   ...proxyQuestions,
-  ...protocolReviewQuestions,
 ]

@@ -3,10 +3,9 @@ import type { PracticeRecord } from '../tracker'
 import type { AnswerRecord, Bookmark, StudySession } from '../../types'
 import type { MasteryState } from '../storage'
 
-export const LEGACY_SYNC_PREFIX = 'NWSP-SYNC-v1:'
-export const SYNC_PREFIX = 'NWSP-SYNC-v2:'
+export const SYNC_PREFIX = 'PMAP-SYNC-v1:'
 export const SYNC_SCHEMA_VERSION = 2 as const
-export const SYNC_APP_ID = 'nwsp-learning-app' as const
+export const SYNC_APP_ID = 'pmap-learning-app' as const
 
 export type SyncEventType =
   | 'legacy-baseline'

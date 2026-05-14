@@ -19,7 +19,7 @@ type MyAnswers = Record<string, string>
 type Marking = 'correct' | 'partial' | 'wrong'
 type Scorings = Record<string, Marking>
 
-function storageKey(id: string) { return `nwsp:myAnswer:${id}` }
+function storageKey(id: string) { return `pmap:myAnswer:${id}` }
 
 function loadMyAnswers(id: string): MyAnswers {
   try {
@@ -32,7 +32,7 @@ function saveMyAnswers(id: string, answers: MyAnswers) {
   localStorage.setItem(storageKey(id), JSON.stringify(answers))
 }
 
-function savedAnswersKey(recordId: string) { return `nwsp:savedAnswers:${recordId}` }
+function savedAnswersKey(recordId: string) { return `pmap:savedAnswers:${recordId}` }
 
 function loadSavedAnswers(recordId: string): MyAnswers {
   try {

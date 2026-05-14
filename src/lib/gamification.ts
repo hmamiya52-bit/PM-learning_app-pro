@@ -6,7 +6,7 @@ import { questions as allQuestions } from '../data/questions'
 import { afternoonProblems } from '../data/afternoonProblems'
 import { loadRecords } from './tracker'
 
-const STORAGE_KEY = 'nwsp:gamification'
+const STORAGE_KEY = 'pmap:gamification'
 const COMPLETE_BADGE_ID = 'complete-1'
 
 export interface GamificationState {

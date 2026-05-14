@@ -10,18 +10,18 @@ import { BADGES } from '../../data/badges'
 import { questions } from '../../data/questions'
 
 const KEYS = {
-  ANSWER_RECORDS: 'nwsp:answer_records',
-  USER_PROGRESS: 'nwsp:user_progress_v2',
-  STUDY_SESSIONS: 'nwsp:study_sessions',
-  BOOKMARKS: 'nwsp:bookmarks',
-  QUESTION_MASTERY: 'nwsp:question_mastery',
-  NOTE_UNDERSTANDING: 'nwsp:note_understanding',
-  TRACKER_RECORDS: 'nwsp:tracker:records',
-  GAMIFICATION: 'nwsp:gamification',
-  ACTIVITY_LOG: 'nwsp:activityLog',
-  DAILY_XP_LEDGER: 'nwsp:sync:daily_xp_ledger',
-  NOTE_META: 'nwsp:sync:note_meta',
-  PLAN_META: 'nwsp:sync:plan_meta',
+  ANSWER_RECORDS: 'pmap:answer_records',
+  USER_PROGRESS: 'pmap:user_progress_v2',
+  STUDY_SESSIONS: 'pmap:study_sessions',
+  BOOKMARKS: 'pmap:bookmarks',
+  QUESTION_MASTERY: 'pmap:question_mastery',
+  NOTE_UNDERSTANDING: 'pmap:note_understanding',
+  TRACKER_RECORDS: 'pmap:tracker:records',
+  GAMIFICATION: 'pmap:gamification',
+  ACTIVITY_LOG: 'pmap:activityLog',
+  DAILY_XP_LEDGER: 'pmap:sync:daily_xp_ledger',
+  NOTE_META: 'pmap:sync:note_meta',
+  PLAN_META: 'pmap:sync:plan_meta',
 } as const
 
 const COMPLETE_BADGE_ID = 'complete-1'

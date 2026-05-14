@@ -318,7 +318,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
         ) : (
           <ul className="bg-white rounded-md border border-slate-200 divide-y divide-slate-100">
             {records.map((r, i) => {
-              const hasSaved = !!localStorage.getItem(`nwsp:savedAnswers:${r.id}`)
+              const hasSaved = !!localStorage.getItem(`pmap:savedAnswers:${r.id}`)
               return (
                 <li key={r.id} className="flex items-center gap-2 px-2.5 py-1.5">
                   <span className="flex-shrink-0 text-[10px] text-slate-400 w-5 text-right">

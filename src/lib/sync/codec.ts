@@ -3,7 +3,6 @@ import { BADGES } from '../../data/badges'
 import { afternoonProblems } from '../../data/afternoonProblems'
 import { questions } from '../../data/questions'
 import {
-  LEGACY_SYNC_PREFIX,
   SYNC_APP_ID,
   SYNC_PREFIX,
   SYNC_SCHEMA_VERSION,
@@ -72,12 +71,6 @@ const problemIdByIndex = afternoonProblems.map((problem) => problem.id)
 const problemIndexById = new Map(problemIdByIndex.map((id, index) => [id, index]))
 const badgeIdByIndex = BADGES.map((badge) => badge.id)
 const badgeIndexById = new Map(badgeIdByIndex.map((id, index) => [id, index]))
-
-function stripLegacyChecksum(pkg: SyncPackage): SyncPackageWithoutChecksum {
-  const rest = { ...pkg }
-  delete (rest as Partial<SyncPackage>).checksum
-  return rest
-}
 
 function stripCompactChecksum(pkg: CompactWirePackage): CompactWirePackageWithoutChecksum {
   const rest = { ...pkg }
@@ -375,28 +368,6 @@ export async function encodeSyncPackage(pkgWithoutChecksum: SyncPackageWithoutCh
   return `${SYNC_PREFIX}${compressed}`
 }
 
-async function decodeLegacySyncString(payload: string): Promise<SyncPackage> {
-  const json = decompressFromEncodedURIComponent(payload)
-  if (!json) {
-    throw new Error('invalid-payload')
-  }
-
-  const parsed = JSON.parse(json) as SyncPackage
-  if (!parsed || typeof parsed !== 'object') {
-    throw new Error('invalid-json')
-  }
-
-  const expected = await sha256(JSON.stringify(stripLegacyChecksum(parsed)))
-  if (parsed.checksum !== expected) {
-    throw new Error('checksum-mismatch')
-  }
-
-  return {
-    ...parsed,
-    schemaVersion: SYNC_SCHEMA_VERSION,
-  }
-}
-
 async function decodeCompactSyncString(payload: string): Promise<SyncPackage> {
   const json = decompressFromEncodedURIComponent(payload)
   if (!json) {
@@ -420,9 +391,6 @@ export async function decodeSyncString(input: string): Promise<SyncPackage> {
   const trimmed = input.trim()
   if (trimmed.startsWith(SYNC_PREFIX)) {
     return decodeCompactSyncString(trimmed.slice(SYNC_PREFIX.length))
-  }
-  if (trimmed.startsWith(LEGACY_SYNC_PREFIX)) {
-    return decodeLegacySyncString(trimmed.slice(LEGACY_SYNC_PREFIX.length))
   }
   throw new Error('invalid-prefix')
 }

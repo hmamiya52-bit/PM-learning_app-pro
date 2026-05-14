@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { CREDENTIALS, AUTH_SESSION_DAYS } from './credentials'
 import { sha256 } from './hash'
 
-const STORAGE_KEY = 'nwsp:auth'
+const STORAGE_KEY = 'pmap:auth'
 
 interface AuthSession {
   userId: string

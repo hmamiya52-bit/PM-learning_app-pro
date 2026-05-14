@@ -6,11 +6,11 @@ type MasteryMap = Record<string, MasteryState>
 
 // KEY を v2 にすることで旧スキーマのデータを自動的に無効化（リセット）
 const KEYS = {
-  ANSWER_RECORDS: 'nwsp:answer_records',
-  USER_PROGRESS: 'nwsp:user_progress_v2',
-  USER_PROGRESS_LEGACY: 'nwsp:user_progress',
-  STUDY_SESSIONS: 'nwsp:study_sessions',
-  BOOKMARKS: 'nwsp:bookmarks',
+  ANSWER_RECORDS: 'pmap:answer_records',
+  USER_PROGRESS: 'pmap:user_progress_v2',
+  USER_PROGRESS_LEGACY: 'pmap:user_progress',
+  STUDY_SESSIONS: 'pmap:study_sessions',
+  BOOKMARKS: 'pmap:bookmarks',
 } as const
 
 // 永続化用のスキーマ（派生フィールドを除く）
@@ -174,12 +174,12 @@ export function calcCorrectRateByMode(
 
 export function resetAllData(): void {
   Object.values(KEYS).forEach((k) => localStorage.removeItem(k))
-  localStorage.removeItem('nwsp:note_understanding')
-  localStorage.removeItem('nwsp:question_mastery')
+  localStorage.removeItem('pmap:note_understanding')
+  localStorage.removeItem('pmap:question_mastery')
 }
 
 // --- QuestionMastery ---
-const QUESTION_MASTERY_KEY = 'nwsp:question_mastery'
+const QUESTION_MASTERY_KEY = 'pmap:question_mastery'
 
 export function getQuestionMastery(): MasteryMap {
   return load(QUESTION_MASTERY_KEY, {})
@@ -214,7 +214,7 @@ export function updateQuestionMastery(
 export type UnderstandingLevel = 'green' | 'yellow' | 'red'
 type NoteUnderstandingMap = Record<string, UnderstandingLevel>
 
-const NOTE_UNDERSTANDING_KEY = 'nwsp:note_understanding'
+const NOTE_UNDERSTANDING_KEY = 'pmap:note_understanding'
 
 export function getNoteUnderstanding(): NoteUnderstandingMap {
   return load(NOTE_UNDERSTANDING_KEY, {})

@@ -1,7 +1,7 @@
 import type { SyncCheckpoint, SyncMeta } from './types'
 
-const META_KEY = 'nwsp:sync:meta'
-const CHECKPOINT_KEY = 'nwsp:sync:checkpoint'
+const META_KEY = 'pmap:sync:meta'
+const CHECKPOINT_KEY = 'pmap:sync:checkpoint'
 
 const DEFAULT_VECTOR: Record<string, number> = {}
 

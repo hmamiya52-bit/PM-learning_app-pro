@@ -141,7 +141,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: '設定', to: '/settings', icon: <IconGear /> },
 ]
 
-const STORAGE_KEY = 'nwsp_sidebar_open'
+const STORAGE_KEY = 'pmap:sidebar_open'
 
 // ----------------------------------------------------------------
 // Layout

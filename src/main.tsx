@@ -20,7 +20,7 @@ if ('serviceWorker' in navigator) {
 // チャンクロード失敗時の自動リカバリ
 // （デプロイ直後に古い HTML が新ハッシュのチャンクを取りに行って 404 → 強制リロード）
 // ─────────────────────────────────────────────
-const RELOAD_KEY = '__nwsp_chunk_reload_at__'
+const RELOAD_KEY = '__pmap_chunk_reload_at__'
 function isChunkLoadError(message: unknown): boolean {
   if (typeof message !== 'string') return false
   return (

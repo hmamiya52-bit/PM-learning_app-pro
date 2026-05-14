@@ -1,7 +1,7 @@
 import { allocateSyncSeq, loadSyncMeta, saveSyncMeta, updateKnownVector } from './device'
 import type { SyncEvent, SyncEventType } from './types'
 
-const EVENTS_KEY = 'nwsp:sync:events'
+const EVENTS_KEY = 'pmap:sync:events'
 
 let suppressSyncEvents = false
 
