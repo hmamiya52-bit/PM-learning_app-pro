@@ -202,7 +202,7 @@
 | 追加 | detailed_design.md §3.2 | 低 | question_mastery 状態遷移を表で明記 |
 | D-UI-03 | detailed_design.md §8 | 低 | savedAnswersExists ヘルパー追加検討 |
 
-## 完了判定
+## 完了判定 ✅ F1-P-1 完了
 
 - [x] lib層5ファイル精読完了（1,382行）
 - [x] UI層6ファイル精読完了（3,254行 + NOTE_DB データ部分は精読対象外）
@@ -210,7 +210,8 @@
   - うち要修正・要判断級: 5件（D-LIB-01,02 + D-UI-01,02,03）
   - 既知差分・F2-P6再設計対象: 12件（実装時に都度対応）
   - 完了基準「10件以下に収束」は要修正級ベースで達成
-- [ ] ユーザレビュー・承認 ← 次のステップ
+- [x] ユーザレビュー・承認（2026-05-13）
+- [x] 設計書修正反映完了（detailed_design.md v0.14 → v0.15）
 
 ## サマリ：F1-P-1 で確定したこと / 残課題
 
@@ -218,10 +219,10 @@
 - D-LIB-01 関数名: PMで `applyAnswer` / `applyAfternoonRecord` / `applyEssayComplete` にリネーム
 - D-LIB-02 PM1 XPテーブル: NW G2式（score×3/×4/×8/min×15,1500）流用
 
-### ⚠️ ユーザ判断要（次セッション以降）
-- D-UI-01 サイドバーキー: `pmap:sidebar_open` (コロン統一) vs `pmap_sidebar_open` (NW踏襲) → 推奨: コロン統一
-- D-LIB-05 TRACKER_PLANS 同期方針: 同期対象に追加 vs NW踏襲（PLAN_METAのみ） → 要相談
-- D-UI-03 savedAnswers ハードコード: prefix置換のみ vs tracker.ts にヘルパー追加 → 推奨: ヘルパー追加
+### ✅ ユーザ判断確定済み（2026-05-13 追加）
+- D-UI-01 サイドバーキー: **`pmap:sidebar_open`（コロン統一）** で確定
+- D-LIB-05 TRACKER_PLANS 同期方針: **F2-P4 で最終決定**（F1 段階は NW 踏襲 = PLAN_META のみ）
+- D-UI-03 savedAnswers ハードコード: **tracker.ts に `savedAnswersExists(recordId)` ヘルパー追加** で確定
 
 ### 📝 設計書修正TODO（F1-P0着手前に反映）
 - detailed_design.md §3.7: PM1 XPテーブル明記
@@ -232,4 +233,12 @@
 ## 進捗ログ
 - 2026-05-13: セッション開始、リポジトリ初期化、雛形作成、lib層5ファイル精読・突合完了
 - 2026-05-13: ユーザ判断 — D-LIB-01「PMでリネーム実装」、D-LIB-02「NW G2式流用」確定
-- 2026-05-13: UI層6ファイル精読完了、差分17件抽出（要修正級5件）、F1-P-1 完了候補
+- 2026-05-13: UI層6ファイル精読完了、差分17件抽出（要修正級5件）
+- 2026-05-13: ユーザ判断追加 — D-UI-01「pmap:sidebar_open（コロン）」、D-LIB-05「F2-P4で最終決定」、D-UI-03「savedAnswersExists ヘルパー追加」確定
+- 2026-05-13: 設計書 detailed_design.md v0.14 → v0.15 修正反映完了
+  - §3.2 storage.ts: USER_PROGRESS_LEGACY 削除、SIDEBAR_OPEN キー追加、副作用表、mastery 状態遷移表
+  - §3.6 tracker.ts: savedAnswersExists ヘルパー追加、setPlan/removePlan の副作用表
+  - §3.7 gamification.ts: PM1 XPテーブル明記（NW G2式流用）
+  - §3.9 sync/adapters: TRACKER_PLANS を F1段階で同期対象外と注記（F2-P4で最終決定）
+  - §12 ブランド適用マップ: Layout.tsx inline style hex の置換注意 + Tailwindクラスリライト推奨
+- **F1-P-1 完了 → 次は F1-P0 スキャフォールド**
