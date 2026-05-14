@@ -1,0 +1,415 @@
+import type { ActivityEvent } from '../activityLog'
+import type { GamificationState } from '../gamification'
+import type { PracticeRecord } from '../tracker'
+import type { AnswerRecord, Bookmark, StudySession } from '../../types'
+import type { DailyXpLedger, LocalSyncState } from './types'
+import type { MasteryState } from '../storage'
+import { getTotalXpFromSyncEvents } from './events'
+import { loadSyncMeta } from './device'
+import { BADGES } from '../../data/badges'
+import { questions } from '../../data/questions'
+
+const KEYS = {
+  ANSWER_RECORDS: 'nwsp:answer_records',
+  USER_PROGRESS: 'nwsp:user_progress_v2',
+  STUDY_SESSIONS: 'nwsp:study_sessions',
+  BOOKMARKS: 'nwsp:bookmarks',
+  QUESTION_MASTERY: 'nwsp:question_mastery',
+  NOTE_UNDERSTANDING: 'nwsp:note_understanding',
+  TRACKER_RECORDS: 'nwsp:tracker:records',
+  GAMIFICATION: 'nwsp:gamification',
+  ACTIVITY_LOG: 'nwsp:activityLog',
+  DAILY_XP_LEDGER: 'nwsp:sync:daily_xp_ledger',
+  NOTE_META: 'nwsp:sync:note_meta',
+  PLAN_META: 'nwsp:sync:plan_meta',
+} as const
+
+const COMPLETE_BADGE_ID = 'complete-1'
+const COMPLETE_BADGE = BADGES.find((badge) => badge.id === COMPLETE_BADGE_ID)
+
+interface StoredProgress {
+  topicId: string
+  mcAttempts: number
+  mcCorrect: number
+  wrAttempts: number
+  wrCorrect: number
+  lastStudiedAt: string
+  isBookmarked: boolean
+}
+
+export interface LocalMergeStats {
+  addedAnswerRecordCount: number
+  updatedDailyXpDayCount: number
+  addedAfternoonRecordCount: number
+  addedBadgeCount: number
+}
+
+const DEFAULT_GAMIFICATION: GamificationState = {
+  xp: 0,
+  totalAnswered: 0,
+  totalCorrect: 0,
+  writtenCorrect: 0,
+  currentStreak: 0,
+  maxStreak: 0,
+  correctQuestionIds: [],
+  writtenCorrectQuestionIds: [],
+  recentResults: [],
+  recentWrittenResults: [],
+  unlockedBadgeIds: [],
+}
+
+function loadJson<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function saveJson<T>(key: string, value: T): void {
+  localStorage.setItem(key, JSON.stringify(value))
+}
+
+function uniqueBy<T>(items: T[], keyOf: (item: T) => string): T[] {
+  const map = new Map<string, T>()
+  for (const item of items) {
+    map.set(keyOf(item), item)
+  }
+  return Array.from(map.values())
+}
+
+function sortByIso<T>(items: T[], keyOf: (item: T) => string): T[] {
+  return [...items].sort((a, b) => keyOf(a).localeCompare(keyOf(b)))
+}
+
+function answerRecordKey(record: AnswerRecord): string {
+  return [
+    record.questionId,
+    record.mode,
+    record.isCorrect ? '1' : '0',
+    record.answeredAt,
+    record.userAnswer,
+  ].join('|')
+}
+
+function aggregateDailyXp(events: ActivityEvent[]): Record<string, number> {
+  const daily: Record<string, number> = {}
+  for (const event of events) {
+    daily[event.date] = (daily[event.date] ?? 0) + event.xp
+  }
+  return daily
+}
+
+function normalizeBadgeIds(ids: string[]): string[] {
+  const unlockedSet = new Set(ids)
+  return BADGES
+    .filter((badge) => unlockedSet.has(badge.id))
+    .map((badge) => badge.id)
+}
+
+function hasAllNonCompleteBadges(ids: string[]): boolean {
+  const unlockedSet = new Set(ids)
+  return BADGES.every((badge) => badge.id === COMPLETE_BADGE_ID || unlockedSet.has(badge.id))
+}
+
+function mergeUnlockedBadgeIds(currentIds: string[], incomingIds: string[]): string[] {
+  const merged = new Set(normalizeBadgeIds([...currentIds, ...incomingIds]))
+  if (!merged.has(COMPLETE_BADGE_ID) && hasAllNonCompleteBadges(Array.from(merged))) {
+    merged.add(COMPLETE_BADGE_ID)
+  }
+  return BADGES
+    .filter((badge) => merged.has(badge.id))
+    .map((badge) => badge.id)
+}
+
+function countLedgerDays(ledger: DailyXpLedger): number {
+  const days = new Set<string>()
+  for (const daily of Object.values(ledger)) {
+    for (const date of Object.keys(daily)) {
+      days.add(date)
+    }
+  }
+  return days.size
+}
+
+function normalizeLedger(value: DailyXpLedger | undefined): DailyXpLedger {
+  if (!value || typeof value !== 'object') return {}
+  const normalized: DailyXpLedger = {}
+  for (const [deviceId, daily] of Object.entries(value)) {
+    if (!daily || typeof daily !== 'object') continue
+    const normalizedDaily: Record<string, number> = {}
+    for (const [date, xp] of Object.entries(daily)) {
+      if (typeof xp === 'number' && Number.isFinite(xp) && xp > 0) {
+        normalizedDaily[date] = Math.round(xp)
+      }
+    }
+    if (Object.keys(normalizedDaily).length > 0) {
+      normalized[deviceId] = normalizedDaily
+    }
+  }
+  return normalized
+}
+
+function mergeDailyXpLedger(
+  current: DailyXpLedger,
+  incoming: DailyXpLedger | undefined,
+): { value: DailyXpLedger; updatedCount: number } {
+  const merged = normalizeLedger(current)
+  let updatedCount = 0
+
+  for (const [deviceId, daily] of Object.entries(normalizeLedger(incoming))) {
+    merged[deviceId] ??= {}
+    for (const [date, xp] of Object.entries(daily)) {
+      const currentXp = merged[deviceId][date] ?? 0
+      if (xp > currentXp) {
+        merged[deviceId][date] = xp
+        updatedCount += 1
+      }
+    }
+  }
+
+  return { value: merged, updatedCount }
+}
+
+function refreshLocalDailyXpLedger(): DailyXpLedger {
+  const meta = loadSyncMeta()
+  const current = normalizeLedger(loadJson<DailyXpLedger>(KEYS.DAILY_XP_LEDGER, {}))
+  const localDaily = aggregateDailyXp(loadJson<ActivityEvent[]>(KEYS.ACTIVITY_LOG, []))
+  const merged = mergeDailyXpLedger(current, { [meta.deviceId]: localDaily }).value
+  saveJson(KEYS.DAILY_XP_LEDGER, merged)
+  return merged
+}
+
+export function readLocalSyncState(): LocalSyncState {
+  const dailyXpLedger = refreshLocalDailyXpLedger()
+
+  return {
+    answerRecords: loadJson<AnswerRecord[]>(KEYS.ANSWER_RECORDS, []),
+    studySessions: loadJson<StudySession[]>(KEYS.STUDY_SESSIONS, []),
+    bookmarks: loadJson<Bookmark[]>(KEYS.BOOKMARKS, []),
+    questionMastery: loadJson<Record<string, MasteryState>>(KEYS.QUESTION_MASTERY, {}),
+    trackerRecords: loadJson<PracticeRecord[]>(KEYS.TRACKER_RECORDS, []),
+    gamification: {
+      ...DEFAULT_GAMIFICATION,
+      ...loadJson<Partial<GamificationState>>(KEYS.GAMIFICATION, {}),
+    },
+    dailyXpLedger,
+  }
+}
+
+export function touchNoteUnderstandingSyncMeta(
+  categoryId: string,
+  sectionIndex: number,
+  updatedAt = new Date().toISOString(),
+): void {
+  const meta = loadJson<Record<string, string>>(KEYS.NOTE_META, {})
+  meta[`${categoryId}:${sectionIndex}`] = updatedAt
+  saveJson(KEYS.NOTE_META, meta)
+}
+
+export function touchAfternoonPlanSyncMeta(
+  problemId: string,
+  updatedAt = new Date().toISOString(),
+): void {
+  const meta = loadJson<Record<string, string>>(KEYS.PLAN_META, {})
+  meta[problemId] = updatedAt
+  saveJson(KEYS.PLAN_META, meta)
+}
+
+export function ensureStateMetadata(): void {
+  readLocalSyncState()
+}
+
+function masteryRank(value: MasteryState | undefined): number {
+  switch (value) {
+    case 'incorrect': return 1
+    case 'correct': return 2
+    case 'consecutive': return 3
+    default: return 0
+  }
+}
+
+function mergeQuestionMastery(
+  current: Record<string, MasteryState>,
+  incoming: Record<string, MasteryState>,
+): Record<string, MasteryState> {
+  const merged = { ...current }
+  for (const [key, value] of Object.entries(incoming)) {
+    if (masteryRank(value) > masteryRank(merged[key])) {
+      merged[key] = value
+    }
+  }
+  return merged
+}
+
+function nextMasteryState(current: MasteryState | undefined, isCorrect: boolean): MasteryState {
+  if (!current) return isCorrect ? 'correct' : 'incorrect'
+  if (current === 'correct') return isCorrect ? 'consecutive' : 'incorrect'
+  if (current === 'consecutive') return isCorrect ? 'consecutive' : 'incorrect'
+  return isCorrect ? 'correct' : 'incorrect'
+}
+
+function rebuildQuestionMasteryFromAnswers(answerRecords: AnswerRecord[]): Record<string, MasteryState> {
+  const rebuilt: Record<string, MasteryState> = {}
+  for (const record of sortByIso(answerRecords, (item) => item.answeredAt)) {
+    const key = `${record.questionId}:${record.mode}`
+    rebuilt[key] = nextMasteryState(rebuilt[key], record.isCorrect)
+  }
+  return rebuilt
+}
+
+function rebuildProgress(answerRecords: AnswerRecord[], bookmarks: Bookmark[]): StoredProgress[] {
+  const map = new Map<string, StoredProgress>()
+  const bookmarkedQuestionIds = new Set(bookmarks.map((bookmark) => bookmark.questionId))
+  const topicByQuestion = new Map(questions.map((question) => [question.id, question.topicId]))
+
+  for (const record of answerRecords) {
+    const topicId = topicByQuestion.get(record.questionId)
+    if (!topicId) continue
+    const existing = map.get(topicId)
+    const progress = existing ?? {
+      topicId,
+      mcAttempts: 0,
+      mcCorrect: 0,
+      wrAttempts: 0,
+      wrCorrect: 0,
+      lastStudiedAt: '',
+      isBookmarked: bookmarkedQuestionIds.has(record.questionId),
+    }
+    if (record.mode === 'multiple-choice') {
+      progress.mcAttempts += 1
+      if (record.isCorrect) progress.mcCorrect += 1
+    } else {
+      progress.wrAttempts += 1
+      if (record.isCorrect) progress.wrCorrect += 1
+    }
+    if (record.answeredAt > progress.lastStudiedAt) {
+      progress.lastStudiedAt = record.answeredAt
+    }
+    map.set(topicId, progress)
+  }
+
+  return Array.from(map.values())
+}
+
+function rebuildGamification(
+  answerRecords: AnswerRecord[],
+  current: GamificationState,
+  incoming: GamificationState,
+): GamificationState {
+  const sorted = sortByIso(answerRecords, (record) => record.answeredAt)
+  let currentStreak = 0
+  let maxStreak = 0
+  const recentResults: boolean[] = []
+  const recentWrittenResults: boolean[] = []
+  const correctQuestionIds = new Set<string>([
+    ...current.correctQuestionIds,
+    ...incoming.correctQuestionIds,
+  ])
+  const writtenCorrectQuestionIds = new Set<string>([
+    ...current.writtenCorrectQuestionIds,
+    ...incoming.writtenCorrectQuestionIds,
+  ])
+  const unlockedBadgeIds = mergeUnlockedBadgeIds(
+    current.unlockedBadgeIds,
+    incoming.unlockedBadgeIds,
+  )
+  const completeBadgeAddedByMerge =
+    unlockedBadgeIds.includes(COMPLETE_BADGE_ID) &&
+    !current.unlockedBadgeIds.includes(COMPLETE_BADGE_ID) &&
+    !incoming.unlockedBadgeIds.includes(COMPLETE_BADGE_ID)
+  const baseXp = Math.max(getTotalXpFromSyncEvents(), current.xp, incoming.xp)
+
+  for (const record of sorted) {
+    currentStreak = record.isCorrect ? currentStreak + 1 : 0
+    maxStreak = Math.max(maxStreak, currentStreak)
+    recentResults.push(record.isCorrect)
+    if (record.mode === 'written') recentWrittenResults.push(record.isCorrect)
+    if (record.isCorrect) {
+      correctQuestionIds.add(record.questionId)
+      if (record.mode === 'written') writtenCorrectQuestionIds.add(record.questionId)
+    }
+  }
+
+  return {
+    xp: baseXp + (completeBadgeAddedByMerge ? (COMPLETE_BADGE?.xpBonus ?? 0) : 0),
+    totalAnswered: sorted.length,
+    totalCorrect: sorted.filter((record) => record.isCorrect).length,
+    writtenCorrect: sorted.filter((record) => record.isCorrect && record.mode === 'written').length,
+    currentStreak,
+    maxStreak: Math.max(maxStreak, current.maxStreak, incoming.maxStreak),
+    correctQuestionIds: Array.from(correctQuestionIds),
+    writtenCorrectQuestionIds: Array.from(writtenCorrectQuestionIds),
+    recentResults: recentResults.slice(-20),
+    recentWrittenResults: recentWrittenResults.slice(-20),
+    unlockedBadgeIds,
+  }
+}
+
+export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
+  const current = readLocalSyncState()
+
+  const answerRecords = sortByIso(
+    uniqueBy([...current.answerRecords, ...incoming.answerRecords], answerRecordKey),
+    (record) => record.answeredAt,
+  )
+  const studySessions = sortByIso(
+    uniqueBy([...current.studySessions, ...incoming.studySessions], (session) => session.id),
+    (session) => session.startedAt,
+  )
+  const bookmarks = sortByIso(
+    uniqueBy([...current.bookmarks, ...incoming.bookmarks], (bookmark) => bookmark.questionId),
+    (bookmark) => bookmark.createdAt,
+  )
+  const trackerRecords = sortByIso(
+    uniqueBy([...current.trackerRecords, ...incoming.trackerRecords], (record) => record.id),
+    (record) => record.date,
+  )
+  const questionMastery = mergeQuestionMastery(
+    rebuildQuestionMasteryFromAnswers(answerRecords),
+    incoming.questionMastery,
+  )
+  const gamification = rebuildGamification(answerRecords, current.gamification, incoming.gamification)
+  const currentBadges = new Set(normalizeBadgeIds(current.gamification.unlockedBadgeIds))
+  const dailyXpLedger = mergeDailyXpLedger(current.dailyXpLedger, incoming.dailyXpLedger)
+
+  saveJson(KEYS.ANSWER_RECORDS, answerRecords)
+  saveJson(KEYS.STUDY_SESSIONS, studySessions)
+  saveJson(KEYS.BOOKMARKS, bookmarks)
+  saveJson(KEYS.USER_PROGRESS, rebuildProgress(answerRecords, bookmarks))
+  saveJson(KEYS.QUESTION_MASTERY, questionMastery)
+  saveJson(KEYS.TRACKER_RECORDS, trackerRecords)
+  saveJson(KEYS.DAILY_XP_LEDGER, dailyXpLedger.value)
+  saveJson(KEYS.GAMIFICATION, gamification)
+
+  return {
+    addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,
+    updatedDailyXpDayCount: dailyXpLedger.updatedCount,
+    addedAfternoonRecordCount: trackerRecords.length - current.trackerRecords.length,
+    addedBadgeCount: gamification.unlockedBadgeIds.filter((badgeId) => !currentBadges.has(badgeId)).length,
+  }
+}
+
+export function countPotentialStateChanges(incoming: LocalSyncState): LocalMergeStats {
+  const current = readLocalSyncState()
+  const currentAnswerKeys = new Set(current.answerRecords.map(answerRecordKey))
+  const currentAfternoonIds = new Set(current.trackerRecords.map((record) => record.id))
+  const currentBadges = new Set(normalizeBadgeIds(current.gamification.unlockedBadgeIds))
+  const mergedBadgeIds = mergeUnlockedBadgeIds(
+    current.gamification.unlockedBadgeIds,
+    incoming.gamification.unlockedBadgeIds,
+  )
+  const dailyXpLedger = mergeDailyXpLedger(current.dailyXpLedger, incoming.dailyXpLedger)
+
+  return {
+    addedAnswerRecordCount: incoming.answerRecords.filter((record) => !currentAnswerKeys.has(answerRecordKey(record))).length,
+    updatedDailyXpDayCount: dailyXpLedger.updatedCount,
+    addedAfternoonRecordCount: incoming.trackerRecords.filter((record) => !currentAfternoonIds.has(record.id)).length,
+    addedBadgeCount: mergedBadgeIds.filter((badgeId) => !currentBadges.has(badgeId)).length,
+  }
+}
+
+export function getDailyXpDayCount(ledger: DailyXpLedger): number {
+  return countLedgerDays(normalizeLedger(ledger))
+}

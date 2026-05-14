@@ -1,0 +1,26 @@
+import type { Category } from '../types'
+
+export const categories: Category[] = [
+  { id: 'layer1-3', name: 'レイヤ1〜3基礎', order: 1, description: 'LAN・スイッチ・VLAN・IPアドレス・STP・ARPなど' },
+  { id: 'layer4-7', name: 'レイヤ4,7基礎', order: 2, description: 'TCP/UDP・DoS攻撃・HTTP' },
+  { id: 'firewall', name: 'ファイアウォール', order: 3, description: 'FW・IDS/IPS・WAF・NGFW' },
+  { id: 'wireless', name: '無線LAN', order: 4, description: 'IEEE規格・WPA2/WPA3・802.1X・WLC' },
+  { id: 'routing', name: 'ルーティング', order: 5, description: 'RIP・OSPF・BGP' },
+  { id: 'vrrp', name: 'VRRP', order: 6, description: 'ルータ冗長化技術' },
+  { id: 'wan', name: 'WAN', order: 7, description: '専用線・広域イーサネット・IP-VPN・SD-WAN・クラウド' },
+  { id: 'load-balancer', name: '負荷分散装置（LB）', order: 8, description: 'ラウンドロビン・セッション維持' },
+  { id: 'dhcp', name: 'DHCP', order: 9, description: 'DORA・リレーエージェント・DHCPスヌーピング' },
+  { id: 'dns', name: 'DNS', order: 10, description: 'コンテンツ/キャッシュDNS・ゾーン転送・DNSキャッシュポイズニング' },
+  { id: 'mail', name: 'メール', order: 11, description: 'SMTP・POP3・IMAP4・SPF・DKIM' },
+  { id: 'voip', name: '音声とVoIP', order: 12, description: 'SIP・RTP・呼制御' },
+  { id: 'ipsec', name: 'IPsecとGRE', order: 13, description: 'トンネル/トランスポートモード・IKE・GRE over IPsec' },
+  { id: 'sdn', name: 'SDN', order: 14, description: 'OpenFlow・OFC/OFS' },
+  { id: 'ssl-tls', name: 'SSL/TLS・PKI', order: 15, description: 'TLSハンドシェイク・証明書・PKI・HSTS' },
+  { id: 'security', name: 'セキュリティ', order: 16, description: '標的型攻撃・認証・SSL-VPN・SAML・Kerberos' },
+  { id: 'threat', name: '脅威・攻撃手法', order: 17, description: 'DDoS・SYNフラッド・SQLインジェクション・IDS/IPS' },
+  { id: 'ipv6', name: 'IPv6', order: 18, description: 'IPv6アドレス・NDP・SLAAC・移行技術' },
+  { id: 'proxy', name: 'プロキシサーバ', order: 19, description: 'PAC・HTTPS復号' },
+  { id: 'network-mgmt', name: 'ネットワーク管理', order: 20, description: 'ping・SYSLOG・SNMP・BFD' },
+  { id: 'protocol-review', name: 'プロトコル総復習', order: 21, description: '各プロトコルのレイヤ・ポート番号一覧' },
+  { id: 'iot', name: 'IoT+補足', order: 22, description: 'CoAP・LPWA・MQTT・指数再送（令和7年試験出題）' },
+]

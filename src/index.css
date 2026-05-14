@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────
+ * フォント統一
+ *   Windows: 「Meiryo UI」を強制適用
+ *   macOS / iOS: Hiragino Sans 系 → 游ゴシック系へフォールバック
+ *   Android: Noto Sans JP / Roboto へフォールバック
+ *   いずれも Meiryo UI に視覚的に近い和文ゴシックを優先選択。
+ * ────────────────────────────────────────────────────────────── */
+html,
+body,
+button,
+input,
+select,
+textarea {
+  font-family:
+    "Meiryo UI",
+    "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP",
+    "Yu Gothic UI",
+    YuGothic,
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* タビュラー数値（数値の桁ぞろえ）を維持しつつ、フォント自体は Meiryo UI 系に */
+code,
+kbd,
+pre,
+samp,
+.font-mono {
+  font-family:
+    "Meiryo UI",
+    "SF Mono",
+    Menlo,
+    Consolas,
+    monospace;
+}
