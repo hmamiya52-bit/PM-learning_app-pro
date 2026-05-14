@@ -114,5 +114,22 @@ src/data/questions/index.ts(42,41): error TS2307: Cannot find module './protocol
 
 - 2026-05-13: Claude が Step 1, 2, 3, 8, 9, 10 完了、commit `e1e164a`、Codex指示書発行
 - 2026-05-14: Codex が Step 4, 5, 6, 7, 11 + `npm install` 実施 → `npm run build` で `protocol-review` import エラーに遭遇 → 質問機構で停止、commit `141d220`
-- 2026-05-14: Claude が質問に回答（A1 / A2）、本レビューファイルを中間状態で作成
-- 次の予定: Codex 再開 → push → Claude が再レビュー → F1-P0 完了判定
+- 2026-05-14: Claude が質問に回答（A1 / A2）、本レビューファイルを中間状態で作成、commit `e2ec400`
+- 2026-05-14: ユーザより **Vercel 自動デプロイ失敗** 報告（commit `e2ec400` をビルドして同じ TS2307 で失敗）
+  - 原因: Codex の Step 4-7,11 編集成果が未 push のため、Vercel が「`protocol-review.ts` 削除済み + import 残置」の中途半端な状態をビルド
+  - 対応: F1-P0 完了（A1 反映 + push）で **自動的に解決**。別途の Vercel 調査タスクは不要
+- 次の予定: Codex 再開 → ローカル `npm run build` 通過確認 → push → Vercel 自動再ビルドで成功 → Claude が再レビュー → F1-P0 完了判定
+
+## 9. Vercel デプロイ補足（参考情報）
+
+ユーザより共有された Vercel ビルドログから観察できた事項:
+
+| 項目 | 内容 | 対応方針 |
+|---|---|---|
+| ビルドコマンド | `vercel build` → `npm install --legacy-peer-deps` → `npm run build` | Vercel デフォルト設定で問題なし |
+| `--legacy-peer-deps` フラグ | Vercel 側自動付与 | F1-P0 では受容（@zxing/library^0.22.0 への調整で本来不要のはず、F1-P6 で再確認） |
+| deprecated warning（sourcemap-codec / source-map / glob） | 依存パッケージ起因 | F1-P0 では受容、後続フェーズで依存更新検討 |
+| 8 vulnerabilities (1 moderate, 7 high) | `npm audit` 結果 | NW から引き継いだ依存問題。**フェーズ2 F2-P7 QA 前に対応** |
+| TS2307 ビルドエラー | 本レビューの Q1 と同根 | A1 反映で解決 |
+
+> ⚠️ **vulnerabilities は要注意**: F1-P6 デプロイ判定までに `npm audit` で詳細確認し、Vercel 公開前に対応方針を決める。リスクレジスタへの追加検討（memory/risks.md R9 候補）。
