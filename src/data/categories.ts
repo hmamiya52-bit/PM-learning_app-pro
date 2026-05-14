@@ -1,26 +1,22 @@
 import type { Category } from '../types'
 
+/**
+ * PM Learning App カテゴリ定義（PMBOK第7版ベース 12 + サービスマネジメント）
+ *
+ * 設計書: detailed_design.md v0.15 §2.2 / basic_design.md §5.1
+ * PMBOK第8版の追加要素は pmbok8-diff カテゴリで別管理（F2-P6 で導入予定）
+ */
 export const categories: Category[] = [
-  { id: 'layer1-3', name: 'レイヤ1〜3基礎', order: 1, description: 'LAN・スイッチ・VLAN・IPアドレス・STP・ARPなど' },
-  { id: 'layer4-7', name: 'レイヤ4,7基礎', order: 2, description: 'TCP/UDP・DoS攻撃・HTTP' },
-  { id: 'firewall', name: 'ファイアウォール', order: 3, description: 'FW・IDS/IPS・WAF・NGFW' },
-  { id: 'wireless', name: '無線LAN', order: 4, description: 'IEEE規格・WPA2/WPA3・802.1X・WLC' },
-  { id: 'routing', name: 'ルーティング', order: 5, description: 'RIP・OSPF・BGP' },
-  { id: 'vrrp', name: 'VRRP', order: 6, description: 'ルータ冗長化技術' },
-  { id: 'wan', name: 'WAN', order: 7, description: '専用線・広域イーサネット・IP-VPN・SD-WAN・クラウド' },
-  { id: 'load-balancer', name: '負荷分散装置（LB）', order: 8, description: 'ラウンドロビン・セッション維持' },
-  { id: 'dhcp', name: 'DHCP', order: 9, description: 'DORA・リレーエージェント・DHCPスヌーピング' },
-  { id: 'dns', name: 'DNS', order: 10, description: 'コンテンツ/キャッシュDNS・ゾーン転送・DNSキャッシュポイズニング' },
-  { id: 'mail', name: 'メール', order: 11, description: 'SMTP・POP3・IMAP4・SPF・DKIM' },
-  { id: 'voip', name: '音声とVoIP', order: 12, description: 'SIP・RTP・呼制御' },
-  { id: 'ipsec', name: 'IPsecとGRE', order: 13, description: 'トンネル/トランスポートモード・IKE・GRE over IPsec' },
-  { id: 'sdn', name: 'SDN', order: 14, description: 'OpenFlow・OFC/OFS' },
-  { id: 'ssl-tls', name: 'SSL/TLS・PKI', order: 15, description: 'TLSハンドシェイク・証明書・PKI・HSTS' },
-  { id: 'security', name: 'セキュリティ', order: 16, description: '標的型攻撃・認証・SSL-VPN・SAML・Kerberos' },
-  { id: 'threat', name: '脅威・攻撃手法', order: 17, description: 'DDoS・SYNフラッド・SQLインジェクション・IDS/IPS' },
-  { id: 'ipv6', name: 'IPv6', order: 18, description: 'IPv6アドレス・NDP・SLAAC・移行技術' },
-  { id: 'proxy', name: 'プロキシサーバ', order: 19, description: 'PAC・HTTPS復号' },
-  { id: 'network-mgmt', name: 'ネットワーク管理', order: 20, description: 'ping・SYSLOG・SNMP・BFD' },
-  { id: 'protocol-review', name: 'プロトコル総復習', order: 21, description: '各プロトコルのレイヤ・ポート番号一覧' },
-  { id: 'iot', name: 'IoT+補足', order: 22, description: 'CoAP・LPWA・MQTT・指数再送（令和7年試験出題）' },
+  { id: 'stakeholder',          name: 'ステークホルダー',         order: 1,  description: '特定・分析・エンゲージメント計画' },
+  { id: 'team',                 name: 'チーム',                   order: 2,  description: 'リーダーシップ・組織・要員管理' },
+  { id: 'development-approach', name: '開発アプローチ',           order: 3,  description: '予測型／適応型／ハイブリッド・アジャイル' },
+  { id: 'planning',             name: '計画',                    order: 4,  description: 'スコープ・WBS・スケジュール・コスト・見積' },
+  { id: 'project-work',         name: 'プロジェクト作業',         order: 5,  description: '調達・契約・リソース・知識管理' },
+  { id: 'delivery',             name: 'デリバリー',              order: 6,  description: '品質・要求・受入' },
+  { id: 'measurement',          name: '測定',                    order: 7,  description: 'EVM・KPI・予測・パフォーマンス測定' },
+  { id: 'uncertainty',          name: '不確かさ・リスク',         order: 8,  description: 'リスク特定・分析・対応・機会管理' },
+  { id: 'integration',          name: '統合・変更管理',           order: 9,  description: '統合管理・変更要求・構成管理' },
+  { id: 'governance',           name: 'ガバナンス・組織論',       order: 10, description: 'PMO・ポートフォリオ・プログラム・組織構造' },
+  { id: 'tailoring-models',     name: 'テーラリング・モデル',     order: 11, description: 'PMBOK第7版モデル・手法・成果物' },
+  { id: 'service-management',   name: 'サービスマネジメント',     order: 12, description: 'ITIL・SLA・運用引継ぎ・システム監査・法務' },
 ]

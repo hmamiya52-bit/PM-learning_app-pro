@@ -17,11 +17,12 @@ const KEYS = {
   QUESTION_MASTERY: 'pmap:question_mastery',
   NOTE_UNDERSTANDING: 'pmap:note_understanding',
   TRACKER_RECORDS: 'pmap:tracker:records',
+  // TRACKER_PLANS: 'pmap:tracker:plans',  // ★F1-P-1 D-LIB-05: F1段階は同期対象外（NW踏襲）。F2-P4 で最終決定
   GAMIFICATION: 'pmap:gamification',
   ACTIVITY_LOG: 'pmap:activityLog',
   DAILY_XP_LEDGER: 'pmap:sync:daily_xp_ledger',
   NOTE_META: 'pmap:sync:note_meta',
-  PLAN_META: 'pmap:sync:plan_meta',
+  PLAN_META: 'pmap:sync:plan_meta',  // plans 本体ではなく更新タイムスタンプのみ同期
 } as const
 
 const COMPLETE_BADGE_ID = 'complete-1'

@@ -4,13 +4,14 @@ import { touchNoteUnderstandingSyncMeta } from './sync/adapters'
 export type MasteryState = 'consecutive' | 'correct' | 'incorrect'
 type MasteryMap = Record<string, MasteryState>
 
-// KEY を v2 にすることで旧スキーマのデータを自動的に無効化（リセット）
+// LocalStorage キー定義（F1-P-1 D-LIB-03 対応で USER_PROGRESS_LEGACY 削除）
+// 設計書 v0.15 §3.2 に従い、PM は新規アプリのため旧スキーマ削除ロジックは不要。
 const KEYS = {
   ANSWER_RECORDS: 'pmap:answer_records',
   USER_PROGRESS: 'pmap:user_progress_v2',
-  USER_PROGRESS_LEGACY: 'pmap:user_progress',
   STUDY_SESSIONS: 'pmap:study_sessions',
   BOOKMARKS: 'pmap:bookmarks',
+  SIDEBAR_OPEN: 'pmap:sidebar_open',
 } as const
 
 // 永続化用のスキーマ（派生フィールドを除く）
@@ -37,17 +38,8 @@ function save<T>(key: string, value: T): void {
   localStorage.setItem(key, JSON.stringify(value))
 }
 
-// 旧スキーマが localStorage に残っていれば一度だけ削除（リセット）
-function clearLegacyProgress(): void {
-  try {
-    if (localStorage.getItem(KEYS.USER_PROGRESS_LEGACY) !== null) {
-      localStorage.removeItem(KEYS.USER_PROGRESS_LEGACY)
-    }
-  } catch {
-    /* noop */
-  }
-}
-clearLegacyProgress()
+// F1-P-1 D-LIB-03 対応: NW にあった clearLegacyProgress() は PM では不要のため削除済み
+// （PM は新規アプリで旧スキーマが存在しないため）
 
 // --- AnswerRecord ---
 export function getAnswerRecords(): AnswerRecord[] {
