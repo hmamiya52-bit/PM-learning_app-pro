@@ -7,7 +7,7 @@ import { processRows, BORDER_OUTER, BORDER_INNER, BORDER_HEAD } from '../lib/ans
 import { addRecord, getMaxScore, loadRecords } from '../lib/tracker'
 import { scoringMap } from '../data/scoringMap'
 import { addActivityEvent } from '../lib/activityLog'
-import { recordAfternoonXp } from '../lib/gamification'
+import { applyAfternoonRecord } from '../lib/gamification'  // F1-P-1 D-LIB-01 リネーム
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 
@@ -364,17 +364,16 @@ export default function AfternoonMyAnswer() {
     )
   }
 
-  const sectionLabel = answerSet.section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'
-  const sectionColor = answerSet.section === 'G1'
-    ? 'bg-blue-100 text-blue-700'
-    : 'bg-purple-100 text-purple-700'
+  // F1-P3: PMでは PM1 のみ。section 分岐を廃止し「午後Ⅰ」固定 + brand 系色
+  const sectionLabel = '午後Ⅰ'
+  const sectionColor = 'bg-brand-light text-brand-dark'
 
   const filledCount = Object.values(myAnswers).filter(v => v.trim()).length
   const totalRows = answerSet.answers.length
 
   // 採点計算
   const markedCount = Object.keys(scorings).length
-  const maxScore = getMaxScore(answerSet.section)
+  const maxScore = getMaxScore('PM1')
   const rowScores = scoringMap[id] ?? []
   const calculatedScore = Object.entries(scorings).reduce((sum, [rowKey, marking]) => {
     const pts = rowScores[parseInt(rowKey)]
@@ -388,7 +387,8 @@ export default function AfternoonMyAnswer() {
     const record = addRecord({ problemId: id, date: today(), score: calculatedScore })
     // 解答を記録IDに紐づけて保存し、下書きをクリア
     saveSavedAnswers(record.id, myAnswers)
-    const result = recordAfternoonXp(answerSet.section, calculatedScore)
+    // F1-P-1 D-LIB-01 リネーム: recordAfternoonXp(section, score) → applyAfternoonRecord(score, problemId)
+    const result = applyAfternoonRecord(calculatedScore, id)
     addActivityEvent({
       type: 'afternoon-record',
       date: today(),
@@ -397,7 +397,7 @@ export default function AfternoonMyAnswer() {
       payload: {
         problemId: id,
         year: answerSet.year,
-        section: answerSet.section,
+        section: 'PM1',  // F1-P3: PMでは PM1 固定
         number: answerSet.number,
         title: problem?.title ?? '',
         score: calculatedScore,

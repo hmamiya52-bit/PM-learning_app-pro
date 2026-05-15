@@ -153,28 +153,31 @@ function countMasteredCategories(threshold: number): number {
   return count
 }
 
-/** 午後問題関連バッジの判定材料を集約 */
+/**
+ * 午後問題（PM1）関連バッジの判定材料を集約
+ *
+ * F1-P3 PM化: NW の G1/G2 二分割を廃止し、PM1（100点満点）一本で集計。
+ * 既存 badges.ts の `g1Over40` / `g2Over80` バッジ ID 互換のため、
+ * 変数名は維持（PM1 で 40点以上 / 80点以上）。F2-P6 でバッジ再設計予定。
+ */
 function computeAfternoonStats() {
   const records = loadRecords()
   const total = records.length
-  const sectionByProblemId = new Map(afternoonProblems.map(p => [p.id, p.section]))
-  let g1Over40 = 0
-  let g2Over80 = 0
+  let g1Over40 = 0   // PM1 で 40点以上
+  let g2Over80 = 0   // PM1 で 80点以上
   // 各 problemId について最高得点を集計（万里一空判定用）
   const bestScoreByProblem = new Map<string, number>()
   for (const r of records) {
-    const sec = sectionByProblemId.get(r.problemId)
-    if (sec === 'G1' && r.score >= 40) g1Over40++
-    if (sec === 'G2' && r.score >= 80) g2Over80++
+    if (r.score >= 40) g1Over40++
+    if (r.score >= 80) g2Over80++
     const prev = bestScoreByProblem.get(r.problemId) ?? -1
     if (r.score > prev) bestScoreByProblem.set(r.problemId, r.score)
   }
-  // 万里一空: 全 afternoonProblems で section に応じた閾値（G1=30,G2=60）以上の記録が存在
+  // 万里一空: 全 afternoonProblems で 60点以上の記録が存在（PM1 100点満点で60% = 60点）
   let allClearedSixty = afternoonProblems.length > 0
   for (const p of afternoonProblems) {
     const best = bestScoreByProblem.get(p.id) ?? -1
-    const threshold = p.section === 'G1' ? 30 : 60
-    if (best < threshold) {
+    if (best < 60) {
       allClearedSixty = false
       break
     }
@@ -259,8 +262,13 @@ function isAllBadgesUnlocked(unlockedIds: string[]): boolean {
   return countUnlockedValidBadges(unlockedIds) >= BADGES.length
 }
 
-/** 解答を記録して XP/バッジを更新する */
-export function recordGamificationAnswer(event: AnswerEvent): AnswerGamificationResult {
+/**
+ * 解答を記録して XP/バッジを更新する。
+ *
+ * F1-P-1 D-LIB-01: NW の `recordGamificationAnswer` を PM で `applyAnswer` にリネーム。
+ * 機能・ロジックは NW踏襲。引数 `isImportant` は呼び出し側で動的取得（importantMarks.isImportant(q.id)）。
+ */
+export function applyAnswer(event: AnswerEvent): AnswerGamificationResult {
   const state = loadGamification()
   const prevLevel = getLevelFromXp(state.xp, isAllBadgesUnlocked(state.unlockedBadgeIds)).level
   const alreadyUnlocked = new Set(state.unlockedBadgeIds)
@@ -334,22 +342,25 @@ export function recordGamificationAnswer(event: AnswerEvent): AnswerGamification
   }
 }
 
+/** 午後I（PM1, 100点満点）XP 計算式（F1-P-1 D-LIB-02 で確定: NW G2式を流用） */
+function calcPm1Xp(score: number): number {
+  if (score < 40)      return score * 3
+  if (score < 60)      return score * 4
+  if (score < 80)      return score * 8
+  return Math.min(score * 15, 1500)
+}
+
 /**
- * 午後問題演習の結果に応じて XP を付与し、関連バッジを判定する。
+ * 午後問題（PM1）演習の結果に応じて XP を付与し、関連バッジを判定する。
+ *
+ * F1-P-1 D-LIB-01: NW の `recordAfternoonXp(section, score)` を PM で
+ * `applyAfternoonRecord(score, problemId)` にリネーム。section は PM1 のみのため省略、
+ * 代わりに将来のバッジ判定（problemId 別の集計）で使えるよう problemId を引数に。
+ *
  * @returns 付与した XP、解放されたバッジ、レベル情報
  */
-export function recordAfternoonXp(section: 'G1' | 'G2', score: number): AfternoonGamificationResult {
-  let xp = 0
-  if (section === 'G1') {
-    if (score < 30)      xp = score * 3
-    else if (score < 40) xp = score * 5
-    else                 xp = Math.min(score * 10, 500)
-  } else {
-    if (score < 40)      xp = score * 3
-    else if (score < 60) xp = score * 4
-    else if (score < 80) xp = score * 8
-    else                 xp = Math.min(score * 15, 1500)
-  }
+export function applyAfternoonRecord(score: number, _problemId: string): AfternoonGamificationResult {
+  const xp = calcPm1Xp(score)
 
   const state = loadGamification()
   const prevLevel = getLevelFromXp(state.xp, isAllBadgesUnlocked(state.unlockedBadgeIds)).level

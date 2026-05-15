@@ -132,10 +132,9 @@ export default function AfternoonAnswerDetail() {
     )
   }
 
-  const sectionLabel = answerSet.section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'
-  const sectionColor = answerSet.section === 'G1'
-    ? 'bg-blue-100 text-blue-700'
-    : 'bg-purple-100 text-purple-700'
+  // F1-P3: PMでは PM1 のみ。section 分岐廃止 + brand 系色
+  const sectionLabel = '午後Ⅰ'
+  const sectionColor = 'bg-brand-light text-brand-dark'
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>

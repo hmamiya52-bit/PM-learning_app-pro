@@ -98,6 +98,22 @@ export function removePlan(problemId: string): void {
   touchAfternoonPlanSyncMeta(problemId)
 }
 
-export function getMaxScore(section: 'G1' | 'G2'): number {
-  return section === 'G1' ? 50 : 100
+/** 午後I（PM1）の満点。F2-P4 でコンテンツ揃え時に再確認。 */
+export function getMaxScore(_section: 'PM1'): number {
+  return 100
+}
+
+/**
+ * 採点完了時に確定保存される解答スナップショット（pmap:savedAnswers:<recordId>）が
+ * 存在するか確認するヘルパー（F1-P-1 D-UI-03 対応）。
+ *
+ * NW では UI 層から localStorage.getItem('nwsp:savedAnswers:...') を直接呼んでいたが、
+ * 設計原則「キー定義は lib に集約」に従い lib 側のヘルパーに集約。
+ */
+export function savedAnswersExists(recordId: string): boolean {
+  try {
+    return localStorage.getItem(`pmap:savedAnswers:${recordId}`) !== null
+  } catch {
+    return false
+  }
 }

@@ -10,7 +10,7 @@ import QuizQuestion from '../components/quiz/QuizQuestion'
 import ResultMultipleChoice from '../components/quiz/ResultMultipleChoice'
 import ResultWritten from '../components/quiz/ResultWritten'
 import QuizSummary from './QuizSummary'
-import { recordGamificationAnswer } from '../lib/gamification'
+import { applyAnswer } from '../lib/gamification'  // F1-P-1 D-LIB-01 リネーム
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 import { addActivityEvent, upsertQuizSessionEvent } from '../lib/activityLog'
@@ -163,7 +163,7 @@ export default function Quiz() {
       })
       updateProgress(currentQuestion.topicId, isCorrect, 'multiple-choice')
       updateQuestionMastery(currentQuestion.id, 'multiple-choice', isCorrect)
-      const gr = recordGamificationAnswer({
+      const gr = applyAnswer({
         questionId: currentQuestion.id,
         topicId: currentQuestion.topicId,
         isCorrect,
@@ -202,7 +202,7 @@ export default function Quiz() {
         })
         updateProgress(currentQuestion.topicId, true, 'written')
         updateQuestionMastery(currentQuestion.id, 'written', true)
-        const gr = recordGamificationAnswer({
+        const gr = applyAnswer({
           questionId: currentQuestion.id,
           topicId: currentQuestion.topicId,
           isCorrect: true,
@@ -288,7 +288,7 @@ export default function Quiz() {
       })
       updateProgress(currentQuestion.topicId, isCorrect, 'written')
       updateQuestionMastery(currentQuestion.id, 'written', isCorrect)
-      const gr = recordGamificationAnswer({
+      const gr = applyAnswer({
         questionId: currentQuestion.id,
         topicId: currentQuestion.topicId,
         isCorrect,

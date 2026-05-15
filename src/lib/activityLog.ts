@@ -30,7 +30,7 @@ export interface BadgePayload {
 export interface AfternoonPayload {
   problemId: string
   year: string        // e.g. 'R6', 'H25'
-  section: 'G1' | 'G2'
+  section: 'PM1'      // ★F1-P3: PMは午後I (PM1) のみ
   number: number
   title: string
   score: number

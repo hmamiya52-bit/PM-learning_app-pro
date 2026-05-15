@@ -125,7 +125,8 @@ function ActivityEventItem({ event }: { event: ActivityEvent }) {
 
   if (event.type === 'afternoon-record') {
     const p = event.payload
-    const sectionLabel = p.section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'
+    // F1-P3: PMでは PM1 のみ → 「午後Ⅰ」固定
+    const sectionLabel = '午後Ⅰ'
     return (
       <div className="flex items-center gap-2.5 py-2">
         <span className="text-sm flex-shrink-0">📋</span>

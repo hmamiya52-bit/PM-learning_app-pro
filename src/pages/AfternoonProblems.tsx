@@ -1,13 +1,21 @@
 import { Fragment, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { afternoonProblems, YEARS } from '../data/afternoonProblems'
-import type { AfternoonProblem, ProblemSection } from '../data/afternoonProblems'
+import type { AfternoonProblem } from '../data/afternoonProblems'
 import { officialAnswers } from '../data/officialAnswers'
 import {
   loadRecords, addRecord, deleteRecord,
   loadPlans, setPlan, removePlan, getMaxScore,
+  savedAnswersExists,
 } from '../lib/tracker'
 import type { PracticeRecord } from '../lib/tracker'
+
+/**
+ * 午後I（PM1）問題一覧画面
+ *
+ * 設計書 v0.15 §2.4 / §8.1 に従う、PM試験 午後I のサンプル問題一覧。
+ * F1-P3 で NW の G1/G2 二分割テーブルを PM1 一本に簡素化。
+ */
 
 // ----------------------------------------------------------------
 // Types / helpers
@@ -35,12 +43,10 @@ function today(): string {
 
 function formatDate(dateStr: string): string {
   if (!dateStr) return ''
-  // "YYYY-MM-DD" → "M/D"
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     const [, m, d] = dateStr.split('-')
     return `${parseInt(m)}/${parseInt(d)}`
   }
-  // already "M/D" or custom string
   return dateStr
 }
 
@@ -51,20 +57,16 @@ function scoreColor(score: number, max: number): string {
   return 'text-red-500'
 }
 
-// 年度インデックス（YEARS の順序を保持）
 const YEAR_ORDER: Record<string, number> = {}
 YEARS.forEach((y, i) => { YEAR_ORDER[y] = i })
 
 function buildRows(
-  section: ProblemSection,
   records: PracticeRecord[],
   plans: Record<string, string>,
   sortMode: SortMode,
 ): RowData[] {
-  const maxScore = getMaxScore(section)
-  const problems = afternoonProblems.filter(p => p.section === section)
-
-  const rows: RowData[] = problems.map(problem => {
+  const maxScore = getMaxScore('PM1')
+  const rows: RowData[] = afternoonProblems.map(problem => {
     const problemRecords = records
       .filter(r => r.problemId === problem.id)
       .sort((a, b) => b.date.localeCompare(a.date))
@@ -87,7 +89,7 @@ function buildRows(
     })
   }
 
-  // score mode: 演習済み→最高点降順, 未演習→YEARS 順
+  // score モード: 演習済み→最高点降順, 未演習→年度順
   const studied = rows
     .filter(r => r.roundCount > 0)
     .sort((a, b) => (b.latestScore ?? 0) - (a.latestScore ?? 0))
@@ -113,8 +115,7 @@ interface RecordModalProps {
 }
 
 function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
-  const maxScore = getMaxScore(problem.section)
-  const sectionLabel = problem.section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'
+  const maxScore = getMaxScore('PM1')
   const [date, setDate] = useState(today())
   const [score, setScore] = useState('')
   const [plannedDate, setPlannedDate] = useState('')
@@ -133,7 +134,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
       <div className="relative bg-white rounded-2xl w-full max-w-md shadow-xl" onClick={e => e.stopPropagation()}>
         <div className="px-5 pt-5 pb-3 border-b border-slate-100">
           <p className="text-[11px] text-slate-400">
-            {sectionLabel} 問{problem.number} · {problem.yearLabel}
+            午後Ⅰ 問{problem.number} · {problem.yearLabel}
           </p>
           <h3 className="text-sm font-bold text-slate-800 mt-0.5 leading-snug">{problem.title}</h3>
         </div>
@@ -156,7 +157,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
               type="date"
               value={date}
               onChange={e => setDate(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
               required
             />
           </div>
@@ -173,7 +174,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
               value={score}
               onChange={e => setScore(e.target.value)}
               placeholder={`0 〜 ${maxScore}`}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
               required
             />
           </div>
@@ -186,7 +187,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
               type="date"
               value={plannedDate}
               onChange={e => setPlannedDate(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
             />
           </div>
           <div>
@@ -198,7 +199,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
               value={memo}
               onChange={e => setMemo(e.target.value)}
               rows={2}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand resize-none"
             />
           </div>
           <div className="flex gap-2 pt-1">
@@ -211,7 +212,7 @@ function RecordModal({ problem, onSave, onClose }: RecordModalProps) {
             </button>
             <button
               type="submit"
-              className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700"
+              className="flex-1 py-2.5 rounded-xl bg-brand text-white text-sm font-bold hover:bg-brand-dark"
             >
               記録する
             </button>
@@ -239,7 +240,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   return (
-    <div className="px-4 py-3 bg-slate-50/70 border-l-4 border-indigo-200 space-y-3">
+    <div className="px-4 py-3 bg-slate-50/70 border-l-4 border-brand-light space-y-3">
       {/* アクション行：PDF・解答欄・公式解答 */}
       <div className="flex flex-wrap gap-1.5">
         {problem.questionPdfUrl && (
@@ -263,7 +264,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
         {hasAnswer && (
           <Link
             to={`/afternoon/answers/${problem.id}`}
-            className="text-[11px] font-bold text-indigo-700 border border-indigo-300 bg-white hover:bg-indigo-50 rounded-md px-2.5 py-1.5 inline-flex items-center gap-1 transition-colors"
+            className="text-[11px] font-bold text-brand-dark border border-brand-light bg-white hover:bg-brand-light/40 rounded-md px-2.5 py-1.5 inline-flex items-center gap-1 transition-colors"
           >
             🗒 公式解答を表示
           </Link>
@@ -274,7 +275,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px]">
         <div>
           <span className="text-slate-400 font-bold mr-1">周回数</span>
-          <span className="text-indigo-700 font-bold tabular-nums">{records.length}回</span>
+          <span className="text-brand-dark font-bold tabular-nums">{records.length}回</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-slate-400 font-bold">次回計画日</span>
@@ -284,7 +285,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
               placeholder="例: 5/10"
               defaultValue={plannedDate ? formatDate(plannedDate) : ''}
               autoFocus
-              className="w-20 border border-indigo-300 rounded px-1.5 py-0.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-indigo-400"
+              className="w-20 border border-brand rounded px-1.5 py-0.5 text-[11px] focus:outline-none focus:ring-1 focus:ring-brand"
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   onPlanChange((e.target as HTMLInputElement).value)
@@ -318,7 +319,8 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
         ) : (
           <ul className="bg-white rounded-md border border-slate-200 divide-y divide-slate-100">
             {records.map((r, i) => {
-              const hasSaved = !!localStorage.getItem(`pmap:savedAnswers:${r.id}`)
+              // F1-P-1 D-UI-03 対応: ハードコード localStorage アクセスを tracker ヘルパー経由に
+              const hasSaved = savedAnswersExists(r.id)
               return (
                 <li key={r.id} className="flex items-center gap-2 px-2.5 py-1.5">
                   <span className="flex-shrink-0 text-[10px] text-slate-400 w-5 text-right">
@@ -362,10 +364,9 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
             })}
           </ul>
         )}
-        {/* ＋記録する：演習履歴の末尾 */}
         <button
           onClick={onRecord}
-          className="mt-2 w-full text-[11px] font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md px-2.5 py-2 inline-flex items-center justify-center gap-1 transition-colors"
+          className="mt-2 w-full text-[11px] font-bold text-white bg-brand hover:bg-brand-dark rounded-md px-2.5 py-2 inline-flex items-center justify-center gap-1 transition-colors"
         >
           ＋ 記録する
         </button>
@@ -400,11 +401,10 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
 }
 
 // ----------------------------------------------------------------
-// Problem table
+// Problem table (PM1 単一)
 // ----------------------------------------------------------------
 
 interface ProblemTableProps {
-  section: ProblemSection
   rows: RowData[]
   studiedCount: number
   sortMode: SortMode
@@ -416,21 +416,17 @@ interface ProblemTableProps {
 }
 
 function ProblemTable({
-  section, rows, studiedCount, sortMode,
+  rows, studiedCount, sortMode,
   expandedId, onToggleExpand,
   onRecord, onDeleteRecord, onPlanChange,
 }: ProblemTableProps) {
-  const label = section === 'G1' ? '午後Ⅰ' : '午後Ⅱ'
-  const headerColor = section === 'G1' ? 'bg-blue-700' : 'bg-purple-700'
-  const badgeColor = section === 'G1' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
   const actualStudied = rows.filter(r => r.roundCount > 0).length
-  // 年度・問・テーマ・回数・最高点・実施日・計画日・展開アイコン で 8 列。
-  const COL_SPAN_MOBILE = 8
+  const COL_SPAN = 8
 
   return (
     <section>
-      <h2 className={`text-xs font-bold text-white rounded-t-xl px-4 py-2 ${headerColor} flex items-center justify-between`}>
-        <span>{label}</span>
+      <h2 className="text-xs font-bold text-white rounded-t-xl px-4 py-2 bg-brand-dark flex items-center justify-between">
+        <span>午後Ⅰ</span>
         <span className="font-normal opacity-80">
           演習済 {actualStudied} / {rows.length}問
         </span>
@@ -466,7 +462,6 @@ function ProblemTable({
             </thead>
             <tbody>
               {rows.map((row, i) => {
-                // score モード時のみセパレータを表示
                 const isSeparator = sortMode === 'score' && i === studiedCount && studiedCount > 0 && i < rows.length
                 const isExpanded = expandedId === row.problem.id
                 return (
@@ -474,25 +469,20 @@ function ProblemTable({
                     <tr
                       className={[
                         'align-middle cursor-pointer transition-colors',
-                        isExpanded ? 'bg-indigo-50' : 'hover:bg-indigo-50/40',
-                        isSeparator ? 'border-t-2 border-indigo-200' : 'border-t border-slate-100',
+                        isExpanded ? 'bg-brand-light/40' : 'hover:bg-brand-light/20',
+                        isSeparator ? 'border-t-2 border-brand-light' : 'border-t border-slate-100',
                       ].join(' ')}
                       onClick={() => onToggleExpand(row.problem.id)}
                       aria-expanded={isExpanded}
                     >
-                      {/* 年度 */}
                       <td className="py-2 px-1 text-[10px] text-slate-500 whitespace-nowrap">
                         {row.problem.year}
                       </td>
-
-                      {/* 問番号 */}
                       <td className="py-2 px-1">
-                        <span className={`text-[10px] font-bold rounded-full px-1.5 py-0.5 whitespace-nowrap ${badgeColor}`}>
+                        <span className="text-[10px] font-bold rounded-full px-1.5 py-0.5 whitespace-nowrap bg-brand-light text-brand-dark">
                           {row.problem.number}
                         </span>
                       </td>
-
-                      {/* テーマ */}
                       <td className="py-2 px-1.5">
                         <div className="text-[11px] font-semibold text-slate-800 leading-snug line-clamp-2">
                           {row.problem.title}
@@ -507,17 +497,13 @@ function ProblemTable({
                           </div>
                         )}
                       </td>
-
-                      {/* 回数 */}
                       <td className="py-2 px-0.5 text-center">
                         {row.roundCount > 0 ? (
-                          <span className="text-[11px] font-bold text-indigo-600 tabular-nums">{row.roundCount}</span>
+                          <span className="text-[11px] font-bold text-brand-dark tabular-nums">{row.roundCount}</span>
                         ) : (
                           <span className="text-[10px] text-slate-300">—</span>
                         )}
                       </td>
-
-                      {/* 最高点 */}
                       <td className="py-2 px-1 text-center">
                         {row.latestScore !== null ? (
                           <span className={`text-[11px] font-black tabular-nums ${scoreColor(row.latestScore, row.maxScore)}`}>
@@ -528,24 +514,18 @@ function ProblemTable({
                           <span className="text-[10px] text-slate-300">—</span>
                         )}
                       </td>
-
-                      {/* 実施日 */}
                       <td className="py-2 px-1 text-center text-[10px] text-slate-500 whitespace-nowrap">
                         {row.latestDate ? formatDate(row.latestDate) : (
                           <span className="text-slate-300">—</span>
                         )}
                       </td>
-
-                      {/* 計画日 */}
                       <td className="py-2 px-1 text-center text-[10px] text-slate-500 whitespace-nowrap">
                         {row.plannedDate ? (
-                          <span className="text-indigo-500 font-medium">{formatDate(row.plannedDate)}</span>
+                          <span className="text-brand font-medium">{formatDate(row.plannedDate)}</span>
                         ) : (
                           <span className="text-slate-300">—</span>
                         )}
                       </td>
-
-                      {/* 展開トグルアイコン */}
                       <td className="py-2 px-0.5 text-center text-slate-400">
                         <span
                           className={`inline-block transition-transform ${isExpanded ? 'rotate-90' : ''}`}
@@ -556,10 +536,9 @@ function ProblemTable({
                       </td>
                     </tr>
 
-                    {/* 詳細インライン展開行 */}
                     {isExpanded && (
-                      <tr className="border-t border-indigo-100">
-                        <td colSpan={COL_SPAN_MOBILE} className="p-0">
+                      <tr className="border-t border-brand-light/60">
+                        <td colSpan={COL_SPAN} className="p-0">
                           <DetailPanel
                             row={row}
                             onRecord={() => onRecord(row.problem)}
@@ -588,7 +567,6 @@ export default function AfternoonProblems() {
   const [records, setRecords] = useState<PracticeRecord[]>(() => loadRecords())
   const [plans, setPlans] = useState<Record<string, string>>(() => loadPlans())
   const [recordModal, setRecordModal] = useState<AfternoonProblem | null>(null)
-  // 行タップで展開する詳細パネル：1度に1問のみ展開（インライン）
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const [selectedKeywords, setSelectedKeywords] = useState<string[]>([])
@@ -596,18 +574,15 @@ export default function AfternoonProblems() {
   const [practiceFilter, setPracticeFilter] = useState<PracticeFilter>('all')
   const [sortMode, setSortMode] = useState<SortMode>('score')
 
-  // 全行データ（ソート済み）
-  const g1Rows = useMemo(() => buildRows('G1', records, plans, sortMode), [records, plans, sortMode])
-  const g2Rows = useMemo(() => buildRows('G2', records, plans, sortMode), [records, plans, sortMode])
+  // F1-P3 PM化: NW の G1/G2 二分割を廃止し、PM1 一本のテーブルへ
+  const pm1Rows = useMemo(() => buildRows(records, plans, sortMode), [records, plans, sortMode])
 
-  // 全キーワード一覧
   const allKeywords = useMemo(() => {
     const set = new Set<string>()
     afternoonProblems.forEach(p => p.keywords.forEach(kw => set.add(kw)))
     return Array.from(set).sort((a, b) => a.localeCompare(b, 'ja'))
   }, [])
 
-  // フィルタ
   const filterRows = (rows: RowData[]): RowData[] => {
     return rows.filter(row => {
       if (practiceFilter === 'studied' && row.roundCount === 0) return false
@@ -619,25 +594,18 @@ export default function AfternoonProblems() {
     })
   }
 
-  const g1Filtered = useMemo(() => filterRows(g1Rows), [g1Rows, practiceFilter, selectedKeywords]) // eslint-disable-line react-hooks/exhaustive-deps
-  const g2Filtered = useMemo(() => filterRows(g2Rows), [g2Rows, practiceFilter, selectedKeywords]) // eslint-disable-line react-hooks/exhaustive-deps
+  const pm1Filtered = useMemo(() => filterRows(pm1Rows), [pm1Rows, practiceFilter, selectedKeywords]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // セパレータ用演習済み数（score モードのみ有効）
-  const g1StudiedCount = useMemo(
-    () => sortMode === 'score' ? g1Filtered.filter(r => r.roundCount > 0).length : 0,
-    [g1Filtered, sortMode],
-  )
-  const g2StudiedCount = useMemo(
-    () => sortMode === 'score' ? g2Filtered.filter(r => r.roundCount > 0).length : 0,
-    [g2Filtered, sortMode],
+  const pm1StudiedCount = useMemo(
+    () => sortMode === 'score' ? pm1Filtered.filter(r => r.roundCount > 0).length : 0,
+    [pm1Filtered, sortMode],
   )
 
-  // 全体の演習済み数（ヘッダー表示用・フィルタ前）
   const totalStudied = useMemo(
-    () => [...g1Rows, ...g2Rows].filter(r => r.roundCount > 0).length,
-    [g1Rows, g2Rows],
+    () => pm1Rows.filter(r => r.roundCount > 0).length,
+    [pm1Rows],
   )
-  const totalProblems = g1Rows.length + g2Rows.length
+  const totalProblems = pm1Rows.length
 
   const hasFilter = selectedKeywords.length > 0 || practiceFilter !== 'all'
 
@@ -645,7 +613,6 @@ export default function AfternoonProblems() {
     setExpandedId(prev => (prev === id ? null : id))
   }
 
-  // 記録保存
   function handleSaveRecord(data: { date: string; score: number; plannedDate: string; memo: string }) {
     if (!recordModal) return
     const record = addRecord({
@@ -695,10 +662,10 @@ export default function AfternoonProblems() {
 
         {/* Header */}
         <section>
-          <div className="rounded-xl bg-indigo-700 text-white px-4 py-3 shadow-md">
-            <h1 className="text-base font-black leading-snug">午後問題演習補助ツール</h1>
-            <p className="text-xs text-indigo-200 mt-0.5 whitespace-nowrap">
-              H25〜R7 全{totalProblems}問（午後Ⅰ / 午後Ⅱ）
+          <div className="rounded-xl bg-brand text-white px-4 py-3 shadow-md">
+            <h1 className="text-base font-black leading-snug">午後I問題演習補助ツール</h1>
+            <p className="text-xs text-white/80 mt-0.5 whitespace-nowrap">
+              PM試験 午後Ⅰ 全{totalProblems}問
               <span className="mx-1.5 opacity-50">|</span>
               演習済 {totalStudied} / {totalProblems}問
             </p>
@@ -707,15 +674,14 @@ export default function AfternoonProblems() {
 
         {/* Filter bar */}
         <section className="bg-white rounded-xl border border-slate-200 px-4 py-3 space-y-2.5">
-          {/* キーワードチップ（折りたたみ） */}
           <div>
             <button
               onClick={() => setKeywordsExpanded(v => !v)}
-              className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+              className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 hover:text-brand transition-colors"
             >
               <span>キーワード</span>
               {selectedKeywords.length > 0 && (
-                <span className="bg-indigo-600 text-white rounded-full px-1.5 py-0 leading-tight text-[9px]">
+                <span className="bg-brand text-white rounded-full px-1.5 py-0 leading-tight text-[9px]">
                   {selectedKeywords.length}
                 </span>
               )}
@@ -731,8 +697,8 @@ export default function AfternoonProblems() {
                       onClick={() => toggleKeyword(kw)}
                       className={`flex-shrink-0 text-[10px] rounded-full px-2 py-0.5 transition-colors ${
                         selected
-                          ? 'bg-indigo-600 text-white'
-                          : 'border border-slate-300 text-slate-500 hover:border-indigo-400 hover:text-indigo-600'
+                          ? 'bg-brand text-white'
+                          : 'border border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
                       }`}
                     >
                       {kw}
@@ -743,16 +709,12 @@ export default function AfternoonProblems() {
             )}
           </div>
 
-          {/* 絞り込みオプション */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {/* 演習状態フィルタ */}
             <div className="flex items-center gap-1">
               <span className="text-[10px] font-bold text-slate-400 mr-1">演習</span>
               {(['all', 'studied', 'unstudied'] as PracticeFilter[]).map(f => {
                 const labels: Record<PracticeFilter, string> = {
-                  all: 'すべて',
-                  studied: '済み',
-                  unstudied: '未',
+                  all: 'すべて', studied: '済み', unstudied: '未',
                 }
                 return (
                   <button
@@ -760,8 +722,8 @@ export default function AfternoonProblems() {
                     onClick={() => setPracticeFilter(f)}
                     className={`text-[10px] rounded-full px-2 py-0.5 transition-colors ${
                       practiceFilter === f
-                        ? 'bg-indigo-600 text-white'
-                        : 'border border-slate-300 text-slate-500 hover:border-indigo-400 hover:text-indigo-600'
+                        ? 'bg-brand text-white'
+                        : 'border border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
                     }`}
                   >
                     {labels[f]}
@@ -770,22 +732,18 @@ export default function AfternoonProblems() {
               })}
             </div>
 
-            {/* 並び替え */}
             <div className="flex items-center gap-1">
               <span className="text-[10px] font-bold text-slate-400 mr-1">並び替え</span>
               {(['score', 'year'] as SortMode[]).map(s => {
-                const labels: Record<SortMode, string> = {
-                  score: '点数順',
-                  year: '年度順',
-                }
+                const labels: Record<SortMode, string> = { score: '点数順', year: '年度順' }
                 return (
                   <button
                     key={s}
                     onClick={() => setSortMode(s)}
                     className={`text-[10px] rounded-full px-2 py-0.5 transition-colors ${
                       sortMode === s
-                        ? 'bg-indigo-600 text-white'
-                        : 'border border-slate-300 text-slate-500 hover:border-indigo-400 hover:text-indigo-600'
+                        ? 'bg-brand text-white'
+                        : 'border border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
                     }`}
                   >
                     {labels[s]}
@@ -794,7 +752,6 @@ export default function AfternoonProblems() {
               })}
             </div>
 
-            {/* リセット */}
             {hasFilter && (
               <button
                 onClick={resetFilters}
@@ -806,29 +763,13 @@ export default function AfternoonProblems() {
           </div>
         </section>
 
-        {/* 操作説明 */}
-        <p className="text-[11px] text-slate-500 bg-indigo-50/50 border border-indigo-100 rounded-lg px-3 py-2">
+        <p className="text-[11px] text-slate-500 bg-brand-light/30 border border-brand-light rounded-lg px-3 py-2">
           問題をタップで、記録・解答欄・公式解答・PDFを確認
         </p>
 
-        {/* 午後Ⅰ テーブル */}
         <ProblemTable
-          section="G1"
-          rows={g1Filtered}
-          studiedCount={practiceFilter === 'all' ? g1StudiedCount : g1Filtered.length}
-          sortMode={sortMode}
-          expandedId={expandedId}
-          onToggleExpand={toggleExpand}
-          onRecord={setRecordModal}
-          onDeleteRecord={handleDeleteRecord}
-          onPlanChange={handlePlanChange}
-        />
-
-        {/* 午後Ⅱ テーブル */}
-        <ProblemTable
-          section="G2"
-          rows={g2Filtered}
-          studiedCount={practiceFilter === 'all' ? g2StudiedCount : g2Filtered.length}
+          rows={pm1Filtered}
+          studiedCount={practiceFilter === 'all' ? pm1StudiedCount : pm1Filtered.length}
           sortMode={sortMode}
           expandedId={expandedId}
           onToggleExpand={toggleExpand}
@@ -839,7 +780,6 @@ export default function AfternoonProblems() {
 
       </div>
 
-      {/* Record modal */}
       {recordModal && (
         <RecordModal
           problem={recordModal}
