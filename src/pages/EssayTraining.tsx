@@ -83,13 +83,32 @@ export default function EssayTraining() {
   const [bodyU, setBodyU] = useState<string>(session?.bodyByLabel['ウ'] ?? '')
 
   // ── 自動保存（3秒 debounce） ───────────────────────────
+  // ★F1-P5 バグ修正:
+  //   旧実装は useEffect の closure 内で `session` を直接参照していたため、
+  //   タイマー予約後にユーザが「採点へ進む」を押して step='reviewing' に
+  //   遷移しても、3秒後に発火する callback は古い writing 状態の session を
+  //   そのまま saveActive + setSession で書き戻し、画面が writing に「勝手に戻る」
+  //   バグがあった（クロージャキャプチャ問題）。
+  //   修正: sessionRef で常に最新の session を参照 + writing ステップ中のみ
+  //   自動保存をスケジュール（二重防御）。
+  const sessionRef = useRef(session)
+  useEffect(() => {
+    sessionRef.current = session
+  }, [session])
+
   const autosaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => {
     if (autosaveTimer.current) clearTimeout(autosaveTimer.current)
-    if (!session) return
+    // writing ステップ以外（reviewing/reflecting）では自動保存を走らせない
+    // → step 遷移後に古いタイマーが残っていても、ガード条件で何もしない
+    if (!session || session.step !== 'writing') return
+
     autosaveTimer.current = setTimeout(() => {
+      const latest = sessionRef.current
+      // 発火時点で session が消滅 / step が writing 以外なら no-op
+      if (!latest || latest.step !== 'writing') return
       const next: EssayActiveSession = {
-        ...session,
+        ...latest,
         bodyByLabel: { 'ア': bodyA, 'イ': bodyI, 'ウ': bodyU },
       }
       saveActive(next)
@@ -98,7 +117,7 @@ export default function EssayTraining() {
     return () => {
       if (autosaveTimer.current) clearTimeout(autosaveTimer.current)
     }
-  }, [bodyA, bodyI, bodyU])  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [bodyA, bodyI, bodyU, session?.step])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // 即座保存（「下書き保存」ボタン）
   const saveDraftNow = useCallback(() => {
