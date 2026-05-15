@@ -284,6 +284,36 @@ export default function EssayTraining() {
 
   const step = session?.step ?? 'writing'
 
+  // 採点・振り返りモードで使う「設問 + 自分の解答（読取専用）」ブロック
+  // 折りたたみ可能（details, デフォルト open）。各設問の文字数も再掲。
+  const renderAnswersReadonly = () =>
+    problem.setsumons.map((q) => {
+      const body = q.label === 'ア' ? bodyA : q.label === 'イ' ? bodyI : bodyU
+      return (
+        <details
+          key={q.label}
+          className="bg-white border border-slate-200 rounded-xl group"
+          open
+        >
+          <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between">
+            <p className="text-xs font-bold text-brand-dark">
+              設問{q.label}
+              <span className="ml-2 text-[10px] text-slate-400 font-normal tabular-nums">
+                {body.length}字 / 推奨 {q.recommendedChars.min}〜{q.recommendedChars.max}字
+              </span>
+            </p>
+            <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+          </summary>
+          <div className="px-4 pb-4 border-t border-slate-100 space-y-2">
+            <p className="text-[11px] text-slate-500 leading-relaxed pt-2">{q.text}</p>
+            <div className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap bg-slate-50 rounded-md p-3">
+              {body || <span className="text-slate-300 italic">（未入力）</span>}
+            </div>
+          </div>
+        </details>
+      )
+    })
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
       <div className="max-w-3xl mx-auto px-4 pb-16 pt-4 space-y-4">
@@ -416,8 +446,14 @@ export default function EssayTraining() {
           <>
             <section className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
               <p className="text-xs font-bold text-amber-700">採点モード</p>
-              <p className="text-[11px] text-amber-600 mt-0.5">5項目を5段階で自己評価してください。</p>
+              <p className="text-[11px] text-amber-600 mt-0.5">
+                設問と自分の解答を確認しながら、5項目を5段階で自己評価してください。
+              </p>
             </section>
+
+            {/* 設問 + 自分の解答（読取専用、F1-P5 ユーザフィードバック反映） */}
+            {renderAnswersReadonly()}
+
             <EssaySelfReview value={selfReview} onChange={setSelfReview} />
 
             <div className="flex flex-wrap gap-2">
@@ -450,6 +486,10 @@ export default function EssayTraining() {
                 今回の練習で気づいたこと、次回に活かしたいことを自由記述してください（任意）。
               </p>
             </section>
+
+            {/* 設問 + 自分の解答（振り返り時の確認用） */}
+            {renderAnswersReadonly()}
+
             <textarea
               value={reflection}
               onChange={(e) => setReflection(e.target.value)}
