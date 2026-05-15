@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { resetAllData, getAllProgress, getAnswerRecords, getStudySessions } from '../lib/storage'
 import { questions } from '../data/questions'
 import { categories } from '../data/categories'
@@ -7,6 +7,7 @@ import { VERSION_LABEL } from '../version'
 import { useAuth } from '../auth/useAuth'
 import { loadRecords } from '../lib/tracker'
 import { loadSyncMeta } from '../lib/sync/device'
+import { getImportantIds } from '../lib/importantMarks'
 
 function formatLastSyncAt(value: string | undefined): string {
   if (!value) return '----/--/-- --:--'
@@ -47,6 +48,9 @@ export default function Settings() {
   const overallRate = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0
   const completedCategories = progress.filter((p) => p.totalAttempts > 0).length
   const lastSyncAt = formatLastSyncAt(syncMeta.lastImportedAt)
+
+  // 重要マーク件数（F1-P2）
+  const importantCount = useMemo(() => getImportantIds().length, [])
 
   const handleReset = () => {
     resetAllData()
@@ -139,6 +143,38 @@ export default function Settings() {
           </div>
         </section>
 
+        {/* マーク管理（F1-P2 で追加） */}
+        <section>
+          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">マーク管理</h2>
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <Link
+              to="/settings/important"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5 fill-brand text-brand flex-shrink-0"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold text-slate-800">重要マーク管理</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">マーク済み問題の一覧・解除</p>
+              </div>
+              <span className="text-xs text-slate-400 flex-shrink-0">{importantCount}件</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-300 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
+          </div>
+        </section>
+
         {/* データリセット */}
         <section>
           <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">データ管理</h2>
@@ -187,7 +223,7 @@ export default function Settings() {
         <section>
           <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">使い方</h2>
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 text-sm">
-            <HintRow icon="⭐" title="重要問題モード" desc="太字・穴埋め問題から厳選した重要問題のみを集中学習できます。" />
+            <HintRow icon="⭐" title="重要問題モード" desc="問題画面の☆をタップしてマークした問題のみを集中学習できます。" />
             <HintRow icon="🎯" title="弱点克服モード" desc="正答率60%未満のカテゴリの問題を優先的に出題します。" />
             <HintRow icon="✏️" title="記述モード" desc="自由記述→正解確認→自己判定の流れで深い理解を促します。" />
             <HintRow icon="📶" title="オフライン対応" desc="一度アクセスすればWi-Fiなしでも学習できます（PWA）。" />

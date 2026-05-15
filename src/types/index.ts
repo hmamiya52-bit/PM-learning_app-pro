@@ -17,15 +17,15 @@ export interface Topic {
 }
 
 // 問題（穴埋め形式のみ。4択/記述はUIで切り替え）
+// ★F1-P2: 静的 isImportant フィールド廃止。重要マークは lib/importantMarks（pmap:important_questions）で動的管理。
 export interface Question {
   id: string
   topicId: string
   questionText: string  // 空欄を {{blank}} でマーク
   correctAnswer: string
   choices: string[]     // 4択用（正解1 + 誤答3）
-  isImportant: boolean  // 重要問題フラグ
   explanation: string
-  difficulty: 1 | 2 | 3  // 1:基礎(p29-53の空欄), 2-3:応用(p53-81の空欄)
+  difficulty: 1 | 2 | 3  // 1:基礎, 2-3:応用
   // 記述モードから除外（複数空欄でセット概念のため、自由記述では学習効果が薄い問題）
   // 4択モードでは通常通り出題される。
   excludeFromWritten?: boolean

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { questions } from '../data/questions'
 import { categories } from '../data/categories'
 import type { Question } from '../types'
+import { isImportant } from '../lib/importantMarks'
 
 // dangerouslySetInnerHTML を使わず React 要素でハイライト
 function highlight(text: string, kw: string): React.ReactNode {
@@ -57,7 +58,7 @@ function QuestionModal({ question, kw, onClose }: QuestionModalProps) {
                 {cat.name}
               </span>
             )}
-            {question.isImportant && (
+            {isImportant(question.id) && (
               <span className="text-xs text-amber-600 font-bold">★ 重要</span>
             )}
           </div>
@@ -239,7 +240,7 @@ export default function Search() {
                           {cat.name}
                         </span>
                       )}
-                      {q.isImportant && (
+                      {isImportant(q.id) && (
                         <span className="text-xs text-amber-600 font-bold">★ 重要</span>
                       )}
                     </div>

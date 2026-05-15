@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { Question } from '../../types'
+import ImportantToggle from '../ImportantToggle'
 
 interface Props {
   question: Question
@@ -47,13 +48,11 @@ export default function QuizQuestion({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* 進捗バー & カウンター */}
+      {/* 進捗バー & カウンター + 重要マークトグル（F1-P2） */}
       <div>
-        <div className="flex justify-between text-xs text-slate-400 mb-1">
-          <span>{index + 1} / {total} 問</span>
-          {question.isImportant && (
-            <span className="text-amber-500 font-semibold">★ 重要</span>
-          )}
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs text-slate-400">{index + 1} / {total} 問</span>
+          <ImportantToggle questionId={question.id} size="sm" />
         </div>
         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
           <div

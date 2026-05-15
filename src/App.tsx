@@ -15,7 +15,7 @@ import Notes from './pages/Notes'
 import NoteDetail from './pages/NoteDetail'
 import Search from './pages/Search'
 import Settings from './pages/Settings'
-// import ImportantMarks from './pages/ImportantMarks'                  // F1-P2 で追加
+import ImportantMarks from './pages/ImportantMarks'                       // F1-P2 で追加
 import Badges from './pages/Badges'
 import HowToUse from './pages/HowToUse'
 import ActivityHistory from './pages/ActivityHistory'
@@ -71,9 +71,7 @@ export default function App() {
           <Route path="/history" element={<ActivityHistory />} />
           <Route path="/sync" element={<DeviceSync />} />
           <Route path="/settings" element={<Settings />} />
-          {/* F1-P2 で追加:
-              <Route path="/settings/important" element={<ImportantMarks />} />
-          */}
+          <Route path="/settings/important" element={<ImportantMarks />} />     {/* F1-P2 */}
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />

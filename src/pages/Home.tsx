@@ -7,6 +7,7 @@ import CategoryCard from '../components/CategoryCard'
 import LevelWidget from '../components/gamification/LevelWidget'
 import { getRecentDaySummaries } from '../lib/activityLog'
 import { StudyHistoryList } from '../components/history/StudyHistoryList'
+import { getImportantIds } from '../lib/importantMarks'
 
 // ----------------------------------------------------------------
 // Menu card data
@@ -226,7 +227,11 @@ export default function Home() {
   const daySummaries = useMemo(() => getRecentDaySummaries(10), [])
 
   const totalQuestions = questions.length
-  const importantCount = questions.filter((q) => q.isImportant).length
+  // ★F1-P2: 静的 isImportant フラグ廃止 → importantMarks LocalStorage 参照に変更
+  const importantCount = useMemo(
+    () => getImportantIds().filter((id) => id.startsWith('q-')).length,
+    [],
+  )
 
   // 「達成」した問題ID集合：1回でも正解した問題の questionId（重複は1つに集約）
   const achievedQuestionIds = useMemo(() => {

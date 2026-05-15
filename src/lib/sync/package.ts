@@ -145,6 +145,13 @@ function mergeTargetStates(base: LocalSyncState, incoming: LocalSyncState): Loca
       ])),
     },
     dailyXpLedger: mergeDailyXpLedgerForTarget(base.dailyXpLedger, incoming.dailyXpLedger),
+    // ★F1-P2: importantQuestions は集合和でマージ
+    importantQuestions: Array.from(
+      new Set([
+        ...(base.importantQuestions ?? []),
+        ...(incoming.importantQuestions ?? []),
+      ]),
+    ),
   }
 }
 
@@ -191,6 +198,10 @@ function compactStateForTarget(state: LocalSyncState, target: LocalSyncState | u
     trackerRecords: state.trackerRecords.filter((record) => !targetTrackerIds.has(record.id)),
     gamification: state.gamification,
     dailyXpLedger: compactDailyXpLedger(state.dailyXpLedger, target.dailyXpLedger),
+    // ★F1-P2: importantQuestions の差分のみ送る（受信側 target に無い ID のみ）
+    importantQuestions: (state.importantQuestions ?? []).filter(
+      (id) => !(target.importantQuestions ?? []).includes(id),
+    ),
   }
 }
 

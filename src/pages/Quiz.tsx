@@ -14,6 +14,7 @@ import { recordGamificationAnswer } from '../lib/gamification'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 import { addActivityEvent, upsertQuizSessionEvent } from '../lib/activityLog'
+import { getImportantIds, isImportant as isImportantMark } from '../lib/importantMarks'
 
 type Phase = 'mode-select' | 'question' | 'result-mc' | 'result-wr' | 'summary'
 type AnswerMode = 'multiple-choice' | 'written'
@@ -47,12 +48,22 @@ function filterQuestions(
       const rate = rateMap.get(q.topicId)
       return rate === undefined || rate < 0.6
     })
+  } else if (mode === 'important') {
+    // ★F1-P2: 重要マークモード — ユーザがマーク済みのクイズ問題（q-* 接頭辞）のみ
+    const importantIds = new Set(
+      getImportantIds().filter((id) => id.startsWith('q-')),
+    )
+    pool = allQuestions.filter((q) => importantIds.has(q.id))
   } else {
     // random: 全問シャッフル
     pool = [...allQuestions].sort(() => Math.random() - 0.5)
   }
   if (onlyImportant) {
-    pool = pool.filter((q) => q.isImportant)
+    // ★F1-P2: 静的フラグから動的マーク参照へ
+    const importantIds = new Set(
+      getImportantIds().filter((id) => id.startsWith('q-')),
+    )
+    pool = pool.filter((q) => importantIds.has(q.id))
   }
   return pool
 }
@@ -61,6 +72,7 @@ function modeLabel(mode: string | null): string {
   switch (mode) {
     case 'weakness': return '弱点克服モード'
     case 'random': return 'ランダム出題'
+    case 'important': return '重要問題モード'  // ★F1-P2
     case 'topic': return 'カテゴリ別学習'
     default: return '学習'
   }
@@ -156,7 +168,7 @@ export default function Quiz() {
         topicId: currentQuestion.topicId,
         isCorrect,
         mode: 'multiple-choice',
-        isImportant: currentQuestion.isImportant,
+        isImportant: isImportantMark(currentQuestion.id),  // ★F1-P2 動的取得
         difficulty: currentQuestion.difficulty,
       })
       setLastXpGained(gr.xpGained)
@@ -195,7 +207,7 @@ export default function Quiz() {
           topicId: currentQuestion.topicId,
           isCorrect: true,
           mode: 'written',
-          isImportant: currentQuestion.isImportant,
+          isImportant: isImportantMark(currentQuestion.id),  // ★F1-P2 動的取得
           difficulty: currentQuestion.difficulty,
         })
         setLastXpGained(gr.xpGained)
@@ -281,7 +293,7 @@ export default function Quiz() {
         topicId: currentQuestion.topicId,
         isCorrect,
         mode: 'written',
-        isImportant: currentQuestion.isImportant,
+        isImportant: isImportantMark(currentQuestion.id),  // ★F1-P2 動的取得
         difficulty: currentQuestion.difficulty,
       })
       setLastXpGained(gr.xpGained)

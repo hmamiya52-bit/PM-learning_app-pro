@@ -44,6 +44,7 @@ export interface TimestampedValue<T> {
 export type DailyXpLedger = Record<string, Record<string, number>>
 
 export interface LocalSyncState {
+  // === NW踏襲 ===
   answerRecords: AnswerRecord[]
   studySessions: StudySession[]
   bookmarks: Bookmark[]
@@ -51,6 +52,10 @@ export interface LocalSyncState {
   trackerRecords: PracticeRecord[]
   gamification: GamificationState
   dailyXpLedger: DailyXpLedger
+
+  // === PM追加（F1-P2 開始）===
+  importantQuestions: string[]  // ★F1-P2 重要マーク済み questionId（'q-*' / 'om-*' 両方）
+  // ※ morningRecords / essayAttempts / essayPlans / savedAnswers は F1-P4/F1-P5 で追加予定（設計書 §3.9）
 }
 
 export interface SyncPackageSummary {

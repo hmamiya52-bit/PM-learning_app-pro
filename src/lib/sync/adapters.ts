@@ -10,6 +10,7 @@ import { BADGES } from '../../data/badges'
 import { questions } from '../../data/questions'
 
 const KEYS = {
+  // === NW踏襲（prefix 置換済み） ===
   ANSWER_RECORDS: 'pmap:answer_records',
   USER_PROGRESS: 'pmap:user_progress_v2',
   STUDY_SESSIONS: 'pmap:study_sessions',
@@ -23,6 +24,9 @@ const KEYS = {
   DAILY_XP_LEDGER: 'pmap:sync:daily_xp_ledger',
   NOTE_META: 'pmap:sync:note_meta',
   PLAN_META: 'pmap:sync:plan_meta',  // plans 本体ではなく更新タイムスタンプのみ同期
+
+  // === PM追加（F1-P2 開始） ===
+  IMPORTANT_QUESTIONS: 'pmap:important_questions',  // ★F1-P2 重要マーク
 } as const
 
 const COMPLETE_BADGE_ID = 'complete-1'
@@ -196,6 +200,7 @@ export function readLocalSyncState(): LocalSyncState {
       ...loadJson<Partial<GamificationState>>(KEYS.GAMIFICATION, {}),
     },
     dailyXpLedger,
+    importantQuestions: loadJson<string[]>(KEYS.IMPORTANT_QUESTIONS, []),  // ★F1-P2
   }
 }
 
@@ -375,6 +380,11 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
   const currentBadges = new Set(normalizeBadgeIds(current.gamification.unlockedBadgeIds))
   const dailyXpLedger = mergeDailyXpLedger(current.dailyXpLedger, incoming.dailyXpLedger)
 
+  // ★F1-P2 importantQuestions: 集合和（unique）でマージ
+  const importantQuestions = Array.from(
+    new Set([...current.importantQuestions, ...incoming.importantQuestions]),
+  ).filter((v): v is string => typeof v === 'string')
+
   saveJson(KEYS.ANSWER_RECORDS, answerRecords)
   saveJson(KEYS.STUDY_SESSIONS, studySessions)
   saveJson(KEYS.BOOKMARKS, bookmarks)
@@ -383,6 +393,7 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
   saveJson(KEYS.TRACKER_RECORDS, trackerRecords)
   saveJson(KEYS.DAILY_XP_LEDGER, dailyXpLedger.value)
   saveJson(KEYS.GAMIFICATION, gamification)
+  saveJson(KEYS.IMPORTANT_QUESTIONS, importantQuestions)  // ★F1-P2
 
   return {
     addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,
