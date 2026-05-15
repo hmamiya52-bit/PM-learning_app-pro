@@ -75,3 +75,36 @@ export interface Bookmark {
   questionId: string
   createdAt: string
 }
+
+// ─────────────────────────────────────────────────
+// 公式午前II（F1-P4 で追加）
+// 設計書 v0.15 §2.5 / basic_design §4.4 に従う
+// ─────────────────────────────────────────────────
+
+/**
+ * 公式午前II 問題（IPA 過去問の引用）
+ * id 接頭辞は 'om-'（重要マークの prefix と整合）
+ */
+export interface OfficialMorningQuestion {
+  id: string                          // e.g. 'om-R6-1'
+  year: string                        // e.g. 'R6'
+  yearLabel: string                   // e.g. '令和6（2024）'
+  number: number                      // 問題番号 1〜25
+  questionText: string                // IPA公式の問題文（改変なし）
+  choices: [string, string, string, string]  // ア・イ・ウ・エの4択
+  correctIndex: 0 | 1 | 2 | 3
+  explanation: string                 // 独自作成解説（PM 著作物）
+  categoryId?: string                 // 関連 PM 12カテゴリの ID
+  sourceUrl: string                   // IPA 出典 URL
+}
+
+/**
+ * 公式午前II 解答記録（DP-P2-1 のため、自動解除なし）
+ */
+export interface MorningRecord {
+  id: string                          // UUID
+  questionId: string                  // OfficialMorningQuestion.id
+  selectedIndex: 0 | 1 | 2 | 3
+  isCorrect: boolean
+  answeredAt: string                  // ISO 8601
+}

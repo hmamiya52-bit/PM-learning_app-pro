@@ -37,11 +37,22 @@ export interface AfternoonPayload {
   recordId: string
 }
 
+// ★F1-P4: morning-session 追加 / F1-P5: essay-complete 追加予定
+export interface MorningSessionPayload {
+  sessionId: string
+  /** 出題範囲スコープ。設計書 §3.8 line 2443 */
+  scope: 'random' | 'year' | 'important' | 'single'
+  yearLabel?: string             // scope='year' のときのみ
+  questionCount: number
+  correctCount: number
+}
+
 export type ActivityEvent =
   | { id: string; type: 'quiz-session';      date: string; createdAt: string; xp: number; payload: QuizSessionPayload }
   | { id: string; type: 'note-check';        date: string; createdAt: string; xp: number; payload: NoteCheckPayload }
   | { id: string; type: 'badge-unlock';      date: string; createdAt: string; xp: number; payload: BadgePayload }
   | { id: string; type: 'afternoon-record';  date: string; createdAt: string; xp: number; payload: AfternoonPayload }
+  | { id: string; type: 'morning-session';   date: string; createdAt: string; xp: number; payload: MorningSessionPayload }   // ★F1-P4 PM追加
 
 export interface DaySummary {
   date: string

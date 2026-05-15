@@ -32,7 +32,8 @@ export interface AnswerEvent {
   questionId: string
   topicId: string
   isCorrect: boolean
-  mode: 'multiple-choice' | 'written'
+  /** F1-P4 D-LIB-07: 'morning' = 公式午前II */
+  mode: 'multiple-choice' | 'written' | 'morning'
   isImportant: boolean
   difficulty: number
 }
@@ -100,19 +101,33 @@ function saveGamification(state: GamificationState): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
-/** XP 計算（正解時のみ） */
+/**
+ * XP 計算（正解時のみ）
+ *
+ * F1-P4 D-LIB-07: 'morning' モード追加。設計書 §3.7 line 2356 の式に従う。
+ * - 記述: 20
+ * - 公式午前II: 5（4択より少し高い）
+ * - 4択: 3
+ * 難易度ボーナスは 'morning' には適用しない。
+ * 重要マーク・連続正解ボーナスは全モード共通。
+ */
 function calcXp(event: AnswerEvent, newStreak: number): number {
-  // 記述20・4択3
-  let xp = event.mode === 'written' ? 20 : 3
+  // ベースXP
+  let xp: number
+  if (event.mode === 'written') xp = 20
+  else if (event.mode === 'morning') xp = 5   // ★F1-P4 公式午前II
+  else xp = 3                                  // 4択
 
-  // 難易度ボーナス
-  if (event.difficulty === 2) xp += 2
-  if (event.difficulty === 3) xp += 5
+  // 難易度ボーナス（公式午前IIには適用しない）
+  if (event.mode !== 'morning') {
+    if (event.difficulty === 2) xp += 2
+    if (event.difficulty === 3) xp += 5
+  }
 
-  // 重要問題ボーナス
+  // 重要マークボーナス（呼び出し側で importantMarks.isImportant(q.id) を動的取得）
   if (event.isImportant) xp += 5
 
-  // 連続正解ボーナス
+  // 連続正解ボーナス（NW踏襲）
   if (newStreak >= 75) xp += 200
   else if (newStreak >= 30) xp += 75
   else if (newStreak >= 10) xp += 20

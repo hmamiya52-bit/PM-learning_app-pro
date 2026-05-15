@@ -1,7 +1,7 @@
 import type { ActivityEvent } from '../activityLog'
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
-import type { AnswerRecord, Bookmark, StudySession } from '../../types'
+import type { AnswerRecord, Bookmark, StudySession, MorningRecord } from '../../types'
 import type { DailyXpLedger, LocalSyncState } from './types'
 import type { MasteryState } from '../storage'
 import { getTotalXpFromSyncEvents } from './events'
@@ -27,6 +27,7 @@ const KEYS = {
 
   // === PM追加（F1-P2 開始） ===
   IMPORTANT_QUESTIONS: 'pmap:important_questions',  // ★F1-P2 重要マーク
+  MORNING_RECORDS: 'pmap:morning:records',           // ★F1-P4 公式午前II 解答履歴
 } as const
 
 const COMPLETE_BADGE_ID = 'complete-1'
@@ -201,6 +202,7 @@ export function readLocalSyncState(): LocalSyncState {
     },
     dailyXpLedger,
     importantQuestions: loadJson<string[]>(KEYS.IMPORTANT_QUESTIONS, []),  // ★F1-P2
+    morningRecords: loadJson<MorningRecord[]>(KEYS.MORNING_RECORDS, []),    // ★F1-P4
   }
 }
 
@@ -385,6 +387,12 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
     new Set([...current.importantQuestions, ...incoming.importantQuestions]),
   ).filter((v): v is string => typeof v === 'string')
 
+  // ★F1-P4 morningRecords: id でユニーク化 + answeredAt 昇順
+  const morningRecords = sortByIso(
+    uniqueBy([...current.morningRecords, ...incoming.morningRecords], (r) => r.id),
+    (r) => r.answeredAt,
+  )
+
   saveJson(KEYS.ANSWER_RECORDS, answerRecords)
   saveJson(KEYS.STUDY_SESSIONS, studySessions)
   saveJson(KEYS.BOOKMARKS, bookmarks)
@@ -394,6 +402,7 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
   saveJson(KEYS.DAILY_XP_LEDGER, dailyXpLedger.value)
   saveJson(KEYS.GAMIFICATION, gamification)
   saveJson(KEYS.IMPORTANT_QUESTIONS, importantQuestions)  // ★F1-P2
+  saveJson(KEYS.MORNING_RECORDS, morningRecords)           // ★F1-P4
 
   return {
     addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,

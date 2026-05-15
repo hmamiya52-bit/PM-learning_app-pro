@@ -1,6 +1,6 @@
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
-import type { AnswerRecord, Bookmark, StudySession } from '../../types'
+import type { AnswerRecord, Bookmark, StudySession, MorningRecord } from '../../types'
 import type { MasteryState } from '../storage'
 
 export const SYNC_PREFIX = 'PMAP-SYNC-v1:'
@@ -54,8 +54,9 @@ export interface LocalSyncState {
   dailyXpLedger: DailyXpLedger
 
   // === PM追加（F1-P2 開始）===
-  importantQuestions: string[]  // ★F1-P2 重要マーク済み questionId（'q-*' / 'om-*' 両方）
-  // ※ morningRecords / essayAttempts / essayPlans / savedAnswers は F1-P4/F1-P5 で追加予定（設計書 §3.9）
+  importantQuestions: string[]   // ★F1-P2 重要マーク済み questionId（'q-*' / 'om-*' 両方）
+  morningRecords: MorningRecord[]  // ★F1-P4 公式午前II 解答履歴
+  // ※ essayAttempts / essayPlans / savedAnswers は F1-P5 で追加予定（設計書 §3.9）
 }
 
 export interface SyncPackageSummary {

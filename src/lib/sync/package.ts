@@ -152,6 +152,11 @@ function mergeTargetStates(base: LocalSyncState, incoming: LocalSyncState): Loca
         ...(incoming.importantQuestions ?? []),
       ]),
     ),
+    // ★F1-P4: morningRecords は id でユニーク化
+    morningRecords: uniqueBy(
+      [...(base.morningRecords ?? []), ...(incoming.morningRecords ?? [])],
+      (r) => r.id,
+    ),
   }
 }
 
@@ -202,6 +207,11 @@ function compactStateForTarget(state: LocalSyncState, target: LocalSyncState | u
     importantQuestions: (state.importantQuestions ?? []).filter(
       (id) => !(target.importantQuestions ?? []).includes(id),
     ),
+    // ★F1-P4: morningRecords の差分のみ送る（受信側 target に無い id のみ）
+    morningRecords: (() => {
+      const targetIds = new Set((target.morningRecords ?? []).map((r) => r.id))
+      return (state.morningRecords ?? []).filter((r) => !targetIds.has(r.id))
+    })(),
   }
 }
 

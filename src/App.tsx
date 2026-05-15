@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Quiz from './pages/Quiz'
-// import OfficialMorningQuiz from './pages/OfficialMorningQuiz'       // F1-P4 で追加
-// import OfficialMorningSession from './pages/OfficialMorningSession' // F1-P4 で追加
-// import OfficialMorningSummary from './pages/OfficialMorningSummary' // F1-P4 で追加
+import OfficialMorningQuiz from './pages/OfficialMorningQuiz'          // F1-P4 で追加
+import OfficialMorningSession from './pages/OfficialMorningSession'    // F1-P4 で追加
+import OfficialMorningSummary from './pages/OfficialMorningSummary'    // F1-P4 で追加
 import AfternoonProblems from './pages/AfternoonProblems'
 import AfternoonAnswerDetail from './pages/AfternoonAnswerDetail'
 import AfternoonMyAnswer from './pages/AfternoonMyAnswer'
@@ -37,10 +37,8 @@ export default function App() {
       <Routes>
         {/* 没入型画面（Layout なし、サイドバー非表示） */}
         <Route path="/quiz" element={<Quiz />} />
-        {/* F1-P4 で追加:
-            <Route path="/morning/session" element={<OfficialMorningSession />} />
-            <Route path="/morning/summary" element={<OfficialMorningSummary />} />
-        */}
+        <Route path="/morning/session" element={<OfficialMorningSession />} />   {/* F1-P4 */}
+        <Route path="/morning/summary" element={<OfficialMorningSummary />} />   {/* F1-P4 */}
 
         {/* Layout 付き画面 */}
         <Route element={<Layout />}>
@@ -49,9 +47,8 @@ export default function App() {
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:categoryId" element={<NoteDetail />} />
 
-          {/* 公式午前II（F1-P4 で OfficialMorningQuiz に置き換え）
-              <Route path="/morning" element={<OfficialMorningQuiz />} />
-          */}
+          {/* 公式午前II（F1-P4） */}
+          <Route path="/morning" element={<OfficialMorningQuiz />} />
 
           {/* 午後I（PM1のみ） */}
           <Route path="/afternoon" element={<AfternoonProblems />} />
