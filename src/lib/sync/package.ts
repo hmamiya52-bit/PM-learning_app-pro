@@ -157,6 +157,13 @@ function mergeTargetStates(base: LocalSyncState, incoming: LocalSyncState): Loca
       [...(base.morningRecords ?? []), ...(incoming.morningRecords ?? [])],
       (r) => r.id,
     ),
+    // ★F1-P5: essayAttempts は id でユニーク化
+    essayAttempts: uniqueBy(
+      [...(base.essayAttempts ?? []), ...(incoming.essayAttempts ?? [])],
+      (a) => a.id,
+    ),
+    // ★F1-P5: essayPlans は incoming 優先で spread
+    essayPlans: { ...(base.essayPlans ?? {}), ...(incoming.essayPlans ?? {}) },
   }
 }
 
@@ -212,6 +219,13 @@ function compactStateForTarget(state: LocalSyncState, target: LocalSyncState | u
       const targetIds = new Set((target.morningRecords ?? []).map((r) => r.id))
       return (state.morningRecords ?? []).filter((r) => !targetIds.has(r.id))
     })(),
+    // ★F1-P5: essayAttempts の差分のみ送る
+    essayAttempts: (() => {
+      const targetIds = new Set((target.essayAttempts ?? []).map((a) => a.id))
+      return (state.essayAttempts ?? []).filter((a) => !targetIds.has(a.id))
+    })(),
+    // ★F1-P5: essayPlans は全量送信（タイムスタンプ持たないため簡略化、F2-P4で再検討）
+    essayPlans: { ...(state.essayPlans ?? {}) },
   }
 }
 

@@ -1,7 +1,7 @@
 import type { ActivityEvent } from '../activityLog'
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
-import type { AnswerRecord, Bookmark, StudySession, MorningRecord } from '../../types'
+import type { AnswerRecord, Bookmark, StudySession, MorningRecord, EssayAttempt } from '../../types'
 import type { DailyXpLedger, LocalSyncState } from './types'
 import type { MasteryState } from '../storage'
 import { getTotalXpFromSyncEvents } from './events'
@@ -28,6 +28,9 @@ const KEYS = {
   // === PM追加（F1-P2 開始） ===
   IMPORTANT_QUESTIONS: 'pmap:important_questions',  // ★F1-P2 重要マーク
   MORNING_RECORDS: 'pmap:morning:records',           // ★F1-P4 公式午前II 解答履歴
+  ESSAY_ATTEMPTS: 'pmap:essay:attempts',             // ★F1-P5 論述 練習履歴
+  ESSAY_PLANS: 'pmap:essay:plans',                   // ★F1-P5 論述 学習計画日
+  // ESSAY_ACTIVE は同期対象外（端末ローカルの離脱復帰用）
 } as const
 
 const COMPLETE_BADGE_ID = 'complete-1'
@@ -201,8 +204,10 @@ export function readLocalSyncState(): LocalSyncState {
       ...loadJson<Partial<GamificationState>>(KEYS.GAMIFICATION, {}),
     },
     dailyXpLedger,
-    importantQuestions: loadJson<string[]>(KEYS.IMPORTANT_QUESTIONS, []),  // ★F1-P2
-    morningRecords: loadJson<MorningRecord[]>(KEYS.MORNING_RECORDS, []),    // ★F1-P4
+    importantQuestions: loadJson<string[]>(KEYS.IMPORTANT_QUESTIONS, []),       // ★F1-P2
+    morningRecords: loadJson<MorningRecord[]>(KEYS.MORNING_RECORDS, []),         // ★F1-P4
+    essayAttempts: loadJson<EssayAttempt[]>(KEYS.ESSAY_ATTEMPTS, []),            // ★F1-P5
+    essayPlans: loadJson<Record<string, string>>(KEYS.ESSAY_PLANS, {}),          // ★F1-P5
   }
 }
 
@@ -393,6 +398,15 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
     (r) => r.answeredAt,
   )
 
+  // ★F1-P5 essayAttempts: id でユニーク化 + endedAt 昇順
+  const essayAttempts = sortByIso(
+    uniqueBy([...current.essayAttempts, ...incoming.essayAttempts], (a) => a.id),
+    (a) => a.endedAt,
+  )
+
+  // ★F1-P5 essayPlans: 単純 spread（incoming 優先、タイムスタンプは持っていないため）
+  const essayPlans: Record<string, string> = { ...current.essayPlans, ...incoming.essayPlans }
+
   saveJson(KEYS.ANSWER_RECORDS, answerRecords)
   saveJson(KEYS.STUDY_SESSIONS, studySessions)
   saveJson(KEYS.BOOKMARKS, bookmarks)
@@ -403,6 +417,8 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
   saveJson(KEYS.GAMIFICATION, gamification)
   saveJson(KEYS.IMPORTANT_QUESTIONS, importantQuestions)  // ★F1-P2
   saveJson(KEYS.MORNING_RECORDS, morningRecords)           // ★F1-P4
+  saveJson(KEYS.ESSAY_ATTEMPTS, essayAttempts)             // ★F1-P5
+  saveJson(KEYS.ESSAY_PLANS, essayPlans)                   // ★F1-P5
 
   return {
     addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,

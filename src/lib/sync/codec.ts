@@ -326,9 +326,12 @@ function decodeState(state: CompactState): LocalSyncState {
     trackerRecords: state.p.map(decodeTrackerRecord),
     gamification: decodeGamification(state.g),
     dailyXpLedger: decodeDailyXpLedger(state.x),
-    // ★F1-P2/P4: CompactState には importantQuestions / morningRecords 未含み。F2-P4 で wire format 拡張時に対応
+    // ★F1-P2/P4/P5: CompactState には importantQuestions / morningRecords / essayAttempts / essayPlans
+    //   未含み。F2-P4 で wire format 拡張時に対応
     importantQuestions: [],
     morningRecords: [],
+    essayAttempts: [],
+    essayPlans: {},
   }
 }
 

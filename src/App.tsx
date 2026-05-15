@@ -8,9 +8,9 @@ import OfficialMorningSummary from './pages/OfficialMorningSummary'    // F1-P4 
 import AfternoonProblems from './pages/AfternoonProblems'
 import AfternoonAnswerDetail from './pages/AfternoonAnswerDetail'
 import AfternoonMyAnswer from './pages/AfternoonMyAnswer'
-// import EssayList from './pages/EssayList'                            // F1-P5 で追加
-// import EssayTraining from './pages/EssayTraining'                    // F1-P5 で追加
-// import EssayAttemptDetail from './pages/EssayAttemptDetail'          // F1-P5 で追加
+import EssayList from './pages/EssayList'                                 // F1-P5 で追加
+import EssayTraining from './pages/EssayTraining'                         // F1-P5 で追加
+import EssayAttemptDetail from './pages/EssayAttemptDetail'               // F1-P5 で追加
 import Notes from './pages/Notes'
 import NoteDetail from './pages/NoteDetail'
 import Search from './pages/Search'
@@ -56,11 +56,10 @@ export default function App() {
           <Route path="/afternoon/answers/:id" element={<AfternoonAnswerDetail />} />
           <Route path="/afternoon/answers/:id/myAnswer" element={<AfternoonMyAnswer />} />
 
-          {/* 論述（午後II） — F1-P5 で追加
-              <Route path="/essay" element={<EssayList />} />
-              <Route path="/essay/:id" element={<EssayTraining />} />
-              <Route path="/essay/:id/attempts/:attemptId" element={<EssayAttemptDetail />} />
-          */}
+          {/* 論述（午後II、F1-P5） */}
+          <Route path="/essay" element={<EssayList />} />
+          <Route path="/essay/:id" element={<EssayTraining />} />
+          <Route path="/essay/:id/attempts/:attemptId" element={<EssayAttemptDetail />} />
 
           {/* 共通機能 */}
           <Route path="/search" element={<Search />} />

@@ -108,3 +108,66 @@ export interface MorningRecord {
   isCorrect: boolean
   answeredAt: string                  // ISO 8601
 }
+
+// ─────────────────────────────────────────────────
+// 論述トレーニング（F1-P5 で追加）
+// 設計書 v0.15 §2.6 / basic_design §4.2 / §5.4 に従う
+// ─────────────────────────────────────────────────
+
+export type SetsumonLabel = 'ア' | 'イ' | 'ウ'
+
+/** 論述問題の設問（通常 設問ア・イ・ウ の3つ） */
+export interface EssaySetsumon {
+  label: SetsumonLabel
+  text: string
+  recommendedChars: { min: number; max: number }
+}
+
+/** 午後II 論述問題（IPA 過去問の引用） */
+export interface EssayProblem {
+  id: string                          // 'R6-PM2-1'
+  year: string                        // 'R6'
+  yearLabel: string                   // '令和6（2024）'
+  number: 1 | 2
+  theme: string                       // 問題のテーマ（短文タイトル）
+  setsumons: EssaySetsumon[]
+  categoryIds: string[]               // 関連 PM カテゴリ ID（複数可）
+  questionPdfUrl?: string
+}
+
+/** 5項目×5段階の自己評価 */
+export interface EssaySelfReview {
+  relevance: 1 | 2 | 3 | 4 | 5        // 題意適合
+  structure: 1 | 2 | 3 | 4 | 5        // 構造
+  concreteness: 1 | 2 | 3 | 4 | 5     // 具体性
+  consistency: 1 | 2 | 3 | 4 | 5      // 一貫性
+  charCount: 1 | 2 | 3 | 4 | 5        // 字数達成
+}
+
+/** 論述 練習履歴（完了したセッション） */
+export interface EssayAttempt {
+  id: string                          // UUID
+  problemId: string                   // EssayProblem.id
+  startedAt: string                   // ISO 8601
+  endedAt: string                     // ISO 8601
+  elapsedSec: number                  // 一時停止/再開を考慮した経過秒
+  bodyByLabel: Record<SetsumonLabel, string>
+  selfReview: EssaySelfReview
+  reflection: string                  // 振り返り自由記述
+}
+
+/**
+ * 論述 アクティブセッション（離脱復帰用）
+ * - 入力中のセッション情報を `pmap:essay:active` に保存
+ * - ブラウザ強制クローズや別画面遷移時の復帰用
+ * - DP-P5-1（v0.14改訂）: 明示「下書き保存」+ 入力停止 3秒 debounce 自動保存
+ */
+export interface EssayActiveSession {
+  problemId: string
+  startedAt: string                   // 最初に開始した時刻
+  pausedAt: string | null             // 一時停止時刻（動作中は null）
+  lastResumedAt: string | null        // 最後の再開時刻（経過秒計算用）
+  accumulatedSec: number              // 一時停止までの確定経過秒
+  bodyByLabel: Partial<Record<SetsumonLabel, string>>
+  step: 'writing' | 'reviewing' | 'reflecting'
+}

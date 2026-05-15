@@ -422,3 +422,73 @@ export function applyAfternoonRecord(score: number, _problemId: string): Afterno
 export function resetGamification(): void {
   localStorage.removeItem(STORAGE_KEY)
 }
+
+// ──────────────────────────────────────────────────
+// F1-P5 D-LIB-06 / 設計書 §3.7 line 2317: 論述完了 XP
+// ──────────────────────────────────────────────────
+
+/** 論述完了固定 XP（F1段階の暫定値、F2-P6 で再調整可） */
+const ESSAY_COMPLETE_XP = 200
+
+export interface EssayGamificationResult {
+  xpGained: number
+  newBadges: BadgeDefinition[]
+  didLevelUp: boolean
+  newLevel: number
+  newXp: number
+}
+
+/**
+ * 論述セッション完了時に XP+200 を加算し、関連バッジを判定する。
+ *
+ * 設計書 §3.7 line 2317-2321:
+ *   applyEssayComplete(payload: { problemId, attemptId, categoryIds }): EssayGamificationResult
+ *
+ * F1段階: 論述系バッジは未追加（F2-P6 で再設計）。
+ *   既存バッジが論述で解放されることは（NW由来の定義上は）少ないが、
+ *   念のため checkBadges を呼んで整合性を維持する。
+ */
+export function applyEssayComplete(_payload: {
+  problemId: string
+  attemptId: string
+  categoryIds: string[]
+}): EssayGamificationResult {
+  const state = loadGamification()
+  const prevLevel = getLevelFromXp(state.xp, isAllBadgesUnlocked(state.unlockedBadgeIds)).level
+  const alreadyUnlocked = new Set(state.unlockedBadgeIds)
+
+  const newState: GamificationState = {
+    ...state,
+    xp: state.xp + ESSAY_COMPLETE_XP,
+  }
+
+  // バッジ判定（F2-P6 で論述系バッジ追加時にこの呼び出しが効く）
+  const newBadges = checkBadges(newState, alreadyUnlocked)
+  if (newBadges.length > 0) {
+    newState.unlockedBadgeIds = [
+      ...newState.unlockedBadgeIds,
+      ...newBadges.map((b) => b.id),
+    ]
+    const completeSet = new Set(newState.unlockedBadgeIds)
+    if (!completeSet.has(COMPLETE_BADGE_ID)) {
+      const completeBadge = BADGES.find((b) => b.id === COMPLETE_BADGE_ID)!
+      if (hasUnlockedAllNonCompleteBadges(newState.unlockedBadgeIds)) {
+        newState.unlockedBadgeIds.push(COMPLETE_BADGE_ID)
+        newBadges.push(completeBadge)
+      }
+    }
+    const bonusXp = newBadges.reduce((sum, b) => sum + b.xpBonus, 0)
+    newState.xp += bonusXp
+  }
+
+  saveGamification(newState)
+
+  const newLevel = getLevelFromXp(newState.xp, isAllBadgesUnlocked(newState.unlockedBadgeIds)).level
+  return {
+    xpGained: ESSAY_COMPLETE_XP,
+    newBadges,
+    didLevelUp: newLevel > prevLevel,
+    newLevel,
+    newXp: newState.xp,
+  }
+}
