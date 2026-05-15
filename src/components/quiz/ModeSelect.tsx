@@ -49,7 +49,7 @@ export default function ModeSelect({
         {/* 4択モード */}
         <button
           onClick={() => onSelect('multiple-choice')}
-          className="w-full bg-blue-900 hover:bg-blue-800 active:bg-blue-950 text-white rounded-2xl p-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="w-full bg-brand-darker hover:bg-brand-dark active:bg-brand-darker text-white rounded-2xl p-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
           <div className="flex items-start gap-3">
             <span className="text-2xl mt-0.5" aria-hidden="true">🔘</span>
@@ -58,7 +58,7 @@ export default function ModeSelect({
                 <p className="font-bold text-base">4択モード</p>
                 <span className="text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full px-2 py-0.5 leading-none">おすすめ</span>
               </div>
-              <p className="text-blue-200 text-sm mt-1 leading-snug">選択肢を選ぶだけ。すぐに正誤がわかります。<br />まずはこちらから始めましょう。</p>
+              <p className="text-white/85 text-sm mt-1 leading-snug">選択肢を選ぶだけ。すぐに正誤がわかります。<br />まずはこちらから始めましょう。</p>
             </div>
           </div>
         </button>
@@ -66,7 +66,7 @@ export default function ModeSelect({
         {/* 記述モード */}
         <button
           onClick={() => onSelect('written')}
-          className="w-full bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 border-2 border-slate-200 rounded-2xl p-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="w-full bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 border-2 border-slate-200 rounded-2xl p-5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
         >
           <div className="flex items-start gap-3">
             <span className="text-2xl mt-0.5" aria-hidden="true">✍️</span>

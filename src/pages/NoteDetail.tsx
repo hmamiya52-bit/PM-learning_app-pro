@@ -134,7 +134,7 @@ function RedWord({ text, masked, version }: RedWordProps) {
 // ─────────────────────────────────────────────
 function NavyWord({ text }: { text: string }) {
   return (
-    <span className="font-bold" style={{ color: '#1a3a5c' }}>
+    <span className="font-bold" style={{ color: '#9d5b8b' }}>
       {text}
     </span>
   )
@@ -230,7 +230,7 @@ function indentStyles(level: number, palette: 'blue' | 'slate' = 'blue') {
   if (level === 0) {
     return {
       padClass: '',
-      dotClass: palette === 'blue' ? 'bg-blue-400' : 'bg-slate-400',
+      dotClass: palette === 'blue' ? 'bg-brand' : 'bg-slate-400',
       dotSize: 'w-1.5 h-1.5',
       textClass: 'text-slate-700',
     }
@@ -238,7 +238,7 @@ function indentStyles(level: number, palette: 'blue' | 'slate' = 'blue') {
   if (level === 1) {
     return {
       padClass: 'ml-5',
-      dotClass: palette === 'blue' ? 'bg-blue-300' : 'bg-slate-300',
+      dotClass: palette === 'blue' ? 'bg-brand-light' : 'bg-slate-300',
       dotSize: 'w-1.5 h-1.5',
       textClass: 'text-slate-700',
     }
@@ -246,7 +246,7 @@ function indentStyles(level: number, palette: 'blue' | 'slate' = 'blue') {
   // level >= 2
   return {
     padClass: 'ml-10',
-    dotClass: palette === 'blue' ? 'bg-blue-200' : 'bg-slate-300',
+    dotClass: palette === 'blue' ? 'bg-brand-light' : 'bg-slate-300',
     dotSize: 'w-1 h-1',
     textClass: 'text-slate-600',
   }
@@ -551,7 +551,7 @@ export default function NoteDetail() {
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-slate-400 mb-4">
-          <Link to="/notes" className="hover:text-blue-600 transition-colors">ノートモード</Link>
+          <Link to="/notes" className="hover:text-brand transition-colors">ノートモード</Link>
           <span>/</span>
           <span className="text-slate-600">{category.name}</span>
         </nav>
@@ -562,7 +562,7 @@ export default function NoteDetail() {
             <div>
               <div
                 className="inline-block text-xs font-semibold px-3 py-1 rounded-full text-white mb-2"
-                style={{ backgroundColor: '#1a3a5c' }}
+                style={{ backgroundColor: '#9d5b8b' }}
               >
                 {category.name}
               </div>
@@ -602,12 +602,12 @@ export default function NoteDetail() {
               key={i}
               id={`note-section-${i}`}
               className={`bg-white rounded-2xl border shadow-sm overflow-hidden scroll-mt-20 transition-all ${
-                highlightedSection === i ? 'border-blue-500 ring-2 ring-blue-300' : 'border-slate-200'
+                highlightedSection === i ? 'border-brand ring-2 ring-brand' : 'border-slate-200'
               }`}
             >
               <div
                 className="px-5 py-3 border-b border-slate-100 flex items-center justify-between gap-2"
-                style={{ backgroundColor: '#1a3a5c' }}
+                style={{ backgroundColor: '#9d5b8b' }}
               >
                 <h2 className="text-sm font-bold text-white leading-snug flex-1">{section.heading}</h2>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -618,7 +618,7 @@ export default function NoteDetail() {
                         className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                           protoMask === 'name'
                             ? 'bg-red-500 text-white'
-                            : 'bg-blue-800 text-blue-200 hover:bg-blue-700'
+                            : 'bg-brand-dark text-white/85 hover:bg-brand-dark'
                         }`}
                       >
                         {protoMask === 'name' ? '名前が赤字 ✓' : '名前を赤字に'}
@@ -628,12 +628,12 @@ export default function NoteDetail() {
                         className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                           protoMask === 'port'
                             ? 'bg-red-500 text-white'
-                            : 'bg-blue-800 text-blue-200 hover:bg-blue-700'
+                            : 'bg-brand-dark text-white/85 hover:bg-brand-dark'
                         }`}
                       >
                         {protoMask === 'port' ? 'ポートが赤字 ✓' : 'ポートを赤字に'}
                       </button>
-                      <div className="w-px h-4 bg-blue-700 mx-0.5" />
+                      <div className="w-px h-4 bg-brand-dark mx-0.5" />
                     </>
                   )}
                   {(section.richItems || section.protocols || section.richProtocolTables || section.headerDiagrams) && (
@@ -825,7 +825,7 @@ export default function NoteDetail() {
                 <ul className="px-5 py-4 space-y-2">
                   {(section.items ?? []).map((item, j) => (
                     <li key={j} className="flex items-start gap-2 text-sm text-slate-700 leading-relaxed">
-                      <span className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-400" />
+                      <span className="flex-shrink-0 mt-1.5 w-1.5 h-1.5 rounded-full bg-brand" />
                       <span>{renderText(item, hideRed, maskVersion)}</span>
                     </li>
                   ))}
@@ -856,7 +856,7 @@ export default function NoteDetail() {
             {prevCategory ? (
               <Link
                 to={`/notes/${prevCategory.id}`}
-                className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-blue-400 hover:text-blue-700 transition-colors min-w-0"
+                className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-brand hover:text-brand-dark transition-colors min-w-0"
               >
                 <span className="flex-shrink-0">←</span>
                 <span className="truncate">{prevCategory.name}</span>
@@ -865,7 +865,7 @@ export default function NoteDetail() {
             {nextCategory ? (
               <Link
                 to={`/notes/${nextCategory.id}`}
-                className="flex-1 flex items-center justify-end gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-blue-400 hover:text-blue-700 transition-colors min-w-0"
+                className="flex-1 flex items-center justify-end gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-brand hover:text-brand-dark transition-colors min-w-0"
               >
                 <span className="truncate">{nextCategory.name}</span>
                 <span className="flex-shrink-0">→</span>
@@ -878,14 +878,14 @@ export default function NoteDetail() {
         <div className="mt-4 flex flex-col sm:flex-row gap-3">
           <Link
             to="/notes"
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-blue-400 hover:text-blue-700 transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-brand hover:text-brand-dark transition-colors"
           >
             ← ノート一覧へ
           </Link>
           <Link
             to={`/quiz?mode=topic&category=${category.id}`}
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white transition-colors"
-            style={{ backgroundColor: '#1a3a5c' }}
+            style={{ backgroundColor: '#9d5b8b' }}
           >
             問題を解く →
           </Link>

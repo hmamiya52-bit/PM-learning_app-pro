@@ -142,7 +142,7 @@ function IconGear({ className }: { className?: string }) {
 
 const MENU_CARDS: MenuCard[] = [
   // 1. アプリの使い方
-  { to: '/how-to-use',          title: 'アプリの使い方',     description: '5つの学習モードの活用方法', iconBg: 'bg-blue-50',    iconColor: 'text-blue-600',   icon: <IconHelp className="w-6 h-6 text-blue-600" /> },
+  { to: '/how-to-use',          title: 'アプリの使い方',     description: '5つの学習モードの活用方法', iconBg: 'bg-brand-light',    iconColor: 'text-brand',   icon: <IconHelp className="w-6 h-6 text-brand" /> },
   // 2. ノートモード
   { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',    iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
   // 3. 重要問題モード
@@ -335,16 +335,16 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 pb-16 space-y-4 pt-4">
 
         {/* ===== タイトル =====
-            NOTE: hex色 #1a3a5c は F1-P6 ブランド適用マップで brand 系へ機械置換予定（D-UI-02） */}
+            NOTE: hex色 #9d5b8b は F1-P6 ブランド適用マップで brand 系へ機械置換予定（D-UI-02） */}
         <h1
           className="text-center font-black leading-tight pt-2 pb-1"
-          style={{ color: '#1a3a5c', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}
+          style={{ color: '#9d5b8b', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}
         >
           <span
             className="inline-block pb-1"
             style={{
-              borderBottom: '2px solid rgba(26, 58, 92, 0.72)',
-              textShadow: '0 0 12px rgba(26, 58, 92, 0.22)',
+              borderBottom: '2px solid rgba(157, 91, 139, 0.72)',
+              textShadow: '0 0 12px rgba(157, 91, 139, 0.22)',
             }}
           >
             PM Learning App
@@ -387,7 +387,7 @@ export default function Home() {
             {/* Stats row */}
             <div className="flex items-center gap-0 divide-x divide-slate-100 mb-3">
               <div className="flex items-baseline gap-1 pr-4">
-                <span className="text-xl font-black tabular-nums leading-none" style={{ color: '#1a3a5c' }}>
+                <span className="text-xl font-black tabular-nums leading-none" style={{ color: '#9d5b8b' }}>
                   {achievedCount}
                 </span>
                 <span className="text-xs font-normal text-slate-400">/{totalQuestions}</span>
@@ -417,7 +417,7 @@ export default function Home() {
                       aria-valuemax={m.total}
                       aria-valuenow={m.consecutive + m.correct}
                     >
-                      {m.consecutive > 0 && <div className="h-full bg-blue-500 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.consecutive) }} />}
+                      {m.consecutive > 0 && <div className="h-full bg-brand-light0 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.consecutive) }} />}
                       {m.correct > 0 && <div className="h-full bg-emerald-500 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.correct) }} />}
                       {m.incorrect > 0 && <div className="h-full bg-orange-400 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.incorrect) }} />}
                       {unattempted > 0 && <div className="h-full bg-slate-200 flex-shrink-0" style={{ width: pct(unattempted) }} />}
@@ -428,7 +428,7 @@ export default function Home() {
               {/* 凡例 */}
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 pt-0.5">
                 {[
-                  { color: 'bg-blue-500', label: '連続正解' },
+                  { color: 'bg-brand-light0', label: '連続正解' },
                   { color: 'bg-emerald-500', label: '１回正解' },
                   { color: 'bg-orange-400', label: '不正解' },
                   { color: 'bg-slate-200', label: '未着手' },

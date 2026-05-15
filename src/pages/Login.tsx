@@ -134,8 +134,8 @@ export default function Login() {
             alt=""
             className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-3xl shadow-md mb-3"
           />
-          <h1 className="text-base sm:text-lg font-black" style={{ color: '#1a3a5c' }}>
-            ネットワークスペシャリスト学習アプリ
+          <h1 className="text-base sm:text-lg font-black" style={{ color: '#9d5b8b' }}>
+            PM Learning App
           </h1>
           <p className="text-sm text-slate-400 mt-1">{LOGIN_VERSION_LABEL}</p>
         </div>
@@ -146,13 +146,13 @@ export default function Login() {
           className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4"
         >
           {/* 申請フォーム案内（フォーム枠の中・ID入力欄の上） */}
-          <p className="text-[11px] text-slate-500 leading-relaxed bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+          <p className="text-[11px] text-slate-500 leading-relaxed bg-brand-light border border-brand-light rounded-lg px-3 py-2">
             アカウント未登録の方は、
             <a
               href="https://forms.gle/9w5ofDFeYDx3y4aq9"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-700 underline font-semibold"
+              className="text-brand hover:text-brand-dark underline font-semibold"
             >
               申請フォーム
             </a>
@@ -173,7 +173,7 @@ export default function Login() {
               value={id}
               onChange={(e) => setId(e.target.value)}
               disabled={submitting}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-slate-50"
               required
             />
           </div>
@@ -188,7 +188,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={submitting}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50"
+              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-slate-50"
               required
             />
           </div>
@@ -206,7 +206,7 @@ export default function Login() {
             type="submit"
             disabled={submitting}
             className="w-full py-2.5 rounded-xl text-sm font-bold text-white transition-colors disabled:opacity-60"
-            style={{ backgroundColor: '#1a3a5c' }}
+            style={{ backgroundColor: '#9d5b8b' }}
           >
             {submitting ? '確認中…' : 'ログイン'}
           </button>
@@ -217,7 +217,7 @@ export default function Login() {
           {/* このアプリは何？ */}
           <section className="bg-white rounded-2xl border border-slate-200 px-4 py-4">
             <h2 className="text-sm font-bold text-slate-800 mb-1.5 flex items-center gap-2">
-              <IconAbout className="w-5 h-5 text-blue-600" />
+              <IconAbout className="w-5 h-5 text-brand" />
               <span>このアプリについて</span>
             </h2>
             <p className="text-[12px] text-slate-600 leading-relaxed">
@@ -255,8 +255,8 @@ export default function Login() {
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center">
-                  <IconQuiz className="w-4 h-4 text-blue-600" />
+                <span className="flex-shrink-0 w-7 h-7 rounded-lg bg-brand-light flex items-center justify-center">
+                  <IconQuiz className="w-4 h-4 text-brand" />
                 </span>
                 <span className="flex-1 min-w-0">
                   <strong className="text-slate-800">問題演習</strong>：

@@ -21,7 +21,7 @@ function QuestionText({ text, answer }: { text: string; answer?: string }) {
           {part}
           {i < parts.length - 1 && (
             answer
-              ? <span className="inline-block border-b-2 border-blue-500 text-blue-700 font-bold px-1 mx-0.5">{answer}</span>
+              ? <span className="inline-block border-b-2 border-brand text-brand-dark font-bold px-1 mx-0.5">{answer}</span>
               : <span className="inline-block border-b-2 border-slate-400 w-24 mx-1 align-bottom" aria-label="空欄" />
           )}
         </span>
@@ -56,7 +56,7 @@ export default function QuizQuestion({
         </div>
         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-600 rounded-full transition-all duration-300"
+            className="h-full bg-brand rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -78,7 +78,7 @@ export default function QuizQuestion({
             <button
               key={choice}
               onClick={() => onAnswerMultipleChoice(choice)}
-              className="w-full text-left bg-white border-2 border-slate-200 hover:border-blue-400 hover:bg-blue-50 active:bg-blue-100 rounded-xl px-4 py-3.5 text-slate-700 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="w-full text-left bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light active:bg-brand-light rounded-xl px-4 py-3.5 text-slate-700 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
               {choice}
             </button>
@@ -101,7 +101,7 @@ export default function QuizQuestion({
               }
             }}
             placeholder="解答を入力…"
-            className="w-full border-2 border-slate-200 focus:border-blue-500 rounded-xl px-4 py-3 text-slate-800 text-base outline-none transition-colors"
+            className="w-full border-2 border-slate-200 focus:border-brand rounded-xl px-4 py-3 text-slate-800 text-base outline-none transition-colors"
             autoComplete="off"
             autoFocus
           />
@@ -110,7 +110,7 @@ export default function QuizQuestion({
               if (writtenValue.trim()) onAnswerWritten(writtenValue.trim())
             }}
             disabled={!writtenValue.trim()}
-            className="w-full bg-blue-900 disabled:bg-slate-200 disabled:text-slate-400 hover:bg-blue-800 active:bg-blue-950 text-white font-bold rounded-xl py-3.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="w-full bg-brand-darker disabled:bg-slate-200 disabled:text-slate-400 hover:bg-brand-dark active:bg-brand-darker text-white font-bold rounded-xl py-3.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
             解答する
           </button>

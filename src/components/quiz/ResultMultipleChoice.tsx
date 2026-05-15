@@ -37,7 +37,7 @@ export default function ResultMultipleChoice({ question, selected, isCorrect, on
       {!isCorrect && (
         <div className="bg-white border border-slate-200 rounded-xl p-4">
           <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">正解</p>
-          <p className="text-base font-bold text-blue-900">{question.correctAnswer}</p>
+          <p className="text-base font-bold text-brand-darker">{question.correctAnswer}</p>
         </div>
       )}
 
@@ -50,7 +50,7 @@ export default function ResultMultipleChoice({ question, selected, isCorrect, on
       {/* 次へ */}
       <button
         onClick={onNext}
-        className="w-full bg-blue-900 hover:bg-blue-800 active:bg-blue-950 text-white font-bold rounded-xl py-4 text-base transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="w-full bg-brand-darker hover:bg-brand-dark active:bg-brand-darker text-white font-bold rounded-xl py-4 text-base transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         {isLast ? '結果を見る' : '次の問題へ →'}
       </button>

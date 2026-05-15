@@ -79,8 +79,8 @@ export default function PwaInstallPrompt() {
       <div className="flex items-center gap-2 flex-shrink-0">
         <button
           onClick={handleInstall}
-          className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-600"
-          style={{ backgroundColor: '#1a3a5c' }}
+          className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand"
+          style={{ backgroundColor: '#9d5b8b' }}
         >
           追加する
         </button>

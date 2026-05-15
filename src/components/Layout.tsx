@@ -252,12 +252,8 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* ===== Header =====
-          NOTE: 背景色 #1a3a5c は F1-P6 ブランド適用マップで #9d5b8b へ機械置換予定。
-          このタイミングで bg-brand クラス化（D-UI-02 対応）も検討する。 */}
-      <header
-        className="fixed top-0 left-0 right-0 z-30 flex items-center h-12 px-3 gap-3 text-white shadow-md"
-        style={{ backgroundColor: '#1a3a5c' }}
-      >
+          F1-P6 D-UI-02 対応: inline style hex を bg-brand クラスへリライト済み */}
+      <header className="fixed top-0 left-0 right-0 z-30 flex items-center h-12 px-3 gap-3 text-white shadow-md bg-brand">
         {/* Hamburger toggle */}
         <button
           onClick={toggle}
@@ -301,15 +297,13 @@ export default function Layout() {
         )}
 
         {/* ===== Sidebar =====
-            背景色は F1-P6 でブランドカラーへ置換予定（D-UI-02） */}
+            F1-P6 D-UI-02 対応: backgroundColor は bg-brand クラスへリライト済み。
+            width は dynamic（モバイル開閉アニメーション）なため inline style のまま。 */}
         <nav
           id="sidebar"
           aria-label="メインナビゲーション"
-          className="fixed top-12 bottom-0 z-20 flex flex-col overflow-hidden transition-[width] duration-200 ease-in-out"
-          style={{
-            width: isMobile ? (isOpen ? 240 : 0) : sidebarWidth,
-            backgroundColor: '#1a3a5c',
-          }}
+          className="fixed top-12 bottom-0 z-20 flex flex-col overflow-hidden transition-[width] duration-200 ease-in-out bg-brand"
+          style={{ width: isMobile ? (isOpen ? 240 : 0) : sidebarWidth }}
         >
           <ul className="flex-1 py-3 overflow-y-auto overflow-x-hidden">
             {NAV_ITEMS.map((item) => {

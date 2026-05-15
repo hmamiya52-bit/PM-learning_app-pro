@@ -243,11 +243,11 @@ export default function DeviceSync() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="bg-blue-900 text-white shadow-lg sticky top-0 z-20">
+      <header className="bg-brand-darker text-white shadow-lg sticky top-0 z-20">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="p-2 rounded-lg hover:bg-blue-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-brand-dark transition-colors"
             aria-label="前の画面へ戻る"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -296,7 +296,7 @@ export default function DeviceSync() {
                 />
               )}
               {!sendGenerated && (
-                <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800">
+                <div className="rounded-xl border border-brand-light bg-brand-light px-4 py-3 text-sm font-bold text-brand-darker">
                   {busy || !autoSendRequested ? (
                     '同期データを作成中...'
                   ) : (
@@ -306,7 +306,7 @@ export default function DeviceSync() {
                         onClick={() => {
                           void handleCreate('send')
                         }}
-                        className="rounded-lg bg-blue-900 px-4 py-2 text-xs font-bold text-white hover:bg-blue-800"
+                        className="rounded-lg bg-brand-darker px-4 py-2 text-xs font-bold text-white hover:bg-brand-dark"
                       >
                         もう一度作成する
                       </button>
@@ -497,19 +497,19 @@ function UsageGuide({
       </button>
 
       {open && (
-        <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-4 space-y-4 text-sm text-slate-700">
+        <div className="rounded-xl bg-brand-light border border-brand-light px-4 py-4 space-y-4 text-sm text-slate-700">
           <FlowSummary />
-          <div className="rounded-lg bg-white border border-blue-100 px-3 py-2 text-xs text-slate-500 leading-relaxed">
+          <div className="rounded-lg bg-white border border-brand-light px-3 py-2 text-xs text-slate-500 leading-relaxed">
             スマホ側ではSTEP 1の後にPC側の作業を待ちます。PC側ではスマホ側のSTEP 1が終わってからSTEP 2を開始します。
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
-            <div className="rounded-lg bg-white border border-blue-100 px-3 py-2">
+            <div className="rounded-lg bg-white border border-brand-light px-3 py-2">
               <h2 className="font-bold text-slate-900 mb-1">同期される記録</h2>
               <p className="text-xs leading-relaxed">
                 問題の正解記録、午後問題の点数記録、日別XP、経験値、勲章
               </p>
             </div>
-            <div className="rounded-lg bg-white border border-blue-100 px-3 py-2">
+            <div className="rounded-lg bg-white border border-brand-light px-3 py-2">
               <h2 className="font-bold text-slate-900 mb-1">同期しない記録</h2>
               <p className="text-xs leading-relaxed">
                 ノート理解度、午後問題の次回計画日、午後問題の解答欄、ログイン状態、画面の開閉状態
@@ -558,17 +558,17 @@ function RoleSelector({
   return (
     <section className="rounded-2xl bg-white border border-slate-200 shadow-sm p-4 space-y-5">
       <div>
-        <p className="text-xs font-bold text-blue-600 mb-1">端末選択</p>
+        <p className="text-xs font-bold text-brand mb-1">端末選択</p>
         <h1 className="text-xl font-bold text-slate-900">この端末はどちらですか？</h1>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-3">
         <button
           onClick={() => onSelect('phone')}
-          className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-4 text-left hover:bg-blue-100 transition-colors"
+          className="rounded-xl border border-brand-light bg-brand-light px-4 py-4 text-left hover:bg-brand-light transition-colors"
         >
-          <span className="block text-base font-bold text-blue-900">スマホ側</span>
-          <span className="block text-sm text-blue-800 mt-1">
+          <span className="block text-base font-bold text-brand-darker">スマホ側</span>
+          <span className="block text-sm text-brand-darker mt-1">
             最初に同期用QRコード①を作り、最後に同期用QRコード②を読み込みます。
           </span>
         </button>
@@ -588,7 +588,7 @@ function RoleSelector({
 
 function FlowSummary() {
   return (
-    <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3">
+    <div className="rounded-xl bg-brand-light border border-brand-light px-4 py-3">
       <h2 className="text-sm font-bold text-slate-900 mb-2">同期の順番</h2>
       <ol className="space-y-2 text-sm text-slate-700">
         <GuideStep number="1" text="スマホ側で同期データを作成" />
@@ -602,7 +602,7 @@ function FlowSummary() {
 
 function StepBadge({ step }: { step: string }) {
   return (
-    <p className="inline-flex items-center rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-sm font-bold text-blue-700 mb-2">
+    <p className="inline-flex items-center rounded-full bg-brand-light border border-brand-light px-3 py-1 text-sm font-bold text-brand-dark mb-2">
       {step}
     </p>
   )
@@ -708,9 +708,9 @@ function Info({ label, value }: { label: string; value: string }) {
 function ArrowHint({ text, centered = false }: { text: string; centered?: boolean }) {
   return (
     <p className={`flex items-start gap-2 text-xs font-bold text-slate-600 ${centered ? 'justify-center text-center' : ''}`}>
-      <span className="text-base leading-none text-blue-600" aria-hidden="true">↓</span>
+      <span className="text-base leading-none text-brand" aria-hidden="true">↓</span>
       <span className="leading-relaxed">{text}</span>
-      {centered && <span className="text-base leading-none text-blue-600" aria-hidden="true">↓</span>}
+      {centered && <span className="text-base leading-none text-brand" aria-hidden="true">↓</span>}
     </p>
   )
 }
@@ -764,7 +764,7 @@ function GeneratedSyncData({
       <ArrowHint text={note} centered />
       <div className="space-y-2">
         <SyncQrDisplay value={generated.text} />
-        <p className="text-center text-sm font-bold text-blue-700">{qrLabel}</p>
+        <p className="text-center text-sm font-bold text-brand-dark">{qrLabel}</p>
       </div>
       <div className="space-y-2">
         <button
@@ -782,7 +782,7 @@ function GeneratedSyncData({
             <div className="grid sm:grid-cols-2 gap-2">
               <button
                 onClick={onShare}
-                className="rounded-xl border border-blue-200 bg-white px-4 py-3 text-sm font-bold text-blue-800 hover:bg-blue-50"
+                className="rounded-xl border border-brand-light bg-white px-4 py-3 text-sm font-bold text-brand-darker hover:bg-brand-light"
               >
                 {shared ? '共有を開きました' : shareCopied ? 'コピーしました' : '他のアプリで共有'}
               </button>
@@ -794,7 +794,7 @@ function GeneratedSyncData({
               </button>
             </div>
             {shareCopied && (
-              <p className="rounded-lg bg-blue-50 border border-blue-100 px-3 py-2 text-xs text-blue-800 leading-relaxed">
+              <p className="rounded-lg bg-brand-light border border-brand-light px-3 py-2 text-xs text-brand-darker leading-relaxed">
                 この端末では共有画面を開けなかったため、同期文字列をコピーしました。LINEやメールに貼り付けて送ってください。
               </p>
             )}
@@ -813,7 +813,7 @@ function GeneratedSyncData({
 function GuideStep({ number, text }: { number: string; text: string }) {
   return (
     <li className="flex gap-2">
-      <span className="w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+      <span className="w-6 h-6 rounded-full bg-brand text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
         {number}
       </span>
       <span className="leading-relaxed pt-0.5">{text}</span>

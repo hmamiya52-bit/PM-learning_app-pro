@@ -156,7 +156,7 @@ export default function Notes() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="セクション見出しを検索（例: SYNフラッド、SLAAC、SSL-VPN）"
-              className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand"
               aria-label="ノート内のセクション見出しを検索"
             />
             {query && (
@@ -188,11 +188,11 @@ export default function Notes() {
                 <Link
                   key={cat.id}
                   to={`/notes/${cat.id}`}
-                  className={`group flex items-center gap-3 bg-white rounded-xl border border-slate-200 border-l-4 ${borderColor} px-4 py-3 hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2`}
+                  className={`group flex items-center gap-3 bg-white rounded-xl border border-slate-200 border-l-4 ${borderColor} px-4 py-3 hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2`}
                   aria-label={`${cat.name}のノートを開く`}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-slate-800 leading-snug group-hover:text-blue-700 transition-colors">
+                    <p className="text-sm font-bold text-slate-800 leading-snug group-hover:text-brand-dark transition-colors">
                       {cat.name}
                     </p>
                     <p className="text-xs text-slate-400 mt-0.5 leading-snug line-clamp-2">
@@ -200,7 +200,7 @@ export default function Notes() {
                     </p>
                     <UnderstandingBadges categoryId={cat.id} />
                   </div>
-                  <div className="text-slate-300 group-hover:text-blue-400 transition-colors flex-shrink-0">
+                  <div className="text-slate-300 group-hover:text-brand transition-colors flex-shrink-0">
                     <ArrowRightIcon />
                   </div>
                 </Link>
@@ -247,7 +247,7 @@ export default function Notes() {
                         <li key={sectionIndex}>
                           <Link
                             to={`/notes/${cat.id}#note-section-${sectionIndex}`}
-                            className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-blue-700 transition-colors"
+                            className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-brand-dark transition-colors"
                           >
                             <span className="text-slate-300 text-xs">▶</span>
                             <span className="flex-1 min-w-0 truncate">

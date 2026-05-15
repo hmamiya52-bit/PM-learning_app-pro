@@ -89,7 +89,7 @@ export default function QuizSummary({ logs, sessionMode, onRetryWrong }: Props) 
                 {!log.isCorrect && (
                   <p className="text-xs text-slate-400 mt-0.5">
                     あなた: <span className="text-red-500">{log.userAnswer}</span>
-                    　正解: <span className="text-blue-600 font-medium">{log.question.correctAnswer}</span>
+                    　正解: <span className="text-brand font-medium">{log.question.correctAnswer}</span>
                   </p>
                 )}
               </div>
@@ -101,7 +101,7 @@ export default function QuizSummary({ logs, sessionMode, onRetryWrong }: Props) 
       {/* ホームへ */}
       <Link
         to="/"
-        className="block w-full text-center bg-blue-900 hover:bg-blue-800 text-white font-bold rounded-xl py-4 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="block w-full text-center bg-brand-darker hover:bg-brand-dark text-white font-bold rounded-xl py-4 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         ホームに戻る
       </Link>

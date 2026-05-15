@@ -53,7 +53,7 @@ function QuestionModal({ question, kw, onClose }: QuestionModalProps) {
             {cat && (
               <span
                 className="text-xs px-2 py-0.5 rounded-full text-white font-semibold"
-                style={{ backgroundColor: '#1a3a5c' }}
+                style={{ backgroundColor: '#9d5b8b' }}
               >
                 {cat.name}
               </span>
@@ -112,9 +112,9 @@ function QuestionModal({ question, kw, onClose }: QuestionModalProps) {
           )}
 
           {/* 正解 */}
-          <div className="bg-blue-50 rounded-xl px-4 py-3">
-            <p className="text-[11px] font-semibold text-blue-400 uppercase tracking-wider mb-1">正解</p>
-            <p className="text-sm font-bold text-blue-800">
+          <div className="bg-brand-light rounded-xl px-4 py-3">
+            <p className="text-[11px] font-semibold text-brand uppercase tracking-wider mb-1">正解</p>
+            <p className="text-sm font-bold text-brand-darker">
               {highlight(question.correctAnswer, kw)}
             </p>
           </div>
@@ -135,7 +135,7 @@ function QuestionModal({ question, kw, onClose }: QuestionModalProps) {
           <button
             onClick={() => navigate(`/quiz?mode=topic&category=${question.topicId}`)}
             className="w-full py-3 rounded-xl text-sm font-bold text-white transition-colors"
-            style={{ backgroundColor: '#1a3a5c' }}
+            style={{ backgroundColor: '#9d5b8b' }}
           >
             このカテゴリの問題を解く →
           </button>
@@ -187,7 +187,7 @@ export default function Search() {
             placeholder="キーワードで問題を検索（例：BPDU、OSPF…）"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+            className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-sm"
           />
           {query && (
             <button
@@ -228,14 +228,14 @@ export default function Search() {
                   <button
                     key={q.id}
                     onClick={() => setSelected(q)}
-                    className="w-full text-left bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm hover:border-blue-400 hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    className="w-full text-left bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm hover:border-brand hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                   >
                     {/* カテゴリ・重要バッジ */}
                     <div className="flex items-center gap-2 mb-2">
                       {cat && (
                         <span
                           className="text-xs px-2 py-0.5 rounded-full text-white"
-                          style={{ backgroundColor: '#1a3a5c' }}
+                          style={{ backgroundColor: '#9d5b8b' }}
                         >
                           {cat.name}
                         </span>
@@ -251,7 +251,7 @@ export default function Search() {
                     </p>
 
                     {/* 正解プレビュー */}
-                    <p className="text-xs text-blue-700 font-medium">
+                    <p className="text-xs text-brand-dark font-medium">
                       正解：{highlight(q.correctAnswer, kw)}
                     </p>
                   </button>

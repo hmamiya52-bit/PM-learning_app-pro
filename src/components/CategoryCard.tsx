@@ -42,7 +42,7 @@ function MasteryBar({ label, mastery }: { label: string; mastery: MasterySummary
         aria-valuenow={consecutive + correct}
       >
         {consecutive > 0 && (
-          <div className="h-full bg-blue-500 flex-shrink-0" style={{ width: pct(consecutive) }} />
+          <div className="h-full bg-brand-light0 flex-shrink-0" style={{ width: pct(consecutive) }} />
         )}
         {correct > 0 && (
           <div className="h-full bg-emerald-500 flex-shrink-0" style={{ width: pct(correct) }} />
@@ -91,7 +91,7 @@ export default function CategoryCard({
       <div className={isEmpty || isIot ? 'pr-8' : 'pr-1'}>
         <p
           className={`font-semibold text-[13px] sm:text-sm leading-snug ${
-            isEmpty ? 'text-slate-400' : 'text-slate-800 group-hover:text-blue-700'
+            isEmpty ? 'text-slate-400' : 'text-slate-800 group-hover:text-brand-dark'
           } transition-colors`}
         >
           {category.name}
@@ -148,9 +148,9 @@ export default function CategoryCard({
       to={`/quiz?mode=topic&category=${category.id}`}
       className={[
         'group relative flex flex-col gap-1.5 rounded-xl border px-3 py-2.5',
-        'bg-white border-slate-200 hover:border-blue-400 hover:shadow-md',
+        'bg-white border-slate-200 hover:border-brand hover:shadow-md',
         'transition-all duration-150',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2',
       ].join(' ')}
       aria-label={ariaLabel}
     >

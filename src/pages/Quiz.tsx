@@ -352,7 +352,7 @@ export default function Quiz() {
         </p>
         <button
           onClick={() => navigate('/')}
-          className="bg-blue-900 text-white font-bold rounded-xl px-6 py-3 hover:bg-blue-800 transition-colors"
+          className="bg-brand-darker text-white font-bold rounded-xl px-6 py-3 hover:bg-brand-dark transition-colors"
         >
           ホームへ戻る
         </button>
@@ -369,11 +369,11 @@ export default function Quiz() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* ヘッダー */}
-      <header className="bg-blue-900 text-white shadow-lg sticky top-0 z-20">
+      <header className="bg-brand-darker text-white shadow-lg sticky top-0 z-20">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={() => navigate('/')}
-            className="p-2 rounded-lg hover:bg-blue-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white flex-shrink-0"
+            className="p-2 rounded-lg hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white flex-shrink-0"
             aria-label="ホームへ戻る"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -383,12 +383,12 @@ export default function Quiz() {
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm truncate">{headerTitle}</p>
             {phase !== 'mode-select' && phase !== 'summary' && (
-              <p className="text-blue-300 text-xs">{questionList.length} 問</p>
+              <p className="text-white/80 text-xs">{questionList.length} 問</p>
             )}
           </div>
           {/* モードバッジ */}
           {phase !== 'mode-select' && phase !== 'summary' && (
-            <span className="flex-shrink-0 text-xs bg-blue-800 text-blue-200 rounded-full px-2.5 py-1">
+            <span className="flex-shrink-0 text-xs bg-brand-dark text-white/85 rounded-full px-2.5 py-1">
               {answerMode === 'multiple-choice' ? '4択' : '記述'}
             </span>
           )}

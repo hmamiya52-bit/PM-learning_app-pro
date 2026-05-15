@@ -200,7 +200,7 @@ export default function AfternoonAnswerDetail() {
 
         <p className="text-[10px] text-slate-400 text-center">
           © 独立行政法人情報処理推進機構（IPA）<br />
-          {answerSet.year} ネットワークスペシャリスト試験 {sectionLabel} 問{answerSet.number}
+          {answerSet.year} プロジェクトマネージャ試験 {sectionLabel} 問{answerSet.number}
         </p>
 
       </div>

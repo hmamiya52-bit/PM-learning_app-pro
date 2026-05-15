@@ -107,12 +107,12 @@ function ScreenshotSection({ guide, index }: { guide: ScreenshotGuide; index: nu
           />
         </figure>
         <div>
-          <p className="text-[11px] font-black tracking-wide text-blue-700">PAGE {index + 1}</p>
+          <p className="text-[11px] font-black tracking-wide text-brand-dark">PAGE {index + 1}</p>
           <h2 className="mt-1 text-xl font-black text-slate-900">{guide.title}</h2>
           <ul className="mt-4 space-y-3">
             {guide.points.map((point) => (
               <li key={point} className="flex gap-3 text-sm leading-relaxed text-slate-700">
-                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-blue-700" />
+                <span className="mt-1 h-2 w-2 flex-shrink-0 rounded-full bg-brand-dark" />
                 <span>{point}</span>
               </li>
             ))}
@@ -129,12 +129,12 @@ export default function HowToUse() {
       <div className="mx-auto max-w-6xl px-4 py-6 pb-16 sm:px-6 lg:px-8">
         <div className="rounded-lg border border-slate-200 bg-white px-5 py-6 shadow-sm sm:px-7">
           <div className="max-w-3xl">
-            <p className="text-xs font-black tracking-wide text-blue-700">GUIDE</p>
+            <p className="text-xs font-black tracking-wide text-brand-dark">GUIDE</p>
             <h1 className="mt-2 text-2xl font-black leading-tight text-slate-900 sm:text-3xl">
               アプリの使い方
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-              このアプリは、ネットワークスペシャリスト試験の知識整理、問題演習、午後問題の記録・計画を一元的に行うための学習アプリです。ここでは、各機能の画面と使い方について説明します。ご自身の学習状況に合わせて各機能を使い分けてください。
+              このアプリは、プロジェクトマネージャ試験の知識整理、問題演習、午後問題の記録・計画を一元的に行うための学習アプリです。ここでは、各機能の画面と使い方について説明します。ご自身の学習状況に合わせて各機能を使い分けてください。
             </p>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function HowToUse() {
           ))}
         </div>
 
-        <section className="mt-6 rounded-lg border border-blue-100 bg-blue-50 px-5 py-5">
+        <section className="mt-6 rounded-lg border border-brand-light bg-brand-light px-5 py-5">
           <h2 className="text-base font-black text-slate-900">迷ったときの使い分け</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             <div>
@@ -173,7 +173,7 @@ export default function HowToUse() {
           </Link>
           <Link
             to="/sync"
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:border-blue-300 hover:text-blue-800"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm hover:border-brand-light hover:text-brand-darker"
           >
             PC・スマホ同期へ
             <ArrowIcon />

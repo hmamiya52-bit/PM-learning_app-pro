@@ -26,7 +26,7 @@ export default function StudyModeButton({
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
         isPrimary
           ? 'bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-amber-950 shadow-md hover:shadow-lg focus-visible:ring-amber-400'
-          : 'bg-blue-800 hover:bg-blue-700 active:bg-blue-900 text-white shadow focus-visible:ring-blue-400',
+          : 'bg-brand-dark hover:bg-brand-dark active:bg-brand-darker text-white shadow focus-visible:ring-brand',
       ].join(' ')}
       aria-label={`${label} — ${description}`}
     >
@@ -37,7 +37,7 @@ export default function StudyModeButton({
         <span className={`font-bold text-base leading-tight ${isPrimary ? '' : ''}`}>
           {label}
         </span>
-        <span className={`text-xs leading-snug ${isPrimary ? 'text-amber-800' : 'text-blue-200'}`}>
+        <span className={`text-xs leading-snug ${isPrimary ? 'text-amber-800' : 'text-white/85'}`}>
           {description}
         </span>
       </span>

@@ -97,7 +97,7 @@ export const iotQuestions: Question[] = [
   {
     id: 'q-r8-010',
     topicId: 'iot',
-    questionText: '令和8年度からネットワークスペシャリスト試験に導入される試験方式を{{blank}}という。',
+    questionText: '令和8年度からプロジェクトマネージャ試験に導入される試験方式を{{blank}}という。',
     correctAnswer: 'CBT（Computer Based Testing）',
     choices: ['CBT（Computer Based Testing）', 'IBT（Internet Based Testing）', 'PBT（Paper Based Testing）', 'OBT（Online Based Testing）'],
     explanation: 'CBT（Computer Based Testing）はコンピュータ画面で解答する試験方式。令和8年度からNWスペシャリスト試験に完全移行し、テストセンターでの受験に変更される。これに伴い科目A-2・科目B（B-1/B-2）に名称変更される。',
