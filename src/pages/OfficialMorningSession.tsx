@@ -69,6 +69,36 @@ export default function OfficialMorningSession() {
   const isLast = currentIndex === questionList.length - 1
   const isCorrect = selectedIndex !== null && currentQuestion && selectedIndex === currentQuestion.correctIndex
 
+  // ★F1-P4 ユーザフィードバック対応: 4択の表示順をランダムにシャッフル
+  //   {originalIndex} を保持しておくことで、データ側の correctIndex（元の choices 配列）と
+  //   selectedIndex を整合させたまま、画面上の並びだけランダム化する。
+  //   useMemo の依存は currentQuestion.id のみ（同じ問題内でのリレンダーでは固定）。
+  const shuffledChoices = useMemo(() => {
+    if (!currentQuestion) return [] as { originalIndex: 0 | 1 | 2 | 3; text: string }[]
+    const indexed = currentQuestion.choices.map((text, i) => ({
+      originalIndex: i as 0 | 1 | 2 | 3,
+      text,
+    }))
+    // Fisher–Yates シャッフル
+    for (let i = indexed.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indexed[i], indexed[j]] = [indexed[j], indexed[i]]
+    }
+    return indexed
+  }, [currentQuestion?.id])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 正解がシャッフル後に何番目（表示位置）に来たかを計算
+  const correctDisplayIndex = useMemo(() => {
+    if (!currentQuestion) return -1
+    return shuffledChoices.findIndex((c) => c.originalIndex === currentQuestion.correctIndex)
+  }, [shuffledChoices, currentQuestion])
+
+  // ユーザが選んだ選択肢の表示位置（解説表示時の「あなたの解答: イ」表示用）
+  const selectedDisplayIndex = useMemo(() => {
+    if (selectedIndex === null) return -1
+    return shuffledChoices.findIndex((c) => c.originalIndex === selectedIndex)
+  }, [shuffledChoices, selectedIndex])
+
   // セッション初期化（初回マウント時のみ）
   useEffect(() => {
     if (!sessionStartedAt.current) {
@@ -248,12 +278,12 @@ export default function OfficialMorningSession() {
           </p>
         </div>
 
-        {/* 4択 */}
+        {/* 4択（シャッフル後の表示順） */}
         <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
-          {currentQuestion.choices.map((choice, idx) => {
-            const i = idx as 0 | 1 | 2 | 3
-            const isSelected = selectedIndex === i
-            const isAnswer = i === currentQuestion.correctIndex
+          {shuffledChoices.map((choice, displayIdx) => {
+            const originalIdx = choice.originalIndex
+            const isSelected = selectedIndex === originalIdx
+            const isAnswer = originalIdx === currentQuestion.correctIndex
             const showCorrectness = showExplanation
             let buttonClass = 'bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light/30'
             if (showCorrectness && isSelected && isCorrect) buttonClass = 'bg-emerald-50 border-2 border-emerald-500'
@@ -261,13 +291,13 @@ export default function OfficialMorningSession() {
             else if (showCorrectness && isAnswer && !isSelected) buttonClass = 'bg-emerald-50 border-2 border-emerald-400'
             return (
               <button
-                key={i}
-                onClick={() => handleSelect(i)}
+                key={originalIdx}
+                onClick={() => handleSelect(originalIdx)}
                 disabled={showExplanation}
                 className={`w-full text-left rounded-xl px-4 py-3.5 text-slate-700 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
-                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{ANSWER_LABELS[i]}.</span>
-                {choice}
+                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{ANSWER_LABELS[displayIdx]}.</span>
+                {choice.text}
               </button>
             )
           })}
@@ -285,9 +315,9 @@ export default function OfficialMorningSession() {
                 <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
                 <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
                   {isCorrect ? '正解！' : '不正解'}
-                  {!isCorrect && (
+                  {!isCorrect && correctDisplayIndex >= 0 && (
                     <span className="text-xs font-normal ml-2 text-slate-500">
-                      正解は {ANSWER_LABELS[currentQuestion.correctIndex]}
+                      あなたの解答: {ANSWER_LABELS[selectedDisplayIndex]} / 正解: {ANSWER_LABELS[correctDisplayIndex]}
                     </span>
                   )}
                 </p>

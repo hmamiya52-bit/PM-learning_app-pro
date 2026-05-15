@@ -14,8 +14,6 @@ import type { OfficialMorningQuestion } from '../types'
  * 直接 URL アクセスや state 喪失時はトップへリダイレクト。
  */
 
-const ANSWER_LABELS = ['ア', 'イ', 'ウ', 'エ'] as const
-
 interface SummaryLog {
   questionId: string
   selectedIndex: 0 | 1 | 2 | 3
@@ -112,13 +110,16 @@ export default function OfficialMorningSummary() {
                   <p className="text-sm text-slate-700 leading-snug line-clamp-3">
                     {question.questionText}
                   </p>
-                  <div className="flex items-center gap-3 mt-2 text-xs">
-                    <span className="text-red-500">
-                      あなたの解答: {ANSWER_LABELS[selectedIndex]}
-                    </span>
-                    <span className="text-emerald-600">
-                      正解: {ANSWER_LABELS[question.correctIndex]}
-                    </span>
+                  {/* シャッフル出題のため、ラベル（ア/イ…）ではなく選択肢テキストで表示 */}
+                  <div className="mt-2 space-y-1 text-xs">
+                    <p className="text-red-500">
+                      <span className="font-bold mr-1">あなたの解答:</span>
+                      <span className="text-slate-700">{question.choices[selectedIndex]}</span>
+                    </p>
+                    <p className="text-emerald-600">
+                      <span className="font-bold mr-1">正解:</span>
+                      <span className="text-slate-700">{question.choices[question.correctIndex]}</span>
+                    </p>
                   </div>
                 </li>
               ))}
