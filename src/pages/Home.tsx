@@ -42,27 +42,11 @@ function IconBook({ className }: { className?: string }) {
   )
 }
 
-function IconTrendingDown({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
-    </svg>
-  )
-}
-
 function IconShuffle({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 4h5l3 8h5m0 0l-3 3m3-3l-3-3" />
       <path strokeLinecap="round" strokeLinejoin="round" d="M4 20h5l7-8" />
-    </svg>
-  )
-}
-
-function IconLayers({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
     </svg>
   )
 }
@@ -100,31 +84,34 @@ function IconSync({ className }: { className?: string }) {
 }
 
 /**
- * 学習メニュー（8項目）— F1-P6 後の UX 整理:
- *   削除済み（他の動線から到達可能なため）:
- *     - 重要問題モード: カテゴリ別出題の画面で「重要マークのみ」フィルタが選択可能
- *     - ランダム出題: 「全体の学習進捗」セクション右上のボタンから起動可能
- *     - 検索: ヘッダの検索アイコンから常時アクセス可
- *     - バッジ: LevelWidget をクリックすると遷移
- *     - 学習履歴: ページ下部の「学習履歴」セクションで直接表示
- *     - 設定: ヘッダの歯車アイコンから常時アクセス可
+ * 学習メニュー（6項目）— F1-P6 後の UX 整理（2回目）:
+ *   削除済み:
+ *     - 重要問題モード:  ModeSelect の「重要のみ」トグルで実現
+ *     - 弱点克服モード:  ModeSelect の「弱点のみ」トグルで実現（F1-P6 後改修）
+ *     - カテゴリ別学習:  ノートモードの動線と重複のため削除
+ *     - ランダム出題:    「全体の学習進捗」セクション右上のボタンから起動
+ *     - 検索:            ヘッダの検索アイコンから常時アクセス可
+ *     - バッジ:          LevelWidget をクリックすると遷移
+ *     - 学習履歴:        ページ下部の「学習履歴」セクションで直接表示
+ *     - 設定:            ヘッダの歯車アイコンから常時アクセス可
+ *
+ * 試験区分の名称:
+ *   - 「公式午前II問題」→「午前Ⅱ問題演習」
+ *   - 「午後Ⅰ問題」→「午後Ⅰ問題演習」
+ *   - 「論述トレーニング」→「午後Ⅱ問題演習」
  */
 const MENU_CARDS: MenuCard[] = [
   // 1. アプリの使い方
   { to: '/how-to-use',          title: 'アプリの使い方',     description: '各学習モードの活用方法',     iconBg: 'bg-brand-light',    iconColor: 'text-brand',      icon: <IconHelp className="w-6 h-6 text-brand" /> },
   // 2. ノートモード
   { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',        iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
-  // 3. 弱点克服モード（未学習時は無効）
-  { to: '/quiz?mode=weakness',  title: '弱点克服モード',     description: '不正解の多い問題',           iconBg: 'bg-red-50',         iconColor: 'text-red-500',    icon: <IconTrendingDown className="w-6 h-6 text-red-500" />, disableWhenNoStudy: true },
-  // 4. カテゴリ別学習（/notes に飛ばし、ユーザがカテゴリ選択経由でクイズへ。DP-P1-1）
-  { to: '/notes',               title: 'カテゴリ別学習',     description: 'カテゴリを選んで学習',       iconBg: 'bg-cyan-50',        iconColor: 'text-cyan-600',   icon: <IconLayers className="w-6 h-6 text-cyan-600" /> },
-  // 5. 公式午前II問題
-  { to: '/morning',             title: '公式午前II問題',     description: '過去問4択 出典:IPA',         iconBg: 'bg-indigo-50',      iconColor: 'text-indigo-600', icon: <IconFileText className="w-6 h-6 text-indigo-600" /> },
-  // 6. 午後Ⅰ問題（PM試験 午後I、「午後問題」→「午後Ⅰ問題」に改名）
-  { to: '/afternoon',           title: '午後Ⅰ問題',         description: '自己採点・記録',             iconBg: 'bg-purple-50',      iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
-  // 7. 論述トレーニング（午後II）
-  { to: '/essay',               title: '論述トレーニング',   description: '午後II対応',                 iconBg: 'bg-pink-50',        iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
-  // 8. デバイス同期
+  // 3. 午前Ⅱ問題演習
+  { to: '/morning',             title: '午前Ⅱ問題演習',     description: '過去問4択 出典:IPA',         iconBg: 'bg-indigo-50',      iconColor: 'text-indigo-600', icon: <IconFileText className="w-6 h-6 text-indigo-600" /> },
+  // 4. 午後Ⅰ問題演習
+  { to: '/afternoon',           title: '午後Ⅰ問題演習',     description: '自己採点・記録',             iconBg: 'bg-purple-50',      iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
+  // 5. 午後Ⅱ問題演習（論述）
+  { to: '/essay',               title: '午後Ⅱ問題演習',     description: '論述・自己採点',             iconBg: 'bg-pink-50',        iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
+  // 6. デバイス同期
   { to: '/sync',                title: 'デバイス同期',       description: 'QRコードで他端末へ',         iconBg: 'bg-sky-50',         iconColor: 'text-sky-600',    icon: <IconSync className="w-6 h-6 text-sky-600" /> },
 ]
 

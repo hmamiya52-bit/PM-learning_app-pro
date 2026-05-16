@@ -31,11 +31,13 @@ function filterQuestions(
   mode: string | null,
   categoryId: string | null,
   onlyImportant: boolean = false,
+  onlyWeakness: boolean = false,
 ): Question[] {
   let pool: Question[]
   if (mode === 'topic' && categoryId) {
     pool = allQuestions.filter((q) => q.topicId === categoryId)
   } else if (mode === 'weakness') {
+    // 後方互換: /quiz?mode=weakness URL も維持（外部から飛んでくる可能性あり）
     const progress = getAllProgress()
     const rateMap = new Map(
       progress.map((p) => [
@@ -43,7 +45,6 @@ function filterQuestions(
         p.totalAttempts > 0 ? p.correctCount / p.totalAttempts : 0,
       ])
     )
-    // 正答率 60% 未満 or 未学習（totalAttempts=0）の問題
     pool = allQuestions.filter((q) => {
       const rate = rateMap.get(q.topicId)
       return rate === undefined || rate < 0.6
@@ -64,6 +65,21 @@ function filterQuestions(
       getImportantIds().filter((id) => id.startsWith('q-')),
     )
     pool = pool.filter((q) => importantIds.has(q.id))
+  }
+  if (onlyWeakness) {
+    // ★F1-P6 後改修: 弱点フィルタを ModeSelect から切替可能に
+    //   ロジックは mode='weakness' と同じ「正答率60%未満 or 未学習」の topic を抽出
+    const progress = getAllProgress()
+    const rateMap = new Map(
+      progress.map((p) => [
+        p.topicId,
+        p.totalAttempts > 0 ? p.correctCount / p.totalAttempts : 0,
+      ])
+    )
+    pool = pool.filter((q) => {
+      const rate = rateMap.get(q.topicId)
+      return rate === undefined || rate < 0.6
+    })
   }
   return pool
 }
@@ -98,14 +114,16 @@ export default function Quiz() {
 
   // 解答モード選択画面で「重要問題のみを出題」が ON か
   const [onlyImportant, setOnlyImportant] = useState(false)
+  // 解答モード選択画面で「弱点のみを出題」が ON か（F1-P6 後改修）
+  const [onlyWeakness, setOnlyWeakness] = useState(false)
 
   const [phase, setPhase] = useState<Phase>('mode-select')
   const [answerMode, setAnswerMode] = useState<AnswerMode>('multiple-choice')
 
   // 問題リスト（retryListがあればそちらを優先）
   const baseList = useMemo(
-    () => filterQuestions(mode, categoryId, onlyImportant),
-    [mode, categoryId, onlyImportant]
+    () => filterQuestions(mode, categoryId, onlyImportant, onlyWeakness),
+    [mode, categoryId, onlyImportant, onlyWeakness]
   )
   // 答えモードに応じて記述非対応問題を除外
   const questionList = useMemo(() => {
@@ -411,6 +429,8 @@ export default function Quiz() {
             noteCategoryName={categoryName || undefined}
             onlyImportant={onlyImportant}
             onChangeOnlyImportant={setOnlyImportant}
+            onlyWeakness={onlyWeakness}
+            onChangeOnlyWeakness={setOnlyWeakness}
           />
         )}
 

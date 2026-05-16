@@ -13,6 +13,9 @@ interface Props {
   /** 重要問題のみに絞り込むチェックボックスの状態 */
   onlyImportant?: boolean
   onChangeOnlyImportant?: (v: boolean) => void
+  /** 弱点問題（正答率60%未満 or 未学習）のみに絞り込むチェックボックスの状態（F1-P6 後追加） */
+  onlyWeakness?: boolean
+  onChangeOnlyWeakness?: (v: boolean) => void
 }
 
 export default function ModeSelect({
@@ -23,6 +26,8 @@ export default function ModeSelect({
   noteCategoryName,
   onlyImportant,
   onChangeOnlyImportant,
+  onlyWeakness,
+  onChangeOnlyWeakness,
 }: Props) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 gap-6">
@@ -31,18 +36,37 @@ export default function ModeSelect({
         <h2 className="text-xl font-bold text-slate-800">解答モードを選んでください</h2>
       </div>
 
-      {/* 重要問題のみ絞り込み（重要マーク付き問題のみに限定） */}
-      {onChangeOnlyImportant && (
-        <label className="w-full max-w-sm flex items-center gap-2.5 px-3 py-2 rounded-xl border border-amber-200 bg-amber-50 cursor-pointer hover:bg-amber-100 transition-colors">
-          <input
-            type="checkbox"
-            checked={!!onlyImportant}
-            onChange={(e) => onChangeOnlyImportant(e.target.checked)}
-            className="w-4 h-4 accent-amber-500"
-          />
-          <span className="text-sm text-amber-900 font-bold">★ 重要問題のみを出題</span>
-          <span className="ml-auto text-[11px] text-amber-700">出題 {questionCount} 問</span>
-        </label>
+      {/* 絞り込みオプション群（重要マーク / 弱点） */}
+      {(onChangeOnlyImportant || onChangeOnlyWeakness) && (
+        <div className="w-full max-w-sm flex flex-col gap-2">
+          {/* 重要問題のみ絞り込み（重要マーク付き問題のみに限定） */}
+          {onChangeOnlyImportant && (
+            <label className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-amber-200 bg-amber-50 cursor-pointer hover:bg-amber-100 transition-colors">
+              <input
+                type="checkbox"
+                checked={!!onlyImportant}
+                onChange={(e) => onChangeOnlyImportant(e.target.checked)}
+                className="w-4 h-4 accent-amber-500"
+              />
+              <span className="text-sm text-amber-900 font-bold">★ 重要問題のみを出題</span>
+              <span className="ml-auto text-[11px] text-amber-700">出題 {questionCount} 問</span>
+            </label>
+          )}
+
+          {/* 弱点のみ絞り込み（F1-P6 後改修: 正答率60%未満 or 未学習のカテゴリの問題のみに限定） */}
+          {onChangeOnlyWeakness && (
+            <label className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-red-200 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors">
+              <input
+                type="checkbox"
+                checked={!!onlyWeakness}
+                onChange={(e) => onChangeOnlyWeakness(e.target.checked)}
+                className="w-4 h-4 accent-red-500"
+              />
+              <span className="text-sm text-red-900 font-bold">📉 弱点のみを出題</span>
+              <span className="ml-auto text-[11px] text-red-700">正答率60%未満</span>
+            </label>
+          )}
+        </div>
       )}
 
       <div className="w-full max-w-sm flex flex-col gap-4">
