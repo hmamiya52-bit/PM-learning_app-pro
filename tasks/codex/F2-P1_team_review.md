@@ -22,7 +22,7 @@ Claude が投入した `src/pages/NoteDetail.tsx` の `NOTE_DB.team`（37 セク
   - `detailed_design.md` v0.18 §5.5（ノート詳細画面 / NoteData 構造）
   - `basic_design.md` v0.9 §5.9（静的データ検証スクリプト）
   - `tasks/F2-P1_team_outline.md`（章構成案、全37セクション）
-  - `memory/feedback_note_markup.md`（==赤字== / __ネイビー__ マークアップ規約）
+  - `docs/note_markup_rules.md` v1.0（==赤字== / __ネイビー__ マークアップ規約・**正本**）
   - F1.5-P2 stakeholder のレビュー記録 `tasks/reviews/F1.5-P2_codex_review.md` を参考
 - 前タスク: Claude commit `<TBD>` で team 37セクション投入済
 - 関連型定義: `src/pages/NoteDetail.tsx` line 20〜81（`NoteData` / `NoteSection` / `EmphasisToken` / `HeaderDiagram` 等）
