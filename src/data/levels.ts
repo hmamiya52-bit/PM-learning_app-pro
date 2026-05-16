@@ -11,13 +11,13 @@ export const LEVELS: LevelDefinition[] = [
   { level: 4,  title: '一人前',                      xpRequired: 1400 },
   { level: 5,  title: '中堅',                        xpRequired: 4000 },
   { level: 6,  title: '熟練者',                      xpRequired: 8000 },
-  { level: 7,  title: '達人',                        xpRequired: 20000 },
-  { level: 8,  title: '名人',                        xpRequired: 50000 },
-  { level: 9,  title: 'プロジェクトリーダー',        xpRequired: 85000 },
+  { level: 7,  title: 'サブリーダー',                xpRequired: 20000 },
+  { level: 8,  title: 'プロジェクトリーダー',        xpRequired: 50000 },
+  { level: 9,  title: 'PM補佐',                      xpRequired: 85000 },
   // Lv10 は XP しきい値だけでなく勲章コンプも必須（getLevelFromXp の第2引数で判定）
   { level: 10, title: 'プロジェクトマネージャ',      xpRequired: 150000 },
   // Lv11 は Lv10（勲章コンプ必須）を経由しないと到達不可
-  { level: 11, title: '神',                          xpRequired: 500000 },
+  { level: 11, title: 'PMO責任者',                   xpRequired: 500000 },
 ]
 
 export const MAX_LEVEL_REQUIRES_ALL_BADGES = true
