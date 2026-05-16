@@ -40,9 +40,15 @@ import { loadBalancerQuestions } from './load-balancer'
 import { sdnQuestions } from './sdn'
 import { proxyQuestions } from './proxy'
 
+// PM カテゴリ（F1.5-P3 stakeholder パイロット投入。残 11 カテゴリは F2-P2 で追加）
+import { stakeholderQuestions } from './stakeholder'
+
 export type { Question }
 
 export const questions: Question[] = [
+  // PM カテゴリ（PMBOK第7版＋IPA PM試験シラバスベース）
+  ...stakeholderQuestions,
+  // NW 残置（F2-P2 で PM 12カテゴリへ全置換予定）
   ...layer1_3Questions,
   ...routingQuestions,
   ...dnsQuestions,
