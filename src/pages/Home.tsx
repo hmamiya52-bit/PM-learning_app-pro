@@ -42,14 +42,6 @@ function IconBook({ className }: { className?: string }) {
   )
 }
 
-function IconStar({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-    </svg>
-  )
-}
-
 function IconTrendingDown({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -99,30 +91,6 @@ function IconPen({ className }: { className?: string }) {
   )
 }
 
-function IconSearch({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-    </svg>
-  )
-}
-
-function IconMedal({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-    </svg>
-  )
-}
-
-function IconBarChart({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 20h18M6 16V8m6 8V4m6 12v-5" />
-    </svg>
-  )
-}
-
 function IconSync({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -131,44 +99,33 @@ function IconSync({ className }: { className?: string }) {
   )
 }
 
-function IconGear({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  )
-}
-
+/**
+ * 学習メニュー（8項目）— F1-P6 後の UX 整理:
+ *   削除済み（他の動線から到達可能なため）:
+ *     - 重要問題モード: カテゴリ別出題の画面で「重要マークのみ」フィルタが選択可能
+ *     - ランダム出題: 「全体の学習進捗」セクション右上のボタンから起動可能
+ *     - 検索: ヘッダの検索アイコンから常時アクセス可
+ *     - バッジ: LevelWidget をクリックすると遷移
+ *     - 学習履歴: ページ下部の「学習履歴」セクションで直接表示
+ *     - 設定: ヘッダの歯車アイコンから常時アクセス可
+ */
 const MENU_CARDS: MenuCard[] = [
   // 1. アプリの使い方
-  { to: '/how-to-use',          title: 'アプリの使い方',     description: '5つの学習モードの活用方法', iconBg: 'bg-brand-light',    iconColor: 'text-brand',   icon: <IconHelp className="w-6 h-6 text-brand" /> },
+  { to: '/how-to-use',          title: 'アプリの使い方',     description: '各学習モードの活用方法',     iconBg: 'bg-brand-light',    iconColor: 'text-brand',      icon: <IconHelp className="w-6 h-6 text-brand" /> },
   // 2. ノートモード
-  { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',    iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
-  // 3. 重要問題モード
-  { to: '/quiz?mode=important', title: '重要問題モード',     description: 'マーク済み問題のみ',         iconBg: 'bg-amber-50',   iconColor: 'text-amber-600',  icon: <IconStar className="w-6 h-6 text-amber-500" /> },
-  // 4. 弱点克服モード（未学習時は無効）
-  { to: '/quiz?mode=weakness',  title: '弱点克服モード',     description: '不正解の多い問題',           iconBg: 'bg-red-50',     iconColor: 'text-red-500',    icon: <IconTrendingDown className="w-6 h-6 text-red-500" />, disableWhenNoStudy: true },
-  // 5. ランダム出題
-  { to: '/quiz?mode=random',    title: 'ランダム出題',       description: '全カテゴリから',             iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600',icon: <IconShuffle className="w-6 h-6 text-emerald-600" /> },
-  // 6. カテゴリ別学習（/notes に飛ばし、ユーザがカテゴリ選択経由でクイズへ。DP-P1-1）
-  { to: '/notes',               title: 'カテゴリ別学習',     description: 'カテゴリを選んで学習',       iconBg: 'bg-cyan-50',    iconColor: 'text-cyan-600',   icon: <IconLayers className="w-6 h-6 text-cyan-600" /> },
-  // 7. 公式午前II問題（F1-P4 で本格実装、現状は 404 へ）
-  { to: '/morning',             title: '公式午前II問題',     description: '過去問25問×全年度',          iconBg: 'bg-indigo-50',  iconColor: 'text-indigo-600', icon: <IconFileText className="w-6 h-6 text-indigo-600" /> },
-  // 8. 午後問題
-  { to: '/afternoon',           title: '午後問題',           description: '自己採点・記録',             iconBg: 'bg-purple-50',  iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
-  // 9. 論述トレーニング（F1-P5 で本格実装、現状は 404 へ）
-  { to: '/essay',               title: '論述トレーニング',   description: '午後II対応',                 iconBg: 'bg-pink-50',    iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
-  // 10. 検索
-  { to: '/search',              title: '検索',               description: '全コンテンツ検索',           iconBg: 'bg-slate-50',   iconColor: 'text-slate-600',  icon: <IconSearch className="w-6 h-6 text-slate-600" /> },
-  // 11. バッジ
-  { to: '/badges',              title: 'バッジ',             description: '解錠状況',                   iconBg: 'bg-yellow-50',  iconColor: 'text-yellow-600', icon: <IconMedal className="w-6 h-6 text-yellow-600" /> },
-  // 12. 学習履歴
-  { to: '/history',             title: '学習履歴',           description: '日次・週次サマリ',           iconBg: 'bg-violet-50',  iconColor: 'text-violet-600', icon: <IconBarChart className="w-6 h-6 text-violet-600" /> },
-  // 13. デバイス同期
-  { to: '/sync',                title: 'デバイス同期',       description: 'QRコードで他端末へ',         iconBg: 'bg-sky-50',     iconColor: 'text-sky-600',    icon: <IconSync className="w-6 h-6 text-sky-600" /> },
-  // 14. 設定
-  { to: '/settings',            title: '設定',               description: 'リセット・重要マーク管理',   iconBg: 'bg-slate-100',  iconColor: 'text-slate-700',  icon: <IconGear className="w-6 h-6 text-slate-700" /> },
+  { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',        iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
+  // 3. 弱点克服モード（未学習時は無効）
+  { to: '/quiz?mode=weakness',  title: '弱点克服モード',     description: '不正解の多い問題',           iconBg: 'bg-red-50',         iconColor: 'text-red-500',    icon: <IconTrendingDown className="w-6 h-6 text-red-500" />, disableWhenNoStudy: true },
+  // 4. カテゴリ別学習（/notes に飛ばし、ユーザがカテゴリ選択経由でクイズへ。DP-P1-1）
+  { to: '/notes',               title: 'カテゴリ別学習',     description: 'カテゴリを選んで学習',       iconBg: 'bg-cyan-50',        iconColor: 'text-cyan-600',   icon: <IconLayers className="w-6 h-6 text-cyan-600" /> },
+  // 5. 公式午前II問題
+  { to: '/morning',             title: '公式午前II問題',     description: '過去問4択 出典:IPA',         iconBg: 'bg-indigo-50',      iconColor: 'text-indigo-600', icon: <IconFileText className="w-6 h-6 text-indigo-600" /> },
+  // 6. 午後Ⅰ問題（PM試験 午後I、「午後問題」→「午後Ⅰ問題」に改名）
+  { to: '/afternoon',           title: '午後Ⅰ問題',         description: '自己採点・記録',             iconBg: 'bg-purple-50',      iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
+  // 7. 論述トレーニング（午後II）
+  { to: '/essay',               title: '論述トレーニング',   description: '午後II対応',                 iconBg: 'bg-pink-50',        iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
+  // 8. デバイス同期
+  { to: '/sync',                title: 'デバイス同期',       description: 'QRコードで他端末へ',         iconBg: 'bg-sky-50',         iconColor: 'text-sky-600',    icon: <IconSync className="w-6 h-6 text-sky-600" /> },
 ]
 
 function MenuCardGrid({ cards, studiedCount }: { cards: MenuCard[]; studiedCount: number }) {

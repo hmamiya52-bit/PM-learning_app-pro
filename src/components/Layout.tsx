@@ -173,7 +173,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'ランダム出題',       to: '/quiz?mode=random',       icon: <IconShuffle /> },
   { label: 'カテゴリ別学習',     to: '/notes',                  icon: <IconLayers /> },
   { label: '公式午前II問題',     to: '/morning',                icon: <IconFileText /> },
-  { label: '午後問題',           to: '/afternoon',              icon: <IconClipboard /> },
+  { label: '午後Ⅰ問題',         to: '/afternoon',              icon: <IconClipboard /> },
   { label: '論述トレーニング',   to: '/essay',                  icon: <IconPen /> },
   { label: '検索',               to: '/search',                 icon: <IconSearch /> },
   { label: 'バッジ',             to: '/badges',                 icon: <IconMedal /> },
@@ -252,8 +252,8 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* ===== Header =====
-          F1-P6 D-UI-02 対応: inline style hex を bg-brand クラスへリライト済み */}
-      <header className="fixed top-0 left-0 right-0 z-30 flex items-center h-12 px-3 gap-3 text-white shadow-md bg-brand">
+          F1-P6 D-UI-02 対応: inline style hex を bg-brand-dark クラスへリライト済み */}
+      <header className="fixed top-0 left-0 right-0 z-30 flex items-center h-12 px-3 gap-3 text-white shadow-md bg-brand-dark">
         {/* Hamburger toggle */}
         <button
           onClick={toggle}
@@ -273,6 +273,15 @@ export default function Layout() {
         >
           <img src="/pwa-192x192.png" alt="" className="w-8 h-8 rounded-md flex-shrink-0" />
           <span className="text-sm font-medium text-white/80 leading-none truncate">PM Learning App</span>
+        </Link>
+
+        {/* Search shortcut（F1-P6 後 UX 改善: ヘッダに常設） */}
+        <Link
+          to="/search"
+          className="p-2 rounded-lg hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors flex-shrink-0"
+          aria-label="検索"
+        >
+          <IconSearch />
         </Link>
 
         {/* Settings shortcut */}
@@ -297,12 +306,12 @@ export default function Layout() {
         )}
 
         {/* ===== Sidebar =====
-            F1-P6 D-UI-02 対応: backgroundColor は bg-brand クラスへリライト済み。
+            F1-P6 D-UI-02 対応: backgroundColor は bg-brand-dark クラスへリライト済み。
             width は dynamic（モバイル開閉アニメーション）なため inline style のまま。 */}
         <nav
           id="sidebar"
           aria-label="メインナビゲーション"
-          className="fixed top-12 bottom-0 z-20 flex flex-col overflow-hidden transition-[width] duration-200 ease-in-out bg-brand"
+          className="fixed top-12 bottom-0 z-20 flex flex-col overflow-hidden transition-[width] duration-200 ease-in-out bg-brand-dark"
           style={{ width: isMobile ? (isOpen ? 240 : 0) : sidebarWidth }}
         >
           <ul className="flex-1 py-3 overflow-y-auto overflow-x-hidden">

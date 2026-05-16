@@ -20,22 +20,22 @@ export default function LevelWidget() {
   return (
     <Link
       to="/badges"
-      className="block bg-gradient-to-br from-brand-darker to-indigo-800 rounded-xl p-3 text-white shadow-md hover:shadow-lg transition-shadow active:scale-[0.98]"
+      className="block bg-gradient-to-br from-brand-dark to-brand-darker rounded-xl p-3 text-white shadow-md hover:shadow-lg transition-shadow active:scale-[0.98]"
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-baseline gap-2">
           <span className="text-[10px] font-bold text-white/80 uppercase tracking-wide">Lv.</span>
           <span className="text-lg font-black">{currentLv.level}</span>
-          <span className="text-sm font-bold text-white/80">{currentLv.title}</span>
+          <span className="text-sm font-bold text-white/90">{currentLv.title}</span>
         </div>
         <div className="flex items-center gap-3 text-right">
           <span className="text-[10px] text-white/80">
             勲章 <span className="text-sm font-black text-white">{unlockedCount}</span>
-            <span className="text-white/80"> / {totalBadges}</span>
+            <span className="text-white/60"> / {totalBadges}</span>
           </span>
           <span className="text-[10px] text-white/80">
             {state.xp.toLocaleString()} XP
-            {nextLv && <span className="text-brand"> / {nextLv.xpRequired.toLocaleString()}</span>}
+            {nextLv && <span className="text-white/60"> / {nextLv.xpRequired.toLocaleString()}</span>}
           </span>
         </div>
       </div>
