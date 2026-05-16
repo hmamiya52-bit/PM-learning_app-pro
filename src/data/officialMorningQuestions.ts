@@ -97,34 +97,37 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
       type: 'svg',
       ariaLabel: 'EVMグラフ。横軸は時間（開始日・現時点・完了予定日）、縦軸は金額換算値。現時点で BAC=100、PV=50、AC=40、EV=34',
       caption: '図　BAC・PV・AC・EVの位置関係（現時点は中間点）',
-      viewBox: '0 0 360 210',
+      viewBox: '0 0 380 220',
       content: `
-        <rect x="50" y="20" width="270" height="160" fill="#fafafa"/>
-        <line x1="50" y1="14" x2="50" y2="185" stroke="#1e293b" stroke-width="1.5"/>
-        <polygon points="46,18 54,18 50,8" fill="#1e293b"/>
-        <line x1="42" y1="180" x2="350" y2="180" stroke="#1e293b" stroke-width="1.5"/>
-        <polygon points="348,176 348,184 358,180" fill="#1e293b"/>
-        <text x="78" y="13" text-anchor="middle" font-size="9" fill="#475569">金額換算値</text>
-        <line x1="48" y1="30" x2="52" y2="30" stroke="#1e293b" stroke-width="1"/>
-        <text x="44" y="33" text-anchor="end" font-size="10" fill="#1e293b">100</text>
-        <line x1="48" y1="105" x2="52" y2="105" stroke="#1e293b" stroke-width="1"/>
-        <text x="44" y="108" text-anchor="end" font-size="10" fill="#1e293b">50</text>
-        <line x1="48" y1="120" x2="52" y2="120" stroke="#1e293b" stroke-width="1"/>
-        <text x="44" y="123" text-anchor="end" font-size="10" fill="#1e293b">40</text>
-        <line x1="48" y1="129" x2="52" y2="129" stroke="#1e293b" stroke-width="1"/>
-        <text x="44" y="132" text-anchor="end" font-size="10" fill="#1e293b">34</text>
-        <line x1="185" y1="30" x2="185" y2="180" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
-        <line x1="320" y1="30" x2="320" y2="180" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
-        <line x1="50" y1="180" x2="320" y2="30" stroke="#1e293b" stroke-width="1.6"/>
-        <line x1="50" y1="180" x2="185" y2="120" stroke="#1e293b" stroke-width="1.6"/>
-        <line x1="50" y1="180" x2="185" y2="129" stroke="#1e293b" stroke-width="1.6"/>
-        <text x="325" y="34" font-size="11" fill="#1e293b" font-weight="bold">BAC</text>
-        <text x="190" y="103" font-size="11" fill="#1e293b" font-weight="bold">← PV</text>
-        <text x="190" y="118" font-size="11" fill="#1e293b" font-weight="bold">← AC</text>
-        <text x="190" y="138" font-size="11" fill="#1e293b" font-weight="bold">← EV</text>
-        <text x="50" y="198" text-anchor="middle" font-size="10" fill="#1e293b">開始日</text>
-        <text x="185" y="198" text-anchor="middle" font-size="10" fill="#1e293b">現時点</text>
-        <text x="320" y="198" text-anchor="middle" font-size="10" fill="#1e293b">完了予定日</text>
+        <defs>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <rect x="55" y="25" width="290" height="160" fill="#fafafa"/>
+        <line x1="55" y1="18" x2="55" y2="190" stroke="#1e293b" stroke-width="1.5"/>
+        <polygon points="51,22 59,22 55,12" fill="#1e293b"/>
+        <line x1="47" y1="185" x2="370" y2="185" stroke="#1e293b" stroke-width="1.5"/>
+        <polygon points="368,181 368,189 378,185" fill="#1e293b"/>
+        <text x="80" y="14" text-anchor="middle" font-size="10" fill="#475569" stroke-width="0">金額換算値</text>
+        <line x1="53" y1="35" x2="57" y2="35" stroke="#1e293b" stroke-width="1"/>
+        <text x="48" y="38" text-anchor="end" font-size="10" fill="#1e293b">100</text>
+        <line x1="53" y1="110" x2="57" y2="110" stroke="#1e293b" stroke-width="1"/>
+        <text x="48" y="113" text-anchor="end" font-size="10" fill="#1e293b">50</text>
+        <line x1="53" y1="125" x2="57" y2="125" stroke="#1e293b" stroke-width="1"/>
+        <text x="48" y="128" text-anchor="end" font-size="10" fill="#1e293b">40</text>
+        <line x1="53" y1="134" x2="57" y2="134" stroke="#1e293b" stroke-width="1"/>
+        <text x="48" y="142" text-anchor="end" font-size="10" fill="#1e293b">34</text>
+        <line x1="195" y1="35" x2="195" y2="185" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="335" y1="35" x2="335" y2="185" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="55" y1="185" x2="335" y2="35" stroke="#1e293b" stroke-width="1.6"/>
+        <line x1="55" y1="185" x2="195" y2="125" stroke="#1e293b" stroke-width="1.6"/>
+        <line x1="55" y1="185" x2="195" y2="134" stroke="#1e293b" stroke-width="1.6"/>
+        <text x="342" y="39" font-size="12" fill="#1e293b" font-weight="bold">BAC</text>
+        <text x="202" y="108" font-size="12" fill="#1e293b" font-weight="bold">← PV</text>
+        <text x="202" y="125" font-size="12" fill="#1e293b" font-weight="bold">← AC</text>
+        <text x="202" y="146" font-size="12" fill="#1e293b" font-weight="bold">← EV</text>
+        <text x="55" y="205" text-anchor="middle" font-size="11" fill="#1e293b">開始日</text>
+        <text x="195" y="205" text-anchor="middle" font-size="11" fill="#1e293b">現時点</text>
+        <text x="335" y="205" text-anchor="middle" font-size="11" fill="#1e293b">完了予定日</text>
       `,
     },
   },
@@ -150,35 +153,36 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
           <marker id="am5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
           </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3.5px; stroke-linejoin: round; }</style>
         </defs>
         <line x1="55" y1="135" x2="167" y2="58" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="100" y="88" font-size="12" fill="#1e293b" font-weight="bold">A</text>
-        <text x="100" y="102" font-size="11" fill="#475569">8</text>
+        <text x="92" y="88" font-size="13" fill="#1e293b" font-weight="bold">A</text>
+        <text x="92" y="103" font-size="12" fill="#475569">8</text>
         <line x1="56" y1="140" x2="166" y2="140" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="105" y="135" font-size="12" fill="#1e293b" font-weight="bold">B</text>
-        <text x="105" y="151" font-size="11" fill="#475569">5</text>
+        <text x="100" y="132" font-size="13" fill="#1e293b" font-weight="bold">B</text>
+        <text x="100" y="155" font-size="12" fill="#475569">5</text>
         <line x1="54" y1="146" x2="326" y2="216" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="170" y="186" font-size="12" fill="#1e293b" font-weight="bold">C</text>
-        <text x="170" y="200" font-size="11" fill="#475569">12</text>
+        <text x="160" y="178" font-size="13" fill="#1e293b" font-weight="bold">C</text>
+        <text x="160" y="200" font-size="12" fill="#475569">12</text>
         <line x1="194" y1="55" x2="326" y2="86" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="250" y="62" font-size="12" fill="#1e293b" font-weight="bold">D</text>
-        <text x="250" y="76" font-size="11" fill="#475569">10</text>
+        <text x="246" y="58" font-size="13" fill="#1e293b" font-weight="bold">D</text>
+        <text x="246" y="84" font-size="12" fill="#475569">10</text>
         <line x1="194" y1="135" x2="326" y2="96" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="250" y="126" font-size="12" fill="#1e293b" font-weight="bold">E</text>
-        <text x="250" y="140" font-size="11" fill="#475569">9</text>
+        <text x="246" y="120" font-size="13" fill="#1e293b" font-weight="bold">E</text>
+        <text x="246" y="144" font-size="12" fill="#475569">9</text>
         <line x1="354" y1="94" x2="546" y2="135" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="440" y="105" font-size="12" fill="#1e293b" font-weight="bold">F</text>
-        <text x="440" y="119" font-size="11" fill="#475569">8</text>
-        <path d="M 354 102 Q 440 175 546 144" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#am5)"/>
-        <text x="440" y="178" font-size="12" fill="#1e293b" font-weight="bold">G</text>
-        <text x="440" y="192" font-size="11" fill="#475569">12</text>
+        <text x="436" y="102" font-size="13" fill="#1e293b" font-weight="bold">F</text>
+        <text x="436" y="128" font-size="12" fill="#475569">8</text>
+        <path d="M 354 102 Q 440 180 546 144" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#am5)"/>
+        <text x="436" y="160" font-size="13" fill="#1e293b" font-weight="bold">G</text>
+        <text x="436" y="195" font-size="12" fill="#475569">12</text>
         <line x1="340" y1="106" x2="340" y2="204" stroke="#475569" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#am5)"/>
         <line x1="356" y1="220" x2="444" y2="220" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="395" y="215" font-size="12" fill="#1e293b" font-weight="bold">H</text>
-        <text x="395" y="234" font-size="11" fill="#475569">5</text>
+        <text x="391" y="212" font-size="13" fill="#1e293b" font-weight="bold">H</text>
+        <text x="391" y="237" font-size="12" fill="#475569">5</text>
         <line x1="474" y1="215" x2="546" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
-        <text x="514" y="175" font-size="12" fill="#1e293b" font-weight="bold">I</text>
-        <text x="514" y="189" font-size="11" fill="#475569">4</text>
+        <text x="522" y="170" font-size="13" fill="#1e293b" font-weight="bold">I</text>
+        <text x="498" y="195" font-size="12" fill="#475569">4</text>
         <circle cx="40" cy="140" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
         <circle cx="180" cy="50" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
         <circle cx="180" cy="140" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
@@ -213,6 +217,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
           <marker id="am6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
           </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
         </defs>
         <rect x="20" y="55" width="50" height="30" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
         <text x="45" y="74" text-anchor="middle" font-size="12" fill="#1e293b" font-weight="bold">開始</text>

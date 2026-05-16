@@ -9,6 +9,7 @@ import { isImportant as isImportantMark } from '../lib/importantMarks'
 import ImportantToggle from '../components/ImportantToggle'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import MathText from '../components/MathText'
+import { getMorningFontSize, setMorningFontSize, type FontSize } from '../lib/preferences'
 import type { BadgeDefinition } from '../data/badges'
 
 /**
@@ -159,6 +160,14 @@ export default function OfficialMorningSession() {
   const [showExplanation, setShowExplanation] = useState(false)
   const [lastXpGained, setLastXpGained] = useState(0)
   const [pendingBadges, setPendingBadges] = useState<BadgeDefinition[]>([])
+  // 文字サイズ設定（端末ローカル、LocalStorage 永続化）
+  const [fontSize, setFontSize] = useState<FontSize>(() => getMorningFontSize())
+  const toggleFontSize = () => {
+    const next: FontSize = fontSize === 'compact' ? 'comfortable' : 'compact'
+    setFontSize(next)
+    setMorningFontSize(next)
+  }
+  const textClass = fontSize === 'comfortable' ? 'text-base' : 'text-[13px]'
 
   const currentQuestion = questionList[currentIndex]
   const isLast = currentIndex === questionList.length - 1
@@ -365,10 +374,22 @@ export default function OfficialMorningSession() {
 
         {/* 問題文 */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
-          <p className="text-[11px] text-slate-400 mb-2">
-            出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前II 問{currentQuestion.number}
-          </p>
-          <p className="text-[13px] text-slate-800 leading-relaxed whitespace-pre-wrap">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <p className="text-[11px] text-slate-400 flex-1 min-w-0 break-keep">
+              出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前II 問{currentQuestion.number}
+            </p>
+            <button
+              type="button"
+              onClick={toggleFontSize}
+              className="flex-shrink-0 inline-flex items-baseline gap-0.5 px-2 py-0.5 rounded border border-slate-200 text-slate-500 hover:border-brand hover:text-brand transition-colors"
+              title={`文字サイズ: ${fontSize === 'compact' ? '標準（クリックで大きく）' : '大（クリックで標準に）'}`}
+              aria-label="文字サイズ切替"
+            >
+              <span className="text-[10px] leading-none">A</span>
+              <span className="text-[14px] leading-none font-bold">A</span>
+            </button>
+          </div>
+          <p className={`${textClass} text-slate-800 leading-relaxed whitespace-pre-wrap`}>
             <MathText text={currentQuestion.questionText} />
           </p>
           {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
@@ -390,7 +411,7 @@ export default function OfficialMorningSession() {
                 key={originalIdx}
                 onClick={() => handleSelect(originalIdx)}
                 disabled={showExplanation}
-                className={`w-full text-left rounded-xl px-3.5 py-3 text-[13px] text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
+                className={`w-full text-left rounded-xl px-3.5 py-3 ${textClass} text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
                 <span className="inline-block text-xs font-bold text-brand-dark mr-2">{ANSWER_LABELS[displayIdx]}.</span>
                 <MathText text={choice.text} />
@@ -425,7 +446,7 @@ export default function OfficialMorningSession() {
 
             <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">解説</p>
-              <p className="text-[13px] text-slate-700 leading-relaxed">
+              <p className={`${textClass} text-slate-700 leading-relaxed`}>
                 <MathText text={currentQuestion.explanation} />
               </p>
             </div>
