@@ -985,7 +985,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__9,9 チームマネジメント型__（Team Management）: 両方高い。==理想型==',
           '試験ではグリッド座標（例: 9,1）から該当スタイルを答えさせる設問が頻出',
         ],
-        navyItems: [[{ text: '別名「マネジメント・グリッド」。Blake & Mouton 1964年提唱', style: 'navy' }]],
+        navyItems: [[{ text: '英語名は Managerial Grid。Blake & Mouton 1964年提唱', style: 'navy' }]],
       },
       {
         heading: '9. 状況対応リーダーシップ理論（SL理論：Hersey & Blanchard）',
@@ -1029,7 +1029,7 @@ export const NOTE_DB: Record<string, NoteData> = {
         items: [
           '==サーバントリーダーシップ==（Servant Leadership, Greenleaf）: リーダーは==メンバーに奉仕==し成長を支援する',
           'PMBOK第7版が==推奨==するリーダーシップ・スタイル',
-          '==アジャイル==・==スクラム==との親和性が高い（スクラムマスター＝サーバントリーダー）',
+          '==アジャイル==・==スクラム==との親和性が高い（スクラムマスターはサーバントリーダーとして振る舞う）',
           '主要行動:',
           '__障害物の除去__（Impediment Removal）: メンバーの作業を阻む要因を取り除く',
           '__傾聴__（Active Listening）: メンバーの声を聞く',
@@ -1317,7 +1317,7 @@ export const NOTE_DB: Record<string, NoteData> = {
         navyItems: [[{ text: '出典: PMBOK第6版 §9.5.2.1 対人スキル「コンフリクト・マネジメント」', style: 'navy' }]],
       },
       {
-        heading: '32. トーマス＝キルマンの5つの対処モード',
+        heading: '32. トーマス-キルマンの5つの対処モード',
         items: [
           'Thomas-Kilmann コンフリクト・モデル: ==自己主張==（縦軸）×==協調==（横軸）の2軸で5モードを整理',
           '__1. 撤退／回避__（Withdraw／Avoid）: 自己主張==低==・協調==低==。「触れない」。==一時退避==に有効、根本解決にならない',
@@ -1399,7 +1399,7 @@ export const NOTE_DB: Record<string, NoteData> = {
         heading: '37. ひっかけパターン',
         items: [
           '__期待理論 vs 公平理論__: ==Vroom==（E×I×V の積）と==Adams==（他者比較の公平感）の混同',
-          '__XY理論 vs Z理論__: ==McGregor==（X＝怠惰／Y＝自律）と==Ouchi==（Z＝日本型）の混同',
+          '__XY理論 vs Z理論__: ==McGregor==（Xは怠惰／Yは自律）と==Ouchi==（Zは日本型）の混同',
           '__衛生要因 vs 動機づけ要因__: ==給与==は衛生（不満防止）、==承認==は動機づけ（満足促進）',
           '__SL理論のスタイル名__: S1 指示／S2 説得／S3 参加／S4 委任の==順序==',
           '__タックマン段階__: 「形成期」と「規範期」の混同／「混乱期」をスキップしないこと',
