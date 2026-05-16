@@ -135,7 +135,6 @@
   }
   .badge.claude { background: #ddd6fe; color: #5b21b6; }
   .badge.codex { background: #cffafe; color: #155e75; }
-  .badge.gemini { background: #fee2e2; color: #991b1b; }
   .badge.user { background: #fef3c7; color: #92400e; }
 
   /* Duration column */
@@ -224,7 +223,6 @@
   <button class="filter-btn active" data-filter="all">すべて</button>
   <button class="filter-btn" data-filter="claude">🅒 Claude</button>
   <button class="filter-btn" data-filter="codex">🅧 Codex</button>
-  <button class="filter-btn" data-filter="gemini">Gemini</button>
   <button class="filter-btn" data-filter="user">ユーザ</button>
   <span style="margin-left:auto;color:#94a3b8;font-size:11px;">担当複数の場合はAND判定</span>
 </div>
@@ -741,18 +739,18 @@
   <td class="col-deliverable">「ステークホルダー」確定</td>
   <td class="deps">F1完了</td>
 </tr>
-<tr class="task-row" data-assignees="claude codex gemini user">
+<tr class="task-row" data-assignees="claude codex user">
   <td><span class="task-id ph-1-5">F1.5-P2</span></td>
   <td class="col-name">パイロットノート作成（30セクション以上）</td>
-  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge user">User</span></td>
   <td class="duration">1.5d</td>
-  <td class="col-deliverable">ノート完成（4段階レビュー後）</td>
+  <td class="col-deliverable">ノート完成（3段階レビュー後）</td>
   <td class="deps">F1.5-P1</td>
 </tr>
-<tr class="task-row" data-assignees="claude codex gemini user">
+<tr class="task-row" data-assignees="claude codex user">
   <td><span class="task-id ph-1-5">F1.5-P3</span></td>
   <td class="col-name">パイロットクイズ作成（50問）</td>
-  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge user">User</span></td>
   <td class="duration">1d</td>
   <td class="col-deliverable">50問+解説+検証pass</td>
   <td class="deps">F1.5-P2</td>
@@ -795,18 +793,18 @@
 
 <tr class="process-header"><td colspan="6">[工程] コンテンツ大量投入</td></tr>
 
-<tr class="task-row" data-assignees="claude codex gemini user">
+<tr class="task-row" data-assignees="claude codex user">
   <td><span class="task-id ph-2">F2-P1</span></td>
   <td class="col-name">残り11カテゴリのノート本文作成</td>
-  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge user">User</span></td>
   <td class="duration">7-12d<br><span class="range">各0.7-1d</span></td>
   <td class="col-deliverable">12カテゴリ全ノート完成</td>
   <td class="deps">F1.5完了</td>
 </tr>
-<tr class="task-row" data-assignees="claude codex gemini user">
+<tr class="task-row" data-assignees="claude codex user">
   <td><span class="task-id ph-2">F2-P2</span></td>
   <td class="col-name">残り11カテゴリのクイズ（550問）</td>
-  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge user">User</span></td>
   <td class="duration">5-8d<br><span class="range">各カテゴリ50問</span></td>
   <td class="col-deliverable">600問総数+検証pass</td>
   <td class="deps">F2-P1</td>
@@ -835,10 +833,10 @@
   <td class="col-deliverable">EssayProblemデータ完成</td>
   <td class="deps">F1.5完了（並行可）</td>
 </tr>
-<tr class="task-row" data-assignees="claude codex gemini user">
+<tr class="task-row" data-assignees="claude codex user">
   <td><span class="task-id ph-2">F2-P6</span></td>
   <td class="col-name">PMBOK第8版差分カテゴリ（pmbok8-diff）</td>
-  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge gemini">Gemini</span><span class="badge user">User</span></td>
+  <td><span class="badge claude">🅒</span><span class="badge codex">🅧</span><span class="badge user">User</span></td>
   <td class="duration">1.5d</td>
   <td class="col-deliverable">第8版追加要素ノート</td>
   <td class="deps">F2-P1</td>
@@ -890,9 +888,8 @@
   <p>
     <strong>担当者凡例:</strong>
     <span class="badge claude">🅒 Claude</span> 設計判断・複雑実装・コンテンツ生成 /
-    <span class="badge codex">🅧 Codex</span> 機械的実装・テンプレ通りの作業 /
-    <span class="badge gemini">Gemini</span> コンテンツの第三者レビュー /
-    <span class="badge user">ユーザ</span> 判断・選定・最終確認・パイロット試用
+    <span class="badge codex">🅧 Codex</span> 機械的実装・テンプレ通りの作業・構造レビュー /
+    <span class="badge user">ユーザ</span> 判断・選定・最終確認・コンテンツ妥当性レビュー・パイロット試用
   </p>
   <p>
     <strong>フェーズ間ルール:</strong>
