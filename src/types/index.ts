@@ -96,7 +96,30 @@ export interface OfficialMorningQuestion {
   explanation: string                 // 独自作成解説（PM 著作物）
   categoryId?: string                 // 関連 PM 12カテゴリの ID
   sourceUrl: string                   // IPA 出典 URL
+  figure?: QuestionFigure             // 図表（IPA原本に図表がある問題のみ）
 }
+
+/**
+ * 問題に添える図表データ。
+ * IPA原本の画像情報を、テキスト引用範囲を超えない範囲で構造化して再現するためのもの。
+ * - svg: アローダイアグラム・PDM・グラフなど図形系（dangerouslySetInnerHTMLで描画）
+ * - table: 表形式データ
+ */
+export type QuestionFigure =
+  | {
+      type: 'svg'
+      caption?: string                // 図のキャプション（任意）
+      ariaLabel: string               // スクリーンリーダー向け説明
+      viewBox: string                 // SVG viewBox 例: '0 0 600 240'
+      content: string                 // <svg> の中身（タグ外側を含まない）
+    }
+  | {
+      type: 'table'
+      caption?: string                // 表のキャプション（例: '〔開発要員投入計画（単位 人）〕'）
+      headers: string[]               // 表頭（左上の空セルを含む全カラム）
+      rows: (string | number)[][]     // 各行のセル値（最初は行ラベル）
+      rowHeaderFirstCol?: boolean     // true なら各行の最初のセルを <th> 扱い
+    }
 
 /**
  * 公式午前II 解答記録（DP-P2-1 のため、自動解除なし）

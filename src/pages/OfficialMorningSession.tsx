@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { officialMorningQuestions } from '../data/officialMorningQuestions'
-import type { OfficialMorningQuestion } from '../types'
+import type { OfficialMorningQuestion, QuestionFigure } from '../types'
 import { addMorningRecord } from '../lib/morningRecords'
 import { applyAnswer } from '../lib/gamification'
 import { addActivityEvent, upsertQuizSessionEvent } from '../lib/activityLog'
@@ -24,6 +24,87 @@ import type { BadgeDefinition } from '../data/badges'
 
 const ANSWER_LABELS = ['ア', 'イ', 'ウ', 'エ'] as const
 
+/**
+ * IPA原本の図表を再現する表示コンポーネント。
+ * - svg: viewBox で自動スケール、`max-w-full` でモバイル幅に追従
+ * - table: 横スクロール対応ラッパで12列以上の表もモバイルで閲覧可
+ */
+function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
+  if (figure.type === 'svg') {
+    return (
+      <figure className="my-4 flex flex-col items-center" aria-label={figure.ariaLabel}>
+        <div
+          className="w-full max-w-full overflow-x-auto"
+          // 内部に <svg> タグは含まれない想定で外側に置く
+        >
+          <svg
+            viewBox={figure.viewBox}
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label={figure.ariaLabel}
+            className="block mx-auto w-full h-auto max-w-2xl"
+            // SVG markup は信頼できる内部データのみ
+            dangerouslySetInnerHTML={{ __html: figure.content }}
+          />
+        </div>
+        {figure.caption && (
+          <figcaption className="text-[11px] text-slate-500 mt-1.5 text-center">
+            {figure.caption}
+          </figcaption>
+        )}
+      </figure>
+    )
+  }
+  // table
+  return (
+    <figure className="my-4">
+      {figure.caption && (
+        <figcaption className="text-xs font-bold text-slate-700 mb-1.5">
+          {figure.caption}
+        </figcaption>
+      )}
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full border-collapse text-xs text-slate-800">
+          <thead>
+            <tr>
+              {figure.headers.map((h, i) => (
+                <th
+                  key={i}
+                  className="border border-slate-300 bg-slate-100 px-2 py-1.5 font-semibold whitespace-nowrap text-center"
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {figure.rows.map((row, ri) => (
+              <tr key={ri}>
+                {row.map((cell, ci) => {
+                  const isRowHeader = figure.rowHeaderFirstCol && ci === 0
+                  const Tag = isRowHeader ? 'th' : 'td'
+                  return (
+                    <Tag
+                      key={ci}
+                      className={
+                        isRowHeader
+                          ? 'border border-slate-300 bg-slate-50 px-2 py-1.5 font-semibold whitespace-nowrap text-left'
+                          : 'border border-slate-300 px-2 py-1.5 whitespace-nowrap text-center tabular-nums'
+                      }
+                    >
+                      {cell}
+                    </Tag>
+                  )
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  )
+}
+
 interface SessionLog {
   question: OfficialMorningQuestion
   selectedIndex: 0 | 1 | 2 | 3
@@ -32,7 +113,7 @@ interface SessionLog {
 
 interface LocationState {
   questionIds?: string[]
-  scope?: 'random' | 'year' | 'important' | 'single'
+  scope?: 'random' | 'year' | 'important' | 'single' | 'category'
   yearLabel?: string
 }
 
@@ -276,6 +357,7 @@ export default function OfficialMorningSession() {
           <p className="text-base text-slate-800 leading-relaxed whitespace-pre-wrap">
             {currentQuestion.questionText}
           </p>
+          {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
         </div>
 
         {/* 4択（シャッフル後の表示順） */}

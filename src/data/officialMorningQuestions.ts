@@ -11,9 +11,12 @@
  * - 出典明記必須: 「出典：<年度> <期> プロジェクトマネージャ試験 午前II 問<番号>」
  * - 問題文・選択肢は IPA 公式のまま引用（改変なし）。解説のみ独自作成。
  *
- * 図表入り問題（問4・問5・問6・問10・問12）について:
- * - 現行 UI は画像レンダリング非対応のため、questionText 末尾に図表内容をプレーンテキストで補足
- * - 解説では数式の意味と論点を中心に説明
+ * 図表入り問題について:
+ * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
+ * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
+ * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
+ * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
+ * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
@@ -84,12 +87,46 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和6（2024）',
     number: 4,
     questionText:
-      'EVM で管理しているプロジェクトがある。図は，プロジェクトの開始日から完了予定日までの期間の半分が経過した時点での状況である。完成時総予算 (BAC) どおりに完了させるために達成することが必要となるコスト効率の指標である残作業効率指数 (TCPI) の値はどれか。ここで，TCPI は小数第 2 位を四捨五入するものとする。\n[図: 現時点で BAC=100，PV=50，AC=40，EV=34]',
+      'EVM で管理しているプロジェクトがある。図は，プロジェクトの開始日から完了予定日までの期間の半分が経過した時点での状況である。完成時総予算 (BAC) どおりに完了させるために達成することが必要となるコスト効率の指標である残作業効率指数 (TCPI) の値はどれか。ここで，TCPI は小数第 2 位を四捨五入するものとする。',
     choices: ['0.6', '0.9', '1.1', '1.3'],
     correctIndex: 2,
     explanation: 'TCPI = (BAC − EV) / (BAC − AC) = (100 − 34) / (100 − 40) = 66 / 60 = 1.1。TCPI は BAC（完成時総予算）どおりに完了させるため，残予算で残作業を消化するのに必要なコスト効率指数。1.0 を超えるとそれまで以上のコスト効率が必要であることを意味する。',
     categoryId: 'measurement',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'EVMグラフ。横軸は時間（開始日・現時点・完了予定日）、縦軸は金額換算値。現時点で BAC=100、PV=50、AC=40、EV=34',
+      caption: '図　BAC・PV・AC・EVの位置関係（現時点は中間点）',
+      viewBox: '0 0 360 210',
+      content: `
+        <rect x="50" y="20" width="270" height="160" fill="#fafafa"/>
+        <line x1="50" y1="14" x2="50" y2="185" stroke="#1e293b" stroke-width="1.5"/>
+        <polygon points="46,18 54,18 50,8" fill="#1e293b"/>
+        <line x1="42" y1="180" x2="350" y2="180" stroke="#1e293b" stroke-width="1.5"/>
+        <polygon points="348,176 348,184 358,180" fill="#1e293b"/>
+        <text x="78" y="13" text-anchor="middle" font-size="9" fill="#475569">金額換算値</text>
+        <line x1="48" y1="30" x2="52" y2="30" stroke="#1e293b" stroke-width="1"/>
+        <text x="44" y="33" text-anchor="end" font-size="10" fill="#1e293b">100</text>
+        <line x1="48" y1="105" x2="52" y2="105" stroke="#1e293b" stroke-width="1"/>
+        <text x="44" y="108" text-anchor="end" font-size="10" fill="#1e293b">50</text>
+        <line x1="48" y1="120" x2="52" y2="120" stroke="#1e293b" stroke-width="1"/>
+        <text x="44" y="123" text-anchor="end" font-size="10" fill="#1e293b">40</text>
+        <line x1="48" y1="129" x2="52" y2="129" stroke="#1e293b" stroke-width="1"/>
+        <text x="44" y="132" text-anchor="end" font-size="10" fill="#1e293b">34</text>
+        <line x1="185" y1="30" x2="185" y2="180" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="320" y1="30" x2="320" y2="180" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="50" y1="180" x2="320" y2="30" stroke="#1e293b" stroke-width="1.6"/>
+        <line x1="50" y1="180" x2="185" y2="120" stroke="#1e293b" stroke-width="1.6"/>
+        <line x1="50" y1="180" x2="185" y2="129" stroke="#1e293b" stroke-width="1.6"/>
+        <text x="325" y="34" font-size="11" fill="#1e293b" font-weight="bold">BAC</text>
+        <text x="190" y="103" font-size="11" fill="#1e293b" font-weight="bold">← PV</text>
+        <text x="190" y="118" font-size="11" fill="#1e293b" font-weight="bold">← AC</text>
+        <text x="190" y="138" font-size="11" fill="#1e293b" font-weight="bold">← EV</text>
+        <text x="50" y="198" text-anchor="middle" font-size="10" fill="#1e293b">開始日</text>
+        <text x="185" y="198" text-anchor="middle" font-size="10" fill="#1e293b">現時点</text>
+        <text x="320" y="198" text-anchor="middle" font-size="10" fill="#1e293b">完了予定日</text>
+      `,
+    },
   },
   {
     id: 'om-R6-5',
@@ -97,12 +134,62 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和6（2024）',
     number: 5,
     questionText:
-      'あるプロジェクトの作業が図のとおり計画されているとき，最短日数で終了するためには，作業 H はプロジェクトの開始から遅くとも何日経過した後に開始しなければならないか。\n[図: 作業 A=8，B=5，C=12，D=10，E=9，F=8，G=12，H=5，I=4。D/E 後の結合点から H 前の結合点へのダミー作業あり]',
+      'あるプロジェクトの作業が図のとおり計画されているとき，最短日数で終了するためには，作業 H はプロジェクトの開始から遅くとも何日経過した後に開始しなければならないか。',
     choices: ['12', '14', '18', '21'],
     correctIndex: 3,
-    explanation: 'アローダイアグラム上で全工程の最短期間（クリティカルパス）を特定し，作業 H 後ろのパスから逆算して H の最遅開始可能時刻を求める。前段の作業群とダミー作業の合流関係を踏まえ，H 後の残工程（H + I）が最短期間を超過しない最大の開始日が答えとなる。',
+    explanation: 'クリティカルパスは A(8)+D(10)+G(12)=30 日。Hの後続は H(5)+I(4)=9 日。HはダミーによりD/E完了後に開始可能なので，全体30日を超えないために H の最遅開始は 30 − 9 = 21日後。なおC(12)単独経由よりA+D(18)経由が長く，これがHの最早開始制約。よって答えはエ。',
     categoryId: 'planning',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'アローダイアグラム。A=8, B=5, C=12, D=10, E=9, F=8, G=12, H=5, I=4。DとEの合流点からHの開始ノードへダミー作業あり。',
+      caption: '図　矢印上＝作業名，矢印下＝所要日数，破線＝ダミー作業',
+      viewBox: '0 0 620 290',
+      content: `
+        <defs>
+          <marker id="am5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+        </defs>
+        <line x1="55" y1="135" x2="167" y2="58" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="100" y="88" font-size="12" fill="#1e293b" font-weight="bold">A</text>
+        <text x="100" y="102" font-size="11" fill="#475569">8</text>
+        <line x1="56" y1="140" x2="166" y2="140" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="105" y="135" font-size="12" fill="#1e293b" font-weight="bold">B</text>
+        <text x="105" y="151" font-size="11" fill="#475569">5</text>
+        <line x1="54" y1="146" x2="326" y2="216" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="170" y="186" font-size="12" fill="#1e293b" font-weight="bold">C</text>
+        <text x="170" y="200" font-size="11" fill="#475569">12</text>
+        <line x1="194" y1="55" x2="326" y2="86" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="250" y="62" font-size="12" fill="#1e293b" font-weight="bold">D</text>
+        <text x="250" y="76" font-size="11" fill="#475569">10</text>
+        <line x1="194" y1="135" x2="326" y2="96" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="250" y="126" font-size="12" fill="#1e293b" font-weight="bold">E</text>
+        <text x="250" y="140" font-size="11" fill="#475569">9</text>
+        <line x1="354" y1="94" x2="546" y2="135" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="440" y="105" font-size="12" fill="#1e293b" font-weight="bold">F</text>
+        <text x="440" y="119" font-size="11" fill="#475569">8</text>
+        <path d="M 354 102 Q 440 175 546 144" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#am5)"/>
+        <text x="440" y="178" font-size="12" fill="#1e293b" font-weight="bold">G</text>
+        <text x="440" y="192" font-size="11" fill="#475569">12</text>
+        <line x1="340" y1="106" x2="340" y2="204" stroke="#475569" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#am5)"/>
+        <line x1="356" y1="220" x2="444" y2="220" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="395" y="215" font-size="12" fill="#1e293b" font-weight="bold">H</text>
+        <text x="395" y="234" font-size="11" fill="#475569">5</text>
+        <line x1="474" y1="215" x2="546" y2="148" stroke="#475569" stroke-width="1.5" marker-end="url(#am5)"/>
+        <text x="514" y="175" font-size="12" fill="#1e293b" font-weight="bold">I</text>
+        <text x="514" y="189" font-size="11" fill="#475569">4</text>
+        <circle cx="40" cy="140" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="180" cy="50" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="180" cy="140" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="340" cy="90" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="340" cy="220" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="460" cy="220" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="560" cy="140" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <line x1="20" y1="278" x2="50" y2="278" stroke="#475569" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="55" y="282" font-size="11" fill="#475569">：ダミー作業</text>
+      `,
+    },
   },
   {
     id: 'om-R6-6',
@@ -110,12 +197,49 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和6（2024）',
     number: 6,
     questionText:
-      '四つのアクティビティ A～D によって実行する開発プロジェクトがある。図は，各アクティビティの PDM (プレシデンスダイアグラム法) における依存関係を表す。条件に従ってアクティビティを実行するとき，この開発プロジェクトの最少所要日数は何日か。\n〔アクティビティの依存関係〕開始→A(8日間)→C(5日間)→D(5日間)→終了，開始→B(12日間)→終了。A→C，C→D は FS。\n〔条件〕\n・各アクティビティは，最終 3 日間に，連続して試験設備を使用する。\n・試験設備は 1 台であって，同時に複数のアクティビティが使用することはできない。\n・試験設備以外の資源にアクティビティ間の競合はない。',
+      '四つのアクティビティ A～D によって実行する開発プロジェクトがある。図は，各アクティビティの PDM (プレシデンスダイアグラム法) における依存関係を表す。条件に従ってアクティビティを実行するとき，この開発プロジェクトの最少所要日数は何日か。\n〔条件〕\n・各アクティビティは，最終 3 日間に，連続して試験設備を使用する。\n・試験設備は 1 台であって，同時に複数のアクティビティが使用することはできない。\n・試験設備以外の資源にアクティビティ間の競合はない。',
     choices: ['18', '19', '20', '21'],
     correctIndex: 1,
     explanation: 'PDM 上の FS 依存に従う最早完了は A(8)+C(5)+D(5)=18 日，B=12 日でクリティカルパスは 18 日。ただし試験設備は 1 台で，各アクティビティの「最終 3 日間」が競合する。設備使用区間が重ならないように 1 日ずらすと最少所要日数は 19 日となる。',
     categoryId: 'planning',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'PDMプレシデンスダイアグラム。開始→A(8日間)→C(5日間)→D(5日間)→終了 の経路、および 開始→B(12日間)→終了 の経路。A→C と C→D は FS 依存。',
+      caption: '図　アクティビティの依存関係（FS：Finish-to-Start）',
+      viewBox: '0 0 480 180',
+      content: `
+        <defs>
+          <marker id="am6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+        </defs>
+        <rect x="20" y="55" width="50" height="30" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="45" y="74" text-anchor="middle" font-size="12" fill="#1e293b" font-weight="bold">開始</text>
+        <rect x="100" y="30" width="70" height="50" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="135" y="50" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">A</text>
+        <text x="135" y="68" text-anchor="middle" font-size="11" fill="#475569">(8日間)</text>
+        <rect x="200" y="30" width="70" height="50" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="235" y="50" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">C</text>
+        <text x="235" y="68" text-anchor="middle" font-size="11" fill="#475569">(5日間)</text>
+        <rect x="300" y="30" width="70" height="50" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="335" y="50" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">D</text>
+        <text x="335" y="68" text-anchor="middle" font-size="11" fill="#475569">(5日間)</text>
+        <rect x="100" y="105" width="70" height="50" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="135" y="125" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">B</text>
+        <text x="135" y="143" text-anchor="middle" font-size="11" fill="#475569">(12日間)</text>
+        <rect x="400" y="55" width="50" height="30" fill="white" stroke="#1e293b" stroke-width="1.5" rx="3"/>
+        <text x="425" y="74" text-anchor="middle" font-size="12" fill="#1e293b" font-weight="bold">終了</text>
+        <line x1="70" y1="62" x2="98" y2="48" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+        <line x1="170" y1="55" x2="198" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+        <text x="184" y="48" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold">FS</text>
+        <line x1="270" y1="55" x2="298" y2="55" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+        <text x="284" y="48" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold">FS</text>
+        <line x1="370" y1="55" x2="398" y2="62" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+        <line x1="70" y1="80" x2="98" y2="120" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+        <line x1="170" y1="125" x2="398" y2="80" stroke="#475569" stroke-width="1.5" marker-end="url(#am6)"/>
+      `,
+    },
   },
   {
     id: 'om-R6-7',
@@ -207,12 +331,24 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和6（2024）',
     number: 12,
     questionText:
-      '新しく編成するプロジェクトチームの開発要員投入計画に基づいて PC をレンタルで調達する。調達の条件を満たすレンタル費用の最低金額は何千円か。\n〔開発要員投入計画（単位 人）〕設計者: 1月0，2月2，3月4，4月4，5月4，6月2，7月2，8月2，9月2，10月2，11月2，12月0。プログラマ: 1月0，2月0，3月0，4月3，5月3，6月5，7月5，8月3，9月3，10月2，11月2，12月0。テスタ: 1月0，2月0，3月0，4月0，5月0，6月4，7月4，8月4，9月6，10月0，11月0，12月0。計: 1月0，2月2，3月4，4月7，5月7，6月11，7月11，8月9，9月11，10月4，11月4，12月0。\n〔調達の条件〕\n(1) PC のレンタル契約は月初日から月末日までの 1 か月単位であって，日割りによる精算は行わない。\n(2) PC 1 台のレンタル料金は月額 5 千円である。\n(3) 台数にかかわらず，レンタル PC の受入れ時のセットアップに 2 週間，返却時のデータ消去に 1 週間を要し，この期間はレンタル期間に含める。\n(4) セットアップとデータ消去は，プロジェクトチームの開発要員とは別の要員が行う。\n(5) 開発要員は月初日に着任し，月末日に離任する。\n(6) 開発要員の役割にかかわらず，共通仕様の PC を 1 人が 1 台使用する。\n(7) レンタル期間中に PC を他の開発要員に引き渡す場合，データ消去，セットアップ及び引渡しの期間は不要である。',
+      '新しく編成するプロジェクトチームの開発要員投入計画に基づいて PC をレンタルで調達する。調達の条件を満たすレンタル費用の最低金額は何千円か。\n〔調達の条件〕\n(1) PC のレンタル契約は月初日から月末日までの 1 か月単位であって，日割りによる精算は行わない。\n(2) PC 1 台のレンタル料金は月額 5 千円である。\n(3) 台数にかかわらず，レンタル PC の受入れ時のセットアップに 2 週間，返却時のデータ消去に 1 週間を要し，この期間はレンタル期間に含める。\n(4) セットアップとデータ消去は，プロジェクトチームの開発要員とは別の要員が行う。\n(5) 開発要員は月初日に着任し，月末日に離任する。\n(6) 開発要員の役割にかかわらず，共通仕様の PC を 1 人が 1 台使用する。\n(7) レンタル期間中に PC を他の開発要員に引き渡す場合，データ消去，セットアップ及び引渡しの期間は不要である。',
     choices: ['350', '470', '480', '500'],
     correctIndex: 1,
     explanation: '月別必要 PC 台数は要員計画の合計欄から導かれる（最大は 6月／7月／9月の 11 台）。セットアップ 2 週間・データ消去 1 週間がレンタル期間に含まれること，月途中の解約や日割り精算ができないことを考慮して必要月数を計算し，月額 5 千円/台で総額を算出すると最低 470 千円となる。',
     categoryId: 'project-work',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発要員投入計画（単位 人）〕',
+      headers: ['開発要員 ＼ 時期', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      rows: [
+        ['設計者', 0, 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 0],
+        ['プログラマ', 0, 0, 0, 3, 3, 5, 5, 3, 3, 2, 2, 0],
+        ['テスタ', 0, 0, 0, 0, 0, 4, 4, 4, 6, 0, 0, 0],
+        ['計', 0, 2, 4, 7, 7, 11, 11, 9, 11, 4, 4, 0],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R6-13',
@@ -228,7 +364,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     ],
     correctIndex: 1,
     explanation: 'GoF（Gang of Four）デザインパターンはオブジェクト指向設計のための 23 パターンで，Creational（生成）・Structural（構造）・Behavioral（振る舞い）の 3 カテゴリに分類される。ア・ウ・エ は別パターン体系（J2EE，アーキテクチャパターン，POSA など）の説明。',
-    categoryId: 'delivery',
+    categoryId: 'tailoring-models',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
   },
   {
@@ -371,7 +507,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     ],
     correctIndex: 2,
     explanation: '経済産業省「AI・データの利用に関する契約ガイドライン」は法的拘束力をもたず，AI 開発・利用の契約プラクティスが未確立であることを背景に，参考枠組みを提示するもの。ア は法律で全て規定されている前提が誤り，イ はデータの経済価値や秘匿性は考慮必須，エ はガイドラインに法的拘束力なしのため誤り。',
-    categoryId: 'service-management',
+    categoryId: 'project-work',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
   },
   {

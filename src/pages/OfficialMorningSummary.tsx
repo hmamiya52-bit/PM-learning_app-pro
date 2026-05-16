@@ -22,7 +22,7 @@ interface SummaryLog {
 
 interface LocationState {
   logs?: SummaryLog[]
-  scope?: 'random' | 'year' | 'important' | 'single'
+  scope?: 'random' | 'year' | 'important' | 'single' | 'category'
   yearLabel?: string
 }
 

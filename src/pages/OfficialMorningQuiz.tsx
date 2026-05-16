@@ -5,6 +5,7 @@ import {
   getMorningQuestionsByYear,
   MORNING_YEARS,
 } from '../data/officialMorningQuestions'
+import { categories } from '../data/categories'
 import { getImportantIds } from '../lib/importantMarks'
 import { loadMorningRecords, getOverallAccuracy } from '../lib/morningRecords'
 import type { OfficialMorningQuestion } from '../types'
@@ -46,6 +47,27 @@ export default function OfficialMorningQuiz() {
     [importantIds],
   )
 
+  // カテゴリ別グルーピング（categoryId が設定されている問題のみ）
+  const byCategory = useMemo(() => {
+    const map = new Map<string, OfficialMorningQuestion[]>()
+    for (const q of officialMorningQuestions) {
+      if (!q.categoryId) continue
+      const list = map.get(q.categoryId) ?? []
+      list.push(q)
+      map.set(q.categoryId, list)
+    }
+    return map
+  }, [])
+
+  // カテゴリ一覧（順序維持・問題が存在するものだけ）
+  const categoryCards = useMemo(
+    () =>
+      categories
+        .map((c) => ({ ...c, count: byCategory.get(c.id)?.length ?? 0 }))
+        .filter((c) => c.count > 0),
+    [byCategory],
+  )
+
   const stats = useMemo(() => {
     const overall = getOverallAccuracy()
     const records = loadMorningRecords()
@@ -60,7 +82,7 @@ export default function OfficialMorningQuiz() {
   // 出題リストを構築して Session 画面へ
   const startSession = (
     list: OfficialMorningQuestion[],
-    scope: 'random' | 'year' | 'important' | 'single',
+    scope: 'random' | 'year' | 'important' | 'single' | 'category',
     yearLabel?: string,
   ) => {
     const shuffled = shuffle(list)
@@ -90,6 +112,14 @@ export default function OfficialMorningQuiz() {
     if (list.length === 0) return
     const yearLabel = list[0].yearLabel
     startSession(list, 'year', yearLabel)
+  }
+
+  const handleCategory = (categoryId: string) => {
+    const list = byCategory.get(categoryId) ?? []
+    if (list.length === 0) return
+    const name = categories.find((c) => c.id === categoryId)?.name ?? categoryId
+    // yearLabel フィールドにカテゴリ名を流用（Summary 画面の表示用、scope=category で区別）
+    startSession(list, 'category', name)
   }
 
   return (
@@ -160,6 +190,37 @@ export default function OfficialMorningQuiz() {
               </p>
             </div>
           </button>
+        </section>
+
+        {/* カテゴリ別カード */}
+        <section>
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            カテゴリ別
+          </h2>
+          {categoryCards.length === 0 ? (
+            <p className="text-xs text-slate-400">
+              カテゴリ別問題はまだ登録されていません。
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {categoryCards.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => handleCategory(c.id)}
+                  className="flex flex-col items-start bg-white rounded-xl border border-slate-200 px-3 py-2.5 hover:border-brand hover:shadow-md transition-all text-left"
+                >
+                  <p className="text-sm font-bold text-slate-800 leading-tight">{c.name}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    {c.count}問
+                    <span className="ml-1 opacity-60">{count === 'all' ? '・全問' : `・最大${count}問`}</span>
+                  </p>
+                </button>
+              ))}
+            </div>
+          )}
+          <p className="text-[11px] text-slate-400 mt-2">
+            ※ 各カテゴリで上記「出題数」設定が適用されます（指定数を超える場合はランダム抽出）。
+          </p>
         </section>
 
         {/* 年度カード */}
