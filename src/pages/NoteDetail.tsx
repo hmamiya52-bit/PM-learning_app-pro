@@ -587,7 +587,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '権力は弱いが影響力の強い人物（==社長秘書==・==現場主任==）を見逃さないために使う',
           '非公式権力（informal power）の把握に有効',
         ],
-        navyItems: [[{ text: '権力＝公式権威、影響力＝非公式に他者を動かす力、と区別する', style: 'navy' }]],
+        navyItems: [[{ text: '権力は公式権威、影響力は非公式に他者を動かす力、と区別する', style: 'navy' }]],
       },
       {
         heading: '15. 影響／インパクト・マトリクス',
@@ -649,9 +649,9 @@ export const NOTE_DB: Record<string, NoteData> = {
               {
                 cells: [
                   { label: 'スポンサーA', bg: '#fef3c7', small: true },
-                  { label: '', small: true },
-                  { label: '', small: true },
-                  { label: '', small: true },
+                  { label: '', bg: '#ffffff', small: true },
+                  { label: '', bg: '#ffffff', small: true },
+                  { label: '', bg: '#ffffff', small: true },
                   { label: 'C', bg: '#fee2e2', isRed: true, small: true },
                   { label: 'D', bg: '#dbeafe', isRed: true, small: true },
                 ],
@@ -659,11 +659,11 @@ export const NOTE_DB: Record<string, NoteData> = {
               {
                 cells: [
                   { label: '現業ユーザB', bg: '#fef3c7', small: true },
-                  { label: '', small: true },
+                  { label: '', bg: '#ffffff', small: true },
                   { label: 'C', bg: '#fee2e2', isRed: true, small: true },
                   { label: 'D', bg: '#dbeafe', isRed: true, small: true },
-                  { label: '', small: true },
-                  { label: '', small: true },
+                  { label: '', bg: '#ffffff', small: true },
+                  { label: '', bg: '#ffffff', small: true },
                 ],
               },
             ],
