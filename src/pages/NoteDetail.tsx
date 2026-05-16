@@ -272,14 +272,20 @@ function renderTokens(
 }
 
 // ─────────────────────────────────────────────
-// Render helper: ==text== → RedWord コンポーネント
+// Render helper:
+//   ==text== → RedWord（赤字・マスク可、暗記対象キーワード用）
+//   __text__ → NavyWord（ネイビー・マスクなし、ラベルや構造的強調用）
 // ─────────────────────────────────────────────
 function renderText(text: string, hideRed: boolean, version: number): React.ReactNode {
-  const parts = text.split(/(==.+?==)/g)
+  const parts = text.split(/(==.+?==|__.+?__)/g)
   return parts.map((part, i) => {
     if (part.startsWith('==') && part.endsWith('==')) {
       const inner = part.slice(2, -2)
       return <RedWord key={i} text={inner} masked={hideRed} version={version} />
+    }
+    if (part.startsWith('__') && part.endsWith('__')) {
+      const inner = part.slice(2, -2)
+      return <NavyWord key={i} text={inner} />
     }
     return <span key={i}>{part}</span>
   })
@@ -461,10 +467,10 @@ export const NOTE_DB: Record<string, NoteData> = {
       {
         heading: '6. パフォーマンス領域の目的と成果',
         items: [
-          '==成果1==: ステークホルダーとの==生産的な作業関係==の構築',
-          '==成果2==: ステークホルダーが==プロジェクト目的に合意==している状態',
-          '==成果3==: 利益を受けるステークホルダーが==支持者==となる',
-          '==成果4==: 反対するステークホルダーが==プロジェクトに悪影響を及ぼさない==',
+          '__成果1__: ステークホルダーとの==生産的な作業関係==の構築',
+          '__成果2__: ステークホルダーが==プロジェクト目的に合意==している状態',
+          '__成果3__: 利益を受けるステークホルダーが==支持者==となる',
+          '__成果4__: 反対するステークホルダーが==プロジェクトに悪影響を及ぼさない==',
           '活動サイクル: ==識別 → 理解 → 分析 → 優先順位付け → 関与 → 監視==',
           'PMBOK7 では「予測型」「適応型」いずれのライフサイクルでも同じ成果が適用される',
         ],
@@ -675,7 +681,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       {
         heading: '19. ステークホルダー・エンゲージメント計画書の構造',
         items: [
-          '==計画書の主な項目==:',
+          '__計画書の主な項目__:',
           '　==望ましい関与レベル==（ステークホルダー別）',
           '　==現在の関与レベル==との差分',
           '　==必要な情報==の種類・形式・提供頻度',
@@ -827,12 +833,12 @@ export const NOTE_DB: Record<string, NoteData> = {
       {
         heading: '32. IPA PM試験 過去問頻出論点',
         items: [
-          '==午前II 頻出==:',
+          '__午前II 頻出__:',
           '　==ステークホルダー登録簿==の記載項目（識別情報・評価情報・分類）',
           '　==Power/Interest Grid==の象限と対応戦略',
           '　==サリエンスモデル==の3属性（Power/Legitimacy/Urgency）',
           '　==関与レベル==5段階（不認識〜主導）',
-          '==午後Ⅰ 頻出==:',
+          '__午後Ⅰ 頻出__:',
           '　ステークホルダー==識別漏れ==の典型シナリオ',
           '　==関与レベル変化==の原因分析と対応策',
           '　==コミュニケーション計画==とエンゲージメント計画の連動',
