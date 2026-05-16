@@ -282,10 +282,10 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和6（2024）',
     number: 9,
     questionText:
-      'あるソフトウェア開発部門では，開発工数 E (人月) と開発規模 L (k ステップ) との関係を，E=5.2L^0.98 としている。L=10 としたときの生産性 (k ステップ／人月) は，およそ幾らか。',
+      'あるソフトウェア開発部門では，開発工数 E (人月) と開発規模 L (k ステップ) との関係を，E=5.2L^{0.98} としている。L=10 としたときの生産性 (k ステップ／人月) は，およそ幾らか。',
     choices: ['0.2', '0.5', '1.9', '5.2'],
     correctIndex: 0,
-    explanation: 'E = 5.2 × 10^0.98 ≒ 5.2 × 9.55 ≒ 49.66 人月。生産性 = L / E = 10 / 49.66 ≒ 0.20 k ステップ/人月。指数が 1 に近いためほぼ線形だが，0.98 の影響でわずかに L 増加効率が低下している。',
+    explanation: 'E = 5.2 × 10^{0.98} ≒ 5.2 × 9.55 ≒ 49.66 人月。生産性 = L / E = 10 / 49.66 ≒ 0.20 k ステップ/人月。指数が 1 に近いためほぼ線形だが，0.98 の影響でわずかに L 増加効率が低下している。',
     categoryId: 'measurement',
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
   },
@@ -298,9 +298,9 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
       '工程別の生産性が次のとおりのとき，全体の生産性を表す式はどれか。\n〔工程別の生産性〕\n設計工程: X ステップ／人月\n製造工程: Y ステップ／人月\n試験工程: Z ステップ／人月',
     choices: [
       'X＋Y＋Z',
-      '(X＋Y＋Z)／3',
-      '1／X＋1／Y＋1／Z',
-      '1／(1／X＋1／Y＋1／Z)',
+      'frac{X＋Y＋Z}{3}',
+      'frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}',
+      'frac{1}{frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}}',
     ],
     correctIndex: 3,
     explanation: '直列の工程を 1 人月で通過させると考えると，各工程で 1/X，1/Y，1/Z 人月を消費するため，合計所要人月は 1/X + 1/Y + 1/Z。よって全体の生産性（ステップ/人月）はこの逆数 1 / (1/X + 1/Y + 1/Z) となる。これは並列ではなく直列工程の調和平均的合成式。',
@@ -339,8 +339,9 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     sourceUrl: R6_AUTUMN_PM_AM2_SOURCE_URL,
     figure: {
       type: 'table',
-      caption: '〔開発要員投入計画（単位 人）〕',
-      headers: ['開発要員 ＼ 時期', '1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+      caption: '〔開発要員投入計画（単位：人　列は月）〕',
+      // モバイル幅（360px）でも横スクロール無しで収まるよう、列ヘッダは月数字のみ
+      headers: ['要員 ＼ 月', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
       rows: [
         ['設計者', 0, 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 0],
         ['プログラマ', 0, 0, 0, 3, 3, 5, 5, 3, 3, 2, 2, 0],

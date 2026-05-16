@@ -8,6 +8,7 @@ import { addActivityEvent, upsertQuizSessionEvent } from '../lib/activityLog'
 import { isImportant as isImportantMark } from '../lib/importantMarks'
 import ImportantToggle from '../components/ImportantToggle'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
+import MathText from '../components/MathText'
 import type { BadgeDefinition } from '../data/badges'
 
 /**
@@ -56,21 +57,34 @@ function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
     )
   }
   // table
+  // 13列以上の表でもモバイル(360px幅)で横スクロールを最小化するため:
+  // - table-fixed + colgroup でデータ列を均等配分
+  // - text-[10px]・px-0.5 で各セルを最小サイズに
+  // - 行ラベル列は最小限の幅（4em目安）
+  const dataColCount = Math.max(0, figure.headers.length - (figure.rowHeaderFirstCol ? 1 : 0))
   return (
     <figure className="my-4">
       {figure.caption && (
-        <figcaption className="text-xs font-bold text-slate-700 mb-1.5">
+        <figcaption className="text-[11px] font-bold text-slate-700 mb-1.5">
           {figure.caption}
         </figcaption>
       )}
       <div className="w-full overflow-x-auto">
-        <table className="min-w-full border-collapse text-xs text-slate-800">
+        <table className="w-full table-fixed border-collapse text-[11px] text-slate-800 leading-tight">
+          {figure.rowHeaderFirstCol && dataColCount > 0 && (
+            <colgroup>
+              <col style={{ width: '4.5em' }} />
+              {Array.from({ length: dataColCount }).map((_, i) => (
+                <col key={i} style={{ width: `calc((100% - 4.5em) / ${dataColCount})` }} />
+              ))}
+            </colgroup>
+          )}
           <thead>
             <tr>
               {figure.headers.map((h, i) => (
                 <th
                   key={i}
-                  className="border border-slate-300 bg-slate-100 px-2 py-1.5 font-semibold whitespace-nowrap text-center"
+                  className="border border-slate-300 bg-slate-100 px-0.5 py-1 font-semibold text-center break-keep"
                 >
                   {h}
                 </th>
@@ -88,8 +102,8 @@ function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
                       key={ci}
                       className={
                         isRowHeader
-                          ? 'border border-slate-300 bg-slate-50 px-2 py-1.5 font-semibold whitespace-nowrap text-left'
-                          : 'border border-slate-300 px-2 py-1.5 whitespace-nowrap text-center tabular-nums'
+                          ? 'border border-slate-300 bg-slate-50 px-1 py-1 font-semibold text-left break-keep'
+                          : 'border border-slate-300 px-0.5 py-1 text-center tabular-nums'
                       }
                     >
                       {cell}
@@ -354,8 +368,8 @@ export default function OfficialMorningSession() {
           <p className="text-[11px] text-slate-400 mb-2">
             出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前II 問{currentQuestion.number}
           </p>
-          <p className="text-base text-slate-800 leading-relaxed whitespace-pre-wrap">
-            {currentQuestion.questionText}
+          <p className="text-[13px] text-slate-800 leading-relaxed whitespace-pre-wrap">
+            <MathText text={currentQuestion.questionText} />
           </p>
           {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
         </div>
@@ -376,10 +390,10 @@ export default function OfficialMorningSession() {
                 key={originalIdx}
                 onClick={() => handleSelect(originalIdx)}
                 disabled={showExplanation}
-                className={`w-full text-left rounded-xl px-4 py-3.5 text-slate-700 font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
+                className={`w-full text-left rounded-xl px-3.5 py-3 text-[13px] text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
                 <span className="inline-block text-xs font-bold text-brand-dark mr-2">{ANSWER_LABELS[displayIdx]}.</span>
-                {choice.text}
+                <MathText text={choice.text} />
               </button>
             )
           })}
@@ -411,7 +425,9 @@ export default function OfficialMorningSession() {
 
             <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">解説</p>
-              <p className="text-sm text-slate-700 leading-relaxed">{currentQuestion.explanation}</p>
+              <p className="text-[13px] text-slate-700 leading-relaxed">
+                <MathText text={currentQuestion.explanation} />
+              </p>
             </div>
 
             <button

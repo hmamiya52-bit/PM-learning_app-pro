@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { officialMorningQuestions } from '../data/officialMorningQuestions'
 import type { OfficialMorningQuestion } from '../types'
+import MathText from '../components/MathText'
 
 /**
  * 公式午前II サマリー画面（没入型、/morning/summary）
@@ -108,17 +109,21 @@ export default function OfficialMorningSummary() {
                     {question.yearLabel} 問{question.number}
                   </p>
                   <p className="text-sm text-slate-700 leading-snug line-clamp-3">
-                    {question.questionText}
+                    <MathText text={question.questionText} />
                   </p>
                   {/* シャッフル出題のため、ラベル（ア/イ…）ではなく選択肢テキストで表示 */}
                   <div className="mt-2 space-y-1 text-xs">
                     <p className="text-red-500">
                       <span className="font-bold mr-1">あなたの解答:</span>
-                      <span className="text-slate-700">{question.choices[selectedIndex]}</span>
+                      <span className="text-slate-700">
+                        <MathText text={question.choices[selectedIndex]} />
+                      </span>
                     </p>
                     <p className="text-emerald-600">
                       <span className="font-bold mr-1">正解:</span>
-                      <span className="text-slate-700">{question.choices[question.correctIndex]}</span>
+                      <span className="text-slate-700">
+                        <MathText text={question.choices[question.correctIndex]} />
+                      </span>
                     </p>
                   </div>
                 </li>
