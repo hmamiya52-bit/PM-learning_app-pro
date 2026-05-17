@@ -827,7 +827,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
         <defs>
           <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
         </defs>
-        <text x="145" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表1　要素処理</text>
+        <text x="145" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表1 要素処理</text>
         <rect x="20" y="28" width="260" height="140" fill="white" stroke="#1e293b" stroke-width="1.2"/>
         <line x1="20" y1="58" x2="280" y2="58" stroke="#1e293b" stroke-width="1"/>
         <line x1="20" y1="86" x2="280" y2="86" stroke="#1e293b" stroke-width="1"/>
@@ -847,7 +847,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
         <text x="46" y="134" text-anchor="middle" font-size="12" fill="#1e293b">③</text><text x="112" y="134" text-anchor="middle" font-size="11" fill="#1e293b">外部照会</text><text x="186" y="134" text-anchor="middle" font-size="12" fill="#1e293b">1</text><text x="250" y="134" text-anchor="middle" font-size="12" fill="#1e293b">12</text>
         <text x="46" y="162" text-anchor="middle" font-size="12" fill="#1e293b">④</text><text x="112" y="162" text-anchor="middle" font-size="11" fill="#1e293b">外部出力</text><text x="186" y="162" text-anchor="middle" font-size="12" fill="#1e293b">2</text><text x="250" y="162" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
 
-        <text x="465" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表2　複雑さ（外部入力）</text>
+        <text x="465" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表2 複雑さ（外部入力）</text>
         <rect x="330" y="28" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
         <line x1="330" y1="58" x2="590" y2="58" stroke="#1e293b" stroke-width="1"/>
         <line x1="330" y1="88" x2="590" y2="88" stroke="#1e293b" stroke-width="1"/>
@@ -863,7 +863,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
         <text x="370" y="136" text-anchor="middle" font-size="11" fill="#1e293b">2</text><text x="440" y="136" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="500" y="136" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="560" y="136" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
         <text x="370" y="160" text-anchor="middle" font-size="11" fill="#1e293b">3以上</text><text x="440" y="160" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="500" y="160" text-anchor="middle" font-size="12" fill="#1e293b">高</text><text x="560" y="160" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
 
-        <text x="145" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表3　複雑さ（外部出力，外部照会）</text>
+        <text x="145" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表3 複雑さ（外部出力，外部照会）</text>
         <rect x="20" y="228" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
         <line x1="20" y1="258" x2="280" y2="258" stroke="#1e293b" stroke-width="1"/>
         <line x1="20" y1="288" x2="280" y2="288" stroke="#1e293b" stroke-width="1"/>
@@ -879,7 +879,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
         <text x="60" y="336" text-anchor="middle" font-size="11" fill="#1e293b">2〜3</text><text x="130" y="336" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="190" y="336" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="250" y="336" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
         <text x="60" y="366" text-anchor="middle" font-size="11" fill="#1e293b">4以上</text><text x="130" y="366" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="190" y="366" text-anchor="middle" font-size="12" fill="#1e293b">高</text><text x="250" y="366" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
 
-        <text x="465" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表4　未調整ファンクションポイント</text>
+        <text x="465" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表4 未調整ファンクションポイント</text>
         <rect x="330" y="228" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
         <line x1="330" y1="258" x2="590" y2="258" stroke="#1e293b" stroke-width="1"/>
         <line x1="330" y1="288" x2="590" y2="288" stroke="#1e293b" stroke-width="1"/>

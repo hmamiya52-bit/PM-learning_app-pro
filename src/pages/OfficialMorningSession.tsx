@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { officialMorningQuestions } from '../data/officialMorningQuestions'
-import type { OfficialMorningQuestion, QuestionFigure } from '../types'
+import type { OfficialMorningQuestion } from '../types'
+import { QuestionFigureView } from '../components/QuestionFigureView'
 import { addMorningRecord } from '../lib/morningRecords'
 import { applyAnswer } from '../lib/gamification'
 import { addActivityEvent, upsertQuizSessionEvent } from '../lib/activityLog'
@@ -25,100 +26,6 @@ import type { BadgeDefinition } from '../data/badges'
  */
 
 const ANSWER_LABELS = ['ア', 'イ', 'ウ', 'エ'] as const
-
-/**
- * IPA原本の図表を再現する表示コンポーネント。
- * - svg: viewBox で自動スケール、`max-w-full` でモバイル幅に追従
- * - table: 横スクロール対応ラッパで12列以上の表もモバイルで閲覧可
- */
-function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
-  if (figure.type === 'svg') {
-    return (
-      <figure className="my-4 flex flex-col items-center" aria-label={figure.ariaLabel}>
-        <div
-          className="w-full max-w-full overflow-x-auto"
-          // 内部に <svg> タグは含まれない想定で外側に置く
-        >
-          <svg
-            viewBox={figure.viewBox}
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label={figure.ariaLabel}
-            className="block mx-auto w-full h-auto max-w-2xl"
-            // SVG markup は信頼できる内部データのみ
-            dangerouslySetInnerHTML={{ __html: figure.content }}
-          />
-        </div>
-        {figure.caption && (
-          <figcaption className="text-[11px] text-slate-500 mt-1.5 text-center">
-            {figure.caption}
-          </figcaption>
-        )}
-      </figure>
-    )
-  }
-  // table
-  // 13列以上の表でもモバイル(360px幅)で横スクロールを最小化するため:
-  // - table-fixed + colgroup でデータ列を均等配分
-  // - text-[10px]・px-0.5 で各セルを最小サイズに
-  // - 行ラベル列は最小限の幅（4em目安）
-  const dataColCount = Math.max(0, figure.headers.length - (figure.rowHeaderFirstCol ? 1 : 0))
-  return (
-    <figure className="my-4">
-      {figure.caption && (
-        <figcaption className="text-[11px] font-bold text-slate-700 mb-1.5">
-          {figure.caption}
-        </figcaption>
-      )}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full table-fixed border-collapse text-[11px] text-slate-800 leading-tight">
-          {figure.rowHeaderFirstCol && dataColCount > 0 && (
-            <colgroup>
-              <col style={{ width: '4.5em' }} />
-              {Array.from({ length: dataColCount }).map((_, i) => (
-                <col key={i} style={{ width: `calc((100% - 4.5em) / ${dataColCount})` }} />
-              ))}
-            </colgroup>
-          )}
-          <thead>
-            <tr>
-              {figure.headers.map((h, i) => (
-                <th
-                  key={i}
-                  className="border border-slate-300 bg-slate-100 px-0.5 py-1 font-semibold text-center break-keep"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {figure.rows.map((row, ri) => (
-              <tr key={ri}>
-                {row.map((cell, ci) => {
-                  const isRowHeader = figure.rowHeaderFirstCol && ci === 0
-                  const Tag = isRowHeader ? 'th' : 'td'
-                  return (
-                    <Tag
-                      key={ci}
-                      className={
-                        isRowHeader
-                          ? 'border border-slate-300 bg-slate-50 px-1 py-1 font-semibold text-left break-keep'
-                          : 'border border-slate-300 px-0.5 py-1 text-center tabular-nums'
-                      }
-                    >
-                      {cell}
-                    </Tag>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </figure>
-  )
-}
 
 interface SessionLog {
   question: OfficialMorningQuestion
