@@ -16,9 +16,9 @@
 
 | 優先 | § | 見出し | 推奨タイプ | 概要 | 状態 |
 |---:|---|---|---|---|---|
-| 1 | §14 | 権力／影響度グリッド | **svg または table** | 2軸（Power × Influence）の4象限グリッド。「権力高×影響力高=コア」「権力高×影響力低=満足」など対応戦略を象限内に配置 | **未着手** |
-| 2 | §15 | 影響／インパクト・マトリクス | **table** | 2軸（Impact × Influence）4象限。stakeholder §13/14 と差別化（縦軸が Power でなく Influence） | **未着手** |
-| 3 | §16 | サリエンスモデル | **svg（3円ベン図）** | Power / Legitimacy / Urgency の3円ベン図。各属性所持数で Latent(1) / Expectant(2) / Definitive(3) を分類 | **未着手** |
+| 1 | §14 | 権力／影響度グリッド | **svg または table** | 2軸（Power × Influence）の4象限グリッド。「権力高×影響力高=コア」「権力高×影響力低=満足」など対応戦略を象限内に配置 | **進行中（Codex / 2026-05-17）** |
+| 2 | §15 | 影響／インパクト・マトリクス | **table** | 2軸（Impact × Influence）4象限。stakeholder §13/14 と差別化（縦軸が Power でなく Influence） | **進行中（Codex / 2026-05-17）** |
+| 3 | §16 | サリエンスモデル | **svg（3円ベン図）** | Power / Legitimacy / Urgency の3円ベン図。各属性所持数で Latent(1) / Expectant(2) / Definitive(3) を分類 | **進行中（Codex / 2026-05-17）** |
 | 4 | §17 | 方向性キューブ | **svg（4方向図）** | PMから見た Upward（経営層）/ Downward（チーム）/ Outward（外部）/ Sideward（同僚）の4方向。中央PM + 4矢印 | **未着手** |
 
 ### team カテゴリ
