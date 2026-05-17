@@ -5635,6 +5635,7 @@ export default function NoteDetail() {
             {prevCategory ? (
               <Link
                 to={`/notes/${prevCategory.id}`}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}
                 className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-brand hover:text-brand-dark transition-colors min-w-0"
               >
                 <span className="flex-shrink-0">←</span>
@@ -5644,6 +5645,7 @@ export default function NoteDetail() {
             {nextCategory ? (
               <Link
                 to={`/notes/${nextCategory.id}`}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'auto' })}
                 className="flex-1 flex items-center justify-end gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-600 hover:border-brand hover:text-brand-dark transition-colors min-w-0"
               >
                 <span className="truncate">{nextCategory.name}</span>
