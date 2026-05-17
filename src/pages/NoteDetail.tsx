@@ -3278,6 +3278,44 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__日本の請負契約__は FP に近い、==準委任契約==は T&M に近い',
         ],
         navyItems: [[{ text: '契約形態の3類型と派生形は午前II 頻出。リスク配分が判別ポイント', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: '契約リスク配分: FPは売り手リスク高、CRは買い手リスク高、T&Mは中間',
+            ariaLabel: '固定価格契約、タイムアンドマテリアル契約、実費精算契約のリスク配分を軸で示す図',
+            viewBox: '0 0 700 360',
+            content: `
+              <defs>
+                <marker id="contract-arrow-left" markerWidth="10" markerHeight="8" refX="1" refY="4" orient="auto">
+                  <polygon points="10 0, 0 4, 10 8" fill="#64748b" />
+                </marker>
+                <marker id="contract-arrow-right" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="664" height="324" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <text x="350" y="48" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">契約形態のリスク連続体</text>
+              <line x1="104" y1="176" x2="596" y2="176" stroke="#64748b" stroke-width="5" marker-start="url(#contract-arrow-left)" marker-end="url(#contract-arrow-right)" />
+              <text x="104" y="130" fill="#991b1b" font-size="13" font-weight="700" text-anchor="middle">売り手リスク高</text>
+              <text x="596" y="130" fill="#1d4ed8" font-size="13" font-weight="700" text-anchor="middle">買い手リスク高</text>
+              <rect x="72" y="146" width="156" height="74" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="150" y="171" fill="#991b1b" font-size="17" font-weight="700" text-anchor="middle">FP</text>
+              <text x="150" y="191" fill="#1e293b" font-size="12" text-anchor="middle">固定価格</text>
+              <text x="150" y="209" fill="#1e293b" font-size="12" text-anchor="middle">スコープ明確</text>
+              <rect x="272" y="146" width="156" height="74" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="350" y="171" fill="#92400e" font-size="17" font-weight="700" text-anchor="middle">T&M</text>
+              <text x="350" y="191" fill="#1e293b" font-size="12" text-anchor="middle">単価 × 数量</text>
+              <text x="350" y="209" fill="#1e293b" font-size="12" text-anchor="middle">短期・小規模</text>
+              <rect x="472" y="146" width="156" height="74" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <text x="550" y="171" fill="#1d4ed8" font-size="17" font-weight="700" text-anchor="middle">CR</text>
+              <text x="550" y="191" fill="#1e293b" font-size="12" text-anchor="middle">実費精算</text>
+              <text x="550" y="209" fill="#1e293b" font-size="12" text-anchor="middle">不確実性高</text>
+              <rect x="58" y="256" width="584" height="44" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+              <text x="350" y="282" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">買い手は予算確実性を重視するとFP、柔軟性を重視するとCR/T&Mを選びやすい</text>
+              <text x="350" y="318" fill="#475569" font-size="12" text-anchor="middle">PM試験では「誰がコスト超過リスクを負うか」で判別する</text>
+            `,
+          },
+        ],
       },
       {
         heading: '10. 固定価格契約（FP）の派生形',
@@ -3419,6 +3457,48 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__配信先__: ステークホルダー（コミュニケーション計画に基づく）',
         ],
         navyItems: [[{ text: '3段階の階層は午前II 頻出。「データ → 情報 → 報告書」の生成順序を区別', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: '作業パフォーマンス: データ → 情報 → 報告書 の順に意思決定可能になる',
+            ariaLabel: '作業パフォーマンスデータから情報、報告書へ変換される流れを示す図',
+            viewBox: '0 0 700 390',
+            content: `
+              <defs>
+                <marker id="workperf-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="664" height="354" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <text x="350" y="48" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">Work Performance の3階層</text>
+              <rect x="56" y="108" width="170" height="112" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <text x="141" y="134" fill="#1d4ed8" font-size="15" font-weight="700" text-anchor="middle">データ</text>
+              <text x="141" y="154" fill="#1e293b" font-size="12" font-weight="700" text-anchor="middle">Work Performance Data</text>
+              <text x="141" y="180" fill="#1e293b" font-size="12" text-anchor="middle">生の測定値</text>
+              <text x="141" y="198" fill="#1e293b" font-size="12" text-anchor="middle">完了率・実コスト</text>
+              <text x="141" y="216" fill="#1e293b" font-size="12" text-anchor="middle">4.3 のアウトプット</text>
+              <rect x="266" y="108" width="170" height="112" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <text x="351" y="134" fill="#166534" font-size="15" font-weight="700" text-anchor="middle">情報</text>
+              <text x="351" y="154" fill="#1e293b" font-size="12" font-weight="700" text-anchor="middle">Work Performance Info</text>
+              <text x="351" y="180" fill="#1e293b" font-size="12" text-anchor="middle">文脈を付与</text>
+              <text x="351" y="198" fill="#1e293b" font-size="12" text-anchor="middle">計画 vs 実績</text>
+              <text x="351" y="216" fill="#1e293b" font-size="12" text-anchor="middle">監視プロセスで生成</text>
+              <rect x="476" y="108" width="170" height="112" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="561" y="134" fill="#991b1b" font-size="15" font-weight="700" text-anchor="middle">報告書</text>
+              <text x="561" y="154" fill="#1e293b" font-size="12" font-weight="700" text-anchor="middle">Work Performance Reports</text>
+              <text x="561" y="180" fill="#1e293b" font-size="12" text-anchor="middle">意思決定可能</text>
+              <text x="561" y="198" fill="#1e293b" font-size="12" text-anchor="middle">予測・差異・傾向</text>
+              <text x="561" y="216" fill="#1e293b" font-size="12" text-anchor="middle">4.5 のアウトプット</text>
+              <line x1="226" y1="164" x2="264" y2="164" stroke="#64748b" stroke-width="4" marker-end="url(#workperf-arrow)" />
+              <line x1="436" y1="164" x2="474" y2="164" stroke="#64748b" stroke-width="4" marker-end="url(#workperf-arrow)" />
+              <text x="245" y="146" fill="#475569" font-size="11" font-weight="700" text-anchor="middle">分析</text>
+              <text x="455" y="146" fill="#475569" font-size="11" font-weight="700" text-anchor="middle">整理</text>
+              <rect x="78" y="268" width="544" height="48" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+              <text x="350" y="290" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">生成順序: 4.3でデータを集め、各監視プロセスで情報化し、4.5で報告書に統合</text>
+              <text x="350" y="308" fill="#475569" font-size="12" text-anchor="middle">報告書はステークホルダーへ配信され、変更要求や是正処置の判断材料になる</text>
+            `,
+          },
+        ],
       },
       {
         heading: '18. 報告書の種類（ステータス・トレンド・予測・バリアンス）',
@@ -3468,6 +3548,55 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__知識の循環__で組織の知識資産が==増大==',
         ],
         navyItems: [[{ text: '野中郁次郎・竹内弘高「知識創造企業」1995年。PMBOK第6版 §4.4 で参照', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'SECIモデル: 暗黙知と形式知を循環させて組織知を増やす',
+            ariaLabel: 'SECIモデルの共同化、表出化、連結化、内面化を4象限で示す図',
+            viewBox: '0 0 700 500',
+            content: `
+              <defs>
+                <marker id="seci-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="664" height="464" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <text x="350" y="48" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">SECI Knowledge Spiral</text>
+              <text x="350" y="78" fill="#475569" font-size="13" font-weight="700" text-anchor="middle">知識変換: From（左）→ To（上）</text>
+              <text x="246" y="112" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">To: 暗黙知</text>
+              <text x="496" y="112" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">To: 形式知</text>
+              <text x="78" y="204" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle" transform="rotate(-90 78 204)">From: 暗黙知</text>
+              <text x="78" y="354" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle" transform="rotate(-90 78 354)">From: 形式知</text>
+              <line x1="370" y1="128" x2="370" y2="408" stroke="#64748b" stroke-width="2" />
+              <line x1="120" y1="268" x2="620" y2="268" stroke="#64748b" stroke-width="2" />
+              <rect x="132" y="136" width="218" height="116" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <text x="241" y="168" fill="#1d4ed8" font-size="18" font-weight="700" text-anchor="middle">共同化</text>
+              <text x="241" y="190" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">Socialization</text>
+              <text x="241" y="216" fill="#1e293b" font-size="12" text-anchor="middle">暗黙知 → 暗黙知</text>
+              <text x="241" y="234" fill="#1e293b" font-size="12" text-anchor="middle">メンタリング・OJT</text>
+              <rect x="392" y="136" width="218" height="116" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <text x="501" y="168" fill="#166534" font-size="18" font-weight="700" text-anchor="middle">表出化</text>
+              <text x="501" y="190" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">Externalization</text>
+              <text x="501" y="216" fill="#1e293b" font-size="12" text-anchor="middle">暗黙知 → 形式知</text>
+              <text x="501" y="234" fill="#1e293b" font-size="12" text-anchor="middle">文書化・モデル化</text>
+              <rect x="392" y="292" width="218" height="116" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="501" y="324" fill="#92400e" font-size="18" font-weight="700" text-anchor="middle">連結化</text>
+              <text x="501" y="346" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">Combination</text>
+              <text x="501" y="372" fill="#1e293b" font-size="12" text-anchor="middle">形式知 → 形式知</text>
+              <text x="501" y="390" fill="#1e293b" font-size="12" text-anchor="middle">統合・整理・DB化</text>
+              <rect x="132" y="292" width="218" height="116" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="241" y="324" fill="#991b1b" font-size="18" font-weight="700" text-anchor="middle">内面化</text>
+              <text x="241" y="346" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">Internalization</text>
+              <text x="241" y="372" fill="#1e293b" font-size="12" text-anchor="middle">形式知 → 暗黙知</text>
+              <text x="241" y="390" fill="#1e293b" font-size="12" text-anchor="middle">実践・訓練・体験</text>
+              <path d="M350 194 L388 194" stroke="#64748b" stroke-width="3" marker-end="url(#seci-arrow)" />
+              <path d="M501 252 L501 288" stroke="#64748b" stroke-width="3" marker-end="url(#seci-arrow)" />
+              <path d="M392 350 L354 350" stroke="#64748b" stroke-width="3" marker-end="url(#seci-arrow)" />
+              <path d="M241 292 L241 256" stroke="#64748b" stroke-width="3" marker-end="url(#seci-arrow)" />
+              <text x="350" y="456" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">共同化 → 表出化 → 連結化 → 内面化 の循環で、個人知が組織知へ広がる</text>
+            `,
+          },
+        ],
       },
       {
         heading: '21. 教訓（lessons learned）と回顧的レビュー',
