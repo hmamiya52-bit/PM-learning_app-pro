@@ -1669,46 +1669,44 @@ export default function NoteDetail() {
                       <div className="w-px h-4 bg-brand-dark mx-0.5" />
                     </>
                   )}
-                  {(section.richItems || section.protocols || section.richProtocolTables || section.headerDiagrams) && (
-                    (['green', 'yellow', 'red'] as UnderstandingLevel[]).map((level) => {
-                      const isActive = understanding[`${categoryId}:${i}`] === level
-                      const fillColor = { green: '#10b981', yellow: '#f59e0b', red: '#ef4444' }[level]
-                      const labelMap = {
-                        green: '理解できた',
-                        yellow: 'なんとなく',
-                        red: 'まだ難しい',
-                      }
-                      return (
-                        <button
-                          key={level}
-                          onClick={(e) => { e.stopPropagation(); handleUnderstanding(i, level) }}
-                          title={labelMap[level]}
-                          aria-label={labelMap[level]}
-                          aria-pressed={isActive}
-                          className="transition-transform hover:scale-110 active:scale-95"
-                        >
-                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect
-                              x="1.5" y="1.5" width="17" height="17" rx="3.5"
-                              fill={fillColor}
-                              fillOpacity={isActive ? 1 : 0.35}
-                              stroke={fillColor}
-                              strokeOpacity={isActive ? 1 : 0.5}
-                              strokeWidth="1.75"
-                            />
-                            <path
-                              d="M5.5 10.5 L8.5 13.5 L14.5 7"
-                              stroke="white"
-                              strokeOpacity={isActive ? 1 : 0.6}
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </button>
-                      )
-                    })
-                  )}
+                  {(['green', 'yellow', 'red'] as UnderstandingLevel[]).map((level) => {
+                    const isActive = understanding[`${categoryId}:${i}`] === level
+                    const fillColor = { green: '#10b981', yellow: '#f59e0b', red: '#ef4444' }[level]
+                    const labelMap = {
+                      green: '理解できた',
+                      yellow: 'なんとなく',
+                      red: 'まだ難しい',
+                    }
+                    return (
+                      <button
+                        key={level}
+                        onClick={(e) => { e.stopPropagation(); handleUnderstanding(i, level) }}
+                        title={labelMap[level]}
+                        aria-label={labelMap[level]}
+                        aria-pressed={isActive}
+                        className="transition-transform hover:scale-110 active:scale-95"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect
+                            x="1.5" y="1.5" width="17" height="17" rx="3.5"
+                            fill={fillColor}
+                            fillOpacity={isActive ? 1 : 0.35}
+                            stroke={fillColor}
+                            strokeOpacity={isActive ? 1 : 0.5}
+                            strokeWidth="1.75"
+                          />
+                          <path
+                            d="M5.5 10.5 L8.5 13.5 L14.5 7"
+                            stroke="white"
+                            strokeOpacity={isActive ? 1 : 0.6}
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
               {section.protocols ? (
@@ -1838,7 +1836,7 @@ export default function NoteDetail() {
                     <HeaderDiagramView key={k} dg={dg} hideRed={hideRed} version={maskVersion} />
                   ))}
                 </div>
-              ) : section.navyItems ? (
+              ) : section.navyItems && !section.items ? (
                 <ul className="px-5 py-4 space-y-2">
                   {section.navyItems.map((tokens, j) => {
                     const { level, stripped } = detectIndent(tokens)
@@ -1862,6 +1860,19 @@ export default function NoteDetail() {
                       <span>{renderText(item, hideRed, maskVersion)}</span>
                     </li>
                   ))}
+                  {section.navyItems?.map((tokens, j) => {
+                    const { level, stripped } = detectIndent(tokens)
+                    const s = indentStyles(level, 'slate')
+                    return (
+                      <li
+                        key={`navy-${j}`}
+                        className={`flex items-start gap-2 text-sm leading-relaxed pt-1 ${s.padClass} ${s.textClass}`}
+                      >
+                        <span className={`flex-shrink-0 mt-1.5 rounded-full ${s.dotSize} ${s.dotClass}`} />
+                        <span>{renderTokens(stripped, hideRed, maskVersion)}</span>
+                      </li>
+                    )
+                  })}
                 </ul>
               )}
             </div>
