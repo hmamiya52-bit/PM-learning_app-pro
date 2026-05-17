@@ -663,8 +663,20 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     choices: ['110', '120', '135', '150'],
     correctIndex: 3,
     explanation: '',
-    categoryId: 'measurement (figure)',
+    categoryId: 'measurement',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔5日目の終了時点の状況〕',
+      headers: ['管理項目', '金額（万円）'],
+      rows: [
+        ['完成時総予算（BAC）', 100],
+        ['プランドバリュー（PV）', 50],
+        ['アーンドバリュー（EV）', 40],
+        ['実コスト（AC）', 60],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R5-6',
@@ -676,8 +688,20 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     choices: ['11', '13', '14', '15'],
     correctIndex: 1,
     explanation: '',
-    categoryId: 'planning (figure)',
+    categoryId: 'planning',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔作業別の担当者，所要日数の見積り，前作業〕',
+      headers: ['作業', '担当者', 'HP', 'ABP', '前作業'],
+      rows: [
+        ['①', 'A', 8, 6, 'なし'],
+        ['②', 'A', 3, 2, '①'],
+        ['③', 'B', 5, 3, 'なし'],
+        ['④', 'A', 4, 3, '②，③'],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R5-7',
@@ -689,8 +713,67 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     choices: ['15', '16', '17', '18'],
     correctIndex: 1,
     explanation: '',
-    categoryId: 'planning (figure)',
+    categoryId: 'planning',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'PDM図。開始からAへ進み、AからFSでBへ進み終了へ向かう。開始からCとDにも分岐し、それぞれ終了前の合流点へ向かう。下部にAからDの所要日数と専門チーム支援期間の表がある。',
+      caption: '〔アクティビティの依存関係と専門チームの支援期間〕',
+      viewBox: '0 0 560 372',
+      content: `
+        <defs>
+          <marker id="amR5q7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <circle cx="58" cy="75" r="30" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="58" y="80" text-anchor="middle" font-size="14" fill="#1e293b">開始</text>
+        <rect x="125" y="50" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="76" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">A</text>
+        <rect x="285" y="50" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="332" y="76" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">B</text>
+        <rect x="125" y="120" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="146" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">C</text>
+        <rect x="125" y="190" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="216" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">D</text>
+        <circle cx="485" cy="75" r="30" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="485" y="80" text-anchor="middle" font-size="14" fill="#1e293b">終了</text>
+        <line x1="88" y1="75" x2="123" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <line x1="220" y1="75" x2="283" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <text x="252" y="64" text-anchor="middle" font-size="12" fill="#475569" font-weight="bold">FS</text>
+        <line x1="380" y1="75" x2="453" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <path d="M 88 78 L 95 78 L 95 141 L 123 141" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <path d="M 88 82 L 95 82 L 95 211 L 123 211" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <path d="M 220 141 L 430 141 L 430 75 L 453 75" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <path d="M 220 211 L 430 211 L 430 75 L 453 75" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amR5q7)"/>
+        <rect x="35" y="255" width="490" height="88" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="35" y1="277" x2="525" y2="277" stroke="#1e293b" stroke-width="1"/>
+        <line x1="35" y1="299" x2="525" y2="299" stroke="#1e293b" stroke-width="1"/>
+        <line x1="35" y1="321" x2="525" y2="321" stroke="#1e293b" stroke-width="1"/>
+        <line x1="145" y1="255" x2="145" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <line x1="250" y1="255" x2="250" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <line x1="525" y1="255" x2="525" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <text x="90" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">アクティビティ名</text>
+        <text x="197" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">所要日数（日）</text>
+        <text x="388" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">専門チームの支援期間</text>
+        <text x="90" y="294" text-anchor="middle" font-size="12" fill="#1e293b">A</text>
+        <text x="197" y="294" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
+        <text x="388" y="294" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の4日間</text>
+        <text x="90" y="316" text-anchor="middle" font-size="12" fill="#1e293b">B</text>
+        <text x="197" y="316" text-anchor="middle" font-size="12" fill="#1e293b">5</text>
+        <text x="388" y="316" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の2日間</text>
+        <text x="90" y="338" text-anchor="middle" font-size="12" fill="#1e293b">C</text>
+        <text x="197" y="338" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
+        <text x="388" y="338" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の4日間</text>
+        <rect x="35" y="343" width="490" height="22" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="145" y1="343" x2="145" y2="365" stroke="#1e293b" stroke-width="1"/>
+        <line x1="250" y1="343" x2="250" y2="365" stroke="#1e293b" stroke-width="1"/>
+        <text x="90" y="358" text-anchor="middle" font-size="12" fill="#1e293b">D</text>
+        <text x="197" y="358" text-anchor="middle" font-size="12" fill="#1e293b">4</text>
+        <text x="388" y="358" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の全て</text>
+      `,
+    },
   },
   {
     id: 'om-R5-8',
@@ -733,8 +816,86 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     choices: ['45', '46', '49', '50'],
     correctIndex: 0,
     explanation: '',
-    categoryId: 'measurement (figure)',
+    categoryId: 'measurement',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'ファンクションポイント法の表。表1は要素処理、表2は外部入力の複雑さ、表3は外部出力と外部照会の複雑さ、表4は未調整ファンクションポイントを示す。',
+      caption: '表1〜表4　ファンクションポイント算出用の表',
+      viewBox: '0 0 620 430',
+      content: `
+        <defs>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <text x="145" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表1　要素処理</text>
+        <rect x="20" y="28" width="260" height="140" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="20" y1="58" x2="280" y2="58" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="86" x2="280" y2="86" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="114" x2="280" y2="114" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="142" x2="280" y2="142" stroke="#1e293b" stroke-width="1"/>
+        <line x1="72" y1="28" x2="72" y2="168" stroke="#1e293b" stroke-width="1"/>
+        <line x1="152" y1="28" x2="152" y2="168" stroke="#1e293b" stroke-width="1"/>
+        <line x1="220" y1="28" x2="220" y2="168" stroke="#1e293b" stroke-width="1"/>
+        <text x="46" y="48" text-anchor="middle" font-size="11" fill="#1e293b">要素処理</text>
+        <text x="112" y="48" text-anchor="middle" font-size="11" fill="#1e293b">ファンクション型</text>
+        <text x="186" y="43" text-anchor="middle" font-size="11" fill="#1e293b">関連</text>
+        <text x="186" y="55" text-anchor="middle" font-size="11" fill="#1e293b">ファイル数</text>
+        <text x="250" y="43" text-anchor="middle" font-size="11" fill="#1e293b">データ</text>
+        <text x="250" y="55" text-anchor="middle" font-size="11" fill="#1e293b">項目数</text>
+        <text x="46" y="78" text-anchor="middle" font-size="12" fill="#1e293b">①</text><text x="112" y="78" text-anchor="middle" font-size="11" fill="#1e293b">外部入力</text><text x="186" y="78" text-anchor="middle" font-size="12" fill="#1e293b">1</text><text x="250" y="78" text-anchor="middle" font-size="12" fill="#1e293b">8</text>
+        <text x="46" y="106" text-anchor="middle" font-size="12" fill="#1e293b">②</text><text x="112" y="106" text-anchor="middle" font-size="11" fill="#1e293b">外部照会</text><text x="186" y="106" text-anchor="middle" font-size="12" fill="#1e293b">3</text><text x="250" y="106" text-anchor="middle" font-size="12" fill="#1e293b">21</text>
+        <text x="46" y="134" text-anchor="middle" font-size="12" fill="#1e293b">③</text><text x="112" y="134" text-anchor="middle" font-size="11" fill="#1e293b">外部照会</text><text x="186" y="134" text-anchor="middle" font-size="12" fill="#1e293b">1</text><text x="250" y="134" text-anchor="middle" font-size="12" fill="#1e293b">12</text>
+        <text x="46" y="162" text-anchor="middle" font-size="12" fill="#1e293b">④</text><text x="112" y="162" text-anchor="middle" font-size="11" fill="#1e293b">外部出力</text><text x="186" y="162" text-anchor="middle" font-size="12" fill="#1e293b">2</text><text x="250" y="162" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
+
+        <text x="465" y="18" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表2　複雑さ（外部入力）</text>
+        <rect x="330" y="28" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="330" y1="58" x2="590" y2="58" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="88" x2="590" y2="88" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="118" x2="590" y2="118" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="148" x2="590" y2="148" stroke="#1e293b" stroke-width="1"/>
+        <line x1="410" y1="28" x2="410" y2="178" stroke="#1e293b" stroke-width="1"/>
+        <line x1="470" y1="58" x2="470" y2="178" stroke="#1e293b" stroke-width="1"/>
+        <line x1="530" y1="58" x2="530" y2="178" stroke="#1e293b" stroke-width="1"/>
+        <text x="370" y="51" text-anchor="middle" font-size="11" fill="#1e293b">関連ファイル数</text>
+        <text x="500" y="45" text-anchor="middle" font-size="11" fill="#1e293b">データ項目数</text>
+        <text x="440" y="76" text-anchor="middle" font-size="11" fill="#1e293b">1〜4</text><text x="500" y="76" text-anchor="middle" font-size="11" fill="#1e293b">5〜15</text><text x="560" y="76" text-anchor="middle" font-size="11" fill="#1e293b">16以上</text>
+        <text x="370" y="106" text-anchor="middle" font-size="11" fill="#1e293b">0〜1</text><text x="440" y="106" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="500" y="106" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="560" y="106" text-anchor="middle" font-size="12" fill="#1e293b">中</text>
+        <text x="370" y="136" text-anchor="middle" font-size="11" fill="#1e293b">2</text><text x="440" y="136" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="500" y="136" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="560" y="136" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
+        <text x="370" y="160" text-anchor="middle" font-size="11" fill="#1e293b">3以上</text><text x="440" y="160" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="500" y="160" text-anchor="middle" font-size="12" fill="#1e293b">高</text><text x="560" y="160" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
+
+        <text x="145" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表3　複雑さ（外部出力，外部照会）</text>
+        <rect x="20" y="228" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="20" y1="258" x2="280" y2="258" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="288" x2="280" y2="288" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="318" x2="280" y2="318" stroke="#1e293b" stroke-width="1"/>
+        <line x1="20" y1="348" x2="280" y2="348" stroke="#1e293b" stroke-width="1"/>
+        <line x1="100" y1="228" x2="100" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <line x1="160" y1="258" x2="160" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <line x1="220" y1="258" x2="220" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <text x="60" y="251" text-anchor="middle" font-size="11" fill="#1e293b">関連ファイル数</text>
+        <text x="190" y="245" text-anchor="middle" font-size="11" fill="#1e293b">データ項目数</text>
+        <text x="130" y="276" text-anchor="middle" font-size="11" fill="#1e293b">1〜5</text><text x="190" y="276" text-anchor="middle" font-size="11" fill="#1e293b">6〜19</text><text x="250" y="276" text-anchor="middle" font-size="11" fill="#1e293b">20以上</text>
+        <text x="60" y="306" text-anchor="middle" font-size="11" fill="#1e293b">0〜1</text><text x="130" y="306" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="190" y="306" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="250" y="306" text-anchor="middle" font-size="12" fill="#1e293b">中</text>
+        <text x="60" y="336" text-anchor="middle" font-size="11" fill="#1e293b">2〜3</text><text x="130" y="336" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="190" y="336" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="250" y="336" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
+        <text x="60" y="366" text-anchor="middle" font-size="11" fill="#1e293b">4以上</text><text x="130" y="366" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="190" y="366" text-anchor="middle" font-size="12" fill="#1e293b">高</text><text x="250" y="366" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
+
+        <text x="465" y="218" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">表4　未調整ファンクションポイント</text>
+        <rect x="330" y="228" width="260" height="150" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="330" y1="258" x2="590" y2="258" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="288" x2="590" y2="288" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="318" x2="590" y2="318" stroke="#1e293b" stroke-width="1"/>
+        <line x1="330" y1="348" x2="590" y2="348" stroke="#1e293b" stroke-width="1"/>
+        <line x1="430" y1="228" x2="430" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <line x1="484" y1="258" x2="484" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <line x1="538" y1="258" x2="538" y2="378" stroke="#1e293b" stroke-width="1"/>
+        <text x="380" y="245" text-anchor="middle" font-size="11" fill="#1e293b">ファンクション型</text>
+        <text x="511" y="245" text-anchor="middle" font-size="11" fill="#1e293b">複雑さ</text>
+        <text x="457" y="276" text-anchor="middle" font-size="12" fill="#1e293b">低</text><text x="511" y="276" text-anchor="middle" font-size="12" fill="#1e293b">中</text><text x="564" y="276" text-anchor="middle" font-size="12" fill="#1e293b">高</text>
+        <text x="380" y="306" text-anchor="middle" font-size="11" fill="#1e293b">外部入力</text><text x="457" y="306" text-anchor="middle" font-size="12" fill="#1e293b">3</text><text x="511" y="306" text-anchor="middle" font-size="12" fill="#1e293b">4</text><text x="564" y="306" text-anchor="middle" font-size="12" fill="#1e293b">6</text>
+        <text x="380" y="336" text-anchor="middle" font-size="11" fill="#1e293b">外部出力</text><text x="457" y="336" text-anchor="middle" font-size="12" fill="#1e293b">4</text><text x="511" y="336" text-anchor="middle" font-size="12" fill="#1e293b">5</text><text x="564" y="336" text-anchor="middle" font-size="12" fill="#1e293b">7</text>
+        <text x="380" y="366" text-anchor="middle" font-size="11" fill="#1e293b">外部照会</text><text x="457" y="366" text-anchor="middle" font-size="12" fill="#1e293b">3</text><text x="511" y="366" text-anchor="middle" font-size="12" fill="#1e293b">4</text><text x="564" y="366" text-anchor="middle" font-size="12" fill="#1e293b">6</text>
+      `,
+    },
   },
   {
     id: 'om-R5-11',
@@ -781,8 +942,20 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     ],
     correctIndex: 3,
     explanation: '',
-    categoryId: 'delivery (figure)',
+    categoryId: 'delivery',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔レビュー名称の組合せ〕',
+      headers: ['', 'a', 'b', 'c'],
+      rows: [
+        ['ア', 'インスペクション', 'ウォークスルー', 'ラウンドロビン'],
+        ['イ', 'ウォークスルー', 'インスペクション', 'ラウンドロビン'],
+        ['ウ', 'ラウンドロビン', 'インスペクション', 'ウォークスルー'],
+        ['エ', 'ラウンドロビン', 'ウォークスルー', 'インスペクション'],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R5-14',
@@ -859,8 +1032,22 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     choices: ['A案', 'B案', 'C案', 'D案'],
     correctIndex: 2,
     explanation: '',
-    categoryId: 'measurement (figure)',
+    categoryId: 'measurement',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔提案された4案（単位：百万円）〕',
+      headers: ['', 'A案', 'B案', 'C案', 'D案'],
+      rows: [
+        ['ハードウェア導入費用', 30, 30, 40, 40],
+        ['システム開発費用', 30, 50, 30, 40],
+        ['導入教育費用', 5, 5, 5, 5],
+        ['ネットワーク通信費用／年', 20, 20, 15, 15],
+        ['保守費用／年', 6, 5, 5, 5],
+        ['システム運用費用／年', 6, 4, 6, 4],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R5-19',
