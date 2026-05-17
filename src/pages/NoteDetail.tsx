@@ -1899,6 +1899,51 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__予測型__ = ==一度に全部==（反復なし、漸進なし）',
           '試験頻出: 「反復型」と「漸進型」の単独定義を問う設問',
         ],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'イテラティブは全体を洗練、インクリメンタルは部分を積み上げる',
+            ariaLabel: 'イテラティブとインクリメンタルの違いを上下2段で比較する図',
+            viewBox: '0 0 720 360',
+            content: `
+              <defs>
+                <marker id="iter-inc-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="684" height="324" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <text x="72" y="78" fill="#dc2626" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">反復型</text>
+              <text x="72" y="96" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Iterative</text>
+              <rect x="130" y="50" width="120" height="76" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="190" y="76" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">全体の下書き</text>
+              <path d="M160 105 Q190 70 220 105" fill="none" stroke="#64748b" stroke-width="2" />
+              <line x1="256" y1="88" x2="300" y2="88" stroke="#64748b" stroke-width="2" marker-end="url(#iter-inc-arrow)" />
+              <rect x="310" y="50" width="120" height="76" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="370" y="76" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">全体を着色</text>
+              <path d="M340 105 Q370 58 400 105" fill="none" stroke="#9d5b8b" stroke-width="3" />
+              <line x1="436" y1="88" x2="480" y2="88" stroke="#64748b" stroke-width="2" marker-end="url(#iter-inc-arrow)" />
+              <rect x="490" y="50" width="120" height="76" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+              <text x="550" y="76" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">全体を修正</text>
+              <path d="M520 105 Q550 48 580 105" fill="none" stroke="#10b981" stroke-width="3" />
+              <text x="370" y="146" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">同じ全体像を何度も洗練する</text>
+              <line x1="46" y1="178" x2="674" y2="178" stroke="#cbd5e1" stroke-width="1" />
+              <text x="72" y="232" fill="#9d5b8b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">漸進型</text>
+              <text x="72" y="250" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Incremental</text>
+              <rect x="130" y="210" width="120" height="76" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+              <text x="190" y="242" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">キッチン完成</text>
+              <line x1="256" y1="248" x2="300" y2="248" stroke="#64748b" stroke-width="2" marker-end="url(#iter-inc-arrow)" />
+              <rect x="310" y="210" width="120" height="76" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+              <rect x="310" y="210" width="60" height="76" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="370" y="242" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">寝室を追加</text>
+              <line x1="436" y1="248" x2="480" y2="248" stroke="#64748b" stroke-width="2" marker-end="url(#iter-inc-arrow)" />
+              <rect x="490" y="210" width="120" height="76" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+              <line x1="530" y1="210" x2="530" y2="286" stroke="#10b981" stroke-width="2" />
+              <line x1="570" y1="210" x2="570" y2="286" stroke="#10b981" stroke-width="2" />
+              <text x="550" y="242" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">リビング追加</text>
+              <text x="370" y="306" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">完成済みの部分を順に増やす</text>
+            `,
+          },
+        ],
       },
       {
         heading: '14. 適応型のメリット・デメリット',
@@ -1947,6 +1992,24 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__チーム__: 予測型 = ==階層型==／適応型 = ==自己組織化==',
         ],
         navyItems: [[{ text: '試験頻出の対比表。両者は二者択一ではなく連続体として理解', style: 'navy' }]],
+        figures: [
+          {
+            type: 'table',
+            caption: '予測型 vs 適応型: 試験頻出の8項目比較',
+            headers: ['項目', '予測型', '適応型'],
+            rowHeaderFirstCol: true,
+            rows: [
+              ['計画粒度', '全体を詳細化', '近期詳細・遠期粗'],
+              ['変更管理', 'CCBで厳格管理', 'バックログで歓迎'],
+              ['リリース', '終盤に一括', '継続的・反復的'],
+              ['顧客関与', '要件定義時とUAT', '常時関与'],
+              ['リスク管理', '上流で網羅', '反復ごとに継続'],
+              ['成功基準', 'QCD遵守', '価値実現・顧客満足'],
+              ['文書化', '重視', '必要最小限'],
+              ['チーム', '階層型', '自己組織化'],
+            ],
+          },
+        ],
       },
       // ── D. スクラム ──
       {
@@ -1993,6 +2056,46 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==スプリントレトロスペクティブ==（Sprint Retrospective）: レビュー後・次スプリント前。最大==3時間==',
           '　　目的: ==チームの改善==（プロセス・関係性・道具）',
           '試験頻出: イベント名・順序・タイムボックス・主催者',
+        ],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'スクラムイベント: スプリントをコンテナとして4イベントを配置',
+            ariaLabel: 'スプリント内のスクラムイベントの順序とタイムボックスを示す図',
+            viewBox: '0 0 720 340',
+            content: `
+              <defs>
+                <marker id="scrum-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="684" height="304" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <rect x="70" y="78" width="580" height="184" rx="12" fill="#9d5b8b15" stroke="#9d5b8b" stroke-width="2" />
+              <text x="360" y="58" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="16" font-weight="700" text-anchor="middle">Sprint（1〜4週 / 最大1か月）</text>
+              <rect x="94" y="118" width="126" height="66" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="157" y="142" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">スプリント計画</text>
+              <text x="157" y="162" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">最大8h</text>
+              <line x1="224" y1="151" x2="270" y2="151" stroke="#64748b" stroke-width="2" marker-end="url(#scrum-arrow)" />
+              <rect x="282" y="112" width="156" height="78" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="360" y="136" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">デイリースクラム</text>
+              <text x="360" y="156" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">毎日15分</text>
+              <text x="360" y="176" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">進捗・障害・24h計画</text>
+              <line x1="442" y1="151" x2="488" y2="151" stroke="#64748b" stroke-width="2" marker-end="url(#scrum-arrow)" />
+              <rect x="500" y="118" width="126" height="66" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+              <text x="563" y="142" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">レビュー</text>
+              <text x="563" y="162" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">最大4h</text>
+              <line x1="563" y1="188" x2="563" y2="214" stroke="#64748b" stroke-width="2" marker-end="url(#scrum-arrow)" />
+              <rect x="500" y="220" width="126" height="56" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+              <text x="563" y="242" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">レトロ</text>
+              <text x="563" y="260" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">最大3h</text>
+              <text x="104" y="292" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="start">開始: 計画</text>
+              <text x="498" y="292" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="start">終了: レビュー → レトロ</text>
+              <circle cx="330" cy="210" r="7" fill="#9d5b8b" />
+              <circle cx="360" cy="210" r="7" fill="#9d5b8b" />
+              <circle cx="390" cy="210" r="7" fill="#9d5b8b" />
+              <text x="360" y="236" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Daily repeats</text>
+            `,
+          },
         ],
       },
       {
