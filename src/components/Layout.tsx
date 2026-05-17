@@ -1,7 +1,17 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import PwaInstallPrompt from './PwaInstallPrompt'
 import { VERSION_LABEL } from '../version'
+
+/**
+ * 没入型画面のパス（演習・クイズ）。これらの画面ではサイドバーが
+ * デフォルトで最小化される（ユーザがハンバーガーで開閉可能）。
+ */
+const IMMERSIVE_PATH_PREFIXES = ['/quiz', '/morning/session', '/morning/summary']
+
+function isImmersivePath(pathname: string): boolean {
+  return IMMERSIVE_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
+}
 
 // ----------------------------------------------------------------
 // Types
@@ -162,30 +172,44 @@ const STORAGE_KEY = 'pmap:sidebar_open'
 // ----------------------------------------------------------------
 
 export default function Layout() {
+  const location = useLocation()
+  const isImmersive = isImmersivePath(location.pathname)
+
   const [isOpen, setIsOpen] = useState<boolean>(() => {
-    // モバイルでは常に閉じた状態（localStorage の値に関わらず）
+    // モバイル: 常に閉じた状態
     if (window.innerWidth < 768) return false
+    // 没入型画面（演習・クイズ）の初期表示: デフォルト最小化（ユーザ要望）
+    if (isImmersivePath(window.location.pathname)) return false
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored !== null) return JSON.parse(stored) as boolean
     } catch {
       // ignore parse errors
     }
-    // デスクトップのデフォルト: 開いた状態
+    // デスクトップ通常画面のデフォルト: 開いた状態
     return true
   })
 
   const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth < 768)
   const navigate = useNavigate()
 
-  // Sync open state to localStorage
+  // 没入型画面への遷移時、サイドバーを自動的に閉じる（ユーザがハンバーガーで開閉可能）
   useEffect(() => {
+    if (isImmersive) {
+      setIsOpen(false)
+    }
+  }, [isImmersive])
+
+  // Sync open state to localStorage
+  // 没入型画面の自動最小化は保存しない（通常画面の状態を保つため）
+  useEffect(() => {
+    if (isImmersive) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(isOpen))
     } catch {
       // ignore storage errors
     }
-  }, [isOpen])
+  }, [isOpen, isImmersive])
 
   // Respond to viewport changes
   useEffect(() => {

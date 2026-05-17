@@ -35,19 +35,22 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 没入型画面（Layout なし、サイドバー非表示） */}
-        <Route path="/quiz" element={<Quiz />} />
-        <Route path="/morning/session" element={<OfficialMorningSession />} />   {/* F1-P4 */}
-        <Route path="/morning/summary" element={<OfficialMorningSummary />} />   {/* F1-P4 */}
-
-        {/* Layout 付き画面 */}
+        {/* 全画面 Layout 適用（演習・クイズも含む）
+            F2-UX 改善: 演習中・クイズ中もサイドバーを開けるよう Layout 配下に統合。
+            Layout 側で /quiz, /morning/session, /morning/summary はデフォルト最小化される。
+            没入型ローカルヘッダーは sticky top-12 で Layout ヘッダーの下に配置。 */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/how-to-use" element={<HowToUse />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:categoryId" element={<NoteDetail />} />
 
-          {/* 公式午前II（F1-P4） */}
+          {/* クイズ・公式午前II（F1-P4、F2-UX で Layout 配下に移動） */}
+          <Route path="/quiz" element={<Quiz />} />
+          <Route path="/morning/session" element={<OfficialMorningSession />} />
+          <Route path="/morning/summary" element={<OfficialMorningSummary />} />
+
+          {/* 公式午前II トップ（F1-P4） */}
           <Route path="/morning" element={<OfficialMorningQuiz />} />
 
           {/* 午後I（PM1のみ） */}

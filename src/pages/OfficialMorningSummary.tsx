@@ -71,7 +71,7 @@ export default function OfficialMorningSummary() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
       {/* ヘッダー（没入型） */}
-      <header className="bg-brand text-white shadow-lg sticky top-0 z-20">
+      <header className="bg-brand text-white shadow-lg sticky top-12 z-10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <p className="font-bold text-sm flex-1">公式午前II サマリー</p>
           {state.yearLabel && (

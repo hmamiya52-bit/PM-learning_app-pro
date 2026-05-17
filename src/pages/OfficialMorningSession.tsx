@@ -67,6 +67,16 @@ export default function OfficialMorningSession() {
   const [showExplanation, setShowExplanation] = useState(false)
   const [lastXpGained, setLastXpGained] = useState(0)
   const [pendingBadges, setPendingBadges] = useState<BadgeDefinition[]>([])
+  // ★デバッグモード（正式版 v1.0.0 では削除予定 / detailed_design §2.7e.x 参照）
+  //   - 解説を常時表示（選択肢クリック不要）
+  //   - 問題の前後ナビゲーションを表示
+  //   - 解答記録（addMorningRecord / applyAnswer / addActivityEvent）に書き込まない
+  //   - URL クエリ ?debug=1 で起動時 ON も可能
+  const [debugMode, setDebugMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    const params = new URLSearchParams(window.location.search)
+    return params.get('debug') === '1'
+  })
   // 文字サイズ設定（端末ローカル、LocalStorage 永続化）
   const [fontSize, setFontSize] = useState<FontSize>(() => getMorningFontSize())
   const toggleFontSize = () => {
@@ -129,6 +139,13 @@ export default function OfficialMorningSession() {
       if (showExplanation || !currentQuestion) return
       const correct = idx === currentQuestion.correctIndex
 
+      // ★デバッグモード: 解答記録・XP加算・バッジ判定をすべてスキップ
+      if (debugMode) {
+        setSelectedIndex(idx)
+        setShowExplanation(true)
+        return
+      }
+
       // 記録保存
       addMorningRecord({
         questionId: currentQuestion.id,
@@ -165,11 +182,59 @@ export default function OfficialMorningSession() {
       setSelectedIndex(idx)
       setShowExplanation(true)
     },
-    [currentQuestion, showExplanation],
+    [currentQuestion, showExplanation, debugMode],
   )
+
+  // ★デバッグモード: 問題切替時に解説を自動表示
+  useEffect(() => {
+    if (debugMode && currentQuestion) {
+      setShowExplanation(true)
+      setSelectedIndex(currentQuestion.correctIndex)  // 正解を選択した状態にして解説の正誤判定を「正解」として表示
+    }
+  }, [debugMode, currentQuestion])
+
+  // ★デバッグモード: 前後ナビゲーション（解答記録なし、進捗カウントなし）
+  const handleDebugPrev = useCallback(() => {
+    if (currentIndex > 0) {
+      setCurrentIndex((i) => i - 1)
+      setSelectedIndex(null)
+      setShowExplanation(false)
+      setLastXpGained(0)
+    }
+  }, [currentIndex])
+
+  const handleDebugNext = useCallback(() => {
+    if (currentIndex < questionList.length - 1) {
+      setCurrentIndex((i) => i + 1)
+      setSelectedIndex(null)
+      setShowExplanation(false)
+      setLastXpGained(0)
+    }
+  }, [currentIndex, questionList.length])
+
+  // ★デバッグモード ON/OFF 切替
+  const toggleDebugMode = useCallback(() => {
+    setDebugMode((prev) => {
+      const next = !prev
+      if (!next) {
+        // OFF にしたら表示をリセット（次に選択肢を押すまで解説非表示）
+        setShowExplanation(false)
+        setSelectedIndex(null)
+      }
+      return next
+    })
+  }, [])
 
   const handleNext = useCallback(() => {
     if (!currentQuestion || selectedIndex === null) return
+
+    // ★デバッグモード: 記録せず単に次へ進む（最後なら何もしない）
+    if (debugMode) {
+      if (currentIndex < questionList.length - 1) {
+        handleDebugNext()
+      }
+      return
+    }
 
     const newLog: SessionLog = {
       question: currentQuestion,
@@ -225,7 +290,7 @@ export default function OfficialMorningSession() {
       setShowExplanation(false)
       setLastXpGained(0)
     }
-  }, [currentQuestion, selectedIndex, isCorrect, logs, isLast, navigate, state.scope, state.yearLabel])
+  }, [currentQuestion, selectedIndex, isCorrect, logs, isLast, navigate, state.scope, state.yearLabel, debugMode, currentIndex, questionList.length, handleDebugNext])
 
   if (!currentQuestion) {
     return null  // リダイレクト処理中
@@ -235,8 +300,8 @@ export default function OfficialMorningSession() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
-      {/* ヘッダー（没入型: brand 色） */}
-      <header className="bg-brand text-white shadow-lg sticky top-0 z-20">
+      {/* ヘッダー（没入型: brand 色、Layout ヘッダー h-12 の下に sticky） */}
+      <header className="bg-brand text-white shadow-lg sticky top-12 z-10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={() => {
@@ -254,9 +319,23 @@ export default function OfficialMorningSession() {
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm truncate">
               公式午前II {state.yearLabel ?? ''}
+              {debugMode && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400 text-yellow-900 align-middle">DEBUG</span>}
             </p>
             <p className="text-white/80 text-xs">{questionList.length} 問</p>
           </div>
+          {/* ★デバッグモードトグル（正式版 v1.0.0 で削除） */}
+          <button
+            onClick={toggleDebugMode}
+            className={`flex-shrink-0 px-2 py-1 rounded text-[11px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+              debugMode
+                ? 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'
+                : 'bg-brand-dark text-white/80 hover:bg-brand-dark/80'
+            }`}
+            title="デバッグモード（解説常時表示・記録なし）"
+            aria-pressed={debugMode}
+          >
+            🐛 DEBUG
+          </button>
           <span className="flex-shrink-0 text-xs bg-brand-dark text-white/90 rounded-full px-2.5 py-1">
             {currentIndex + 1} / {questionList.length}
           </span>
@@ -278,6 +357,29 @@ export default function OfficialMorningSession() {
             />
           </div>
         </div>
+
+        {/* ★デバッグモード: 問題上に前後ナビ（記録に影響しない） */}
+        {debugMode && (
+          <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-yellow-50 border border-yellow-300">
+            <button
+              onClick={handleDebugPrev}
+              disabled={currentIndex === 0}
+              className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              ← 前へ
+            </button>
+            <span className="flex-1 text-center text-xs text-yellow-800 font-medium">
+              DEBUG: 解説常時表示・記録なし
+            </span>
+            <button
+              onClick={handleDebugNext}
+              disabled={currentIndex >= questionList.length - 1}
+              className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              次へ →
+            </button>
+          </div>
+        )}
 
         {/* 問題文 */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
@@ -330,40 +432,48 @@ export default function OfficialMorningSession() {
         {/* 正誤判定 + 解説 */}
         {showExplanation && (
           <div className="mt-5 space-y-3">
-            <div
-              className={`rounded-xl px-4 py-3 flex items-center justify-between ${
-                isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
-                <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
-                  {isCorrect ? '正解！' : '不正解'}
-                  {!isCorrect && correctDisplayIndex >= 0 && (
-                    <span className="text-xs font-normal ml-2 text-slate-500">
-                      あなたの解答: {ANSWER_LABELS[selectedDisplayIndex]} / 正解: {ANSWER_LABELS[correctDisplayIndex]}
-                    </span>
-                  )}
-                </p>
+            {/* 正誤判定ブロック（デバッグモード時は非表示） */}
+            {!debugMode && (
+              <div
+                className={`rounded-xl px-4 py-3 flex items-center justify-between ${
+                  isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
+                  <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
+                    {isCorrect ? '正解！' : '不正解'}
+                    {!isCorrect && correctDisplayIndex >= 0 && (
+                      <span className="text-xs font-normal ml-2 text-slate-500">
+                        あなたの解答: {ANSWER_LABELS[selectedDisplayIndex]} / 正解: {ANSWER_LABELS[correctDisplayIndex]}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                {lastXpGained > 0 && (
+                  <span className="text-xs font-bold text-amber-600">+{lastXpGained} XP</span>
+                )}
               </div>
-              {lastXpGained > 0 && (
-                <span className="text-xs font-bold text-amber-600">+{lastXpGained} XP</span>
-              )}
-            </div>
+            )}
 
             <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">解説</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[correctDisplayIndex]}）</span>}
+              </p>
               <p className={`${textClass} text-slate-700 leading-relaxed`}>
                 <MathText text={currentQuestion.explanation} />
               </p>
             </div>
 
-            <button
-              onClick={handleNext}
-              className="w-full bg-brand text-white font-bold rounded-xl py-3.5 hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-            >
-              {isLast ? 'サマリーへ' : '次の問題へ →'}
-            </button>
+            {/* 次の問題へボタン（デバッグモード時は非表示、前後ナビで移動） */}
+            {!debugMode && (
+              <button
+                onClick={handleNext}
+                className="w-full bg-brand text-white font-bold rounded-xl py-3.5 hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              >
+                {isLast ? 'サマリーへ' : '次の問題へ →'}
+              </button>
+            )}
           </div>
         )}
       </main>

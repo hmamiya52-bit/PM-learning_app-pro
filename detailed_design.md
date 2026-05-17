@@ -1,7 +1,7 @@
 # 詳細設計書: プロジェクトマネージャ試験 学習アプリ
 
-> バージョン: 0.20（インデント運用ルールを明文化：docs/note_markup_rules.md §5 新設、品質ゲートにインデント整合性チェックを必須化）
-> 作成日: 2026-05-06（v0.14） / 2026-05-13（v0.15） / 2026-05-16（v0.16） / 2026-05-17（v0.17・v0.18・v0.19・v0.20）
+> バージョン: 0.21（UX改善：演習・クイズ画面でサイドバー開閉可能（デフォルト最小化）+ 午前II デバッグモード追加（v1.0.0 で削除予定））
+> 作成日: 2026-05-06（v0.14） / 2026-05-13（v0.15） / 2026-05-16（v0.16） / 2026-05-17（v0.17・v0.18・v0.19・v0.20・v0.21）
 > 関連: [requirements.md v0.5](./requirements.md) / [basic_design.md v0.9](./basic_design.md)
 > ベースアプリ: NW-learning_app-pro v1.3
 > ステータス: D1〜D6 全章完成 + F1-P-1 反映済み
@@ -1613,6 +1613,68 @@ function saveJson<T>(key: string, value: T): SaveResult {
 
 ### 2.7d.5 工数
 - F1-P0 で `storageSafe.ts` 作成 + 各libのsave関数書き換え: 2〜3h
+
+---
+
+## 2.7f 演習・クイズ画面のサイドバー対応（v0.21）
+
+### 2.7f.1 背景
+F1-P4 / F1-P5 で実装した没入型画面（`/quiz`, `/morning/session`, `/morning/summary`）は当初 Layout を介さず描画していた。ユーザレビューで「演習中もサイドバーから他画面に飛びたい」要望あり。
+
+### 2.7f.2 仕様
+- 上記3パスを `<Route element={<Layout />}>` 配下に移動
+- Layout 側で「没入型パス」リストを判定し、初回マウント時にサイドバーを==最小化==（`isOpen=false`）
+- ユーザはハンバーガーボタンで開閉可能
+- 没入型画面で開閉した状態は LocalStorage に永続化しない（通常画面の状態を保つため）
+- 各没入型画面のローカルヘッダーは `sticky top-12 z-10` に変更（Layout ヘッダー h-12 の直下に配置）
+
+### 2.7f.3 実装ファイル
+- `src/App.tsx`: ルート配置を変更
+- `src/components/Layout.tsx`: `isImmersivePath` ヘルパー追加、`isImmersive` state 連動
+- `src/pages/Quiz.tsx`: ヘッダー `sticky top-12 z-10` に変更
+- `src/pages/OfficialMorningSession.tsx`: 同上
+- `src/pages/OfficialMorningSummary.tsx`: 同上
+
+### 2.7f.4 担当
+- 🅒（設計＋実装、F2 中）
+
+---
+
+## 2.7g 午前II デバッグモード（v0.21、★v1.0.0 で削除予定）
+
+### 2.7g.1 目的
+公式午前II問題の OCR / 解説生成中に、正解選択肢を押さずに全問の解説を順次確認できるようにする。コンテンツ品質チェック効率化のための==開発専用機能==。
+
+### 2.7g.2 仕様
+- **場所**: `/morning/session` 画面のヘッダーに「🐛 DEBUG」トグルボタンを配置
+- **起動方法**: ボタンクリック、または URL クエリ `?debug=1`
+- **OFF→ON 時の挙動**:
+  - 解説を==常時表示==（選択肢クリック不要）
+  - 問題上部に「← 前へ / 次へ →」のナビゲーション表示
+  - 正誤判定ブロック・「次の問題へ」ボタンは==非表示==
+  - 選択肢を押しても OK（選んだ選択肢のハイライトのみ、記録はしない）
+- **記録への影響**:
+  - `addMorningRecord`（解答記録）には書かない
+  - `applyAnswer`（XP・バッジ判定）にも渡さない
+  - `addActivityEvent`（学習履歴）にも記録しない
+  - `upsertQuizSessionEvent`（セッション集計）にも書かない
+- **ON→OFF 時の挙動**:
+  - `showExplanation` と `selectedIndex` をリセット
+  - 通常の選択肢クリック→解説→次へ フローに復帰
+
+### 2.7g.3 ★削除タイミング（v1.0.0）
+- 該当 state（`debugMode`）と関連 handler（`toggleDebugMode`, `handleDebugPrev`, `handleDebugNext`）を削除
+- ヘッダーのトグルボタンを削除
+- 問題上部の前後ナビ UI を削除
+- 解説欄の `(DEBUG: 正解==X==)` 表記を削除
+- `handleSelect` / `handleNext` の `if (debugMode)` 分岐を削除
+- URL クエリ `?debug=1` の処理を削除
+
+### 2.7g.4 実装ファイル
+- `src/pages/OfficialMorningSession.tsx` のみ（他ファイルへの影響なし）
+
+### 2.7g.5 担当
+- 🅒（設計＋実装、F2 中）
 
 ---
 

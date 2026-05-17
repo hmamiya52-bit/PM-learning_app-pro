@@ -387,7 +387,7 @@ export default function Quiz() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* ヘッダー */}
-      <header className="bg-brand-darker text-white shadow-lg sticky top-0 z-20">
+      <header className="bg-brand-darker text-white shadow-lg sticky top-12 z-10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
             onClick={() => navigate('/')}
