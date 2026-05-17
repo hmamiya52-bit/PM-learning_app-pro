@@ -18,7 +18,7 @@
 |---:|---|---|---|---|---|---|
 | - | R6 | 令和6（2024） | 2024 | **完成（F1.5-P4 投入済み）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_ans.pdf |
 | 1 | R5 | 令和5（2023） | 2023 | **完了（Codex / 2026-05-17 / commit 81cb5ad）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_am2_ans.pdf |
-| 2 | R4 | 令和4（2022） | 2022 | **進行中（Codex 担当 / 2026-05-17）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2022r04.html から取得 | 同上 |
+| 2 | R4 | 令和4（2022） | 2022 | **完了（Codex / 2026-05-17 / commit 668ff28）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_am2_ans.pdf |
 | 3 | R3 | 令和3（2021） | 2021 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2021r03.html から取得 | 同上 |
 | 4 | R2 | 令和2（2020） | 2020 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2020r02.html から取得 | 同上 |
 | 5 | R1 | 令和元（2019） | 2019 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2019r01.html から取得 | 同上 |
@@ -49,6 +49,7 @@ R6 の URL 命名規則: `2024r06a_pm_am2_qs.pdf` / `2024r06a_pm_am2_ans.pdf`
 ```
 
 - R5: 完了（2026-05-17 / commit 81cb5ad） → Claude 解説待ち
+- R4: 完了（2026-05-17 / commit 668ff28） → Claude 解説待ち
 
 例:
 - R5: 完了（2026-05-XX / commit abcd1234） → Claude 解説待ち
