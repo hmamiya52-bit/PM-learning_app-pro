@@ -2,10 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし）
  * - 正解: IPA 公式解答例 PDF と照合済（25問全件一致）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
+ *   - R5/R4 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -16,19 +17,23 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
+ * - R4 問9・問10・問13・問18: OCR フェーズでは `(figure)` 注記、次工程で図表化予定
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
 
 const R5_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_am2_qs.pdf'
+
+const R4_AUTUMN_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -1165,6 +1170,405 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: '',
     categoryId: 'service-management',
     sourceUrl: R5_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-1',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 1,
+    questionText:
+      'JIS Q 21500:2018(プロジェクトマネジメントの手引)によれば，プロジェクトマネジメントのプロセス群には，立ち上げ，計画，実行，管理及び終結がある。これらのうち，"変更要求"の提出を契機に相互作用するプロセス群の組みはどれか。',
+    choices: ['計画，実行', '実行，管理', '実行，終結', '管理，終結'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-2',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 2,
+    questionText: 'プロジェクトマネジメントにおけるプロジェクト憲章の説明として，適切なものはどれか。',
+    choices: [
+      '組織のニーズ，目標ベネフィットなどを記述することによって，プロジェクトの目標について，またプロジェクトがどのように事業目的に貢献するかについて明確にした文書',
+      'どのようにプロジェクトを実施し，監視し，管理するのかを定めるために，プロジェクトを実施するためのベースライン，並びにプロジェクトの実行，管理，及び終結する方法を明確にした文書',
+      'プロジェクトの最終状態を定義することによって，プロジェクトの目標，成果物，要求事項及び境界を含むプロジェクトスコープを明確にした文書',
+      'プロジェクトを正式に許可する文書であって，プロジェクトマネージャを特定して適切な責任と権限を明確にし，ビジネスニーズ，目標，期待される結果などを明確にした文書',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-3',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 3,
+    questionText:
+      'JIS Q 21500:2018(プロジェクトマネジメントの手引)において，管理のプロセス群を構成するプロセスのうち，WBSが主要なインプットの一つとして示されているものはどれか。',
+    choices: ['スコープの管理', '品質管理の遂行', '変更の管理', 'リスクの管理'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-4',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 4,
+    questionText:
+      'プロジェクトマネジメントで使用する責任分担マトリックス(RAM)の一つに，RACIチャートがある。RACIチャートで示す四つの"役割又は責任"の組合せのうち，適切なものはどれか。',
+    choices: [
+      '実行責任，情報提供，説明責任，相談対応',
+      '実行責任，情報提供，説明責任，リスク管理',
+      '実行責任，情報提供，相談対応，リスク管理',
+      '実行責任，説明責任，相談対応，リスク管理',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-5',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 5,
+    questionText:
+      'チームの発展段階を五つに区分したタックマンモデルによれば，メンバーの異なる考え方や価値観が明確になり，メンバーがそれぞれの意見を主張し合う段階はどれか。',
+    choices: ['安定期(Norming)', '遂行期(Performing)', '成立期(Forming)', '動乱期(Storming)'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-6',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 6,
+    questionText:
+      'JIS Q 21500:2018(プロジェクトマネジメントの手引)によれば，対象群"資源"に属するプロセスである"資源の管理"の目的はどれか。',
+    choices: [
+      '活動リストの活動ごとに必要な資源を決定する。',
+      '継続的にプロジェクトチーム構成員のパフォーマンス及び相互関係を改善する。',
+      'チームのパフォーマンスを最大限に引き上げ，フィードバックを提供し，課題を解決し，コミュニケーションを促し，変更を調整して，プロジェクトの成功を達成する。',
+      'プロジェクトの要求事項を満たすように，プロジェクト作業の実施に必要な資源を確保し，必要な方法で配分する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-7',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 7,
+    questionText:
+      'EVMを使用してマネジメントをしているプロジェクトで，進捗に関する指標値は次のとおりであった。このプロジェクトに対する適切な評価と対策はどれか。\n〔進捗に関する指標値〕\nCPI(コスト効率指数)：0.9\nSPI(スケジュール効率指数)：1.1\nBAC(完成時総予算)に基づくTCPI(残作業効率指数)：1.2',
+    choices: [
+      'コストが予算を超えているが，スケジュールには余裕があり，残作業のコスト効率を計画よりも上げる必要はないので，CPIに基づいて完成までに必要なコストを予測する。',
+      'コストが予算を超えているので，完成時総予算を超過するおそれがあるが，スケジュールには余裕があるので，残作業のコスト効率を上げる対策を検討するか，コンティンジェンシー予備費の使用を検討する。',
+      'コストには余裕があるが，スケジュールが予定より遅れており，残作業のコスト効率を計画よりも上げる必要があるので，ファストトラッキングなどを用いたスケジュール短縮を検討するとともに，コンティンジェンシー予備費の使用を検討する。',
+      'コストには余裕があるので，残作業のコスト効率を計画よりも上げる必要はないが，スケジュールが予定より遅れているので，クラッシングなどを用いたスケジュール短縮を検討する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-8',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 8,
+    questionText: 'ソフトウェア開発プロジェクトにおいてWBSを使用する目的として，適切なものはどれか。',
+    choices: [
+      '開発の期間と費用がトレードオフの関係にある場合に，総費用の最適化を図る。',
+      '作業の順序関係を明確にして，重点管理すべきクリティカルパスを把握する。',
+      '作業の日程を横棒(バー)で表して，作業の開始や終了時点，現時点の進捗を明確にする。',
+      '作業を階層的に詳細化して，管理可能な大きさに細分化する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-9',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 9,
+    questionText:
+      '図のアローダイアグラムから読み取れることとして，適切なものはどれか。ここで，プロジェクトの開始日を1日目とする。\n[次の図参照（IPA原PDFを参照）]',
+    choices: [
+      '作業Cを最も早く開始できるのは6日目である。',
+      '作業Dはクリティカルパス上の作業である。',
+      '作業Eの総余裕時間は30日である。',
+      '作業Fを最も遅く開始できるのは11日目である。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning(figure)',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-10',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 10,
+    questionText:
+      'COCOMOには，システム開発の工数を見積もる式の一つとして次式がある。\n開発工数＝3.0×(開発規模)^{1.12}\nこの式を基に，開発規模と開発生産性(開発規模／開発工数)の関係を表したグラフはどれか。ここで，開発工数の単位は人月，開発規模の単位はキロ行とする。\n[次の図参照（IPA原PDFを参照）]',
+    choices: [
+      '選択肢アのグラフ（IPA原PDFを参照）',
+      '選択肢イのグラフ（IPA原PDFを参照）',
+      '選択肢ウのグラフ（IPA原PDFを参照）',
+      '選択肢エのグラフ（IPA原PDFを参照）',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement(figure)',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-11',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 11,
+    questionText:
+      '工程別の生産性が次のとおりのとき，全体の生産性を表す式はどれか。\n〔工程別の生産性〕\n設計工程：Xステップ／人月\n製造工程：Yステップ／人月\n試験工程：Zステップ／人月',
+    choices: [
+      'X＋Y＋Z',
+      'frac{X＋Y＋Z}{3}',
+      'frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}',
+      'frac{1}{frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}}',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-12',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 12,
+    questionText:
+      '工場の生産能力を増強する方法として，新規システムを開発する案と既存システムを改修する案とを検討している。次の条件で，期待金額価値の高い案を採用するとき，採用すべき案と期待金額価値との組合せのうち，適切なものはどれか。ここで，期待金額価値は，収入と投資額との差で求める。\n〔条件〕\n新規システムを開発する場合の投資額は100億円であり，既存システムを改修する場合の投資額は50億円である。\n需要が拡大する確率は70%であり，需要が縮小する確率は30%である。\n新規システムを開発した場合，需要が拡大したときは180億円の収入が見込まれ，需要が縮小したときは50億円の収入が見込まれる。\n既存システムを改修した場合，需要が拡大したときは120億円の収入が見込まれ，需要が縮小したときは40億円の収入が見込まれる。\n他の条件は考慮しない。',
+    choices: [
+      '既存システムの改修，46億円',
+      '既存システムの改修，96億円',
+      '新規システムの開発，41億円',
+      '新規システムの開発，130億円',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-13',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 13,
+    questionText:
+      'A～Dの機能をもつソフトウェアの基本設計書のレビューを行った。表は，各機能の開発規模の見積り値と基本設計書レビューでの指摘件数の実績値である。基本設計工程における品質の定量的評価基準に従うとき，品質評価指標の視点での品質に問題があると判定される機能の組みはどれか。\n[次の表参照（IPA原PDFを参照）]\n〔基本設計工程における品質の定量的評価基準〕\n品質評価指標は，基本設計書レビューにおける開発規模の見積り値の単位規模当たりの指摘件数とする。\n品質評価指標の値が，基準値の0.9倍～1.1倍の範囲内であれば，品質に問題がないと判定する。\n基準値は開発規模の見積り値1kステップ当たり5.0件とする。',
+    choices: ['A，C', 'B，C', 'B，D', 'C，D'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery(figure)',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-14',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 14,
+    questionText:
+      'JIS X 25010:2013(システム及びソフトウェア製品の品質要求及び評価(SQuaRE)－システム及びソフトウェア品質モデル)で規定された品質副特性の説明のうち，信頼性の品質副特性の説明はどれか。',
+    choices: [
+      '製品又はシステムが，それらを運用操作しやすく，制御しやすくする属性をもっている度合い',
+      '製品若しくはシステムの一つ以上の部分への意図した変更が製品若しくはシステムに与える影響を総合評価すること，欠陥若しくは故障の原因を診断すること，又は修正しなければならない部分を識別することが可能であることについての有効性及び効率性の度合い',
+      '中断時又は故障時に，製品又はシステムが直接的に影響を受けたデータを回復し，システムを希望する状態に復元することができる度合い',
+      '二つ以上のシステム，製品又は構成要素が情報を交換し，既に交換された情報を使用することができる度合い',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-15',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 15,
+    questionText: '"アジャイルソフトウェア開発宣言"で述べている価値に関する記述のうち，適切なものはどれか。',
+    choices: [
+      '計画に従うことに価値があることを認めながらも，自己組織化されたチームによる裁量に，より価値をおく。',
+      '契約交渉に価値があることを認めながらも，顧客の競争力と満足度の向上に，より価値をおく。',
+      'プロセスやツールに価値があることを認めながらも，実用的なプラクティスに，より価値をおく。',
+      '包括的なドキュメントに価値があることを認めながらも，動くソフトウェアに，より価値をおく。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-16',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 16,
+    questionText: 'XP(Extreme Programming)のプラクティスの一つであるものはどれか。',
+    choices: ['構造化プログラミング', 'コンポーネント指向プログラミング', 'ビジュアルプログラミング', 'ペアプログラミング'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-17',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 17,
+    questionText: 'ユースケース駆動開発の利点はどれか。',
+    choices: [
+      '開発を反復するので，新しい要求やビジネス目標の変化に柔軟に対応しやすい。',
+      '開発を反復するので，リスクが高い部分に対して初期段階で対処しやすく，プロジェクト全体のリスクを減らすことができる。',
+      '基本となるアーキテクチャをプロジェクトの初期に決定するので，コンポーネントを再利用しやすくなる。',
+      'ひとまとまりの要件を1単位として設計からテストまで実施するので，要件ごとに開発状況が把握できる。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-18',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 18,
+    questionText:
+      'ある業務を新たにシステム化するに当たって，A～Dのシステム化案の初期費用，運用費及びシステム化によって削減される業務費を試算したところ，表のとおりであった。システムの利用期間を5年とするとき，最も投資利益率の高いシステム化案はどれか。ここで，投資利益率は次式によって算出する。また，利益の増加額は削減される業務費から投資額を減じたものとし，投資額は初期費用と運用費の合計とする。\n投資利益率＝利益の増加額÷投資額\n[次の表参照（IPA原PDFを参照）]',
+    choices: ['A', 'B', 'C', 'D'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement(figure)',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-19',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 19,
+    questionText: 'バックアップサイトを用いたサービス復旧方法の説明のうち，ウォームスタンバイの説明として，最も適切なものはどれか。',
+    choices: [
+      '同じようなシステムを運用する外部の企業や組織と協定を結び，緊急時には互いのシステムを貸し借りして，サービスを復旧する。',
+      '緊急時にはバックアップシステムを持ち込んでシステムを再開し，サービスを復旧する。',
+      '常にデータの同期が取れているバックアップシステムを用意しておき，緊急時にはバックアップシステムに切り替えて直ちにサービスを復旧する。',
+      'バックアップシステムを用意しておき，緊急時にはバックアップシステムを起動して，データを最新状態にする処理を行った後にサービスを復旧する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-20',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 20,
+    questionText:
+      'IoTを活用した工場管理システムの開発を行う。システムを構築し，サービスを運営するA社は，B社にボード開発を定額契約で委託した。B社はボードの納入前のネットワーク試験のため，工場の設備を管理するC社と実費償還契約を締結し，工場の一部区画とネットワークを借用した。C社のネットワーク設備に故障はなく，B社の人的リソース不足が原因でネットワーク試験の作業が遅延し，追加の費用が発生したとき，その費用を負担すべき会社はどれか。ここで，各社は契約を正当に履行するものとする。また，定額契約を交わした時点では，開発のスコープは十分明確で，契約以降の変更はないものとする。',
+    choices: ['A社', 'A社及びB社', 'B社', 'B社及びC社'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-21',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 21,
+    questionText: '基準値を超える鉛，水銀などの有害物質を電気・電子機器に使用することを制限するために，欧州連合が制定し，施行しているものはどれか。',
+    choices: ['ISO 14001', 'RoHS指令', 'WEEE指令', 'グリーン購入法'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-22',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 22,
+    questionText: 'SDGsの説明として，適切なものはどれか。',
+    choices: [
+      '温室効果ガスの人為的な排出量と吸収源による除去量とを世界規模で均衡させようという取組',
+      '企業が社会的責任を果たすべきであるとする考え方で，環境，人権などの活動に取り組むことを推進する考え方',
+      '国連環境計画が提唱する，プラスチックごみによる海洋汚染，環境問題などを解決しようとする取組',
+      '地球環境などの課題において2030年を年限とする持続可能でより良い世界を目指す国際目標',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-23',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 23,
+    questionText: '認証局が発行するCRLに関する記述のうち，適切なものはどれか。',
+    choices: [
+      'CRLには，失効したデジタル証明書に対応する秘密鍵が登録される。',
+      'CRLには，有効期限内のデジタル証明書のうち失効したデジタル証明書のシリアル番号と失効した日時の対応が提示される。',
+      'CRLは，鍵の漏えい，失効申請の状況をリアルタイムに反映するプロトコルである。',
+      '有効期限切れで失効したデジタル証明書は，所有者が新たなデジタル証明書を取得するまでの間，CRLに登録される。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-24',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 24,
+    questionText: 'Webサーバでのシングルサインオンの実装方式に関する記述のうち，適切なものはどれか。',
+    choices: [
+      'cookieを使ったシングルサインオンの場合，Webサーバごとの認証情報を含んだcookieをクライアントで生成し，各Webサーバ上で保存，管理する。',
+      'cookieを使ったシングルサインオンの場合，認証対象のWebサーバを，異なるインターネットドメインに配置する必要がある。',
+      'リバースプロキシを使ったシングルサインオンの場合，認証対象のWebサーバを，異なるインターネットドメインに配置する必要がある。',
+      'リバースプロキシを使ったシングルサインオンの場合，利用者認証においてパスワードの代わりにデジタル証明書を用いることができる。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R4-25',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    number: 25,
+    questionText: 'サイバーセキュリティ演習での参加チームの役割のうち，レッドチームの役割として，最も適切なものはどれか。',
+    choices: [
+      'あらかじめ設定された攻撃範囲を超えた行動を演習参加チームがしていないことを監視する。',
+      '演習時に行うサイバー攻撃に対して，防御，検知，対応を行う。',
+      '脅威シナリオに基づいて対象組織に攻撃を仕掛ける。',
+      '人的リソース，データ，ナレッジを共有し，演習の効果の最大化を図る。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
   },
 ]
 
