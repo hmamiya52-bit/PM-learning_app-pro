@@ -713,6 +713,42 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==横方向==（Sideward）: 他PM・社内同僚・機能部門マネジャー',
           '方向ごとに__コミュニケーション・スタイル__と__説得アプローチ__を変える',
         ],
+        figures: [
+          {
+            type: 'svg',
+            caption: '方向性キューブ: PMを中心に影響先を4方向で捉える',
+            ariaLabel: 'PMを中心に上方向下方向外方向横方向の4方向ステークホルダーを示す図',
+            viewBox: '0 0 640 420',
+            content: `
+              <defs>
+                <marker id="dir-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="604" height="384" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <circle cx="320" cy="210" r="42" fill="#9d5b8b" stroke="white" stroke-width="3" />
+              <text x="320" y="216" fill="white" stroke="white" stroke-width="3" paint-order="stroke" font-size="18" font-weight="700" text-anchor="middle">PM</text>
+              <line x1="320" y1="166" x2="320" y2="82" stroke="#dc2626" stroke-width="4" marker-end="url(#dir-arrow)" />
+              <line x1="320" y1="254" x2="320" y2="338" stroke="#10b981" stroke-width="4" marker-end="url(#dir-arrow)" />
+              <line x1="276" y1="210" x2="108" y2="210" stroke="#f59e0b" stroke-width="4" marker-end="url(#dir-arrow)" />
+              <line x1="364" y1="210" x2="532" y2="210" stroke="#9d5b8b" stroke-width="4" marker-end="url(#dir-arrow)" />
+              <rect x="214" y="44" width="212" height="54" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <rect x="214" y="322" width="212" height="54" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+              <rect x="36" y="172" width="178" height="76" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <rect x="426" y="172" width="178" height="76" rx="8" fill="#9d5b8b15" stroke="#9d5b8b" stroke-width="2" />
+              <text x="320" y="66" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Upward</text>
+              <text x="320" y="84" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">経営層・スポンサー</text>
+              <text x="320" y="344" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Downward</text>
+              <text x="320" y="362" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">チーム・専門家</text>
+              <text x="125" y="202" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Outward</text>
+              <text x="125" y="220" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">顧客・規制当局</text>
+              <text x="125" y="236" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">サプライヤ</text>
+              <text x="515" y="202" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Sideward</text>
+              <text x="515" y="220" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">他PM・同僚</text>
+              <text x="515" y="236" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">機能部門</text>
+            `,
+          },
+        ],
       },
 
       // ── D. エンゲージメント計画 ──
@@ -1111,6 +1147,19 @@ export const NOTE_DB: Record<string, NoteData> = {
           '試験ではグリッド座標（例: 9,1）から該当スタイルを答えさせる設問が頻出',
         ],
         navyItems: [[{ text: '英語名は Managerial Grid。Blake & Mouton 1964年提唱', style: 'navy' }]],
+        figures: [
+          {
+            type: 'table',
+            caption: 'マネジリアル・グリッド: 人間への関心 × 業績への関心',
+            headers: ['', '業績 低', '業績 中', '業績 高'],
+            rowHeaderFirstCol: true,
+            rows: [
+              ['人間 高', '1,9 人間中心型', '', '9,9 チーム型（理想）'],
+              ['人間 中', '', '5,5 中道型', ''],
+              ['人間 低', '1,1 無関心型', '', '9,1 仕事中心型'],
+            ],
+          },
+        ],
       },
       {
         heading: '9. 状況対応リーダーシップ理論（SL理論：Hersey & Blanchard）',
@@ -1125,6 +1174,18 @@ export const NOTE_DB: Record<string, NoteData> = {
           '==成熟度に応じた柔軟な切替==が本理論の核心',
         ],
         navyItems: [[{ text: 'SL理論=Situational Leadership。Hersey & Blanchard 1969年提唱。試験頻出', style: 'navy' }]],
+        figures: [
+          {
+            type: 'table',
+            caption: 'SL理論: 指示度 × 支援度 と M1〜M4 成熟度の対応',
+            headers: ['', '指示度 低', '指示度 高'],
+            rowHeaderFirstCol: true,
+            rows: [
+              ['支援度 高', 'S3 参加型: M3 能力あり・意欲不足', 'S2 説得型: M2 意欲あり・能力不足'],
+              ['支援度 低', 'S4 委任型: M4 能力・意欲とも高い', 'S1 指示型: M1 未熟'],
+            ],
+          },
+        ],
       },
       {
         heading: '10. パスゴール理論／コンティンジェンシー理論',
