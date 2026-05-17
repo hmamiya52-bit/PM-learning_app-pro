@@ -2453,6 +2453,55 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__WBS辞書__: 各WBS要素の==詳細記述==（作業内容・責任者・期間・コスト）',
         ],
         navyItems: [[{ text: 'WBS は午前II 最頻出キーワード。8/80ルール・100%ルール・成果物指向は必須暗記', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'WBS: 成果物指向でプロジェクト全スコープを階層分解する',
+            ariaLabel: 'プロジェクトからフェーズ、主要成果物、ワークパッケージへ分解するWBS階層図',
+            viewBox: '0 0 680 430',
+            content: `
+              <defs>
+                <marker id="wbs-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="644" height="394" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <rect x="230" y="42" width="220" height="48" rx="8" fill="#9d5b8b" stroke="#6b3b61" stroke-width="2" />
+              <text x="340" y="72" fill="white" font-size="16" font-weight="700" text-anchor="middle">プロジェクト</text>
+              <line x1="340" y1="90" x2="340" y2="118" stroke="#64748b" stroke-width="2" marker-end="url(#wbs-arrow)" />
+              <rect x="80" y="120" width="160" height="48" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <rect x="260" y="120" width="160" height="48" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <rect x="440" y="120" width="160" height="48" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <text x="160" y="150" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">フェーズ1</text>
+              <text x="340" y="150" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">フェーズ2</text>
+              <text x="520" y="150" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">フェーズ3</text>
+              <path d="M340 104 L340 112 M160 112 L520 112 M160 112 L160 120 M340 112 L340 120 M520 112 L520 120" fill="none" stroke="#64748b" stroke-width="2" />
+              <line x1="160" y1="168" x2="160" y2="204" stroke="#64748b" stroke-width="2" marker-end="url(#wbs-arrow)" />
+              <line x1="340" y1="168" x2="340" y2="204" stroke="#64748b" stroke-width="2" marker-end="url(#wbs-arrow)" />
+              <line x1="520" y1="168" x2="520" y2="204" stroke="#64748b" stroke-width="2" marker-end="url(#wbs-arrow)" />
+              <rect x="68" y="206" width="184" height="54" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <rect x="248" y="206" width="184" height="54" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <rect x="428" y="206" width="184" height="54" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <text x="160" y="228" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">主要成果物</text>
+              <text x="160" y="246" fill="#1e293b" font-size="12" text-anchor="middle">成果物指向</text>
+              <text x="340" y="228" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">主要成果物</text>
+              <text x="340" y="246" fill="#1e293b" font-size="12" text-anchor="middle">MECE</text>
+              <text x="520" y="228" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">主要成果物</text>
+              <text x="520" y="246" fill="#1e293b" font-size="12" text-anchor="middle">100%ルール</text>
+              <path d="M340 260 L340 286 M160 286 L520 286 M160 286 L160 302 M340 286 L340 302 M520 286 L520 302" fill="none" stroke="#64748b" stroke-width="2" />
+              <rect x="72" y="304" width="176" height="58" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <rect x="252" y="304" width="176" height="58" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <rect x="432" y="304" width="176" height="58" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="160" y="327" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">ワークパッケージ</text>
+              <text x="160" y="346" fill="#1e293b" font-size="12" text-anchor="middle">最下位要素</text>
+              <text x="340" y="327" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">ワークパッケージ</text>
+              <text x="340" y="346" fill="#1e293b" font-size="12" text-anchor="middle">8〜80時間目安</text>
+              <text x="520" y="327" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">ワークパッケージ</text>
+              <text x="520" y="346" fill="#1e293b" font-size="12" text-anchor="middle">WBS辞書で詳細化</text>
+              <text x="340" y="392" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">上位から下位へ「何を作るか」を分解し、作業順序は別途アクティビティで扱う</text>
+            `,
+          },
+        ],
       },
       {
         heading: '9. WBS構成要素とコントロール・アカウント',
@@ -2527,6 +2576,67 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__リード__（前倒し）／==ラグ==（遅延）: 依存関係に==時間調整==を加える',
         ],
         navyItems: [[{ text: '出典: PMBOK第6版 §6.3。試験頻出: 4依存関係（特にFSとSF）の例示問題', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'PDMの4依存関係: FSが最頻出、SFは最も稀',
+            ariaLabel: 'PDMのFS FF SS SFの4種類の依存関係を示す図',
+            viewBox: '0 0 680 520',
+            content: `
+              <defs>
+                <marker id="pdm-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#475569" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="644" height="484" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <text x="340" y="46" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">Precedence Diagramming Method</text>
+              <g transform="translate(42 74)">
+                <rect x="0" y="0" width="596" height="84" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+                <text x="20" y="32" fill="#dc2626" font-size="17" font-weight="700">FS</text>
+                <text x="20" y="54" fill="#475569" font-size="12">Finish-to-Start</text>
+                <rect x="180" y="20" width="120" height="44" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+                <rect x="390" y="20" width="120" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="240" y="47" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">A 完了</text>
+                <text x="450" y="47" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">B 開始</text>
+                <line x1="300" y1="42" x2="388" y2="42" stroke="#475569" stroke-width="3" marker-end="url(#pdm-arrow)" />
+                <text x="344" y="30" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">最も一般的</text>
+              </g>
+              <g transform="translate(42 174)">
+                <rect x="0" y="0" width="596" height="84" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+                <text x="20" y="32" fill="#7c3aed" font-size="17" font-weight="700">FF</text>
+                <text x="20" y="54" fill="#475569" font-size="12">Finish-to-Finish</text>
+                <rect x="180" y="14" width="120" height="44" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" />
+                <rect x="390" y="24" width="120" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="240" y="41" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">A 完了</text>
+                <text x="450" y="51" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">B 完了</text>
+                <path d="M300 36 C340 36 350 46 388 46" fill="none" stroke="#475569" stroke-width="3" marker-end="url(#pdm-arrow)" />
+                <text x="344" y="70" fill="#475569" font-size="12" text-anchor="middle">前作業完了後に後作業完了</text>
+              </g>
+              <g transform="translate(42 274)">
+                <rect x="0" y="0" width="596" height="84" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+                <text x="20" y="32" fill="#16a34a" font-size="17" font-weight="700">SS</text>
+                <text x="20" y="54" fill="#475569" font-size="12">Start-to-Start</text>
+                <rect x="180" y="24" width="120" height="44" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+                <rect x="390" y="14" width="120" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="240" y="51" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">A 開始</text>
+                <text x="450" y="41" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">B 開始</text>
+                <path d="M300 46 C340 46 350 36 388 36" fill="none" stroke="#475569" stroke-width="3" marker-end="url(#pdm-arrow)" />
+                <text x="344" y="72" fill="#475569" font-size="12" text-anchor="middle">開始を連動させる</text>
+              </g>
+              <g transform="translate(42 374)">
+                <rect x="0" y="0" width="596" height="84" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+                <text x="20" y="32" fill="#f59e0b" font-size="17" font-weight="700">SF</text>
+                <text x="20" y="54" fill="#475569" font-size="12">Start-to-Finish</text>
+                <rect x="180" y="14" width="120" height="44" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+                <rect x="390" y="24" width="120" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="240" y="41" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">A 開始</text>
+                <text x="450" y="51" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">B 完了</text>
+                <path d="M300 36 C340 36 350 46 388 46" fill="none" stroke="#475569" stroke-width="3" marker-end="url(#pdm-arrow)" />
+                <text x="344" y="72" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">最も稀</text>
+              </g>
+            `,
+          },
+        ],
       },
       {
         heading: '14. ネットワーク図（AON / AOA）',
@@ -2579,6 +2689,67 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__資源最適化技法__: ==資源平準化==（Resource Leveling）／==資源平滑化==（Resource Smoothing）',
         ],
         navyItems: [[{ text: 'CPM・トータルフロート計算は午前II/午後I 双方で必出', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'CPM: 最長経路がクリティカルパス、遅延は全体遅延になる',
+            ariaLabel: '6ノードのネットワーク図でクリティカルパスを赤線で示す図',
+            viewBox: '0 0 700 430',
+            content: `
+              <defs>
+                <marker id="cpm-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+                <marker id="cpm-red-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#dc2626" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="664" height="394" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <text x="350" y="46" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">小規模ネットワーク例</text>
+              <path d="M92 216 L178 132 L312 132 L468 132 L600 216" fill="none" stroke="#dc2626" stroke-width="5" marker-end="url(#cpm-red-arrow)" />
+              <path d="M92 216 L184 288 L338 288 L600 216" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#cpm-arrow)" />
+              <path d="M236 132 L338 288" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#cpm-arrow)" />
+              <g>
+                <circle cx="80" cy="216" r="34" fill="#ffffff" stroke="#475569" stroke-width="2" />
+                <text x="80" y="211" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">Start</text>
+                <text x="80" y="228" fill="#64748b" font-size="11" text-anchor="middle">0日</text>
+              </g>
+              <g>
+                <circle cx="210" cy="132" r="38" fill="#fee2e2" stroke="#dc2626" stroke-width="3" />
+                <text x="210" y="128" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">A</text>
+                <text x="210" y="146" fill="#1e293b" font-size="12" text-anchor="middle">3日 / TF0</text>
+              </g>
+              <g>
+                <circle cx="350" cy="132" r="38" fill="#fee2e2" stroke="#dc2626" stroke-width="3" />
+                <text x="350" y="128" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">B</text>
+                <text x="350" y="146" fill="#1e293b" font-size="12" text-anchor="middle">4日 / TF0</text>
+              </g>
+              <g>
+                <circle cx="500" cy="132" r="38" fill="#fee2e2" stroke="#dc2626" stroke-width="3" />
+                <text x="500" y="128" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">D</text>
+                <text x="500" y="146" fill="#1e293b" font-size="12" text-anchor="middle">5日 / TF0</text>
+              </g>
+              <g>
+                <circle cx="210" cy="288" r="38" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="210" y="284" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">C</text>
+                <text x="210" y="302" fill="#1e293b" font-size="12" text-anchor="middle">2日</text>
+              </g>
+              <g>
+                <circle cx="360" cy="288" r="38" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+                <text x="360" y="284" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">E</text>
+                <text x="360" y="302" fill="#1e293b" font-size="12" text-anchor="middle">3日</text>
+              </g>
+              <g>
+                <circle cx="620" cy="216" r="34" fill="#ffffff" stroke="#475569" stroke-width="2" />
+                <text x="620" y="211" fill="#1e293b" font-size="13" font-weight="700" text-anchor="middle">End</text>
+                <text x="620" y="228" fill="#64748b" font-size="11" text-anchor="middle">12日</text>
+              </g>
+              <rect x="198" y="56" width="328" height="34" rx="8" fill="#fee2e2" stroke="#dc2626" />
+              <text x="362" y="78" fill="#991b1b" font-size="13" font-weight="700" text-anchor="middle">クリティカルパス: A → B → D = 12日</text>
+              <text x="350" y="374" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">赤線上の作業はトータルフロート0。どれかが遅れると終了日も遅れる。</text>
+            `,
+          },
+        ],
       },
       {
         heading: '17. スケジュール短縮（クラッシング・ファストトラッキング）',
@@ -2593,6 +2764,46 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__注意__: クラッシングは==クリティカルパス==上のアクティビティが対象（非クリティカルにかけても効果なし）',
         ],
         navyItems: [[{ text: '試験頻出: クラッシングとファストトラッキングの使い分け基準の混同に注意', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'スケジュール短縮: クラッシングはコスト増、ファストトラッキングはリスク増',
+            ariaLabel: 'クラッシングとファストトラッキングの違いを比較する図',
+            viewBox: '0 0 700 430',
+            content: `
+              <rect x="18" y="18" width="664" height="394" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <rect x="42" y="52" width="292" height="318" rx="10" fill="#ffffff" stroke="#cbd5e1" />
+              <rect x="366" y="52" width="292" height="318" rx="10" fill="#ffffff" stroke="#cbd5e1" />
+              <text x="188" y="84" fill="#1e293b" font-size="17" font-weight="700" text-anchor="middle">クラッシング</text>
+              <text x="512" y="84" fill="#1e293b" font-size="17" font-weight="700" text-anchor="middle">ファストトラッキング</text>
+              <text x="188" y="108" fill="#475569" font-size="12" text-anchor="middle">追加資源で期間短縮</text>
+              <text x="512" y="108" fill="#475569" font-size="12" text-anchor="middle">順次作業を並列化</text>
+              <line x1="86" y1="154" x2="290" y2="154" stroke="#cbd5e1" stroke-width="8" stroke-linecap="round" />
+              <line x1="86" y1="154" x2="290" y2="154" stroke="#64748b" stroke-width="20" stroke-linecap="round" />
+              <text x="188" y="160" fill="white" font-size="12" font-weight="700" text-anchor="middle">通常 10日</text>
+              <line x1="86" y1="216" x2="244" y2="216" stroke="#dc2626" stroke-width="20" stroke-linecap="round" />
+              <text x="165" y="222" fill="white" font-size="12" font-weight="700" text-anchor="middle">短縮 7日</text>
+              <path d="M252 204 L286 188 L286 238 Z" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="282" y="218" fill="#991b1b" font-size="13" font-weight="700" text-anchor="middle">￥+</text>
+              <rect x="82" y="270" width="212" height="52" rx="8" fill="#fee2e2" stroke="#dc2626" />
+              <text x="188" y="292" fill="#991b1b" font-size="13" font-weight="700" text-anchor="middle">コスト増大</text>
+              <text x="188" y="310" fill="#991b1b" font-size="12" text-anchor="middle">残業・要員追加・外注</text>
+              <line x1="410" y1="154" x2="520" y2="154" stroke="#2563eb" stroke-width="20" stroke-linecap="round" />
+              <line x1="532" y1="154" x2="620" y2="154" stroke="#16a34a" stroke-width="20" stroke-linecap="round" />
+              <text x="465" y="160" fill="white" font-size="12" font-weight="700" text-anchor="middle">A</text>
+              <text x="576" y="160" fill="white" font-size="12" font-weight="700" text-anchor="middle">B</text>
+              <text x="512" y="184" fill="#475569" font-size="12" text-anchor="middle">通常: A完了後にB開始</text>
+              <line x1="410" y1="230" x2="548" y2="230" stroke="#2563eb" stroke-width="20" stroke-linecap="round" />
+              <line x1="486" y1="256" x2="620" y2="256" stroke="#16a34a" stroke-width="20" stroke-linecap="round" />
+              <text x="479" y="236" fill="white" font-size="12" font-weight="700" text-anchor="middle">A</text>
+              <text x="553" y="262" fill="white" font-size="12" font-weight="700" text-anchor="middle">B</text>
+              <text x="512" y="296" fill="#475569" font-size="12" text-anchor="middle">短縮: 一部を重ねる</text>
+              <rect x="406" y="318" width="212" height="34" rx="8" fill="#fef3c7" stroke="#f59e0b" />
+              <text x="512" y="340" fill="#92400e" font-size="13" font-weight="700" text-anchor="middle">リスク増大・手戻り注意</text>
+              <text x="350" y="396" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">どちらもクリティカルパス上の作業を短縮対象にするのが原則</text>
+            `,
+          },
+        ],
       },
       {
         heading: '18. 6.6 スケジュールコントロール',
@@ -2670,6 +2881,38 @@ export const NOTE_DB: Record<string, NoteData> = {
           'マネジメント予備の使用には==正式な変更承認==が必要',
         ],
         navyItems: [[{ text: 'コスト・ベースライン vs プロジェクト予算 vs マネジメント予備の階層は午前II 頻出', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'コスト階層: コスト・ベースラインはマネジメント予備を含まない',
+            ariaLabel: 'アクティビティ見積もりからコストベースラインとプロジェクト予算までの階層図',
+            viewBox: '0 0 700 470',
+            content: `
+              <rect x="18" y="18" width="664" height="434" rx="10" fill="#f8fafc" stroke="#cbd5e1" />
+              <text x="350" y="48" fill="#1e293b" font-size="16" font-weight="700" text-anchor="middle">予算設定の積層構造</text>
+              <rect x="150" y="334" width="400" height="46" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+              <text x="350" y="362" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">アクティビティ・コスト見積もり</text>
+              <rect x="150" y="282" width="400" height="46" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <text x="350" y="310" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">コントロール・アカウント集計</text>
+              <rect x="150" y="230" width="400" height="46" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="350" y="258" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">コンティンジェンシー予備（既知リスク）</text>
+              <rect x="122" y="166" width="456" height="52" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="3" />
+              <text x="350" y="188" fill="#991b1b" font-size="15" font-weight="700" text-anchor="middle">コスト・ベースライン</text>
+              <text x="350" y="207" fill="#991b1b" font-size="12" font-weight="700" text-anchor="middle">ここまでが承認済みのタイムフェーズド予算</text>
+              <rect x="122" y="104" width="456" height="46" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2" />
+              <text x="350" y="132" fill="#1e293b" font-size="14" font-weight="700" text-anchor="middle">マネジメント予備（未知リスク・ベースライン外）</text>
+              <rect x="94" y="70" width="512" height="326" rx="12" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="8 6" />
+              <text x="610" y="88" fill="#475569" font-size="13" font-weight="700">プロジェクト予算</text>
+              <path d="M582 108 L632 108 L632 380 L582 380" fill="none" stroke="#64748b" stroke-width="2" />
+              <path d="M594 104 L612 108 L594 112" fill="none" stroke="#64748b" stroke-width="2" />
+              <path d="M594 376 L612 380 L594 384" fill="none" stroke="#64748b" stroke-width="2" />
+              <path d="M108 166 L78 166 L78 218 L108 218" fill="none" stroke="#dc2626" stroke-width="3" />
+              <text x="72" y="188" fill="#991b1b" font-size="12" font-weight="700" text-anchor="end">ベースライン</text>
+              <text x="72" y="206" fill="#991b1b" font-size="12" font-weight="700" text-anchor="end">管理対象</text>
+              <text x="350" y="424" fill="#475569" font-size="12" font-weight="700" text-anchor="middle">試験では「マネジメント予備はコスト・ベースラインに含まない」を最優先で確認する</text>
+            `,
+          },
+        ],
       },
       {
         heading: '23. 7.4 コストコントロール',
