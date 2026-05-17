@@ -1302,6 +1302,56 @@ export const NOTE_DB: Record<string, NoteData> = {
           'リーダーは段階に応じて関与レベルを変える（形成期は指示型→遂行期は委任型）',
         ],
         navyItems: [[{ text: '出典: Bruce Tuckman 1965年 / PMBOK第6版 §9.4.2.3 チーム開発技法', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'タックマンモデル: 5段階の順序と生産性の変化',
+            ariaLabel: 'タックマンモデルの形成期から解散期までの5段階と生産性カーブを示す図',
+            viewBox: '0 0 720 280',
+            content: `
+              <defs>
+                <marker id="tuckman-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
+                </marker>
+              </defs>
+              <rect x="18" y="18" width="684" height="244" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <path d="M58 220 C128 206, 168 238, 226 216 C288 192, 348 180, 412 148 C476 114, 554 98, 638 132" fill="none" stroke="#9d5b8b" stroke-width="4" />
+              <text x="66" y="206" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="start">生産性</text>
+              <line x1="62" y1="150" x2="658" y2="150" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4" />
+              <g>
+                <rect x="38" y="68" width="112" height="58" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+                <text x="94" y="91" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">1. 形成期</text>
+                <text x="94" y="110" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Forming</text>
+              </g>
+              <line x1="154" y1="97" x2="178" y2="97" stroke="#64748b" stroke-width="2" marker-end="url(#tuckman-arrow)" />
+              <g>
+                <rect x="184" y="68" width="112" height="58" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+                <text x="240" y="91" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">2. 混乱期</text>
+                <text x="240" y="110" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Storming</text>
+              </g>
+              <line x1="300" y1="97" x2="324" y2="97" stroke="#64748b" stroke-width="2" marker-end="url(#tuckman-arrow)" />
+              <g>
+                <rect x="330" y="68" width="112" height="58" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+                <text x="386" y="91" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">3. 規範期</text>
+                <text x="386" y="110" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Norming</text>
+              </g>
+              <line x1="446" y1="97" x2="470" y2="97" stroke="#64748b" stroke-width="2" marker-end="url(#tuckman-arrow)" />
+              <g>
+                <rect x="476" y="68" width="112" height="58" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+                <text x="532" y="91" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">4. 遂行期</text>
+                <text x="532" y="110" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Performing</text>
+              </g>
+              <line x1="592" y1="97" x2="616" y2="97" stroke="#64748b" stroke-width="2" marker-end="url(#tuckman-arrow)" />
+              <g>
+                <rect x="622" y="68" width="60" height="58" rx="8" fill="#9d5b8b15" stroke="#9d5b8b" stroke-width="2" />
+                <text x="652" y="91" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">5. 解散</text>
+                <text x="652" y="110" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Adjourn</text>
+              </g>
+              <text x="240" y="154" fill="#dc2626" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">コンフリクト発生</text>
+              <text x="532" y="154" fill="#10b981" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">自律的に成果</text>
+            `,
+          },
+        ],
       },
       {
         heading: '19. ハイパフォーマンスチームの特性（PMBOK7）',
@@ -1515,6 +1565,43 @@ export const NOTE_DB: Record<string, NoteData> = {
           '状況に応じて使い分け、==問題解決==を==デフォルト==に',
         ],
         navyItems: [[{ text: '出典: Thomas & Kilmann 1974年 / PMBOK第6版 §9.5.2.1', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'トーマス-キルマン: 自己主張 × 協調の5モード',
+            ariaLabel: '自己主張と協調の2軸上にキルマンの5つの対処モードを配置した図',
+            viewBox: '0 0 640 430',
+            content: `
+              <defs>
+                <marker id="kilmann-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                  <polygon points="0 0, 10 4, 0 8" fill="#1e293b" />
+                </marker>
+              </defs>
+              <rect x="20" y="18" width="600" height="388" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <line x1="96" y1="340" x2="552" y2="340" stroke="#1e293b" stroke-width="2" marker-end="url(#kilmann-arrow)" />
+              <line x1="96" y1="340" x2="96" y2="72" stroke="#1e293b" stroke-width="2" marker-end="url(#kilmann-arrow)" />
+              <line x1="96" y1="206" x2="552" y2="206" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4" />
+              <line x1="324" y1="340" x2="324" y2="72" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4" />
+              <text x="324" y="382" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">協調（Cooperativeness）低 → 高</text>
+              <text x="50" y="206" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle" transform="rotate(-90 50 206)">自己主張（Assertiveness）低 → 高</text>
+              <rect x="120" y="86" width="148" height="70" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
+              <text x="194" y="113" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">強制／指示</text>
+              <text x="194" y="132" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Force / Direct</text>
+              <rect x="380" y="86" width="148" height="70" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
+              <text x="454" y="113" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">協力／問題解決</text>
+              <text x="454" y="132" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Collaborate</text>
+              <rect x="250" y="188" width="148" height="70" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
+              <text x="324" y="215" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">妥協／和解</text>
+              <text x="324" y="234" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Compromise</text>
+              <rect x="120" y="286" width="148" height="70" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2" />
+              <text x="194" y="313" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">撤退／回避</text>
+              <text x="194" y="332" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Withdraw / Avoid</text>
+              <rect x="380" y="286" width="148" height="70" rx="8" fill="#9d5b8b15" stroke="#9d5b8b" stroke-width="2" />
+              <text x="454" y="313" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="14" font-weight="700" text-anchor="middle">鎮静／受容</text>
+              <text x="454" y="332" fill="#475569" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">Accommodate</text>
+            `,
+          },
+        ],
       },
       {
         heading: '33. PMBOK第6版「チームのマネジメント」プロセス（9.5）',
