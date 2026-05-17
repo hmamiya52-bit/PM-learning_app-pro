@@ -304,11 +304,7 @@ export default function OfficialMorningSession() {
       <header className="bg-brand text-white shadow-lg sticky top-12 z-10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <button
-            onClick={() => {
-              if (confirm('セッションを終了して公式午前IIトップへ戻りますか？\n（現在の解答は記録済みです）')) {
-                navigate('/morning')
-              }
-            }}
+            onClick={() => navigate('/morning')}
             className="p-2 rounded-lg hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white flex-shrink-0"
             aria-label="トップへ戻る"
           >
