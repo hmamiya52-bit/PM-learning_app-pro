@@ -128,6 +128,33 @@ navyItems: [[{ text: '出典: PMBOK第6版 §9.4', style: 'red' }]],   // style 
 navyItems: '出典: PMBOK第6版 §9.4',                                // 構造違反
 ```
 
+### 3.6 navyItems の text 内には `==X==` / `__X__` を書かない ★F2-P0 教訓
+
+`navyItems` は `renderTokens` で描画される。token の `text` フィールド内に `==X==` や `__X__` を書いても、それは **赤字／ネイビーマークアップとして解釈されず、リテラル文字として表示される**。
+
+❌ **悪い例**:
+```ts
+navyItems: [[{ text: 'ツール&技法に==根本原因分析==・==ステークホルダー分析==を含む', style: 'navy' }]],
+```
+→ 画面には `ツール&技法に==根本原因分析==・==ステークホルダー分析==を含む` がそのまま表示される。
+
+✅ **良い例**:
+```ts
+navyItems: [[{ text: 'ツール&技法に根本原因分析・ステークホルダー分析を含む', style: 'navy' }]],
+```
+
+`renderText`（`items` 用、`text.split(/==.+?==|__.+?__/g)` でパース）と `renderTokens`（`navyItems` 用、`EmphasisToken[]` を直接描画）で挙動が異なる。
+
+**ルール**: 強調が必要なら、`navyItems` に複数の token を持たせて分割する。
+```ts
+navyItems: [[
+  { text: 'ツール&技法に', style: 'navy' },
+  { text: '根本原因分析', style: 'red' },  // navyItems 内の赤字は禁止（§3.5）
+  { text: '・', style: 'navy' },
+]],
+```
+ただし `navyItems` 内に `red` style を混ぜることは §3.5 で禁止されているため、結局「`navyItems` の token text は装飾なしの素文字列」が原則。
+
 ## 4. 正規表現置換の罠
 
 `__X==` 不整合を一括置換するとき、単純な `__([^_]+?)==` → `__$1__` は **正しい構文も壊す**。
@@ -231,6 +258,7 @@ Codex または Claude がレビュー時に必ず実行する項目:
 - [ ] `===` / `___` / `====` / `____` のような連続記号がない
 - [ ] `EmphasisToken.style` が `'red' | 'navy' | 'plain'` 以外を持たない
 - [ ] `navyItems` の token は全て `style: 'navy'`
+- [ ] **`navyItems` の token text 内に `==X==` / `__X__` が含まれていない**（F2-P0 教訓、§3.6 参照）
 - [ ] 各 section の `heading` が「N. タイトル」形式の連番
 
 ### インデント整合性 ★v1.0 で追加（必須）
