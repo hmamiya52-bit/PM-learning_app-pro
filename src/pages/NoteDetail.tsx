@@ -3,6 +3,8 @@ import { useParams, useLocation, Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { getNoteUnderstanding, setNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
 import { addActivityEvent } from '../lib/activityLog'
+import type { QuestionFigure } from '../types'
+import { QuestionFigureView } from '../components/QuestionFigureView'
 
 // NOTE_DB に存在するカテゴリIDの順序リスト（前後ナビ用 / Notes 一覧フィルタ用）
 // PM Learning App: PMBOK第7版ベース 12カテゴリ（categories.ts と同順序）
@@ -72,6 +74,7 @@ interface NoteSection {
   richItems?: EmphasisToken[][]              // 構造化された箇条書き（赤・ネイビー混在可）
   headerDiagrams?: HeaderDiagram[]           // ヘッダ構成図（HTML表）
   navyItems?: EmphasisToken[][]              // ネイビー強調のみで残す既存項目（各セクション末尾）
+  figures?: QuestionFigure[]                 // SVG/table 図表（F2-figures で導入。マトリクス/ベン図/キューブ/フロー等）
 }
 
 interface NoteData {
@@ -3503,6 +3506,14 @@ export default function NoteDetail() {
                     )
                   })}
                 </ul>
+              )}
+              {/* SVG/table 図表（F2-figures で導入） — items/navyItems/その他レンダリングの直後に表示 */}
+              {section.figures && section.figures.length > 0 && (
+                <div className="px-5 pb-4 space-y-2">
+                  {section.figures.map((fig, k) => (
+                    <QuestionFigureView key={k} figure={fig} />
+                  ))}
+                </div>
               )}
             </div>
           ))}
