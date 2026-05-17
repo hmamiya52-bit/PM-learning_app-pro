@@ -608,6 +608,18 @@ export const NOTE_DB: Record<string, NoteData> = {
           '非公式権力（informal power）の把握に有効',
         ],
         navyItems: [[{ text: '権力は公式権威、影響力は非公式に他者を動かす力、と区別する', style: 'navy' }]],
+        figures: [
+          {
+            type: 'table',
+            caption: '権力／影響度グリッド: Power × Influence の4象限',
+            headers: ['', '影響力 低', '影響力 高'],
+            rowHeaderFirstCol: true,
+            rows: [
+              ['権力 高', '満足を保つ: 公式権限は高いが波及力は限定的', '緊密に管理: 意思決定権と影響力が高いコア'],
+              ['権力 低', '監視: 最小工数で変化を確認', '情報共有: 非公式影響力が高いキーパーソン'],
+            ],
+          },
+        ],
       },
       {
         heading: '15. 影響／インパクト・マトリクス',
@@ -617,6 +629,18 @@ export const NOTE_DB: Record<string, NoteData> = {
           'Power/Influence との違い: 縦軸が==Power（権力）== ではなく ==Influence== である点',
           'ステークホルダーが__プロジェクト変更にどれだけ影響__されるかを評価する観点',
           '主に==変更管理==・==リスク対応==の文脈で使われる',
+        ],
+        figures: [
+          {
+            type: 'table',
+            caption: '影響／インパクト・マトリクス: 縦軸は Power ではなく Influence',
+            headers: ['', 'Impact 低', 'Impact 高'],
+            rowHeaderFirstCol: true,
+            rows: [
+              ['Influence 高', '巻き込み: 変更説明の協力者にする', '重点対応: 影響大かつ他者も動かす'],
+              ['Influence 低', '観察: 必要時に情報提供', '個別ケア: 影響を受ける当事者として支援'],
+            ],
+          },
         ],
       },
       {
@@ -630,6 +654,54 @@ export const NOTE_DB: Record<string, NoteData> = {
           '権力だけでなく__正当性・緊急性__を加えた多次元分析が特徴',
         ],
         navyItems: [[{ text: '3属性すべてを持つ Definitive Stakeholder が最優先対応対象', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: 'サリエンスモデル: 属性数が多いほど優先度が上がる',
+            ariaLabel: 'Power Legitimacy Urgency の3属性でステークホルダーを分類するベン図',
+            viewBox: '0 0 640 430',
+            content: `
+              <defs>
+                <style>
+                  .salience-power { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; fill-opacity: 0.58; }
+                  .salience-legitimacy { fill: #9d5b8b15; stroke: #9d5b8b; stroke-width: 2; fill-opacity: 0.72; }
+                  .salience-urgency { fill: #fef3c7; stroke: #f59e0b; stroke-width: 2; fill-opacity: 0.62; }
+                </style>
+              </defs>
+              <rect x="18" y="18" width="604" height="394" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+              <text x="320" y="44" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">
+                属性数: 1 = Latent / 2 = Expectant / 3 = Definitive
+              </text>
+              <circle cx="260" cy="170" r="128" class="salience-power" />
+              <circle cx="380" cy="170" r="128" class="salience-legitimacy" />
+              <circle cx="320" cy="272" r="128" class="salience-urgency" />
+              <text x="180" y="86" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Power</text>
+              <text x="460" y="86" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Legitimacy</text>
+              <text x="320" y="390" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Urgency</text>
+              <text x="208" y="160" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="208" dy="0">Latent</tspan><tspan x="208" dy="16">Dormant</tspan>
+              </text>
+              <text x="432" y="160" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="432" dy="0">Latent</tspan><tspan x="432" dy="16">Discretionary</tspan>
+              </text>
+              <text x="320" y="342" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="320" dy="0">Latent</tspan><tspan x="320" dy="16">Demanding</tspan>
+              </text>
+              <text x="320" y="132" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="320" dy="0">Expectant</tspan><tspan x="320" dy="16">Dominant</tspan>
+              </text>
+              <text x="264" y="244" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="264" dy="0">Expectant</tspan><tspan x="264" dy="16">Dangerous</tspan>
+              </text>
+              <text x="376" y="244" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
+                <tspan x="376" dy="0">Expectant</tspan><tspan x="376" dy="16">Dependent</tspan>
+              </text>
+              <text x="320" y="204" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="16" font-weight="700" text-anchor="middle">
+                <tspan x="320" dy="0">Definitive</tspan><tspan x="320" dy="19">3属性</tspan>
+              </text>
+            `,
+          },
+        ],
       },
       {
         heading: '17. 方向性キューブ（Directions of Influence）',
