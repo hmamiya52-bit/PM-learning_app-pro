@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし）
  * - 正解: IPA 公式解答例 PDF と照合済（25問全件一致）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - R5/R4 は OCR 投入フェーズのため、次工程で追記予定
+ *   - R5/R4/R3 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -18,13 +18,14 @@
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
  * - R4 問9・問10・問13・問18: OCR フェーズでは `(figure)` 注記、次工程で図表化予定
+ * - R3 問4・問11: OCR フェーズでは `(figure)` 注記、次工程で図表化予定
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -34,6 +35,9 @@ const R5_AUTUMN_PM_AM2_SOURCE_URL =
 
 const R4_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_am2_qs.pdf'
+
+const R3_AUTUMN_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -1569,6 +1573,434 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: '',
     categoryId: 'service-management',
     sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-1',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 1,
+    questionText:
+      'あるプロジェクトのステークホルダとして，プロジェクトスポンサ，プロジェクトマネージャ，プロジェクトマネジメントオフィス及びプロジェクトマネジメントチームが存在する。ステークホルダのうち，JIS Q 21500:2018（プロジェクトマネジメントの手引）によれば，主として標準化，プロジェクトマネジメントの教育訓練及びプロジェクトの監視といった役割を担うのはどれか。',
+    choices: [
+      'プロジェクトスポンサ',
+      'プロジェクトマネージャ',
+      'プロジェクトマネジメントオフィス',
+      'プロジェクトマネジメントチーム',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-2',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 2,
+    questionText:
+      '表は，RACI チャートを用いた，あるプロジェクトの責任分担マトリックスである。設計アクティビティにおいて，説明責任をもつ要員は誰か。',
+    choices: ['阿部', '伊藤と佐藤', '鈴木と田中', '野村'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔RACI チャートによる責任分担マトリックス〕',
+      headers: ['アクティビティ', '阿部', '伊藤', '佐藤', '鈴木', '田中', '野村'],
+      rows: [
+        ['要件定義', 'C', 'A', 'I', 'I', 'I', 'R'],
+        ['設計', 'R', 'I', 'I', 'C', 'C', 'A'],
+        ['開発', 'A', '－', 'R', '－', 'R', 'I'],
+        ['テスト', 'I', 'I', 'C', 'R', 'A', 'C'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-R3-3',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 3,
+    questionText: 'PMBOK ガイド第6版によれば，組織のプロセス資産に分類されるものはどれか。',
+    choices: [
+      '課題と欠陥のマネジメント上の手続き',
+      '既存の施設や資本設備などのインフラストラクチャ',
+      'ステークホルダーのリスク許容度',
+      '組織構造，組織の文化，マネジメントの実務，持続可能性',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-4',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 4,
+    questionText:
+      'アクティビティ A～E によって実施する開発プロジェクトがある。図は，各アクティビティの依存関係を PDM（プレシデンスダイアグラム法）で表している。開発プロジェクトの最少の所要日数は何日か。ここで，FS－n は先行アクティビティが終了する n 日前に後続アクティビティが開始できることを，FS＋n は先行アクティビティが終了した n 日後に後続アクティビティが開始できることを示している。\n[次の図参照（IPA原PDFを参照）]',
+    choices: ['10', '11', '12', '13'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning(figure)',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-5',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 5,
+    questionText: '工程管理図表の特徴に関する記述のうち，ガントチャートのものはどれか。',
+    choices: [
+      '計画と実績の時間的推移を表現するのに適し，進み具合及びその傾向がよく分かり，プロジェクト全体の費用と進捗の管理に利用される。',
+      '作業の順序や作業相互の関係を表現したり，重要作業を把握したりするのに適しており，プロジェクトの作業計画などに利用される。',
+      '作業の相互関係の把握には適さないが，作業計画に対する実績を把握するのに適しており，個人やグループの進捗管理に利用される。',
+      '進捗管理上のマイルストーンを把握するのに適しており，プロジェクト全体の進捗管理などに利用される。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-6',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 6,
+    questionText: 'プロジェクトマネジメントにおけるクラッシングの例として，適切なものはどれか。',
+    choices: [
+      'クリティカルパス上のアクティビティの開始が遅れたので，ここに人的資源を追加した。',
+      'コストを削減するために，これまで承認されていた残業を禁止した。',
+      '仕様の確定が大幅に遅れたので，プロジェクトの完了予定日を延期した。',
+      '設計が終わったモジュールから順にプログラム開発を実施するように，スケジュールを変更した。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-7',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 7,
+    questionText: 'プロジェクトのスケジュール管理で使用する “クリティカルチェーン法” の実施例はどれか。',
+    choices: [
+      '限りある資源とプロジェクトの不確実性に対応するために，合流バッファとプロジェクトバッファを設ける。',
+      'クリティカルパス上の作業に，生産性を向上させるための開発ツールを導入する。',
+      'クリティカルパス上の作業に，要員を追加投入する。',
+      'クリティカルパス上の先行作業の全てが終了する前に後続作業に着手し，一部を並行して実施する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-8',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 8,
+    questionText:
+      'あるプロジェクトは 4 月から 9 月までの 6 か月間で開発を進めており，現在のメンバ全員が 9 月末まで作業すれば完了する見込みである。しかし，他のプロジェクトで発生した緊急の案件に対応するために，8 月初めから，4 人のメンバがプロジェクトから外れることになった。9 月末に予定どおり開発を完了させるために，7 月の半ばからメンバを増員する。条件に従うとき，人件費は何万円増加するか。\n〔条件〕\n・元のメンバと増員するメンバの，プロジェクトにおける生産性は等しい。\n・7 月の半ばから 7 月末までの 0.5 か月間，元のメンバ 4 人から増員するメンバに引継ぎを行う。\n・引継ぎの期間中は，元のメンバ 4 人と増員するメンバはプロジェクトの開発作業を実施しないが，人件費は全額をこのプロジェクトに計上する。\n・人件費は，1 人月当たり 100 万円とする。',
+    choices: ['200', '250', '450', '700'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-9',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 9,
+    questionText:
+      'ソフトウェアの規模の見積り方法のうち，利用者機能要件と機能プロセスに着目して，機能プロセスごとに①～③の手順で見積りを行うものはどれか。\n①　データ移動を型として識別し，エントリ，エグジット，読込み及び書込みの 4 種類に分類する。\n②　データ移動の型ごとに，その個数に単位規模を乗じる。\n③　②で得た型ごとの値の合計を，機能プロセスの機能規模とする。',
+    choices: ['COCOMO', 'COSMIC 法', '積み上げ法', '類推法'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-10',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 10,
+    questionText:
+      'JIS Q 21500:2018（プロジェクトマネジメントの手引）によれば，プロセス “リスクの特定” 及びプロセス “リスクの評価” は，どのプロセス群に属するか。',
+    choices: ['管理', '計画', '実行', '終結'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-11',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 11,
+    questionText:
+      'どのリスクがプロジェクトに対して最も影響が大きいかを判断するのに役立つ定量的リスク分析とモデル化の技法として，感度分析がある。感度分析の結果を示した次の図を何と呼ぶか。\n[次の図参照（IPA原PDFを参照）]',
+    choices: ['確率分布', 'デシジョンツリーダイアグラム', 'トルネード図', 'リスクブレークダウンストラクチャ'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty(figure)',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-12',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 12,
+    questionText: 'プロジェクトマネジメントで使用する分析技法のうち，傾向分析の説明はどれか。',
+    choices: [
+      '個々の選択肢とそれぞれを選択した場合に想定されるシナリオの関係を図に表し，それぞれのシナリオにおける期待値を計算して，最善の策を選択する。',
+      '個々のリスクが現実のものとなったときの，プロジェクトの目標に与える影響の度合いを調べる。',
+      '時間の経過に伴うプロジェクトのパフォーマンスの変動を分析する。',
+      '発生した障害とその要因の関係を魚の骨のような図にして分析する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-13',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 13,
+    questionText:
+      '新しく編成するプロジェクトチームの開発要員投入計画に基づいて PC をレンタルで調達する。調達の条件を満たすレンタル費用の最低金額は何千円か。\n〔調達の条件〕\n(1) PC のレンタル契約は月初日から月末日までの 1 か月単位であり，日割りによる精算は行わない。\n(2) PC 1 台のレンタル料金は月額 5 千円である。\n(3) 台数にかかわらず，レンタル PC の受入れ時のセットアップに 2 週間，返却時のデータ消去に 1 週間を要し，この期間はレンタル期間に含める。\n(4) セットアップとデータ消去は，プロジェクトチームの開発要員とは別の要員が行う。\n(5) 開発要員は月初日に着任し，月末日に離任する。\n(6) 開発要員の役割にかかわらず，共通仕様の PC を 1 人が 1 台使用する。\n(7) レンタル期間中に PC を他の開発要員に引き渡す場合，データ消去，セットアップ及び引渡しの期間は不要である。',
+    choices: ['350', '470', '480', '500'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発要員投入計画（単位：人　列は月）〕',
+      headers: ['要員 ＼ 月', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+      rows: [
+        ['設計者', 0, 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 0],
+        ['プログラマ', 0, 0, 0, 3, 3, 5, 5, 3, 3, 2, 2, 0],
+        ['テスタ', 0, 0, 0, 0, 0, 4, 4, 4, 6, 0, 0, 0],
+        ['計', 0, 2, 4, 7, 7, 11, 11, 9, 11, 4, 4, 0],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-R3-14',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 14,
+    questionText:
+      'JIS Q 21500:2018（プロジェクトマネジメントの手引）によれば，プロセス “コミュニケーションのマネジメント” の目的はどれか。',
+    choices: [
+      'チームのパフォーマンスを最大限に引き上げ，フィードバックを提供し，課題を解決し，コミュニケーションを促し，変更を調整して，プロジェクトの成功を達成すること',
+      'プロジェクトのステークホルダのコミュニケーションのニーズを確実に満足し，コミュニケーションの課題が発生したときにそれを解決すること',
+      'プロジェクトのステークホルダの情報及びコミュニケーションのニーズを決定すること',
+      'プロセス “コミュニケーションの計画” で定めたように，プロジェクトのステークホルダに対し要求した情報を利用可能にすること及び情報に対する予期せぬ具体的な要求に対応すること',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-15',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 15,
+    questionText: 'オブジェクト指向開発におけるロバストネス分析で行うことはどれか。',
+    choices: [
+      'オブジェクトの確定，構造の定義，サブジェクトの定義，属性の定義，及びサービスの定義という五つの作業項目を並行して実施する。',
+      'オブジェクトモデル，動的モデル，機能モデルという三つのモデルをこの順に作成して図に表す。',
+      'ユースケースから抽出したクラスを，バウンダリクラス，コントロールクラス，エンティティクラスの三つに分類し，クラス間の関連を定義して図に表す。',
+      '論理的な観点，物理的な観点，及び動的な観点の三つの観点で仕様の作成を行う。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-16',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 16,
+    questionText: 'リーンソフトウェア開発の説明として，適切なものはどれか。',
+    choices: [
+      '経験的プロセス制御の理論を基本としており，スプリントと呼ばれる周期で “検査と適応” を繰り返しながら開発を進める。',
+      '製造業の現場から生まれた考え方をアジャイル開発のプラクティスに適用したものであり，“ムダをなくす”，“品質を作り込む” といった，七つの原則を重視して，具体的な開発プロセスやプラクティスを策定する。',
+      '比較的小規模な開発に適した，プログラミングに焦点を当てた開発アプローチであり，“コミュニケーション” などの五つの価値を定義し，それらを高めるように具体的な開発プロセスやプラクティスを策定する。',
+      '利用者から見て価値があるまとまりを一つの機能単位とし，その単位ごとに，設計や構築などの五つのプロセスを繰り返しながら開発を進める。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-17',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 17,
+    questionText: 'マッシュアップの説明はどれか。',
+    choices: [
+      '既存のプログラムから，そのプログラムの仕様を導き出す。',
+      '既存のプログラムを部品化し，それらの部品を組み合わせて，新規プログラムを開発する。',
+      'クラスライブラリを利用して，新規プログラムを開発する。',
+      '公開されている複数のサービスを利用して，新たなサービスを提供する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-18',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 18,
+    questionText:
+      'システムの改善に向けて提出された案 1～4 について，評価項目を設定して採点した結果を，採点結果表に示す。効果及びリスクについては 5 段階評価とし，それぞれの評価項目の重要度に応じて，重み付け表に示すとおりの重み付けを行った上で，次式で総合評価点を算出する。総合評価点が最も高い改善案はどれか。\n総合評価点 ＝ 効果の総評価点 － リスクの総評価点',
+    choices: ['案 1', '案 2', '案 3', '案 4'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔採点結果表・重み付け表〕',
+      headers: ['区分', '評価項目', '案1', '案2', '案3', '案4', '重み'],
+      rows: [
+        ['効果', '作業コスト削減', 5, 4, 2, 4, 3],
+        ['効果', 'システム運用品質向上', 2, 4, 2, 5, 2],
+        ['効果', 'セキュリティ強化', 3, 4, 5, 2, 4],
+        ['リスク', '技術リスク', 4, 1, 5, 1, 3],
+        ['リスク', 'スケジュールリスク', 2, 4, 1, 5, 8],
+      ],
+      rowHeaderFirstCol: false,
+    },
+  },
+  {
+    id: 'om-R3-19',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 19,
+    questionText: '情報システムの設計の例のうち，フェールソフトの考え方を適用した例はどれか。',
+    choices: [
+      'UPS を設置することによって，停電時に手順どおりにシステムを停止できるようにする。',
+      '制御プログラムの障害時に，システムの暴走を避け，安全に運転を停止できるようにする。',
+      'ハードウェアの障害時に，パフォーマンスは低下するが，構成を縮小して運転を続けられるようにする。',
+      '利用者の誤操作や誤入力を未然に防ぐことによって，システムの誤動作を防止できるようにする。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-20',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 20,
+    questionText: 'システムの要件を検討する際に用いる UX デザインの説明として，適切なものはどれか。',
+    choices: [
+      'システム設計時に，システム稼働後の個人情報保護などのセキュリティ対策を組み込む設計思想のこと',
+      'システムを構成する個々のアプリケーションソフトウェアを利用者が享受するサービスと捉え，サービスを組み合わせることによってシステムを構築する設計思想のこと',
+      'システムを利用する際にシステムの機能が利用者にもたらす有効性，操作性などに加え，快適さ，安心感，楽しさなどの体験価値を重視する設計思想のこと',
+      '接続仕様や仕組みが公開されている他社のアプリケーションソフトウェアを活用してシステムを構築することによって，システム開発の生産性を高める設計思想のこと',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-21',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 21,
+    questionText:
+      '常時 10 名以上の従業員を有するソフトウェア開発会社が，社内の情報セキュリティ管理を強化するために，秘密情報を扱う担当従業員の扱いを見直すこととした。労働法に照らし，適切な行為はどれか。',
+    choices: [
+      '就業規則に業務上知り得た秘密の漏えい禁止の一般的な規定があるときに，担当従業員の職務に即して秘密の内容を特定する個別合意を行う。',
+      '就業規則には業務上知り得た秘密の漏えい禁止の規定がないときに，漏えい禁止と処分の規定を従業員の意見を聴かずに就業規則に追加する。',
+      '情報セキュリティ事故を起こした場合の懲戒処分について，担当従業員との間で，就業規則の規定よりも重くした個別合意を行う。',
+      '情報セキュリティに関連する規定は就業規則に記載してはいけないので，就業規則に規定を設けずに，各従業員と個別合意を行う。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-22',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 22,
+    questionText: '技術者倫理におけるホイッスルブローイングの説明として，適切なものはどれか。',
+    choices: [
+      '画期的なアイディアによって経済・社会に大きな変革をもたらすこと',
+      'コミュニケーションを通じて自ら問題を解決できる人材を育成すること',
+      '法令又は社会的規範を逸脱する行為を第三者などに知らしめること',
+      'リスクが発生したときの対処方法をあらかじめ準備しておくこと',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-23',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 23,
+    questionText: '暗号技術のうち，共通鍵暗号方式はどれか。',
+    choices: ['AES', 'ElGamal 暗号', 'RSA', '楕円曲線暗号'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-24',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 24,
+    questionText: 'テンペスト攻撃の説明とその対策として，適切なものはどれか。',
+    choices: [
+      '通信路の途中でパケットの内容を改ざんする攻撃であり，その対策としては，ディジタル署名を利用して改ざんを検知する。',
+      'ディスプレイなどから放射される電磁波を傍受し，表示内容を解析する攻撃であり，その対策としては，電磁波を遮断する。',
+      'マクロマルウェアを使う攻撃であり，その対策としては，マルウェア対策ソフトを導入し，最新のマルウェア定義ファイルを適用する。',
+      '無線 LAN の信号を傍受し，通信内容を解析する攻撃であり，その対策としては，通信パケットを暗号化する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R3-25',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    number: 25,
+    questionText: 'DNSSEC の機能はどれか。',
+    choices: [
+      'DNS キャッシュサーバの設定によって，再帰的な問合せを受け付ける送信元の範囲が最大になるようにする。',
+      'DNS サーバから受け取るリソースレコードに対するディジタル署名を利用して，リソースレコードの送信者の正当性とデータの完全性を検証する。',
+      'ISP などに設置されたセカンダリ DNS サーバを利用して権威 DNS サーバを二重化することによって，名前解決の可用性を高める。',
+      '共通鍵暗号とハッシュ関数を利用したセキュアな方法によって，DNS 更新要求が許可されているエンドポイントを特定して認証する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
   },
 ]
 
