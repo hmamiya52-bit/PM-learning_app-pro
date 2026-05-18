@@ -17,8 +17,7 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18: OCR フェーズでは `(figure)` 注記、次工程で図表化予定
- * - R3 問4・問11: OCR フェーズでは `(figure)` 注記、次工程で図表化予定
+ * - R4 問9・問10・問13・問18、R3 問4・問11: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
@@ -1308,7 +1307,7 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和4（2022）',
     number: 9,
     questionText:
-      '図のアローダイアグラムから読み取れることとして，適切なものはどれか。ここで，プロジェクトの開始日を1日目とする。\n[次の図参照（IPA原PDFを参照）]',
+      '図のアローダイアグラムから読み取れることとして，適切なものはどれか。ここで，プロジェクトの開始日を1日目とする。',
     choices: [
       '作業Cを最も早く開始できるのは6日目である。',
       '作業Dはクリティカルパス上の作業である。',
@@ -1317,8 +1316,61 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     ],
     correctIndex: 2,
     explanation: '',
-    categoryId: 'planning(figure)',
+    categoryId: 'planning',
     sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'アローダイアグラム。開始からA 5日とB 10日に分岐し、BからA後の結合点へダミー作業がある。結合点からC 20日、D 30日、E 10日に分岐し、B後の点からF 10日でE後の点へ進む。C後からG 20日、D、E後の点からのダミーが合流し、H 10日で終了する。',
+      caption: '図　アローダイアグラム',
+      viewBox: '0 0 640 310',
+      content: `
+        <defs>
+          <marker id="amR4q9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <circle cx="54" cy="140" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="205" cy="140" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="130" cy="235" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="340" cy="62" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="340" cy="235" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="485" cy="140" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="590" cy="140" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <line x1="76" y1="140" x2="181" y2="140" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="128" y="125" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">A</text>
+        <text x="128" y="154" text-anchor="middle" font-size="14" fill="#1e293b">5</text>
+        <line x1="70" y1="158" x2="114" y2="216" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="88" y="196" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">B</text>
+        <text x="108" y="209" text-anchor="middle" font-size="14" fill="#1e293b">10</text>
+        <line x1="147" y1="218" x2="188" y2="160" stroke="#334155" stroke-width="1.6" stroke-dasharray="7 5" marker-end="url(#amR4q9)"/>
+        <line x1="220" y1="125" x2="321" y2="79" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="273" y="89" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">C</text>
+        <text x="285" y="108" text-anchor="middle" font-size="14" fill="#1e293b">20</text>
+        <line x1="227" y1="140" x2="461" y2="140" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="345" y="124" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">D</text>
+        <text x="345" y="154" text-anchor="middle" font-size="14" fill="#1e293b">30</text>
+        <line x1="222" y1="155" x2="320" y2="216" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="265" y="198" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">E</text>
+        <text x="289" y="207" text-anchor="middle" font-size="14" fill="#1e293b">10</text>
+        <line x1="152" y1="235" x2="316" y2="235" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="235" y="219" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">F</text>
+        <text x="235" y="249" text-anchor="middle" font-size="14" fill="#1e293b">10</text>
+        <line x1="360" y1="78" x2="468" y2="124" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="410" y="88" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">G</text>
+        <text x="424" y="108" text-anchor="middle" font-size="14" fill="#1e293b">20</text>
+        <line x1="357" y1="218" x2="469" y2="157" stroke="#334155" stroke-width="1.6" stroke-dasharray="7 5" marker-end="url(#amR4q9)"/>
+        <line x1="507" y1="140" x2="566" y2="140" stroke="#334155" stroke-width="1.8" marker-end="url(#amR4q9)"/>
+        <text x="536" y="124" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">H</text>
+        <text x="536" y="154" text-anchor="middle" font-size="14" fill="#1e293b">10</text>
+        <text x="485" y="224" text-anchor="middle" font-size="12" fill="#475569">作業名</text>
+        <line x1="432" y1="244" x2="520" y2="244" stroke="#334155" stroke-width="1.6" marker-end="url(#amR4q9)"/>
+        <text x="476" y="265" text-anchor="middle" font-size="12" fill="#475569">所要日数</text>
+        <line x1="432" y1="285" x2="520" y2="285" stroke="#334155" stroke-width="1.4" stroke-dasharray="7 5" marker-end="url(#amR4q9)"/>
+        <text x="553" y="289" text-anchor="middle" font-size="12" fill="#475569">ダミー作業</text>
+      `,
+    },
   },
   {
     id: 'om-R4-10',
@@ -1326,17 +1378,64 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和4（2022）',
     number: 10,
     questionText:
-      'COCOMOには，システム開発の工数を見積もる式の一つとして次式がある。\n開発工数＝3.0×(開発規模)^{1.12}\nこの式を基に，開発規模と開発生産性(開発規模／開発工数)の関係を表したグラフはどれか。ここで，開発工数の単位は人月，開発規模の単位はキロ行とする。\n[次の図参照（IPA原PDFを参照）]',
+      'COCOMOには，システム開発の工数を見積もる式の一つとして次式がある。\n開発工数＝3.0×(開発規模)^{1.12}\nこの式を基に，開発規模と開発生産性(開発規模／開発工数)の関係を表したグラフはどれか。ここで，開発工数の単位は人月，開発規模の単位はキロ行とする。',
     choices: [
-      '選択肢アのグラフ（IPA原PDFを参照）',
-      '選択肢イのグラフ（IPA原PDFを参照）',
-      '選択肢ウのグラフ（IPA原PDFを参照）',
-      '選択肢エのグラフ（IPA原PDFを参照）',
+      '選択肢アのグラフ',
+      '選択肢イのグラフ',
+      '選択肢ウのグラフ',
+      '選択肢エのグラフ',
     ],
     correctIndex: 3,
     explanation: '',
-    categoryId: 'measurement(figure)',
+    categoryId: 'measurement',
     sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '開発規模を横軸、開発生産性を縦軸とする四つの候補グラフ。アは右上がりで次第に緩やか、イは右上がりで次第に急、ウは右下がりで次第に急、エは右下がりで次第に緩やかになる。',
+      caption: '図　開発規模と開発生産性の関係の候補',
+      viewBox: '0 0 620 360',
+      content: `
+        <defs>
+          <marker id="amR4q10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(35 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ア</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <path d="M 35 112 C 55 60, 105 44, 176 39" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">イ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <path d="M 35 112 C 88 111, 135 88, 176 36" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(35 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ウ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <path d="M 35 36 C 85 38, 142 68, 176 112" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">エ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amR4q10)"/>
+          <path d="M 35 36 C 48 74, 88 103, 176 112" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+      `,
+    },
   },
   {
     id: 'om-R4-11',
@@ -1380,12 +1479,24 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和4（2022）',
     number: 13,
     questionText:
-      'A～Dの機能をもつソフトウェアの基本設計書のレビューを行った。表は，各機能の開発規模の見積り値と基本設計書レビューでの指摘件数の実績値である。基本設計工程における品質の定量的評価基準に従うとき，品質評価指標の視点での品質に問題があると判定される機能の組みはどれか。\n[次の表参照（IPA原PDFを参照）]\n〔基本設計工程における品質の定量的評価基準〕\n品質評価指標は，基本設計書レビューにおける開発規模の見積り値の単位規模当たりの指摘件数とする。\n品質評価指標の値が，基準値の0.9倍～1.1倍の範囲内であれば，品質に問題がないと判定する。\n基準値は開発規模の見積り値1kステップ当たり5.0件とする。',
+      'A～Dの機能をもつソフトウェアの基本設計書のレビューを行った。表は，各機能の開発規模の見積り値と基本設計書レビューでの指摘件数の実績値である。基本設計工程における品質の定量的評価基準に従うとき，品質評価指標の視点での品質に問題があると判定される機能の組みはどれか。\n〔基本設計工程における品質の定量的評価基準〕\n品質評価指標は，基本設計書レビューにおける開発規模の見積り値の単位規模当たりの指摘件数とする。\n品質評価指標の値が，基準値の0.9倍～1.1倍の範囲内であれば，品質に問題がないと判定する。\n基準値は開発規模の見積り値1kステップ当たり5.0件とする。',
     choices: ['A，C', 'B，C', 'B，D', 'C，D'],
     correctIndex: 0,
     explanation: '',
-    categoryId: 'delivery(figure)',
+    categoryId: 'delivery',
     sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発規模の見積り値と指摘件数の実績値〕',
+      headers: ['機能', '開発規模の見積り値（kステップ）', '指摘件数の実績値（件）'],
+      rows: [
+        ['A', 30, 130],
+        ['B', 24, 120],
+        ['C', 16, 64],
+        ['D', 10, 46],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R4-14',
@@ -1457,12 +1568,24 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和4（2022）',
     number: 18,
     questionText:
-      'ある業務を新たにシステム化するに当たって，A～Dのシステム化案の初期費用，運用費及びシステム化によって削減される業務費を試算したところ，表のとおりであった。システムの利用期間を5年とするとき，最も投資利益率の高いシステム化案はどれか。ここで，投資利益率は次式によって算出する。また，利益の増加額は削減される業務費から投資額を減じたものとし，投資額は初期費用と運用費の合計とする。\n投資利益率＝利益の増加額÷投資額\n[次の表参照（IPA原PDFを参照）]',
+      'ある業務を新たにシステム化するに当たって，A～Dのシステム化案の初期費用，運用費及びシステム化によって削減される業務費を試算したところ，表のとおりであった。システムの利用期間を5年とするとき，最も投資利益率の高いシステム化案はどれか。ここで，投資利益率は次式によって算出する。また，利益の増加額は削減される業務費から投資額を減じたものとし，投資額は初期費用と運用費の合計とする。\n投資利益率＝利益の増加額÷投資額',
     choices: ['A', 'B', 'C', 'D'],
     correctIndex: 3,
     explanation: '',
-    categoryId: 'measurement(figure)',
+    categoryId: 'measurement',
     sourceUrl: R4_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔システム化案別の費用と削減額（単位 百万円）〕',
+      headers: ['システム化案', '初期費用', '1年間の運用費', '削減される1年間の業務費'],
+      rows: [
+        ['A', 30, 4, 25],
+        ['B', 20, 6, 20],
+        ['C', 20, 4, 15],
+        ['D', 15, 5, 22],
+      ],
+      rowHeaderFirstCol: true,
+    },
   },
   {
     id: 'om-R4-19',
@@ -1640,12 +1763,59 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和3（2021）',
     number: 4,
     questionText:
-      'アクティビティ A～E によって実施する開発プロジェクトがある。図は，各アクティビティの依存関係を PDM（プレシデンスダイアグラム法）で表している。開発プロジェクトの最少の所要日数は何日か。ここで，FS－n は先行アクティビティが終了する n 日前に後続アクティビティが開始できることを，FS＋n は先行アクティビティが終了した n 日後に後続アクティビティが開始できることを示している。\n[次の図参照（IPA原PDFを参照）]',
+      'アクティビティ A～E によって実施する開発プロジェクトがある。図は，各アクティビティの依存関係を PDM（プレシデンスダイアグラム法）で表している。開発プロジェクトの最少の所要日数は何日か。ここで，FS－n は先行アクティビティが終了する n 日前に後続アクティビティが開始できることを，FS＋n は先行アクティビティが終了した n 日後に後続アクティビティが開始できることを示している。',
     choices: ['10', '11', '12', '13'],
     correctIndex: 2,
     explanation: '',
-    categoryId: 'planning(figure)',
+    categoryId: 'planning',
     sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'PDM図。開始からアクティビティA 2日へ進み、AからB 3日へ進む。BからFS-2でC 4日に進む。AからFS+2でD 4日に進む。CとDがアクティビティE 4日に合流し、終了へ進む。',
+      caption: '図　PDMによるアクティビティの依存関係',
+      viewBox: '0 0 700 260',
+      content: `
+        <defs>
+          <marker id="amR3q4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <circle cx="45" cy="80" r="28" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="45" y="85" text-anchor="middle" font-size="14" fill="#1e293b">開始</text>
+        <rect x="105" y="55" width="130" height="50" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="170" y="76" text-anchor="middle" font-size="14" fill="#1e293b">アクティビティA</text>
+        <text x="170" y="96" text-anchor="middle" font-size="14" fill="#1e293b">2日</text>
+        <rect x="280" y="55" width="130" height="50" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="345" y="76" text-anchor="middle" font-size="14" fill="#1e293b">アクティビティB</text>
+        <text x="345" y="96" text-anchor="middle" font-size="14" fill="#1e293b">3日</text>
+        <rect x="330" y="130" width="130" height="50" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="395" y="151" text-anchor="middle" font-size="14" fill="#1e293b">アクティビティC</text>
+        <text x="395" y="171" text-anchor="middle" font-size="14" fill="#1e293b">4日</text>
+        <rect x="330" y="205" width="130" height="50" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="395" y="226" text-anchor="middle" font-size="14" fill="#1e293b">アクティビティD</text>
+        <text x="395" y="246" text-anchor="middle" font-size="14" fill="#1e293b">4日</text>
+        <rect x="515" y="170" width="130" height="50" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="580" y="191" text-anchor="middle" font-size="14" fill="#1e293b">アクティビティE</text>
+        <text x="580" y="211" text-anchor="middle" font-size="14" fill="#1e293b">4日</text>
+        <circle cx="675" cy="195" r="22" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="675" y="200" text-anchor="middle" font-size="13" fill="#1e293b">終了</text>
+        <line x1="73" y1="80" x2="103" y2="80" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <line x1="235" y1="80" x2="278" y2="80" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <path d="M 410 80 L 430 80 L 430 117 L 320 117 L 320 155 L 328 155" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <text x="300" y="157" text-anchor="middle" font-size="14" fill="#1e293b">FS－2</text>
+        <path d="M 235 88 L 260 88 L 260 230 L 328 230" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <text x="300" y="232" text-anchor="middle" font-size="14" fill="#1e293b">FS＋2</text>
+        <path d="M 460 155 L 492 155 L 492 195 L 513 195" fill="none" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <line x1="460" y1="230" x2="513" y2="203" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <line x1="645" y1="195" x2="653" y2="195" stroke="#334155" stroke-width="1.6" marker-end="url(#amR3q4)"/>
+        <text x="555" y="55" text-anchor="middle" font-size="13" fill="#1e293b" font-weight="bold">凡例</text>
+        <rect x="505" y="67" width="110" height="40" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="560" y="84" text-anchor="middle" font-size="12" fill="#1e293b">アクティビティ名</text>
+        <text x="560" y="101" text-anchor="middle" font-size="12" fill="#1e293b">所要日数</text>
+      `,
+    },
   },
   {
     id: 'om-R3-5',
@@ -1743,12 +1913,65 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     yearLabel: '令和3（2021）',
     number: 11,
     questionText:
-      'どのリスクがプロジェクトに対して最も影響が大きいかを判断するのに役立つ定量的リスク分析とモデル化の技法として，感度分析がある。感度分析の結果を示した次の図を何と呼ぶか。\n[次の図参照（IPA原PDFを参照）]',
+      'どのリスクがプロジェクトに対して最も影響が大きいかを判断するのに役立つ定量的リスク分析とモデル化の技法として，感度分析がある。感度分析の結果を示した次の図を何と呼ぶか。',
     choices: ['確率分布', 'デシジョンツリーダイアグラム', 'トルネード図', 'リスクブレークダウンストラクチャ'],
     correctIndex: 2,
     explanation: '',
-    categoryId: 'uncertainty(figure)',
+    categoryId: 'uncertainty',
     sourceUrl: R3_AUTUMN_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '感度分析の結果を示す横棒グラフ。リスク1からリスク5までが上から順に並び、マイナスの影響はゼロより左に点模様、プラスの影響はゼロより右に斜線模様で表示される。棒は上ほど長く下ほど短い。',
+      caption: '図　感度分析の結果',
+      viewBox: '0 0 680 300',
+      content: `
+        <defs>
+          <pattern id="dotsR3q11" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.1" fill="#475569"/>
+            <circle cx="6" cy="6" r="1.1" fill="#475569"/>
+          </pattern>
+          <pattern id="diagR3q11" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#475569" stroke-width="2"/>
+          </pattern>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <line x1="145" y1="25" x2="145" y2="212" stroke="#1e293b" stroke-width="1.4"/>
+        <line x1="465" y1="25" x2="465" y2="212" stroke="#1e293b" stroke-width="1.4"/>
+        <line x1="198" y1="25" x2="198" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="252" y1="25" x2="252" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="305" y1="25" x2="305" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="358" y1="25" x2="358" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="412" y1="25" x2="412" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="145" y="232" text-anchor="middle" font-size="13" fill="#1e293b">-10,000</text>
+        <text x="198" y="232" text-anchor="middle" font-size="13" fill="#1e293b">-5,000</text>
+        <text x="252" y="232" text-anchor="middle" font-size="13" fill="#1e293b">0</text>
+        <text x="305" y="232" text-anchor="middle" font-size="13" fill="#1e293b">5,000</text>
+        <text x="358" y="232" text-anchor="middle" font-size="13" fill="#1e293b">10,000</text>
+        <text x="412" y="232" text-anchor="middle" font-size="13" fill="#1e293b">15,000</text>
+        <text x="465" y="232" text-anchor="middle" font-size="13" fill="#1e293b">20,000</text>
+        <text x="86" y="56" text-anchor="end" font-size="15" fill="#1e293b">リスク1</text>
+        <text x="86" y="91" text-anchor="end" font-size="15" fill="#1e293b">リスク2</text>
+        <text x="86" y="126" text-anchor="end" font-size="15" fill="#1e293b">リスク3</text>
+        <text x="86" y="161" text-anchor="end" font-size="15" fill="#1e293b">リスク4</text>
+        <text x="86" y="196" text-anchor="end" font-size="15" fill="#1e293b">リスク5</text>
+        <rect x="160" y="37" width="92" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="37" width="202" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="182" y="72" width="70" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="72" width="142" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="198" y="107" width="54" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="107" width="100" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="212" y="142" width="40" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="142" width="64" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="230" y="177" width="22" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="177" width="36" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="515" y="74" font-size="14" fill="#1e293b" font-weight="bold">凡例</text>
+        <rect x="515" y="90" width="38" height="22" fill="url(#diagR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="565" y="106" font-size="14" fill="#1e293b">プラスの影響</text>
+        <rect x="515" y="125" width="38" height="22" fill="url(#dotsR3q11)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="565" y="141" font-size="14" fill="#1e293b">マイナスの影響</text>
+      `,
+    },
   },
   {
     id: 'om-R3-12',
