@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし）
  * - 正解: IPA 公式解答例 PDF と照合済（25問全件一致）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - R5/R4/R3/R2 は OCR 投入フェーズのため、次工程で追記予定
+ *   - R1 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -17,14 +17,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -40,6 +40,9 @@ const R3_AUTUMN_PM_AM2_SOURCE_URL =
 
 const R2_OCTOBER_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_am2_qs.pdf'
+
+const R1_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -2798,6 +2801,488 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: 'ファジングは，ソフトウェアの入出力に注目し，問題を引き起こしそうな大量かつ多様なパターンのデータを入力して挙動を観察し，例外的・想定外の振る舞いから脆弱性を見つける動的な検査手法。ア はパッチ管理・バージョン管理の検査，ウ はセキュリティアドバイザリ照合，エ は静的解析（ホワイトボックス検査）の説明。',
     categoryId: 'service-management',
     sourceUrl: R2_OCTOBER_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-1',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 1,
+    questionText:
+      'あるプロジェクトのステークホルダとして，プロジェクトスポンサ，プロジェクトマネージャ，プロジェクトマネジメントオフィス及びプロジェクトマネジメントチームが存在する。JIS Q 21500:2018（プロジェクトマネジメントの手引）によれば，組織としての標準化，プロジェクトマネジメントの教育訓練，プロジェクトの計画及びプロジェクトの監視などの役割を主として担うのはどれか。',
+    choices: [
+      'プロジェクトスポンサ',
+      'プロジェクトマネージャ',
+      'プロジェクトマネジメントオフィス',
+      'プロジェクトマネジメントチーム',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-2',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 2,
+    questionText:
+      '表は，RACI チャートを用いた，あるプロジェクトの責任分担マトリクスである。設計アクティビティにおいて，説明責任をもつ要員は誰か。',
+    choices: ['阿部', '伊藤と佐藤', '鈴木と田中', '野村'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔RACI チャートによる責任分担マトリクス〕',
+      headers: ['アクティビティ', '阿部', '伊藤', '佐藤', '鈴木', '田中', '野村'],
+      rows: [
+        ['要件定義', 'C', 'A', 'I', 'I', 'I', 'R'],
+        ['設計', 'R', 'I', 'I', 'C', 'C', 'A'],
+        ['開発', 'A', '－', 'R', '－', 'R', 'I'],
+        ['テスト', 'I', 'I', 'C', 'R', 'A', 'C'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-R1-3',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 3,
+    questionText: '工程管理図表の特徴に関する記述のうち，ガントチャートのものはどれか。',
+    choices: [
+      '計画と実績の時間的推移を表現するのに適し，進み具合及びその傾向がよく分かり，プロジェクト全体の費用と進捗の管理に利用される。',
+      '作業の順序や作業相互の関係を表現したり，重要作業を把握したりするのに適しており，プロジェクトの作業計画などに利用される。',
+      '作業の相互関係の把握には適さないが，作業計画に対する実績を把握するのに適しており，個人やグループの進捗管理に利用される。',
+      '進捗管理上のマイルストーンを把握するのに適しており，プロジェクト全体の進捗管理などに利用される。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-4',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 4,
+    questionText: 'プロジェクトのスケジュール管理で使用する “クリティカルチェーン法” の実施例はどれか。',
+    choices: [
+      '限りある資源とプロジェクトの不確実性に対応するために，合流バッファとプロジェクトバッファを設ける。',
+      'クリティカルパス上の作業に，生産性を向上させるための開発ツールを導入する。',
+      'クリティカルパス上の作業に，要員を追加投入する。',
+      'クリティカルパス上の先行作業が終了する前に後続作業に着手し，並行して実施する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-5',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 5,
+    questionText:
+      'JIS Q 21500:2018（プロジェクトマネジメントの手引）によれば，対象群 “リスク” の活動内容のうち，プロセス “リスクへの対応” で実施するものはどれか。',
+    choices: [
+      'プロジェクトの混乱を最小限にするために，リスク対応の有効性を評価しながらのリスク対応の進捗をレビューする。',
+      'プロジェクトの目標への脅威を軽減するために，プロジェクトの予算及びスケジュールに資源と活動を投入することによって，リスクを扱う。',
+      'プロジェクトのライフサイクルを通じて，プロジェクトの目標に影響を与えることがあるリスク事象及びその特性の決定を繰り返す。',
+      'リスクの優先順位を定めるために，各リスクの発生確率及びそのリスクが発生した場合にプロジェクトの目標に及ぼす結果を推定する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-6',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 6,
+    questionText:
+      'WBS を構成する個々のワークパッケージの進捗率を測定する方法のうち，ワークパッケージの期間が比較的長い作業に適した，重み付けマイルストーン法の説明はどれか。',
+    choices: [
+      '作業を開始したら 50%，作業が完了したら 100%というように，作業の “開始” と “完了” の 2 時点について，計上する進捗率を決めておく。',
+      '設計書の作成作業において，“複雑な入出力に関する記述を終えたら 70%とする” というように，計測者の主観で進捗率を決める。',
+      '設計書のレビューを完了したら 60%，社内承認を得たら 80%というように，あらかじめ設定した作業の区切りを過ぎるごとに計上する進捗率を決めておく。',
+      '全部で 10 日間の作業のうち 5 日を経過したら 50%というように，全作業期間に対する経過した作業期間の比で進捗率を決める。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-7',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 7,
+    questionText: 'PMBOK ガイド第6版によれば，“ステークホルダー・エンゲージメントのマネジメント” で行う活動はどれか。',
+    choices: [
+      '交渉やコミュニケーションを通してステークホルダーの期待をマネジメントする。',
+      'ステークホルダーの権限レベルとプロジェクト成果に関する懸念レベルに応じて，ステークホルダーを分類する。',
+      'ステークホルダーのリスク選好を決めるためのステークホルダー分析をする。',
+      'プロジェクト・コミュニケーション活動のための適切な取組み方と計画を策定する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'stakeholder',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-8',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 8,
+    questionText:
+      'あるシステムの設計から結合テストまでの作業について，開発工程ごとの見積工数を表 1 に，開発工程ごとの上級技術者と初級技術者の要員割当てを表 2 に示す。上級技術者は，初級技術者に比べて，プログラム作成・単体テストにおいて 2 倍の生産性を有する。表 1 の見積工数は，上級技術者の生産性を基に算出している。\n全ての開発工程に対して，上級技術者を 1 人追加して割り当てると，この作業に要する期間は何か月短縮できるか。ここで，開発工程の期間は重複させないものとし，要員全員が 1 か月当たり 1 人月の工数を投入するものとする。',
+    choices: ['1', '2', '3', '4'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔表1 見積工数・表2 要員割当て〕',
+      headers: ['開発工程', '見積工数（人月）', '上級技術者（人）', '初級技術者（人）'],
+      rows: [
+        ['設計', 6, 2, 0],
+        ['プログラム作成・単体テスト', 12, 2, 2],
+        ['結合テスト', 12, 2, 0],
+        ['合計', 30, '', ''],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-R1-9',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 9,
+    questionText:
+      '工程別の生産性が次のとおりのとき，全体の生産性を表す式はどれか。\n〔工程別の生産性〕\n設計工程：Xステップ／人月\n製造工程：Yステップ／人月\n試験工程：Zステップ／人月',
+    choices: ['X＋Y＋Z', 'frac{X＋Y＋Z}{3}', 'frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}', 'frac{1}{frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}}'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-10',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 10,
+    questionText:
+      'どのリスクがプロジェクトに対して最も影響が大きいかを判断するのに役立つ定量的リスク分析とモデル化の技法として，感度分析がある。感度分析の結果を示した次の図を何と呼ぶか。',
+    choices: ['確率分布', 'デシジョンツリーダイアグラム', 'トルネード図', 'リスクブレークダウンストラクチャ'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '感度分析の結果を示す横棒グラフ。リスク1からリスク5までが上から順に並び、マイナスの影響はゼロより左に点模様、プラスの影響はゼロより右に斜線模様で表示される。棒は上ほど長く下ほど短い。',
+      caption: '図　感度分析の結果',
+      viewBox: '0 0 680 300',
+      content: `
+        <defs>
+          <pattern id="dotsR1q10" width="8" height="8" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.1" fill="#475569"/>
+            <circle cx="6" cy="6" r="1.1" fill="#475569"/>
+          </pattern>
+          <pattern id="diagR1q10" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#475569" stroke-width="2"/>
+          </pattern>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <line x1="145" y1="25" x2="145" y2="212" stroke="#1e293b" stroke-width="1.4"/>
+        <line x1="465" y1="25" x2="465" y2="212" stroke="#1e293b" stroke-width="1.4"/>
+        <line x1="198" y1="25" x2="198" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="252" y1="25" x2="252" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="305" y1="25" x2="305" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="358" y1="25" x2="358" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="412" y1="25" x2="412" y2="212" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="145" y="232" text-anchor="middle" font-size="13" fill="#1e293b">-10,000</text>
+        <text x="198" y="232" text-anchor="middle" font-size="13" fill="#1e293b">-5,000</text>
+        <text x="252" y="232" text-anchor="middle" font-size="13" fill="#1e293b">0</text>
+        <text x="305" y="232" text-anchor="middle" font-size="13" fill="#1e293b">5,000</text>
+        <text x="358" y="232" text-anchor="middle" font-size="13" fill="#1e293b">10,000</text>
+        <text x="412" y="232" text-anchor="middle" font-size="13" fill="#1e293b">15,000</text>
+        <text x="465" y="232" text-anchor="middle" font-size="13" fill="#1e293b">20,000</text>
+        <text x="86" y="56" text-anchor="end" font-size="15" fill="#1e293b">リスク1</text>
+        <text x="86" y="91" text-anchor="end" font-size="15" fill="#1e293b">リスク2</text>
+        <text x="86" y="126" text-anchor="end" font-size="15" fill="#1e293b">リスク3</text>
+        <text x="86" y="161" text-anchor="end" font-size="15" fill="#1e293b">リスク4</text>
+        <text x="86" y="196" text-anchor="end" font-size="15" fill="#1e293b">リスク5</text>
+        <rect x="160" y="37" width="92" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="37" width="202" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="182" y="72" width="70" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="72" width="142" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="198" y="107" width="54" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="107" width="100" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="212" y="142" width="40" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="142" width="64" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="230" y="177" width="22" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <rect x="252" y="177" width="36" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="515" y="74" font-size="14" fill="#1e293b" font-weight="bold">凡例</text>
+        <rect x="515" y="90" width="38" height="22" fill="url(#diagR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="565" y="106" font-size="14" fill="#1e293b">プラスの影響</text>
+        <rect x="515" y="125" width="38" height="22" fill="url(#dotsR1q10)" stroke="#1e293b" stroke-width="1.2"/>
+        <text x="565" y="141" font-size="14" fill="#1e293b">マイナスの影響</text>
+      `,
+    },
+  },
+  {
+    id: 'om-R1-11',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 11,
+    questionText: 'プロジェクトマネジメントで使用する分析技法のうち，傾向分析の説明はどれか。',
+    choices: [
+      '個々の選択肢とそれぞれを選択した場合に想定されるシナリオの関係を図に表し，それぞれのシナリオにおける期待値を計算して，最善の策を選択する。',
+      '個々のリスクが現実のものとなったときの，プロジェクトの目標に与える影響の度合いを調べる。',
+      '時間の経過に伴うプロジェクトのパフォーマンスの変動を分析する。',
+      '発生した障害とその要因の関係を魚の骨のような図にして分析する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-12',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 12,
+    questionText: 'PMBOK ガイド第6版によれば，WBS の構成要素であるワーク・パッケージに関する記述のうち，適切なものはどれか。',
+    choices: [
+      'ワーク・パッケージとその一つ上位の成果物との関係は，1対1である。',
+      'ワーク・パッケージは，OBS（組織ブレークダウン・ストラクチャー）のチームに，担当する人員を割り当てたものである。',
+      'ワーク・パッケージは，通常，アクティビティに分解される。',
+      'ワーク・パッケージは，プロジェクトに関連がある成果物をまとめたものである。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-13',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 13,
+    questionText:
+      '新しく編成するプロジェクトチームの開発要員投入計画に基づいて PC をレンタルで調達する。調達の条件を満たすレンタル費用の最低金額は何千円か。\n〔調達の条件〕\n(1) PC のレンタル契約は月初日から月末日までの 1 か月単位であり，日割りによる精算は行わない。\n(2) PC 1 台のレンタル料金は月額 5 千円である。\n(3) 台数にかかわらず，レンタル PC の受入れ時のセットアップに 2 週間，返却時のデータ消去に 1 週間を要し，この期間はレンタル期間に含める。\n(4) セットアップとデータ消去は，プロジェクトチームの開発要員とは別の要員が行う。\n(5) 開発要員は月初日に着任し，月末日に離任する。\n(6) 開発要員の役割にかかわらず，共通仕様の PC を 1 人が 1 台使用する。\n(7) レンタル期間中に PC を他の開発要員に引き渡す場合，データ消去，セットアップ及び引渡しの期間は不要である。',
+    choices: ['350', '470', '480', '500'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発要員投入計画（単位：人　列は月）〕',
+      headers: ['開発要員 ＼ 時期', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+      rows: [
+        ['設計者', '', 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, ''],
+        ['プログラマ', '', '', '', 3, 3, 5, 5, 3, 3, 2, 2, ''],
+        ['テスタ', '', '', '', '', '', 4, 4, 4, 6, '', '', ''],
+        ['計', 0, 2, 4, 7, 7, 11, 11, 9, 11, 4, 4, 0],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-R1-14',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 14,
+    questionText:
+      '顧客に提出した進捗状況の報告書に対して，顧客から成果物ごとの進捗状況についての問合せが繰り返しあった。今後このような事態が発生しないようにするためには，プロジェクトのコミュニケーションマネジメント計画書のどの内容を是正する必要があるか。',
+    choices: ['情報伝達の手段', '情報を受け取る人又はグループ', '情報を配布するスケジュール', '伝達すべき情報の内容，表現形式及び詳細度'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-15',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 15,
+    questionText: 'PMBOK ガイド第6版によれば，プロジェクト・スコープ・マネジメントにおいて作成するプロジェクト・スコープ記述書の説明のうち，適切なものはどれか。',
+    choices: [
+      'インプット情報として与えられる WBS やスコープ・ベースラインを用いて，プロジェクトのスコープを記述する。',
+      'プロジェクトのスコープに含まれないものは，記述の対象外である。',
+      'プロジェクトの成果物と，これらの成果物を生成するために必要な作業について記述する。',
+      'プロジェクトの予算見積りやスケジュール策定を実施して，これらをプロジェクトの前提条件として記述する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-16',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 16,
+    questionText:
+      'テストケースを作成する技法のうち，直交表によるテストケースの作成条件を緩和し，2因子間の取り得る値の組合せが同一回数でなくても，1回以上存在すればよいとしてテストケースを設計する技法はどれか。',
+    choices: ['All-Pair 法（ペアワイズ法）', '決定表', '原因結果グラフ法', '同値分割法'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-17',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 17,
+    questionText: 'マッシュアップに該当するものはどれか。',
+    choices: [
+      '既存のプログラムから，そのプログラムの仕様を導き出す。',
+      '既存のプログラムを部品化し，それらの部品を組み合わせて，新規プログラムを開発する。',
+      'クラスライブラリを利用して，新規プログラムを開発する。',
+      '公開されている複数のサービスを利用して，新たなサービスを提供する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-18',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 18,
+    questionText:
+      '企業間で，商用目的で締結されたソフトウェアの開発請負契約書に著作権の帰属に関する内容が記載されていない場合の著作権の帰属先として，適切なものはどれか。ここで，ソフトウェアは請負人が開発するものとする。',
+    choices: ['請負人，注文者のどちらにも帰属しない。', '請負人と注文者が共有する。', '請負人に帰属する。', '注文者に帰属する。'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-19',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 19,
+    questionText: 'サービスマネジメントにおいて，事業関係マネージャが責任をもつ事項として，適切なものはどれか。',
+    choices: [
+      'サービスカタログの認可',
+      'サービス提供者と個別の供給者との関係の管理',
+      '将来の事業上の要求事項の理解及び計画立案',
+      '容量・能力及びパフォーマンスのデータの分析及びレビュー',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-20',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 20,
+    questionText:
+      'データの追加・変更・削除が，少ないながらも一定の頻度で行われるデータベースがある。このデータベースのフルバックアップを磁気テープに取得する時間間隔を今までの 2 倍にした。このとき，データベースのバックアップ又は復旧に関する記述のうち，適切なものはどれか。',
+    choices: [
+      '復旧時に行うログ情報の反映の平均処理時間が約 2 倍になる。',
+      'フルバックアップ取得 1 回当たりの磁気テープ使用量が約 2 倍になる。',
+      'フルバックアップ取得 1 回当たりの磁気テープ使用量が約半分になる。',
+      'フルバックアップ取得の平均処理時間が約 2 倍になる。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-21',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 21,
+    questionText: 'RFI を説明したものはどれか。',
+    choices: [
+      'サービス提供者と顧客との間で，提供するサービスの内容，品質などに関する保証範囲やペナルティについてあらかじめ契約としてまとめた文書',
+      'システム化に当たって，現在の状況において利用可能な技術・製品，ベンダにおける導入実績など実現手段に関する情報提供をベンダに依頼する文書',
+      'システムの調達のために，調達側からベンダに技術的要件，サービスレベル要件，契約条件などを提示し，指定した期限内で実現策の提案を依頼する文書',
+      '要件定義との整合性を図り，利用者と開発要員及び運用要員の共有物とするために，業務処理の概要，入出力情報の一覧，データフローなどをまとめた文書',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-22',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 22,
+    questionText:
+      '下請代金支払遅延等防止法の対象となる下請事業者から納品されたプログラムに，下請事業者側の事情を原因とする重大なバグが発見され，プログラムの修正が必要となった。このとき，支払期日を改めて定めようとする場合，下請代金支払遅延等防止法で認められている期間（60 日）の起算日はどれか。',
+    choices: ['当初のプログラムの検査が終了した日', '当初のプログラムを下請事業者に返却した日', '修正済プログラムが納品された日', '修正済プログラムの検査が終了した日'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-23',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 23,
+    questionText: '技術者倫理の遵守を妨げる要因の一つとして，集団思考というものがある。集団思考の説明として，適切なものはどれか。',
+    choices: [
+      '自分とは違った視点から事態を見ることができず，客観性に欠けること',
+      '組織内の権威に無批判的に服従すること',
+      '正しいことが何かは知っているが，それを実行する勇気や決断力に欠けること',
+      '強い連帯性をもつチームが批判的思考を欠くことによって，不合理な合意へと達すること',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-24',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 24,
+    questionText: 'NIST が制定した，AES における鍵長の条件はどれか。',
+    choices: [
+      '128 ビット，192 ビット，256 ビットから選択する。',
+      '256 ビット未満で任意に指定する。',
+      '暗号化処理単位のブロック長よりも 32 ビット長くする。',
+      '暗号化処理単位のブロック長よりも 32 ビット短くする。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-R1-25',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    number: 25,
+    questionText: 'DNSSEC の機能はどれか。',
+    choices: [
+      'DNS キャッシュサーバの設定によって，再帰的な問合せを受け付ける送信元の範囲が最大になるようにする。',
+      'DNS サーバから受け取るリソースレコードに対するディジタル署名を利用して，リソースレコードの送信者の正当性とデータの完全性を検証する。',
+      'ISP などに設置されたセカンダリ DNS サーバを利用して DNS コンテンツサーバを二重化することによって，名前解決の可用性を高める。',
+      '共通鍵暗号技術とハッシュ関数を利用したセキュアな方法によって，DNS 更新要求が許可されているエンドポイントを特定して認証する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
