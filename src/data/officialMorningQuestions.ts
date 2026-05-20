@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし）
  * - 正解: IPA 公式解答例 PDF と照合済（25問全件一致）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - R1 は OCR 投入フェーズのため、次工程で追記予定
+ *   - H30 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -17,14 +17,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -43,6 +43,9 @@ const R2_OCTOBER_PM_AM2_SOURCE_URL =
 
 const R1_SPRING_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_am2_qs.pdf'
+
+const H30_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -3283,6 +3286,589 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: 'DNSSEC は，DNS リソースレコードに認証局相当の鍵によるディジタル署名を付け，リゾルバ側で署名検証することで送信者の正当性とデータの完全性を保証する仕組み。ア はオープンリゾルバ問題に逆行する設定で攻撃悪用される側，ウ はセカンダリ DNS による冗長化（可用性向上）で DNSSEC とは別技術，エ は TSIG（Transaction SIGnature）による DNS 更新認証の説明。',
     categoryId: 'service-management',
     sourceUrl: R1_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-1',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 1,
+    questionText:
+      'ISO 21500:2012(プロジェクトマネジメントの手引き(英和対訳版))によれば，プロジェクトマネジメントのプロセスグループには，立上げ，計画，実行，コントロール及び終結の五つがある。これらのうち，"変更要求"の申請を契機に相互に作用するプロセスグループの組みはどれか。',
+    choices: ['計画，実行', '実行，コントロール', '実行，終結', 'コントロール，終結'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-2',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 2,
+    questionText: 'プロジェクトマネジメントにおけるプロジェクト憲章の説明として，適切なものはどれか。',
+    choices: [
+      '組織のビジョン，目標及びビジネスニーズとともに，プロジェクトが提供するプロダクト，サービス，又は所産の特性を明確にした文書',
+      'どのようにプロジェクトを実施し，監視し，コントロールするのかを定めるために，プロジェクトを実施するためのベースライン，並びにプロジェクトの実行，コントロール，及び終結する方法を明確にした文書',
+      'プロジェクトの最終状態を定義することによって，プロジェクトの目的，成果物，要求事項及び境界を含むプロジェクトスコープを明確にした文書',
+      'プロジェクトを正式に承認する文書であり，プロジェクトマネージャを特定して適切な責任と権限を明確にし，ビジネスニーズ，目標，期待される結果などを明確にした文書',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-3',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 3,
+    questionText:
+      'PMBOKガイド第5版の統合変更管理プロセスにおいて，プロジェクトのプロダクト，サービス，所産，構成要素などに対する変更と実施状況を記録・報告したり，要求事項への適合性を検証するためのプロダクト，所産又は構成要素に対する監査を支援したりする活動はどれか。',
+    choices: [
+      'アーンド・バリュー・マネジメント',
+      'コンフィギュレーション・マネジメント',
+      'コンフリクト・マネジメント',
+      'ポートフォリオマネジメント',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-4',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 4,
+    questionText:
+      'プロジェクトマネジメントで使用する責任分担表(RAM)の一つである，RACIチャートで示す4種類の役割及び責任の組合せのうち，適切なものはどれか。',
+    choices: [
+      '実行責任，情報提供，説明責任，相談対応',
+      '実行責任，情報提供，説明責任，リスク管理',
+      '実行責任，情報提供，相談対応，リスク管理',
+      '実行責任，説明責任，相談対応，リスク管理',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-5',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 5,
+    questionText:
+      'ISO 21500:2012(プロジェクトマネジメントの手引き(英和対訳版))によれば，資源サブジェクトグループのプロセスの目的のうち，資源のコントロールプロセスのものはどれか。',
+    choices: [
+      'アクティビティリストのアクティビティごとに必要な資源を決定する。',
+      '継続的にプロジェクトチームメンバーのパフォーマンス及び相互関係を改善する。',
+      'プロジェクト作業の実施に必要な資源を確保し，プロジェクト要求事項を満たせるように資源を配分する。',
+      'プロジェクトの完遂に必要な人的資源を得る。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-6',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 6,
+    questionText:
+      '図1に示すプロジェクト活動について，作業Cの終了がこの計画から2日遅れたので，このままでは当初に計画した総所要日数で終了できなくなった。\n作業を見直したところ，作業Iは作業Gの全てが完了していなくても開始できることが分かったので，ファストトラッキングを適用して，図2に示すように計画を変更した。\nこの計画変更によって，変更後の総所要日数はどのように変化するか。',
+    choices: ['当初計画から4日減少する。', '当初計画から2日減少する。', '当初計画から1日増加する。', '当初計画から2日増加する。'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '図1は作業AからJまでのプロジェクト活動ネットワーク。図2は作業Cが12日となり、作業GをG1とG2に分割し、G2から結合点へダミー作業を追加した変更後ネットワーク。',
+      caption: '図1・図2　プロジェクト活動',
+      viewBox: '0 0 620 450',
+      content: `
+        <defs>
+          <marker id="amH30q6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(20 18)">
+          <text x="285" y="8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">図1　プロジェクト活動（当初の計画）</text>
+          <circle cx="30" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="115" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="190" cy="35" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="190" cy="155" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="275" cy="35" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="275" cy="155" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="365" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="455" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <line x1="44" y1="95" x2="101" y2="95" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="127" y1="86" x2="178" y2="44" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="127" y1="104" x2="178" y2="146" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="190" y1="49" x2="190" y2="141" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="204" y1="35" x2="261" y2="35" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="202" y1="146" x2="263" y2="44" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="204" y1="155" x2="261" y2="155" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="287" y1="45" x2="353" y2="85" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="287" y1="146" x2="353" y2="104" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="379" y1="95" x2="441" y2="95" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <text x="72" y="87" font-size="13" fill="#1e293b">A</text><text x="73" y="111" font-size="13" fill="#1e293b">4</text>
+          <text x="150" y="58" font-size="13" fill="#1e293b">B</text><text x="158" y="75" font-size="13" fill="#1e293b">5</text>
+          <text x="150" y="132" font-size="13" fill="#1e293b">C</text><text x="150" y="151" font-size="13" fill="#1e293b">10</text>
+          <text x="198" y="94" font-size="13" fill="#1e293b">D</text><text x="178" y="103" font-size="13" fill="#1e293b">4</text>
+          <text x="232" y="25" font-size="13" fill="#1e293b">E</text><text x="232" y="50" font-size="13" fill="#1e293b">2</text>
+          <text x="232" y="83" font-size="13" fill="#1e293b">F</text><text x="222" y="101" font-size="13" fill="#1e293b">4</text>
+          <text x="232" y="147" font-size="13" fill="#1e293b">G</text><text x="232" y="171" font-size="13" fill="#1e293b">7</text>
+          <text x="320" y="62" font-size="13" fill="#1e293b">H</text><text x="316" y="80" font-size="13" fill="#1e293b">6</text>
+          <text x="320" y="130" font-size="13" fill="#1e293b">I</text><text x="317" y="148" font-size="13" fill="#1e293b">4</text>
+          <text x="410" y="87" font-size="13" fill="#1e293b">J</text><text x="410" y="111" font-size="13" fill="#1e293b">8</text>
+        </g>
+        <g transform="translate(20 238)">
+          <text x="285" y="8" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">図2　プロジェクト活動（変更後の計画）</text>
+          <circle cx="30" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="115" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="190" cy="35" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="190" cy="155" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="275" cy="35" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="275" cy="155" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="365" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="365" cy="155" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="455" cy="95" r="14" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <line x1="44" y1="95" x2="101" y2="95" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="127" y1="86" x2="178" y2="44" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="127" y1="104" x2="178" y2="146" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="190" y1="49" x2="190" y2="141" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="204" y1="35" x2="261" y2="35" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="202" y1="146" x2="263" y2="44" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="204" y1="155" x2="261" y2="155" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="289" y1="155" x2="351" y2="155" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="287" y1="45" x2="353" y2="85" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="287" y1="146" x2="353" y2="104" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <line x1="365" y1="141" x2="365" y2="109" stroke="#334155" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#amH30q6)"/>
+          <line x1="379" y1="95" x2="441" y2="95" stroke="#334155" stroke-width="1.6" marker-end="url(#amH30q6)"/>
+          <text x="72" y="87" font-size="13" fill="#1e293b">A</text><text x="73" y="111" font-size="13" fill="#1e293b">4</text>
+          <text x="150" y="58" font-size="13" fill="#1e293b">B</text><text x="158" y="75" font-size="13" fill="#1e293b">5</text>
+          <text x="150" y="132" font-size="13" fill="#1e293b">C</text><text x="150" y="151" font-size="13" fill="#1e293b">12</text>
+          <text x="198" y="94" font-size="13" fill="#1e293b">D</text><text x="178" y="103" font-size="13" fill="#1e293b">4</text>
+          <text x="232" y="25" font-size="13" fill="#1e293b">E</text><text x="232" y="50" font-size="13" fill="#1e293b">2</text>
+          <text x="232" y="83" font-size="13" fill="#1e293b">F</text><text x="222" y="101" font-size="13" fill="#1e293b">4</text>
+          <text x="232" y="147" font-size="13" fill="#1e293b">G1</text><text x="232" y="171" font-size="13" fill="#1e293b">2</text>
+          <text x="318" y="179" font-size="13" fill="#1e293b">G2</text><text x="355" y="179" font-size="13" fill="#1e293b">5</text>
+          <text x="320" y="62" font-size="13" fill="#1e293b">H</text><text x="316" y="80" font-size="13" fill="#1e293b">6</text>
+          <text x="333" y="124" font-size="13" fill="#1e293b">I</text><text x="346" y="138" font-size="13" fill="#1e293b">4</text>
+          <text x="410" y="87" font-size="13" fill="#1e293b">J</text><text x="410" y="111" font-size="13" fill="#1e293b">8</text>
+          <text x="482" y="138" font-size="13" fill="#1e293b">破線: ダミー作業</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H30-7',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 7,
+    questionText:
+      '過去のプロジェクトの開発実績から構築した作業配分モデルがある。システム要件定義からシステム内部設計までをモデルどおりに228日で完了し，プログラム開発を開始した。現在，200本のプログラムのうち100本のプログラム開発を完了し，残り100本は未着手の状況である。プログラム開発以降もモデルどおりに進捗すると仮定するとき，プロジェクト全体の完了まで，あと何日掛かるか。ここで，各プログラムの開発に掛かる工数及び期間は，全てのプログラムで同一であるものとする。',
+    choices: ['140', '150', '161', '172'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔作業配分モデル〕',
+      headers: ['', 'システム要件定義', 'システム外部設計', 'システム内部設計', 'プログラム開発', 'システム結合', 'システムテスト'],
+      rows: [
+        ['工数比', '0.17', '0.21', '0.16', '0.16', '0.11', '0.19'],
+        ['期間比', '0.25', '0.21', '0.11', '0.11', '0.11', '0.21'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H30-8',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 8,
+    questionText:
+      'COCOMOには，システム開発の工数を見積もる式の一つに\n開発工数＝3.0×(開発規模)^{1.12}\nがある。開発規模と開発生産性(開発規模／開発工数)の関係を表したグラフはどれか。ここで，開発工数の単位は人月，開発規模の単位はキロ行である。',
+    choices: ['選択肢アのグラフ', '選択肢イのグラフ', '選択肢ウのグラフ', '選択肢エのグラフ'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '開発規模を横軸、開発生産性を縦軸とする四つの候補グラフ。アは右上がりで次第に緩やか、イは右上がりで次第に急、ウは右下がりで次第に急、エは右下がりで次第に緩やかになる。',
+      caption: '図　開発規模と開発生産性の関係の候補',
+      viewBox: '0 0 620 360',
+      content: `
+        <defs>
+          <marker id="amH30q8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(35 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ア</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <path d="M 35 112 C 55 60, 105 44, 176 39" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">イ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <path d="M 35 112 C 88 111, 135 88, 176 36" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(35 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ウ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <path d="M 35 36 C 85 38, 142 68, 176 112" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">エ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH30q8)"/>
+          <path d="M 35 36 C 48 74, 88 103, 176 112" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H30-9',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 9,
+    questionText:
+      'プロジェクトにどのツールを導入するかを，EMV(期待金額価値)を用いて検討する。デシジョンツリーが次の図のとき，ツールAを導入するEMVがツールBを導入するEMVを上回るのは，Xが幾らよりも大きい場合か。',
+    choices: ['120', '150', '200', '240'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'デシジョンツリー。どのツールを導入するかの決定ノードから、ツールAを導入とツールBを導入に分岐する。ツールAは費用120万円、効果が大きい場合60%で効果額X万円、効果が小さい場合40%で90万円。ツールBは費用60万円、効果が大きい場合60%で120万円、効果が小さい場合40%で60万円。',
+      caption: '図　ツール導入のデシジョンツリー',
+      viewBox: '0 0 660 330',
+      content: `
+        <defs>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <rect x="28" y="133" width="118" height="52" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="87" y="153" text-anchor="middle" font-size="13" fill="#1e293b">どのツールを</text>
+        <text x="87" y="171" text-anchor="middle" font-size="13" fill="#1e293b">導入するか</text>
+        <rect x="178" y="154" width="14" height="14" fill="#111827" stroke="#111827" stroke-width="1.2"/>
+        <rect x="252" y="70" width="150" height="58" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="327" y="93" text-anchor="middle" font-size="13" fill="#1e293b">ツールAを導入</text>
+        <text x="327" y="113" text-anchor="middle" font-size="13" fill="#1e293b">（費用 120万円）</text>
+        <rect x="252" y="205" width="150" height="58" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="327" y="228" text-anchor="middle" font-size="13" fill="#1e293b">ツールBを導入</text>
+        <text x="327" y="248" text-anchor="middle" font-size="13" fill="#1e293b">（費用 60万円）</text>
+        <circle cx="435" cy="99" r="9" fill="#111827"/>
+        <circle cx="435" cy="234" r="9" fill="#111827"/>
+        <rect x="525" y="34" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="54" text-anchor="middle" font-size="13" fill="#1e293b">効果が大きい</text>
+        <text x="585" y="72" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 X 万円）</text>
+        <rect x="525" y="110" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="130" text-anchor="middle" font-size="13" fill="#1e293b">効果が小さい</text>
+        <text x="585" y="148" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 90万円）</text>
+        <rect x="525" y="187" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="207" text-anchor="middle" font-size="13" fill="#1e293b">効果が大きい</text>
+        <text x="585" y="225" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 120万円）</text>
+        <rect x="525" y="263" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="283" text-anchor="middle" font-size="13" fill="#1e293b">効果が小さい</text>
+        <text x="585" y="301" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 60万円）</text>
+        <line x1="146" y1="159" x2="178" y2="161" stroke="#334155" stroke-width="1.5"/>
+        <line x1="192" y1="161" x2="252" y2="99" stroke="#334155" stroke-width="1.5"/>
+        <line x1="192" y1="161" x2="252" y2="234" stroke="#334155" stroke-width="1.5"/>
+        <line x1="402" y1="99" x2="426" y2="99" stroke="#334155" stroke-width="1.5"/>
+        <line x1="444" y1="99" x2="488" y2="58" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="58" x2="525" y2="58" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="48" text-anchor="middle" font-size="13" fill="#1e293b">60%</text>
+        <line x1="444" y1="99" x2="488" y2="135" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="135" x2="525" y2="135" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="130" text-anchor="middle" font-size="13" fill="#1e293b">40%</text>
+        <line x1="402" y1="234" x2="426" y2="234" stroke="#334155" stroke-width="1.5"/>
+        <line x1="444" y1="234" x2="488" y2="212" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="212" x2="525" y2="212" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="202" text-anchor="middle" font-size="13" fill="#1e293b">60%</text>
+        <line x1="444" y1="234" x2="488" y2="288" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="288" x2="525" y2="288" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="278" text-anchor="middle" font-size="13" fill="#1e293b">40%</text>
+        <text x="42" y="242" font-size="13" fill="#1e293b">〔凡例〕</text>
+        <rect x="43" y="254" width="12" height="12" fill="#111827"/>
+        <text x="63" y="266" font-size="13" fill="#1e293b">決定ノード</text>
+        <circle cx="49" cy="285" r="7" fill="#111827"/>
+        <text x="63" y="289" font-size="13" fill="#1e293b">機会ノード</text>
+      `,
+    },
+  },
+  {
+    id: 'om-H30-10',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 10,
+    questionText:
+      'PMBOK第5版のプロジェクト・リスク・マネジメントにおけるリスク対応戦略に関する記述のうち，適切なものはどれか。',
+    choices: [
+      '強化は，マイナスのリスクに対して使用される戦略である。',
+      '共有は，プラスのリスクとマイナスのリスクのどちらにも使用される戦略である。',
+      '受容は，プラスのリスクとマイナスのリスクのどちらにも使用される戦略である。',
+      '転嫁は，プラスのリスクに対して使用される戦略である。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-11',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 11,
+    questionText:
+      'PMBOK第5版によれば，プロジェクト・リスク・マネジメントでは，定性的リスク分析でリスクの優先順位を査定し，定量的リスク分析でリスクがプロジェクト目標全体に与える影響を数値的に分析する。定性的リスク分析で使用されるものはどれか。',
+    choices: ['感度分析', '期待金額価値分析', 'デシジョン・ツリー', '発生確率・影響度マトリックス'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-12',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 12,
+    questionText:
+      'システム開発のプロジェクトにおいて，リスク識別を効率よく行うための手段として，"JIS X 25010:2013(システム及びソフトウェア製品の品質要求及び評価(SQuaRE)－システム及びソフトウェア品質モデル)"が規定する利用時の品質特性を用いてソフトウェアの品質に関するリスクを分類することにした。"満足性"に対するリスクとして分類される，リスクとその評価の事例はどれか。',
+    choices: [
+      'システムが稼働する環境に依存した機能を使用しているので，現在の稼働環境とは異なる環境のプラットフォームに展開できず，柔軟でないと評価される。',
+      '操作に習熟していない利用者が，誤った使い方をしたときの対処方法が分からずに困惑し，快適でないと評価される。',
+      'ソフトウェアパッケージを導入した際に，消耗品が多く必要となって，コストが膨らみ，効率的でないと評価される。',
+      '導入したソフトウェアパッケージの目新しさだけが目立ち，業務の一部を手作業で補完しなければならず，有効でないと評価される。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-13',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 13,
+    questionText:
+      'プロジェクトで発生している品質問題を解決するに当たって，図を作成して原因の傾向を分析したところ，発生した問題の80%以上が少数の原因で占められていることが判明した。作成した図はどれか。',
+    choices: ['管理図', '散布図', '特性要因図', 'パレート図'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-14',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 14,
+    questionText:
+      'PMBOKガイド第5版によれば，プロジェクト品質マネジメントは，品質マネジメント計画，品質保証，品質コントロールの三つのプロセスで構成されている。品質マネジメント計画プロセスのアウトプットであって，品質保証プロセス及び品質コントロール・プロセスのインプットになるものはどれか。',
+    choices: ['検証済み成果物', '妥当性確認済み変更', '品質尺度', '変更要求'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-15',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 15,
+    questionText: 'PMBOKガイド第5版によれば，プロジェクト調達マネジメントにおける調達作業範囲記述書に記載すべき項目はどれか。',
+    choices: ['プロジェクト完了後の調達品の運用サポートの内容', 'プロジェクト全体のWBS', 'プロジェクト全体の予算', 'プロジェクトのリスク'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-16',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 16,
+    questionText:
+      '共通フレーム2013におけるシステム開発プロセスのアクティビティであるシステム適格性確認テストの説明として，最も適切なものはどれか。',
+    choices: [
+      'システムが運用環境に適合し，利用者の用途を満足しているかどうかを，実運用環境又は擬似運用環境において評価する。',
+      'システムが業務運用時に使いやすいかどうかを定期的に評価する。',
+      'システムの投資効果及び業務効果の実績を評価する。',
+      'システム要件について実装の適合性をテストし，システムの納入準備ができているかどうかを評価する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-17',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 17,
+    questionText: 'エクストリームプログラミング(XP：eXtreme Programming)における"テスト駆動開発"の説明はどれか。',
+    choices: [
+      '最初のテストで，なるべく多くのバグを摘出する。',
+      'テストケースの改善を繰り返す。',
+      'テストでのカバレージを高めることを重視する。',
+      'プログラムを書く前にテストケースを作成する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-18',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 18,
+    questionText: 'リーンソフトウェア開発の説明として，適切なものはどれか。',
+    choices: [
+      '経験的プロセス制御の理論を基本としており，スプリントと呼ばれる周期で"検査と適応"を繰り返しながら開発を進める。',
+      '製造業の現場から生まれた考え方をアジャイル開発のプラクティスに適用したものであり，"ムダをなくす"，"品質を作り込む"など，七つの原則を重視しながら開発を進める。',
+      '比較的小規模な開発に適した，プログラミングに焦点を当てた開発アプローチであり，"コミュニケーション"など五つの価値を定義し，それらを高めるように開発を進める。',
+      '利用者から見て価値があるまとまりを一つの機能単位とし，その単位ごとに，設計や構築などの五つのプロセスを繰り返しながら開発を進める。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-19',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 19,
+    questionText: 'ITIL 2011 editionによれば，インシデントに対する一連の活動のうち，イベント管理プロセスが分担する活動はどれか。',
+    choices: [
+      'インシデントの発生後に，その原因などをエラーレコードとして記録する。',
+      'インシデントの発生後に，問題の根本原因を分析して記録する。',
+      'インシデントの発生時に，ITサービスを迅速に復旧するための対策を講じる。',
+      'インシデントの発生を検知して，関連するプロセスに通知する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-20',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 20,
+    questionText:
+      'JIS Q 20000-1:2012(サービスマネジメントシステム要求事項)の"サービスマネジメントシステムの監視及びレビュー"の要求事項のうち，適切なものはどれか。',
+    choices: [
+      '監査員は，自らの仕事を監査してはならない。',
+      '監査の基準は，文書化された手順の中に定義してはならない。',
+      '特定された不適合，懸念事項は，利害関係者であっても開示してはならない。',
+      'レビューの間隔は，あらかじめ定めてはならない。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-21',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 21,
+    questionText:
+      'システム開発を請負契約でベンダに委託する場合，ベンダに起因する，機密漏えいなどの情報セキュリティ事故を防止するために，委託する側がとるべき手段として，適切なものはどれか。',
+    choices: [
+      '委託業務に関する情報セキュリティレベルを取り決め，情報セキュリティ対策実施状況の定期的な報告を義務付け，適時に監査を実施する。',
+      '情報セキュリティに関するルールの違反者個人に対する高額なペナルティを取り決める。',
+      'ベンダの業務手順，体制図を提示させ，委託する側でプロジェクト全体の情報セキュリティ対策手順，詳細な体制図を作成して指揮命令する。',
+      'ベンダの選定条件を厳しく設定し，選定後はベンダに情報セキュリティ対策の管理を一任する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-22',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 22,
+    questionText: '労働基準法及び労働契約法が定める，就業規則に係る使用者の義務の記述のうち，適切なものはどれか。',
+    choices: [
+      '就業規則の基準に達しない労働条件を労働契約で定める場合には，使用者が労働者から個別に合意を得ることが義務付けられている。',
+      '使用者は，就業規則を労働者に周知するために，見やすい場所に掲示したり，書面を交付したりするなどの措置を行うことが義務付けられている。',
+      '使用する労働者の数が常時10名以上の使用者は，就業規則を作成する義務はあるが，就業規則を行政官庁へ届け出ることは義務付けられていない。',
+      '労働組合がない事業場において，使用者が就業規則を作成する場合，労働者の意見を聴くことは義務付けられていない。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-23',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 23,
+    questionText: '基準値を超える鉛，水銀などの有害物質を電気・電子機器に使用することを制限するために，欧州連合が制定し，施行しているものはどれか。',
+    choices: ['ISO 14001', 'RoHS 指令', 'WEEE 指令', 'グリーン購入法'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-24',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 24,
+    questionText: '公開鍵暗号方式を使った暗号通信をn人が相互に行う場合，全部で何個の異なる鍵が必要になるか。ここで，一組の公開鍵と秘密鍵は2個と数える。',
+    choices: ['n＋1', '2n', 'frac{n(n－1)}{2}', 'log_{2} n'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H30-25',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 25,
+    questionText: 'テンペスト攻撃の説明とその対策として，適切なものはどれか。',
+    choices: [
+      '通信路の途中でパケットの内容を改ざんする攻撃であり，その対策としては，ディジタル署名を利用して改ざんを検知する。',
+      'ディスプレイなどから放射される電磁波を傍受し，表示内容を解析する攻撃であり，その対策としては，電磁波を遮断する。',
+      'マクロウイルスを使う攻撃であり，その対策としては，ウイルス対策ソフトを導入し，最新のウイルス定義ファイルを適用する。',
+      '無線 LAN の信号を傍受し，通信内容を解析する攻撃であり，その対策としては，通信パケットを暗号化する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
