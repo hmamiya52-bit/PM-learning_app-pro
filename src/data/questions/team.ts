@@ -421,7 +421,7 @@ export const teamQuestions: Question[] = [
     topicId: 'team',
     questionText: 'PMBOK第6版「資源マネジメント計画」プロセス（9.1）の主要なアウトプットは，{{blank}}とチーム憲章である。',
     correctAnswer: '資源マネジメント計画書',
-    choices: ['資源マネジメント計画書', 'コミュニケーション計画書', '品質マネジメント計画書', '責任分担マトリックス'],
+    choices: ['資源マネジメント計画書', 'コミュニケーション計画書', '品質マネジメント計画書', '責任分担マトリクス'],
     explanation: '9.1 のアウトプットは Resource Management Plan と Team Charter。役割定義・組織図・要員配置計画書・トレーニング計画などが含まれる。',
     difficulty: 3,
   },
