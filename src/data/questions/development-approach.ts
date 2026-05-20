@@ -133,7 +133,7 @@ export const developmentApproachQuestions: Question[] = [
   {
     id: 'pm-da-013',
     topicId: 'development-approach',
-    questionText: 'ウォーターフォールモデルは {{blank}} 年に Royce が提唱した（ただし本人は批判的）モデルである。',
+    questionText: 'ウォーターフォールモデルは{{blank}}年に Royce が提唱した（ただし本人は批判的）モデルである。',
     correctAnswer: '1970',
     choices: ['1970', '1950', '1980', '2001'],
     explanation: 'Royce の論文「Managing the Development of Large Software Systems」（1970）が起源。Royce 自身は単純ウォーターフォールには否定的で，反復を伴う発展形を推奨した。',
@@ -142,7 +142,7 @@ export const developmentApproachQuestions: Question[] = [
   {
     id: 'pm-da-014',
     topicId: 'development-approach',
-    questionText: 'ウォーターフォールモデルの代表的フェーズ順序は，要求定義 → 基本設計 → 詳細設計 → 実装 → {{blank}} → 運用・保守 である。',
+    questionText: 'ウォーターフォールモデルの代表的フェーズ順序は，要求定義 → 基本設計 → 詳細設計 → 実装 →{{blank}}→ 運用・保守 である。',
     correctAnswer: 'テスト',
     choices: ['テスト', 'レビュー', '検証', '納品'],
     explanation: '上から下への一方向で，前フェーズ完了後に次へ進む。フェーズ管理と文書化が容易な反面，ゲート通過後の変更コストが高い。',
@@ -210,7 +210,7 @@ export const developmentApproachQuestions: Question[] = [
   {
     id: 'pm-da-021',
     topicId: 'development-approach',
-    questionText: 'アジャイルマニフェストは {{blank}} 年に米国ユタ州 Snowbird で 17 名の有志により発表された。',
+    questionText: 'アジャイルマニフェストは{{blank}}年に米国ユタ州 Snowbird で 17 名の有志により発表された。',
     correctAnswer: '2001',
     choices: ['2001', '1995', '2010', '2015'],
     explanation: 'XP（1996）・Scrum（1995）・FDD・DSDM・Crystal など既存手法の提唱者が集まり共通価値観をまとめたのが Agile Manifesto。agilemanifesto.org で公開。',
@@ -397,7 +397,7 @@ export const developmentApproachQuestions: Question[] = [
   {
     id: 'pm-da-040',
     topicId: 'development-approach',
-    questionText: 'ユーザストーリーの品質基準 INVEST の 6 要素は，Independent・Negotiable・Valuable・Estimable・Small・{{blank}} である。',
+    questionText: 'ユーザストーリーの品質基準 INVEST の 6 要素は，Independent・Negotiable・Valuable・Estimable・Small・{{blank}}である。',
     correctAnswer: 'Testable',
     choices: ['Testable', 'Traceable', 'Trackable', 'Transparent'],
     explanation: 'INVEST: 独立／交渉可能／価値あり／見積可能／小さい／テスト可能。テスト可能性は「完了の定義」と関連する重要な属性。',
@@ -466,7 +466,7 @@ export const developmentApproachQuestions: Question[] = [
   {
     id: 'pm-da-047',
     topicId: 'development-approach',
-    questionText: '複数チームでのアジャイルを支援する代表的スケーリングフレームワークには，SAFe・LeSS・Nexus・{{blank}} などがある。',
+    questionText: '複数チームでのアジャイルを支援する代表的スケーリングフレームワークには，SAFe・LeSS・Nexus・{{blank}}などがある。',
     correctAnswer: 'Scrum@Scale',
     choices: ['Scrum@Scale', 'PMBOK', 'COBIT', 'TOGAF'],
     explanation: 'Scaled Agile Framework / Large-Scale Scrum / Nexus / Scrum@Scale / DAD（Disciplined Agile Delivery）など。組織規模・チーム数で使い分ける。',
