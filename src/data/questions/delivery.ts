@@ -277,7 +277,7 @@ export const deliveryQuestions: Question[] = [
   {
     id: 'pm-dv-028',
     topicId: 'delivery',
-    questionText: '品質改善の基本サイクルとして PDCA があり，Plan（計画）→ Do（実施）→ Check（確認）→ {{blank}}（処置）を繰り返す。',
+    questionText: '品質改善の基本サイクルとして PDCA があり，Plan（計画）→ Do（実施）→ Check（確認）→{{blank}}（処置）を繰り返す。',
     correctAnswer: 'Act',
     choices: ['Act', 'Adjust', 'Approve', 'Adapt'],
     explanation: 'PDCA は Deming/Shewhart Cycle。Act は処置・改善を意味し，問題の根本対策を打ったうえで次のサイクルへ。',
@@ -354,7 +354,7 @@ export const deliveryQuestions: Question[] = [
   {
     id: 'pm-dv-036',
     topicId: 'delivery',
-    questionText: 'ソフトウェア開発組織の成熟度を評価するモデル CMMI には，初期・管理された・{{blank}}・定量的に管理された・最適化中 の 5 レベルがある。',
+    questionText: 'ソフトウェア開発組織の成熟度を評価するモデル CMMI には，初期・管理された・{{blank}}・定量的に管理された・最適化された の 5 レベルがある。',
     correctAnswer: '定義された',
     choices: ['定義された', '実装された', '統制された', '標準化された'],
     explanation: 'CMMI 5 レベル: Initial / Managed / Defined / Quantitatively Managed / Optimizing。レベル 3 でプロセスが組織標準として定義される。',
