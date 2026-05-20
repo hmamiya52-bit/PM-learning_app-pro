@@ -20,10 +20,11 @@
 import type { Question } from '../../types'
 
 // PM カテゴリ（PMBOK第7版＋IPA PM試験シラバスベース）
-// F1.5-P3 stakeholder パイロット投入。F2-P2 で team / development-approach を追加。残 9 カテゴリは F2-P2 継続。
+// F1.5-P3 stakeholder パイロット投入。F2-P2 で team / development-approach / planning を追加。残 8 カテゴリは F2-P2 継続。
 import { stakeholderQuestions } from './stakeholder'
 import { teamQuestions } from './team'
 import { developmentApproachQuestions } from './development-approach'
+import { planningQuestions } from './planning'
 
 export type { Question }
 
@@ -31,4 +32,5 @@ export const questions: Question[] = [
   ...stakeholderQuestions,
   ...teamQuestions,
   ...developmentApproachQuestions,
+  ...planningQuestions,
 ]
