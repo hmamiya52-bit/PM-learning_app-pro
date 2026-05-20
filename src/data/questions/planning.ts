@@ -125,7 +125,7 @@ export const planningQuestions: Question[] = [
     topicId: 'planning',
     questionText: 'WBS の各ワークパッケージの作業内容・成果物・責任者・終結基準などを詳細記述した文書を{{blank}}という。',
     correctAnswer: 'WBS 辞書',
-    choices: ['WBS 辞書', 'スコープ記述書', '責任分担マトリックス', 'プロジェクト計画書'],
+    choices: ['WBS 辞書', 'スコープ記述書', '責任分担マトリクス', 'プロジェクト計画書'],
     explanation: 'WBS Dictionary。WBS と対をなす文書で，各要素の意味を曖昧さなく定義する。実行・監視時に参照される基準資料。',
     difficulty: 2,
   },
