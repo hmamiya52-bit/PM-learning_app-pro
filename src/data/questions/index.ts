@@ -20,7 +20,7 @@
 import type { Question } from '../../types'
 
 // PM カテゴリ（PMBOK第7版＋IPA PM試験シラバスベース）
-// F1.5-P3 stakeholder パイロット投入。F2-P2 で team / development-approach / planning / project-work / delivery / measurement / uncertainty / integration / governance / tailoring-models を追加。残 1 カテゴリは F2-P2 継続。
+// F1.5-P3 stakeholder パイロット投入。F2-P2 で残り 11 カテゴリ全投入完了（2026-05-19）。
 import { stakeholderQuestions } from './stakeholder'
 import { teamQuestions } from './team'
 import { developmentApproachQuestions } from './development-approach'
@@ -32,6 +32,7 @@ import { uncertaintyQuestions } from './uncertainty'
 import { integrationQuestions } from './integration'
 import { governanceQuestions } from './governance'
 import { tailoringModelsQuestions } from './tailoring-models'
+import { serviceManagementQuestions } from './service-management'
 
 export type { Question }
 
@@ -47,4 +48,5 @@ export const questions: Question[] = [
   ...integrationQuestions,
   ...governanceQuestions,
   ...tailoringModelsQuestions,
+  ...serviceManagementQuestions,
 ]
