@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし）
  * - 正解: IPA 公式解答例 PDF と照合済（25問全件一致）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - H30 は OCR 投入フェーズのため、次工程で追記予定
+ *   - H29 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -17,14 +17,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -46,6 +46,9 @@ const R1_SPRING_PM_AM2_SOURCE_URL =
 
 const H30_SPRING_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_am2_qs.pdf'
+
+const H29_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -3869,6 +3872,495 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: '',
     categoryId: 'service-management',
     sourceUrl: H30_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-1',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 1,
+    questionText: 'プロジェクトのスケジュールを管理するときに使用する “クリティカルチェーン法” の実施例はどれか。',
+    choices: [
+      'クリティカルパス上の作業に生産性を向上させるための開発ツールを導入する。',
+      'クリティカルパス上の作業に要員を追加投入する。',
+      'クリティカルパス上の先行作業が終了する前に後続作業に着手し，並行して実施する。',
+      'クリティカルパスを守るために，合流バッファとプロジェクトバッファを設ける。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-2',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 2,
+    questionText: 'PMBOK ガイド 第 5 版によれば，組織のプロセス資産に分類されるものはどれか。',
+    choices: ['課題と欠陥のマネジメントの手順', 'ステークホルダのリスク許容度', '組織のインフラストラクチャ', '組織の文化，体制，ガバナンス'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-3',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 3,
+    questionText: 'PMBOK ガイド 第 5 版によれば，プロジェクトへの変更要求のうち，是正処置はどれか。',
+    choices: [
+      'あるサブシステムの成果物の品質が，要求されるレベルを満たさないことが予想されるので，設計ドキュメントのレビューに有識者を参加させる。',
+      'あるタスクが，プロジェクトマネジメント計画書に記載したスケジュールから遅れたので，遅れを解消させるために要員を追加する。',
+      '受入れテストにおいて，あるサブシステムのプログラムが要求仕様を満たしていないことが判明したので，プログラムを修正する。',
+      '法規制が改定されたので，新しい法規制に対応するための活動を WBS に追加する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-4',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 4,
+    questionText: 'PMBOK ガイド 第 5 版によれば，プロジェクトスコープマネジメントにおいて，WBS の作成に用いるローリングウェーブ計画法の説明はどれか。',
+    choices: [
+      'WBS を補完するために，WBS 要素ごとに詳細な作業の内容などを記述する。',
+      '過去に実施したプロジェクトの WBS をテンプレートとして，新たな WBS を作成する。',
+      '将来実施予定の作業については，上位レベルの WBS にとどめておき，詳細が明確になってから，要素分解して詳細な WBS を作成する。',
+      'プロジェクトの作業をより階層的に分解して，WBS の最下位レベルの作業内容や要素成果物を定義する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-5',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 5,
+    questionText: 'WBS の構成要素であるワークパッケージに関する記述のうち，適切なものはどれか。',
+    choices: [
+      'ワークパッケージは，OBS（組織ブレークダウンストラクチャ）のチームに，担当する人員を割り当てたものである。',
+      'ワークパッケージは，関連がある成果物をまとめたものである。',
+      'ワークパッケージは，通常，アクティビティに分解される。',
+      'ワークパッケージは，一つ上位の成果物と 1 対 1 に対応する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-6',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 6,
+    questionText: '表は RACI チャートを用いた，あるプロジェクトの責任分担マトリックスである。設計アクティビティにおいて，説明責任をもつ要員は誰か。',
+    choices: ['阿部', '伊藤と佐藤', '鈴木と田中', '野村'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '表　RACI チャートによる責任分担マトリックス',
+      headers: ['アクティビティ', '阿部', '伊藤', '佐藤', '鈴木', '田中', '野村'],
+      rows: [
+        ['要件定義', 'C', 'A', 'I', 'I', 'I', 'R'],
+        ['設計', 'R', 'I', 'I', 'C', 'C', 'A'],
+        ['開発', 'A', '－', 'R', '－', 'R', 'I'],
+        ['テスト', 'I', 'I', 'C', 'R', 'A', 'C'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H29-7',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 7,
+    questionText: 'チームの発展段階を五つに区分したタックマンモデルによれば，メンバの異なる考え方や価値観が明確になり，メンバがそれぞれの意見を主張し合う段階はどれか。',
+    choices: ['安定期 (Norming)', '遂行期 (Performing)', '成立期 (Forming)', '動乱期 (Storming)'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-8',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 8,
+    questionText: '工程管理図表の特徴に関する記述のうち，ガントチャートのものはどれか。',
+    choices: [
+      '計画と実績の時間的推移を表現するのに適し，進み具合及びその傾向がよく分かり，プロジェクト全体の費用と進捗の管理に利用される。',
+      '作業の順序や作業相互の関係を表現したり，重要作業を把握したりするのに適しており，プロジェクトの作業計画などに利用される。',
+      '作業の相互関係の把握には適さないが，作業計画に対する実績を把握するのに適しており，個人やグループの進捗管理に利用される。',
+      '進捗管理上のマイルストーンを把握するのに適しており，プロジェクト全体の進捗管理などに利用される。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-9',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 9,
+    questionText: 'プロジェクトマネジメントにおけるクラッシングの例として，適切なものはどれか。',
+    choices: [
+      'クリティカルパス上の遅れているアクティビティに人員を増強した。',
+      'コストを削減するために，これまで承認されていた残業を禁止した。',
+      '仕様の確定が大幅に遅れたので，プロジェクトの完了予定日を延期した。',
+      '設計が終わったモジュールから順に並行してプログラム開発を実施するように，スケジュールを変更した。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-10',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 10,
+    questionText:
+      '四つのアクティビティ A～D によって実行する開発プロジェクトがある。図は，各アクティビティの依存関係を PDM（プレシデンスダイアグラム法）によって表している。各アクティビティの実行に当たっては，専門チームの支援が必要である。条件に従ってアクティビティを実行するとき，開発プロジェクトの最少の所要日数は何日か。\n〔アクティビティの依存関係〕\n〔条件〕\n・各アクティビティの所要日数及び実行に当たっての専門チームの支援期間は，次のとおりである。\n・専門チームは，同時に複数のアクティビティの支援をすることはできない。\n・専門チームは，各アクティビティを連続した日程で支援する。\n・専門チーム以外の資源に各アクティビティ間の競合はない。',
+    choices: ['15', '16', '17', '18'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel: 'PDM図。開始からAへ進み、AからFSでBへ進み終了へ向かう。開始からCとDにも分岐し、それぞれ終了前の合流点へ向かう。下部にAからDの所要日数と専門チーム支援期間の表がある。',
+      caption: '〔アクティビティの依存関係と専門チームの支援期間〕',
+      viewBox: '0 0 560 372',
+      content: `
+        <defs>
+          <marker id="amH29q10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <circle cx="58" cy="75" r="30" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="58" y="80" text-anchor="middle" font-size="14" fill="#1e293b">開始</text>
+        <rect x="125" y="50" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="76" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">A</text>
+        <rect x="285" y="50" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="332" y="76" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">B</text>
+        <rect x="125" y="120" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="146" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">C</text>
+        <rect x="125" y="190" width="95" height="42" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="172" y="216" text-anchor="middle" font-size="15" fill="#1e293b" font-weight="bold">D</text>
+        <circle cx="485" cy="75" r="30" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+        <text x="485" y="80" text-anchor="middle" font-size="14" fill="#1e293b">終了</text>
+        <line x1="88" y1="75" x2="123" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <line x1="220" y1="75" x2="283" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <text x="252" y="64" text-anchor="middle" font-size="12" fill="#475569" font-weight="bold">FS</text>
+        <line x1="380" y1="75" x2="453" y2="75" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <path d="M 88 78 L 95 78 L 95 141 L 123 141" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <path d="M 88 82 L 95 82 L 95 211 L 123 211" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <path d="M 220 141 L 430 141 L 430 75 L 453 75" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <path d="M 220 211 L 430 211 L 430 75 L 453 75" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#amH29q10)"/>
+        <rect x="35" y="255" width="490" height="88" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="35" y1="277" x2="525" y2="277" stroke="#1e293b" stroke-width="1"/>
+        <line x1="35" y1="299" x2="525" y2="299" stroke="#1e293b" stroke-width="1"/>
+        <line x1="35" y1="321" x2="525" y2="321" stroke="#1e293b" stroke-width="1"/>
+        <line x1="145" y1="255" x2="145" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <line x1="250" y1="255" x2="250" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <line x1="525" y1="255" x2="525" y2="343" stroke="#1e293b" stroke-width="1"/>
+        <text x="90" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">アクティビティ名</text>
+        <text x="197" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">所要日数（日）</text>
+        <text x="388" y="272" text-anchor="middle" font-size="11" fill="#1e293b" font-weight="bold">専門チームの支援期間</text>
+        <text x="90" y="294" text-anchor="middle" font-size="12" fill="#1e293b">A</text>
+        <text x="197" y="294" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
+        <text x="388" y="294" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の4日間</text>
+        <text x="90" y="316" text-anchor="middle" font-size="12" fill="#1e293b">B</text>
+        <text x="197" y="316" text-anchor="middle" font-size="12" fill="#1e293b">5</text>
+        <text x="388" y="316" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の2日間</text>
+        <text x="90" y="338" text-anchor="middle" font-size="12" fill="#1e293b">C</text>
+        <text x="197" y="338" text-anchor="middle" font-size="12" fill="#1e293b">10</text>
+        <text x="388" y="338" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の最初の4日間</text>
+        <rect x="35" y="343" width="490" height="22" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+        <line x1="145" y1="343" x2="145" y2="365" stroke="#1e293b" stroke-width="1"/>
+        <line x1="250" y1="343" x2="250" y2="365" stroke="#1e293b" stroke-width="1"/>
+        <text x="90" y="358" text-anchor="middle" font-size="12" fill="#1e293b">D</text>
+        <text x="197" y="358" text-anchor="middle" font-size="12" fill="#1e293b">4</text>
+        <text x="388" y="358" text-anchor="middle" font-size="11" fill="#1e293b">実行する期間の全て</text>
+      `,
+    },
+  },
+  {
+    id: 'om-H29-11',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 11,
+    questionText: 'アジャイル型開発プロジェクトの管理に用いるベロシティの説明はどれか。',
+    choices: [
+      '開発規模を見積もる際の規模の単位であり，ユーザーストーリー同士を比較し，相対的な量で表すものである。',
+      '完了待ちのプロダクト要求事項と成果物を組み合わせたものをビジネスにおける優先度順に並べたものである。',
+      '定められた期間で完了した作業量と残作業量をグラフにして進捗状況を表すものである。',
+      'チームの生産性の測定単位であり，定められた期間で製造，妥当性確認，及び受入れが行われた成果物の量を示すものである。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-12',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 12,
+    questionText: 'EVM を採用しているプロジェクトにおける，ある時点の CPI が 1.0 を下回っていた場合の対処として，適切なものはどれか。',
+    choices: [
+      '実コストが予算コストを下回っているので，CPI に基づいて完成時総コストを下方修正する。',
+      '実コストを CPI で割った値を使って，完成時総コストを見積もり，予想値とする。',
+      '超過コストの原因を明確にし，CPI の改善策に取り組むとともに，CPI の値を監視する。',
+      'プロジェクトの完成時には CPI が 1.0 となることを利用して，CPI が 1.0 となる完成時期を予測し，スケジュールを見直す。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-13',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 13,
+    questionText:
+      'ファンクションポイント法の一つである IFPUG 法では，機能を機能種別に従ってデータファンクションとトランザクションファンクションとに分類する。機能種別を適切に分類したものはどれか。\n〔機能種別〕\nEI：外部入力\nEO：外部出力\nILF：内部論理ファイル\nEIF：外部インタフェースファイル\nEQ：外部照会',
+    choices: ['選択肢アの分類', '選択肢イの分類', '選択肢ウの分類', '選択肢エの分類'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '機能種別の分類候補',
+      headers: ['', 'データファンクション', 'トランザクションファンクション'],
+      rows: [
+        ['ア', 'EI，EO，EQ', 'EIF，ILF'],
+        ['イ', 'EIF，EQ，ILF', 'EI，EO'],
+        ['ウ', 'EIF，ILF', 'EI，EO，EQ'],
+        ['エ', 'ILF', 'EI，EIF，EO，EQ'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H29-14',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 14,
+    questionText:
+      '工程別の生産性が次のとおりのとき，全体の生産性を表す式はどれか。\n〔工程別の生産性〕\n設計工程：Xステップ／人月\n製造工程：Yステップ／人月\n試験工程：Zステップ／人月',
+    choices: ['X＋Y＋Z', 'frac{X＋Y＋Z}{3}', 'frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}', 'frac{1}{frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}}'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-15',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 15,
+    questionText:
+      '新しく編成するプロジェクトチームの開発要員投入計画に基づいて PC をレンタルで調達する。調達の条件を満たすレンタル費用の最低金額は何千円か。\n〔開発要員投入計画〕\n〔調達の条件〕\n(1) PC のレンタル契約は月初日から月末日までの 1 か月単位であり，日割りによる精算は行わない。\n(2) PC 1 台のレンタル料金は月額 5 千円である。\n(3) 台数にかかわらず，レンタル PC の受入れ時のセットアップに 2 週間，返却時のデータ消去に 1 週間を要し，この期間はレンタル期間に含める。\n(4) セットアップとデータ消去は，プロジェクトチームの開発要員とは別の要員が行う。\n(5) 開発要員は月初日に着任し，月末日に離任する。\n(6) 開発要員の役割にかかわらず，共通仕様の PC を 1 人が 1 台使用する。\n(7) レンタル期間中に PC を他の開発要員に引き渡す場合，データ消去，セットアップ及び引渡しの期間は不要である。',
+    choices: ['350', '470', '480', '500'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発要員投入計画（単位：人　列は月）〕',
+      headers: ['要員 ＼ 月', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+      rows: [
+        ['設計者', 0, 2, 4, 4, 4, 2, 2, 2, 2, 2, 2, 0],
+        ['プログラマ', 0, 0, 0, 3, 3, 5, 5, 3, 3, 2, 2, 0],
+        ['テスタ', 0, 0, 0, 0, 0, 4, 4, 4, 6, 0, 0, 0],
+        ['計', 0, 2, 4, 7, 7, 11, 11, 9, 11, 4, 4, 0],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H29-16',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 16,
+    questionText:
+      '製品を出荷前に全数検査することによって，出荷後の故障品数を減少させ，全体の費用を低減させたい。次の条件で全数検査を行ったときに低減させられる費用は何万円か。ここで，検査時に故障が発見された製品は修理して出荷するものとする。\n〔条件〕\n(1) 製造する個数：500 個\n(2) 全数検査を実施しなかった場合の，出荷個数に対する故障品の発生率：3%\n(3) 全数検査における，製造個数に対する故障品の発見率：2%\n(4) 全数検査を実施した場合の，出荷個数に対する故障品の発生率：1%\n(5) 検査費用：1 万円／個\n(6) 出荷前の故障品の修理費用：50 万円／個\n(7) 出荷後の故障品の修理費用：200 万円／個',
+    choices: ['1,000', '1,500', '2,000', '2,250'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-17',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 17,
+    questionText: 'マッシュアップを利用して Web コンテンツを表示している例として，最も適切なものはどれか。',
+    choices: [
+      'Web ブラウザにプラグインを組み込み，動画やアニメーションを表示する。',
+      '地図上のカーソル移動に伴い，Web ページを切り替えずにスクロール表示する。',
+      '鉄道経路の探索結果上に，各鉄道会社の Web ページへのリンクを表示する。',
+      '店舗案内の Web ページ上に，他のサイトが提供する地図検索機能を利用して出力された情報を表示する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-18',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 18,
+    questionText: 'ソフトウェアのリファクタリングの説明はどれか。',
+    choices: [
+      '外部から見た振る舞いを変更せずに保守性の高いプログラムに書き直す。',
+      'ソースコードから設計書を作成する。',
+      'ソフトウェア部品を組み合わせてシステムを開発する。',
+      'プログラムの修正が他の部分に影響していないかどうかをテストする。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-19',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 19,
+    questionText:
+      'データの追加・変更・削除が，少ないながらも一定の頻度で行われるデータベースがある。このデータベースのフルバックアップを磁気テープに取得する時間間隔を今までの 2 倍にした。このとき，データベースのバックアップ又は復旧に関する記述のうち，適切なものはどれか。',
+    choices: [
+      'フルバックアップ 1 回当たりの磁気テープ使用量が約 2 倍になる。',
+      'フルバックアップ 1 回当たりの磁気テープ使用量が約半分になる。',
+      'フルバックアップ取得の平均処理時間が約 2 倍になる。',
+      'ログ情報を用いて復旧するときの平均処理時間が平均して約 2 倍になる。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-20',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 20,
+    questionText: 'データ管理者 (DA) とデータベース管理者 (DBA) を別々に任命した場合の DA の役割として，適切なものはどれか。',
+    choices: [
+      '業務データ量の増加傾向を把握し，ディスク装置の増設などを計画して実施する。',
+      'システム開発の設計工程では，主に論理データベース設計を行い，データ項目を管理して標準化する。',
+      'システム開発のテスト工程では，主にパフォーマンスチューニングを担当する。',
+      'システム障害が発生した場合には，データの復旧や整合性のチェックなどを行う。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-21',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 21,
+    questionText:
+      'ベンダ X 社に対して，図に示すように要件定義フェーズから運用テストフェーズまでを委託したい。X 社との契約に当たって，“情報システム・モデル取引・契約書” に照らし，各フェーズの契約形態を整理した。a～d の契約形態のうち，準委任型が適切であるとされるものはどれか。',
+    choices: ['a，b', 'a，d', 'b，c', 'b，d'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '図　フェーズ別の契約形態',
+      headers: ['要件定義', 'システム外部設計', 'システム内部設計', 'ソフトウェア設計，プログラミング，ソフトウェアテスト', 'システム結合', 'システムテスト', '運用テスト'],
+      rows: [['a', '準委任型又は請負型', 'b', '請負型', 'c', '準委任型又は請負型', 'd']],
+      rowHeaderFirstCol: false,
+    },
+  },
+  {
+    id: 'om-H29-22',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 22,
+    questionText: '労働基準法で定める制度のうち，36 協定がよりどころとしている制度はどれか。',
+    choices: [
+      '業務遂行の手段，時間配分の決定などを大幅に労働者に委ねる業務に適用され，労働時間の算定は，労使協定で定めた労働時間の労働とみなす制度',
+      '業務の繁閑に応じた労働時間の配分などを行い，労使協定によって 1 か月以内の期間を平均して 1 週の法定労働時間を超えないようにする制度',
+      '時間外労働，休日労働についての労使協定を書面で締結し，行政官庁に届け出ることによって，法定労働時間外の労働が認められる制度',
+      '労使協定によって 1 か月以内の一定期間の総労働時間を定め，1 日の固定勤務時間以外では，労働者に始業・終業時刻の決定を委ねる制度',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-23',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 23,
+    questionText: '派遣労働者の受入れに関する記述のうち，適切なものはどれか。',
+    choices: [
+      '派遣先責任者は，派遣先管理台帳の管理，派遣労働者から申出を受けた苦情への対応，派遣元事業主との連絡調整，派遣労働者の人事記録と考課などの任務を行わなければならない。',
+      '派遣先責任者は，派遣就業場所が複数ある場合でも，一人に絞って選任されなければならない。',
+      '派遣先責任者は，派遣労働者が従事する業務全般を統括する管理職位の者の内から選任されなければならない。',
+      '派遣先責任者は，派遣労働者に直接指揮命令する者に対して，労働者派遣法などの関連法規の規定，労働者派遣契約の内容，派遣元事業主からの通知などを周知しなければならない。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-24',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 24,
+    questionText: 'CSIRT の説明として，適切なものはどれか。',
+    choices: [
+      'JIS Q 15001:2006 に適合して，個人情報について適切な保護措置を講じる体制を整備・運用している事業者などを認定する組織',
+      '企業や行政機関などに設置され，コンピュータセキュリティインシデントに対応する活動を行う組織',
+      '電子政府のセキュリティを確保するために，安全性及び実装性に優れると判断される暗号技術を選出する組織',
+      '内閣官房に設置され，サイバーセキュリティ政策に関する総合調整を行いつつ，“世界を率先する” “強靭で” “活力ある” サイバー空間の構築に向けた活動を行う組織',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H29-25',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 25,
+    questionText: 'ペネトレーションテストに該当するものはどれか。',
+    choices: [
+      '暗号化で使用している暗号方式と鍵長が，設計仕様と一致することを確認する。',
+      '対象プログラムの入力に対する出力結果が，出力仕様と一致することを確認する。',
+      'ファイアウォールが単位時間当たりに処理できるセッション数を確認する。',
+      'ファイアウォールや公開サーバに侵入できないかどうかを確認する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H29_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
