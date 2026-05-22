@@ -75,7 +75,7 @@ export const tailoringModelsQuestions: Question[] = [
   {
     id: 'pm-tl-007',
     topicId: 'tailoring-models',
-    questionText: 'テーラリング・プロセスは，初期アプローチ選定 → テーラリングの実施 → 個別 PJ への適用 → {{blank}}の 4 ステップで進む。',
+    questionText: 'テーラリング・プロセスは，初期アプローチ選定 → テーラリングの実施 → 個別 PJ への適用 →{{blank}}の 4 ステップで進む。',
     correctAnswer: '継続的改善',
     choices: ['継続的改善', '組織への報告', '監査の実施', '終結処理'],
     explanation: 'PMBOK7 のテーラリング 4 ステップ: 初期アプローチ → テーラリング → 適用 → 改善。継続的改善で組織のテーラリング能力も成熟していく。',
