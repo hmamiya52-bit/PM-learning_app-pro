@@ -38,6 +38,7 @@ interface LocationState {
   questionIds?: string[]
   scope?: 'random' | 'year' | 'important' | 'single' | 'category'
   yearLabel?: string
+  shuffleChoices?: boolean
 }
 
 function findQuestion(id: string): OfficialMorningQuestion | undefined {
@@ -90,24 +91,26 @@ export default function OfficialMorningSession() {
   const currentQuestion = questionList[currentIndex]
   const isLast = currentIndex === questionList.length - 1
   const isCorrect = selectedIndex !== null && currentQuestion && selectedIndex === currentQuestion.correctIndex
+  const shouldShuffleChoices = state.shuffleChoices !== false
 
-  // ★F1-P4 ユーザフィードバック対応: 4択の表示順をランダムにシャッフル
+  // ★F1-P4 ユーザフィードバック対応: 4択の表示順を必要に応じてランダムにシャッフル
   //   {originalIndex} を保持しておくことで、データ側の correctIndex（元の choices 配列）と
-  //   selectedIndex を整合させたまま、画面上の並びだけランダム化する。
-  //   useMemo の依存は currentQuestion.id のみ（同じ問題内でのリレンダーでは固定）。
-  const shuffledChoices = useMemo(() => {
+  //   selectedIndex を整合させたまま、画面上の並びだけランダム化できる。
+  //   useMemo の依存は currentQuestion.id と表示モードのみ（同じ問題内でのリレンダーでは固定）。
+  const displayChoices = useMemo(() => {
     if (!currentQuestion) return [] as { originalIndex: 0 | 1 | 2 | 3; text: string }[]
     const indexed = currentQuestion.choices.map((text, i) => ({
       originalIndex: i as 0 | 1 | 2 | 3,
       text,
     }))
+    if (!shouldShuffleChoices) return indexed
     // Fisher–Yates シャッフル
     for (let i = indexed.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [indexed[i], indexed[j]] = [indexed[j], indexed[i]]
     }
     return indexed
-  }, [currentQuestion?.id])  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentQuestion?.id, shouldShuffleChoices])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // セッション初期化（初回マウント時のみ）
   useEffect(() => {
@@ -389,13 +392,14 @@ export default function OfficialMorningSession() {
           {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
         </div>
 
-        {/* 4択（シャッフル後の表示順） */}
+        {/* 4択（表示モードに応じた順序） */}
         <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
-          {shuffledChoices.map((choice, displayIdx) => {
+          {displayChoices.map((choice, displayIdx) => {
             const originalIdx = choice.originalIndex
             const isSelected = selectedIndex === originalIdx
             const isAnswer = originalIdx === currentQuestion.correctIndex
             const showCorrectness = showExplanation
+            const optionLabel = shouldShuffleChoices ? DISPLAY_LABELS[displayIdx] : ANSWER_LABELS[originalIdx]
             let buttonClass = 'bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light/30'
             if (showCorrectness && isSelected && isCorrect) buttonClass = 'bg-emerald-50 border-2 border-emerald-500'
             else if (showCorrectness && isSelected && !isCorrect) buttonClass = 'bg-red-50 border-2 border-red-500'
@@ -407,12 +411,12 @@ export default function OfficialMorningSession() {
                 disabled={showExplanation}
                 className={`w-full text-left rounded-xl px-3.5 py-3 ${textClass} text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
-                {showExplanation && (
+                {shouldShuffleChoices && showExplanation && (
                   <span className="block text-xs font-bold text-red-600 mb-1">
                     解答記号：{ANSWER_LABELS[originalIdx]}
                   </span>
                 )}
-                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{DISPLAY_LABELS[displayIdx]}.</span>
+                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{optionLabel}.</span>
                 <MathText text={choice.text} />
               </button>
             )

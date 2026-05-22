@@ -4,6 +4,7 @@
  */
 
 const MORNING_FONT_SIZE_KEY = 'pmap:morning_font_size'
+const MORNING_CHOICE_SHUFFLE_KEY = 'pmap:morning_choice_shuffle'
 
 export type FontSize = 'compact' | 'comfortable'
 
@@ -22,6 +23,23 @@ export function getMorningFontSize(): FontSize {
 export function setMorningFontSize(size: FontSize): void {
   try {
     localStorage.setItem(MORNING_FONT_SIZE_KEY, size)
+  } catch {
+    // localStorage 不可な環境（プライベートブラウジング等）は無視
+  }
+}
+
+export function getMorningChoiceShuffle(): boolean {
+  try {
+    const v = localStorage.getItem(MORNING_CHOICE_SHUFFLE_KEY)
+    return v === null ? true : v === 'true'
+  } catch {
+    return true
+  }
+}
+
+export function setMorningChoiceShuffle(enabled: boolean): void {
+  try {
+    localStorage.setItem(MORNING_CHOICE_SHUFFLE_KEY, String(enabled))
   } catch {
     // localStorage 不可な環境（プライベートブラウジング等）は無視
   }

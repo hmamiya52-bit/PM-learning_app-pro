@@ -8,6 +8,7 @@ import {
 import { categories } from '../data/categories'
 import { getImportantIds } from '../lib/importantMarks'
 import { loadMorningRecords, getOverallAccuracy } from '../lib/morningRecords'
+import { getMorningChoiceShuffle, setMorningChoiceShuffle } from '../lib/preferences'
 import type { OfficialMorningQuestion } from '../types'
 
 /**
@@ -36,6 +37,7 @@ function shuffle<T>(arr: T[]): T[] {
 export default function OfficialMorningQuiz() {
   const navigate = useNavigate()
   const [count, setCount] = useState<QuestionCount>(25)
+  const [shuffleChoices, setShuffleChoices] = useState(() => getMorningChoiceShuffle())
 
   const allCount = officialMorningQuestions.length
   const importantIds = useMemo(
@@ -92,7 +94,7 @@ export default function OfficialMorningQuiz() {
       return
     }
     navigate('/morning/session', {
-      state: { questionIds: limited.map((q) => q.id), scope, yearLabel },
+      state: { questionIds: limited.map((q) => q.id), scope, yearLabel, shuffleChoices },
     })
   }
 
@@ -122,6 +124,11 @@ export default function OfficialMorningQuiz() {
     startSession(list, 'category', name)
   }
 
+  const handleShuffleChoicesChange = (enabled: boolean) => {
+    setShuffleChoices(enabled)
+    setMorningChoiceShuffle(enabled)
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
       <div className="max-w-3xl mx-auto px-4 pb-16 pt-4 space-y-5">
@@ -143,7 +150,7 @@ export default function OfficialMorningQuiz() {
         {/* 問題数セレクタ */}
         <section>
           <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            出題数（ランダム時に適用）
+            出題数
           </h2>
           <div className="flex flex-wrap gap-1.5">
             {([10, 25, 50, 'all'] as QuestionCount[]).map((n) => (
@@ -159,6 +166,45 @@ export default function OfficialMorningQuiz() {
                 {n === 'all' ? '全問' : `${n}問`}
               </button>
             ))}
+          </div>
+        </section>
+
+        {/* 選択肢表示設定 */}
+        <section>
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+            選択肢表示
+          </h2>
+          <div className="grid grid-cols-2 gap-2 rounded-xl bg-white border border-slate-200 p-1.5">
+            <button
+              type="button"
+              onClick={() => handleShuffleChoicesChange(true)}
+              aria-pressed={shuffleChoices}
+              className={`rounded-lg px-3 py-2 text-left transition-colors ${
+                shuffleChoices
+                  ? 'bg-brand text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-50'
+              }`}
+            >
+              <span className="block text-sm font-bold">選択肢ランダム</span>
+              <span className={`block text-[11px] mt-0.5 ${shuffleChoices ? 'text-white/80' : 'text-slate-400'}`}>
+                出題中は①②③④
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleShuffleChoicesChange(false)}
+              aria-pressed={!shuffleChoices}
+              className={`rounded-lg px-3 py-2 text-left transition-colors ${
+                !shuffleChoices
+                  ? 'bg-brand text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-50'
+              }`}
+            >
+              <span className="block text-sm font-bold">公式順</span>
+              <span className={`block text-[11px] mt-0.5 ${!shuffleChoices ? 'text-white/80' : 'text-slate-400'}`}>
+                最初からア/イ/ウ/エ
+              </span>
+            </button>
           </div>
         </section>
 
