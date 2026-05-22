@@ -27,7 +27,7 @@
 | 8 | H28 | 平成28（2016） | 2016 | **完了（Codex / 2026-05-21 / commit 213aff1）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_am2_ans.pdf |
 | 9 | H27 | 平成27（2015） | 2015 | **完了（Codex / 2026-05-22 / commit de6e0a4）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_am2_ans.pdf |
 | 10 | H26 | 平成26（2014） | 2014 | **完了（Codex / 2026-05-22 / commit bd01f72）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_am2_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_am2_ans.pdf |
-| 11 | H25 | 平成25（2013） | 2013 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2013h25.html から取得 | 同上 |
+| 11 | H25 | 平成25（2013） | 2013 | **進行中（Codex 担当 / 2026-05-22）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2013h25.html から取得 | 同上 |
 
 ## URL 取得方法（Codex 用）
 
