@@ -26,6 +26,7 @@ import type { BadgeDefinition } from '../data/badges'
  */
 
 const ANSWER_LABELS = ['ア', 'イ', 'ウ', 'エ'] as const
+const DISPLAY_LABELS = ['①', '②', '③', '④'] as const
 
 interface SessionLog {
   question: OfficialMorningQuestion
@@ -107,18 +108,6 @@ export default function OfficialMorningSession() {
     }
     return indexed
   }, [currentQuestion?.id])  // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 正解がシャッフル後に何番目（表示位置）に来たかを計算
-  const correctDisplayIndex = useMemo(() => {
-    if (!currentQuestion) return -1
-    return shuffledChoices.findIndex((c) => c.originalIndex === currentQuestion.correctIndex)
-  }, [shuffledChoices, currentQuestion])
-
-  // ユーザが選んだ選択肢の表示位置（解説表示時の「あなたの解答: イ」表示用）
-  const selectedDisplayIndex = useMemo(() => {
-    if (selectedIndex === null) return -1
-    return shuffledChoices.findIndex((c) => c.originalIndex === selectedIndex)
-  }, [shuffledChoices, selectedIndex])
 
   // セッション初期化（初回マウント時のみ）
   useEffect(() => {
@@ -418,7 +407,9 @@ export default function OfficialMorningSession() {
                 disabled={showExplanation}
                 className={`w-full text-left rounded-xl px-3.5 py-3 ${textClass} text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
-                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{ANSWER_LABELS[displayIdx]}.</span>
+                <span className="inline-block text-xs font-bold text-brand-dark mr-2">
+                  {showExplanation ? ANSWER_LABELS[originalIdx] : DISPLAY_LABELS[displayIdx]}.
+                </span>
                 <MathText text={choice.text} />
               </button>
             )
@@ -439,9 +430,9 @@ export default function OfficialMorningSession() {
                   <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
                   <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
                     {isCorrect ? '正解！' : '不正解'}
-                    {!isCorrect && correctDisplayIndex >= 0 && (
+                    {!isCorrect && selectedIndex !== null && (
                       <span className="text-xs font-normal ml-2 text-slate-500">
-                        あなたの解答: {ANSWER_LABELS[selectedDisplayIndex]} / 正解: {ANSWER_LABELS[correctDisplayIndex]}
+                        あなたの解答: {ANSWER_LABELS[selectedIndex]} / 正解: {ANSWER_LABELS[currentQuestion.correctIndex]}
                       </span>
                     )}
                   </p>
@@ -454,7 +445,7 @@ export default function OfficialMorningSession() {
 
             <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[correctDisplayIndex]}）</span>}
+                解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[currentQuestion.correctIndex]}）</span>}
               </p>
               <p className={`${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap`}>
                 <MathText text={currentQuestion.explanation} />
