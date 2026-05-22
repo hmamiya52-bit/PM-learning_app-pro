@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期、平成27年度 春期、平成26年度 春期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期、平成27年度 春期、平成26年度 春期、平成25年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし。H28 問2のみ公式誤問のため注記付き改題）
  * - 正解: IPA 公式解答例 PDF と照合済（H28 問2は公式「全員正解」措置のため、改題版の正解を設定）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - H26 は OCR 投入フェーズのため、次工程で追記予定
+ *   - H25 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -18,14 +18,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12、H27 問4・問5・問11・問20、H26 問2・問8・問14・問18・問19・問20: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12、H27 問4・問5・問11・問20、H26 問2・問8・問14・問18・問19・問20、H25 問8・問10・問11・問12・問14・問15: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28', 'H27', 'H26'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28', 'H27', 'H26', 'H25'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -59,6 +59,9 @@ const H27_SPRING_PM_AM2_SOURCE_URL =
 
 const H26_SPRING_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_am2_qs.pdf'
+
+const H25_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -5986,6 +5989,610 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: '',
     categoryId: 'service-management',
     sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-1',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 1,
+    questionText: 'プロジェクトに関わるステークホルダの説明のうち，適切なものはどれか。',
+    choices: [
+      '組織の内部に属しており，組織の外部にいることはない。',
+      'プロジェクトに直接参加し，間接的な関与に留まることはない。',
+      'プロジェクトの成果が，自らの利益になる者と不利益になる者がいる。',
+      'プロジェクトマネージャのように，個人として特定できることが必要である。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'stakeholder',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-2',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 2,
+    questionText:
+      'あるソフトウェア開発部門では，開発工数 E（人月）と開発規模 L（キロ行）との関係が，E=5.2L^{0.98} で表される。L=10 としたときの生産性（キロ行／人月）は，およそ幾らか。',
+    choices: ['0.2', '0.5', '1.9', '5.2'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-3',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 3,
+    questionText: 'プロジェクトのライフサイクルの一般的な特徴のうち，適切なものはどれか。',
+    choices: [
+      '開発要員数は，プロジェクト開始時が最大であり，プロジェクトが進むにつれて減少し，完了に近づくと再度増加する。',
+      '実現する機能の不確実性は，プロジェクトが完了に近づくにつれて減少する。',
+      'ステークホルダがコストを変えずにプロジェクトの成果物に対して及ぼすことができる影響の度合いは，プロジェクト完了直前が最も高くなる。',
+      'プロジェクトが完了に近づくほど，変更やエラーの修正がプロジェクトに影響する度合いは減少する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-4',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 4,
+    questionText: 'プロジェクトの立上げプロセスで作成する“プロジェクト憲章”はどれか。',
+    choices: [
+      'プロジェクトの実行，監視コントロール，終結方法などを規定するために，スケジュールマネジメント計画書やリスクマネジメント計画書など，各計画プロセスのアウトプットの集合体として作成した文書',
+      'プロジェクトのスコープを定義するために，プロジェクトの目的や成果物，プロジェクトの境界，成果物受入基準，承認要件などを記した文書',
+      'プロジェクト目標を達成し，必要な要素成果物を生成するために，プロジェクトが実行する作業を階層構造で記した文書',
+      'プロジェクトを認知，承認するために，その要求事項，目的や妥当性，全体スケジュール，任命されたプロジェクトマネージャと権限レベルなどを記した文書',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-5',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 5,
+    questionText: 'WBS の構成要素であるワークパッケージに関する記述のうち，適切なものはどれか。',
+    choices: [
+      'ワークパッケージは，OBS のチームに，担当する人員を割り当てたものである。',
+      'ワークパッケージは，関連のある要素成果物をまとめたものである。',
+      'ワークパッケージは，更にアクティビティに分解される。',
+      'ワークパッケージは，一つ上位の要素成果物と1対1に対応する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-6',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 6,
+    questionText:
+      'PMBOK のプロジェクトスコープマネジメントにおいて作成するプロジェクトスコープ記述書の説明のうち，適切なものはどれか。',
+    choices: [
+      'インプット情報として与えられる WBS やスコープベースラインを用いて，プロジェクトのスコープを記述する。',
+      'プロジェクトのスコープに含まれないものは，記述の対象外である。',
+      'プロジェクトの要素成果物と，これらの要素成果物を生成するために必要な作業について記述する。',
+      'プロジェクトの予算見積りやスケジュール策定をして，これらをプロジェクトの前提条件として記述する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-7',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 7,
+    questionText: 'クリティカルチェーン法による進捗管理の方法のうち，適切なものはどれか。',
+    choices: [
+      '遅れが生じてプロジェクトバッファを消費し始めても，残量が安全区域にある間は特に対策を講じない。',
+      'クリティカルチェーン上のタスクに遅れが生じた場合，速やかにクリティカルチェーンの見直しを行う。',
+      '個々のタスクの終了時だけに進捗報告を受けて，プロジェクトバッファを調整する。',
+      'マイルストーンを細かく設定し，個々のタスクの遅れに対してすぐに対策を実施する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-8',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 8,
+    questionText:
+      '次のアローダイアグラムを基にして要員計画を立てる。要員数の増減を極力抑え，かつ，最短日数で終えられるように計画を立てる場合，1日当たりの最大要員数は何名になるか。ここで，各工程は1名で作業するものとする。',
+    choices: ['2', '3', '4', '5'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'アローダイアグラム。ノード1から2へ作業aが3日、1から3へbが3日、2から4へcが4日、3から5へdが5日、3から7へeが2日、4から6へfが5日、5から7へgが4日、6から8へhが4日、7から8へiが3日。5から4へダミー作業がある。',
+      caption: '図　アローダイアグラム',
+      viewBox: '0 0 620 300',
+      content: `
+        <defs>
+          <marker id="amH25q8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <line x1="62" y1="126" x2="145" y2="78" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="62" y1="144" x2="145" y2="192" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="176" y1="70" x2="284" y2="70" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="176" y1="200" x2="284" y2="200" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <path d="M174 188 C245 152, 355 152, 424 188" stroke="#475569" stroke-width="1.6" fill="none" marker-end="url(#amH25q8)"/>
+        <line x1="316" y1="70" x2="424" y2="70" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="300" y1="184" x2="300" y2="86" stroke="#475569" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#amH25q8)"/>
+        <line x1="316" y1="200" x2="424" y2="200" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="456" y1="78" x2="555" y2="126" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <line x1="456" y1="192" x2="555" y2="144" stroke="#475569" stroke-width="1.6" marker-end="url(#amH25q8)"/>
+        <text x="93" y="89" font-size="13" fill="#1e293b" font-weight="bold">a</text><text x="91" y="107" font-size="12" fill="#475569">3日</text>
+        <text x="94" y="174" font-size="13" fill="#1e293b" font-weight="bold">b</text><text x="92" y="194" font-size="12" fill="#475569">3日</text>
+        <text x="228" y="60" font-size="13" fill="#1e293b" font-weight="bold">c</text><text x="224" y="84" font-size="12" fill="#475569">4日</text>
+        <text x="228" y="190" font-size="13" fill="#1e293b" font-weight="bold">d</text><text x="224" y="214" font-size="12" fill="#475569">5日</text>
+        <text x="302" y="154" font-size="13" fill="#1e293b" font-weight="bold">e</text><text x="298" y="174" font-size="12" fill="#475569">2日</text>
+        <text x="368" y="60" font-size="13" fill="#1e293b" font-weight="bold">f</text><text x="363" y="84" font-size="12" fill="#475569">5日</text>
+        <text x="368" y="190" font-size="13" fill="#1e293b" font-weight="bold">g</text><text x="363" y="214" font-size="12" fill="#475569">4日</text>
+        <text x="504" y="88" font-size="13" fill="#1e293b" font-weight="bold">h</text><text x="500" y="108" font-size="12" fill="#475569">4日</text>
+        <text x="506" y="174" font-size="13" fill="#1e293b" font-weight="bold">i</text><text x="500" y="194" font-size="12" fill="#475569">3日</text>
+        <circle cx="45" cy="135" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="45" y="140" text-anchor="middle" font-size="13" fill="#1e293b">1</text>
+        <circle cx="160" cy="70" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="160" y="75" text-anchor="middle" font-size="13" fill="#1e293b">2</text>
+        <circle cx="160" cy="200" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="160" y="205" text-anchor="middle" font-size="13" fill="#1e293b">3</text>
+        <circle cx="300" cy="70" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="300" y="75" text-anchor="middle" font-size="13" fill="#1e293b">4</text>
+        <circle cx="300" cy="200" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="300" y="205" text-anchor="middle" font-size="13" fill="#1e293b">5</text>
+        <circle cx="440" cy="70" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="440" y="75" text-anchor="middle" font-size="13" fill="#1e293b">6</text>
+        <circle cx="440" cy="200" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="440" y="205" text-anchor="middle" font-size="13" fill="#1e293b">7</text>
+        <circle cx="570" cy="135" r="17" fill="white" stroke="#1e293b" stroke-width="1.5"/><text x="570" y="140" text-anchor="middle" font-size="13" fill="#1e293b">8</text>
+        <line x1="24" y1="260" x2="56" y2="260" stroke="#475569" stroke-width="1.4" stroke-dasharray="5 4"/>
+        <text x="64" y="264" font-size="12" fill="#475569">ダミー作業</text>
+      `,
+    },
+  },
+  {
+    id: 'om-H25-9',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 9,
+    questionText: 'プロジェクトマネジメントにおけるクラッシングの例として，適切なものはどれか。',
+    choices: [
+      '遅れているクリティカルパス上のアクティビティに人員を増強した。',
+      'コストを削減するために，これまで承認されていた残業を禁止した。',
+      '仕様の確定が大幅に遅れたので，プロジェクトの完了予定日を延期した。',
+      '設計が終わったモジュールから順に並行してプログラム開発を実施するように，スケジュールを変更した。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-10',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 10,
+    questionText:
+      '表はプロジェクトの作業リストである。作業Dの総余裕時間は何日か。ここで，各作業の依存関係は，全てプレシデンスダイアグラム法における終了－開始関係とする。',
+    choices: ['0', '4', '7', '14'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔作業リスト〕',
+      headers: ['作業', '先行作業', '所要期間'],
+      rows: [
+        ['A', '－', '4日'],
+        ['B', 'A', '5日'],
+        ['C', 'B', '3日'],
+        ['D', 'A', '1日'],
+        ['E', 'C，D', '2日'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H25-11',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 11,
+    questionText:
+      'プロジェクトの進捗管理を EVM（Earned Value Management）で行っている。コストが超過せず，納期にも遅れないと予想されるプロジェクトはどれか。ここで，それぞれのプロジェクトの開発の生産性は今までと変わらないものとする。',
+    choices: ['選択肢アのグラフ', '選択肢イのグラフ', '選択肢ウのグラフ', '選択肢エのグラフ'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'EVMの四つの候補グラフ。アは現在時点で実コスト、アーンドバリュー、プランドバリューの順に大きい。イは実コスト、プランドバリュー、アーンドバリューの順に大きい。ウはアーンドバリュー、プランドバリュー、実コストの順に大きい。エはプランドバリュー、アーンドバリュー、実コストの順に大きい。',
+      caption: '図　EVM によるプロジェクト状況の候補',
+      viewBox: '0 0 760 500',
+      content: `
+        <defs>
+          <marker id="amH25q11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(36 30)">
+          <text x="0" y="0" font-size="18" fill="#1e293b" font-weight="bold">ア</text>
+          <line x1="48" y1="178" x2="230" y2="178" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="48" y1="178" x2="48" y2="22" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="150" y1="28" x2="150" y2="184" stroke="#111827" stroke-width="1.2" stroke-dasharray="6 5"/>
+          <path d="M48 178 C80 128, 112 78, 150 48" stroke="#111827" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+          <path d="M48 178 C88 136, 116 100, 150 88 C172 96, 190 110, 216 124" stroke="#111827" stroke-width="4" fill="none"/>
+          <path d="M48 178 C86 150, 138 126, 216 98" stroke="#111827" stroke-width="2" fill="none"/>
+          <text x="148" y="204" text-anchor="middle" font-size="12" fill="#1e293b">現在</text>
+          <text x="224" y="198" text-anchor="middle" font-size="12" fill="#1e293b">時間</text>
+          <text x="32" y="76" transform="rotate(-90 32 76)" text-anchor="middle" font-size="12" fill="#1e293b">金額</text>
+          <text x="158" y="50" font-size="12" fill="#1e293b">実コスト(AC)</text>
+          <text x="158" y="90" font-size="12" fill="#1e293b">アーンド<tspan x="158" dy="15">バリュー(EV)</tspan></text>
+          <text x="172" y="126" font-size="12" fill="#1e293b">プランド<tspan x="172" dy="15">バリュー(PV)</tspan></text>
+        </g>
+        <g transform="translate(420 30)">
+          <text x="0" y="0" font-size="18" fill="#1e293b" font-weight="bold">イ</text>
+          <line x1="48" y1="178" x2="230" y2="178" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="48" y1="178" x2="48" y2="22" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="150" y1="28" x2="150" y2="184" stroke="#111827" stroke-width="1.2" stroke-dasharray="6 5"/>
+          <path d="M48 178 C78 128, 106 62, 150 48" stroke="#111827" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+          <path d="M48 178 C88 138, 138 102, 216 58" stroke="#111827" stroke-width="2" fill="none"/>
+          <path d="M48 178 C86 160, 120 140, 150 122 C174 108, 192 98, 216 88" stroke="#111827" stroke-width="4" fill="none"/>
+          <text x="148" y="204" text-anchor="middle" font-size="12" fill="#1e293b">現在</text>
+          <text x="224" y="198" text-anchor="middle" font-size="12" fill="#1e293b">時間</text>
+          <text x="32" y="76" transform="rotate(-90 32 76)" text-anchor="middle" font-size="12" fill="#1e293b">金額</text>
+          <text x="158" y="54" font-size="12" fill="#1e293b">実コスト(AC)</text>
+          <text x="164" y="104" font-size="12" fill="#1e293b">プランド<tspan x="164" dy="15">バリュー(PV)</tspan></text>
+          <text x="166" y="148" font-size="12" fill="#1e293b">アーンド<tspan x="166" dy="15">バリュー(EV)</tspan></text>
+        </g>
+        <g transform="translate(36 264)">
+          <text x="0" y="0" font-size="18" fill="#1e293b" font-weight="bold">ウ</text>
+          <line x1="48" y1="178" x2="230" y2="178" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="48" y1="178" x2="48" y2="22" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="150" y1="28" x2="150" y2="184" stroke="#111827" stroke-width="1.2" stroke-dasharray="6 5"/>
+          <path d="M48 178 C84 116, 112 58, 150 42 C170 38, 192 40, 216 46" stroke="#111827" stroke-width="4" fill="none"/>
+          <path d="M48 178 C88 142, 140 126, 216 98" stroke="#111827" stroke-width="2" fill="none"/>
+          <path d="M48 178 C92 168, 140 150, 216 126" stroke="#111827" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+          <text x="148" y="204" text-anchor="middle" font-size="12" fill="#1e293b">現在</text>
+          <text x="224" y="198" text-anchor="middle" font-size="12" fill="#1e293b">時間</text>
+          <text x="32" y="76" transform="rotate(-90 32 76)" text-anchor="middle" font-size="12" fill="#1e293b">金額</text>
+          <text x="158" y="42" font-size="12" fill="#1e293b">アーンド<tspan x="158" dy="15">バリュー(EV)</tspan></text>
+          <text x="166" y="101" font-size="12" fill="#1e293b">プランド<tspan x="166" dy="15">バリュー(PV)</tspan></text>
+          <text x="158" y="139" font-size="12" fill="#1e293b">実コスト(AC)</text>
+        </g>
+        <g transform="translate(420 264)">
+          <text x="0" y="0" font-size="18" fill="#1e293b" font-weight="bold">エ</text>
+          <line x1="48" y1="178" x2="230" y2="178" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="48" y1="178" x2="48" y2="22" stroke="#334155" stroke-width="1.4" marker-end="url(#amH25q11)"/>
+          <line x1="150" y1="28" x2="150" y2="184" stroke="#111827" stroke-width="1.2" stroke-dasharray="6 5"/>
+          <path d="M48 178 C90 112, 124 82, 150 50 C174 32, 194 24, 216 16" stroke="#111827" stroke-width="2" fill="none"/>
+          <path d="M48 178 C82 148, 116 118, 150 94 C172 82, 194 74, 216 62" stroke="#111827" stroke-width="4" fill="none"/>
+          <path d="M48 178 C90 156, 136 138, 216 112" stroke="#111827" stroke-width="2" stroke-dasharray="3 4" fill="none"/>
+          <text x="148" y="204" text-anchor="middle" font-size="12" fill="#1e293b">現在</text>
+          <text x="224" y="198" text-anchor="middle" font-size="12" fill="#1e293b">時間</text>
+          <text x="32" y="76" transform="rotate(-90 32 76)" text-anchor="middle" font-size="12" fill="#1e293b">金額</text>
+          <text x="158" y="50" font-size="12" fill="#1e293b">プランド<tspan x="158" dy="15">バリュー(PV)</tspan></text>
+          <text x="158" y="102" font-size="12" fill="#1e293b">アーンド<tspan x="158" dy="15">バリュー(EV)</tspan></text>
+          <text x="160" y="146" font-size="12" fill="#1e293b">実コスト(AC)</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H25-12',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 12,
+    questionText:
+      'ファンクションポイント法の一つである IFPUG 法では，機能をデータファンクションとトランザクションファンクションとに分類する。機能を適切に分類したものはどれか。\n\n〔機能種別〕\nEI：外部入力\nEO：外部出力\nILF：内部論理ファイル\nEIF：外部インタフェースファイル\nEQ：外部照会',
+    choices: ['選択肢アの分類', '選択肢イの分類', '選択肢ウの分類', '選択肢エの分類'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔機能種別の分類〕',
+      headers: ['', 'データファンクション', 'トランザクションファンクション'],
+      rows: [
+        ['ア', 'EI，EO，EQ', 'EIF，ILF'],
+        ['イ', 'EIF，EQ，ILF', 'EI，EO'],
+        ['ウ', 'EIF，ILF', 'EI，EO，EQ'],
+        ['エ', 'ILF', 'EI，EIF，EO，EQ'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H25-13',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 13,
+    questionText: '品質の定量評価の指標のうち，ソフトウェアの保守性の評価指標になるものはどれか。',
+    choices: [
+      '（最終成果物に含まれる誤りの件数）÷（最終成果物の量）',
+      '（修正時間の合計）÷（修正件数）',
+      '（変更が必要となるソースコードの行数）÷（移植するソースコードの行数）',
+      '（利用者からの改良要求件数）÷（出荷後の経過月数）',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-14',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 14,
+    questionText:
+      '表は RACI チャートを用いた，あるプロジェクトの責任分担マトリックスである。設計アクティビティに対して説明責任をもつ要員は誰か。',
+    choices: ['阿部', '伊藤と佐藤', '鈴木と田中', '野村'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔RACI チャート〕',
+      headers: ['アクティビティ', '阿部', '伊藤', '佐藤', '鈴木', '田中', '野村'],
+      rows: [
+        ['要件定義', 'C', 'A', 'I', 'I', 'I', 'R'],
+        ['設計', 'R', 'I', 'I', 'C', 'C', 'A'],
+        ['開発', 'A', '－', 'R', '－', 'R', 'I'],
+        ['テスト', 'I', 'I', 'C', 'R', 'A', 'C'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H25-15',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 15,
+    questionText:
+      'プロジェクトにどのツールを導入するかを，EMV（期待金額価値）を用いて検討する。デシジョンツリーが次の図のとき，ツールAを導入するEMVがツールBを導入するEMVを上回るのは，Xが幾らよりも大きい場合か。',
+    choices: ['120', '150', '200', '240'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'デシジョンツリー。どのツールを導入するかの決定ノードから、ツールAを導入とツールBを導入に分岐する。ツールAは費用120万円、効果が大きい場合60%で効果額X万円、効果が小さい場合40%で効果額90万円。ツールBは費用60万円、効果が大きい場合60%で効果額120万円、効果が小さい場合40%で効果額60万円。',
+      caption: '図　ツール導入のデシジョンツリー',
+      viewBox: '0 0 660 330',
+      content: `
+        <defs>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <rect x="28" y="133" width="118" height="52" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="87" y="153" text-anchor="middle" font-size="13" fill="#1e293b">どのツールを</text>
+        <text x="87" y="171" text-anchor="middle" font-size="13" fill="#1e293b">導入するか</text>
+        <rect x="178" y="154" width="14" height="14" fill="#111827" stroke="#111827" stroke-width="1.2"/>
+        <rect x="252" y="70" width="150" height="58" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="327" y="93" text-anchor="middle" font-size="13" fill="#1e293b">ツールAを導入</text>
+        <text x="327" y="113" text-anchor="middle" font-size="13" fill="#1e293b">（費用 120万円）</text>
+        <rect x="252" y="205" width="150" height="58" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="327" y="228" text-anchor="middle" font-size="13" fill="#1e293b">ツールBを導入</text>
+        <text x="327" y="248" text-anchor="middle" font-size="13" fill="#1e293b">（費用 60万円）</text>
+        <circle cx="435" cy="99" r="9" fill="#111827"/>
+        <circle cx="435" cy="234" r="9" fill="#111827"/>
+        <rect x="525" y="34" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="54" text-anchor="middle" font-size="13" fill="#1e293b">効果が大きい</text>
+        <text x="585" y="72" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 X 万円）</text>
+        <rect x="525" y="110" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="130" text-anchor="middle" font-size="13" fill="#1e293b">効果が小さい</text>
+        <text x="585" y="148" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 90万円）</text>
+        <rect x="525" y="187" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="207" text-anchor="middle" font-size="13" fill="#1e293b">効果が大きい</text>
+        <text x="585" y="225" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 120万円）</text>
+        <rect x="525" y="263" width="120" height="50" fill="white" stroke="#1e293b" stroke-width="1.3"/>
+        <text x="585" y="283" text-anchor="middle" font-size="13" fill="#1e293b">効果が小さい</text>
+        <text x="585" y="301" text-anchor="middle" font-size="13" fill="#1e293b">（効果額 60万円）</text>
+        <line x1="146" y1="159" x2="178" y2="161" stroke="#334155" stroke-width="1.5"/>
+        <line x1="192" y1="161" x2="252" y2="99" stroke="#334155" stroke-width="1.5"/>
+        <line x1="192" y1="161" x2="252" y2="234" stroke="#334155" stroke-width="1.5"/>
+        <line x1="402" y1="99" x2="426" y2="99" stroke="#334155" stroke-width="1.5"/>
+        <line x1="444" y1="99" x2="488" y2="58" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="58" x2="525" y2="58" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="48" text-anchor="middle" font-size="13" fill="#1e293b">60%</text>
+        <line x1="444" y1="99" x2="488" y2="135" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="135" x2="525" y2="135" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="130" text-anchor="middle" font-size="13" fill="#1e293b">40%</text>
+        <line x1="402" y1="234" x2="426" y2="234" stroke="#334155" stroke-width="1.5"/>
+        <line x1="444" y1="234" x2="488" y2="212" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="212" x2="525" y2="212" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="202" text-anchor="middle" font-size="13" fill="#1e293b">60%</text>
+        <line x1="444" y1="234" x2="488" y2="288" stroke="#334155" stroke-width="1.5"/>
+        <line x1="488" y1="288" x2="525" y2="288" stroke="#334155" stroke-width="1.5"/>
+        <text x="475" y="278" text-anchor="middle" font-size="13" fill="#1e293b">40%</text>
+        <text x="42" y="242" font-size="13" fill="#1e293b">〔凡例〕</text>
+        <rect x="43" y="254" width="12" height="12" fill="#111827"/>
+        <text x="63" y="266" font-size="13" fill="#1e293b">決定ノード</text>
+        <circle cx="49" cy="285" r="7" fill="#111827"/>
+        <text x="63" y="289" font-size="13" fill="#1e293b">機会ノード</text>
+      `,
+    },
+  },
+  {
+    id: 'om-H25-16',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 16,
+    questionText: 'Web コンテンツの作成に当たって，アクセシビリティを確保する観点から考慮すべきことはどれか。',
+    choices: [
+      'キーボードだけでも操作できるように，Tab キーと Enter キーでリンクを選択できるようにする。',
+      'どこに入力するかを分かりやすくするために，項目名の直後に入力欄を配置し，“(半角)”などの入力方法は入力欄の後ろに配置する。',
+      '文字位置をそろえるために，単語の途中に空白を入れて調整する。',
+      '利用者がどこを誤ったか分かるように，入力エラーがあった項目名を赤色の文字に変更した入力画面を再表示する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-17',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 17,
+    questionText: 'SOA（Service Oriented Architecture）でサービスを設計する際の注意点のうち，適切なものはどれか。',
+    choices: [
+      '可用性を高めるために，ステートフルなインタフェースとする。',
+      '業務からの独立性を確保するために，サービスの命名は役割を表すものとする。',
+      '業務の変化に対応しやすくするために，サービス間の関係は疎結合にする。',
+      'セキュリティを高めるために，一度開発したサービスは再利用しない方がよい。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-18',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 18,
+    questionText: 'ソフトウェア開発におけるプロセスモデルに関する記述として，適切なものはどれか。',
+    choices: [
+      'ウォータフォールモデルでは，企画段階での誤りは，開発の初期段階でほとんど判明する。',
+      'スパイラルモデルによる開発では，段階的に機能追加を繰り返し，各繰返しの段階でユーザの要求を確定して機能を充実していく。',
+      'スパイラルモデルによる開発で用いられるプロトタイピングは，ウォータフォールモデルの欠点を補う手法であるが，要求仕様の早期の確定のためにはエンドユーザの参加は望ましくない。',
+      'スパイラルモデルは，プロトタイプによって仕様を確定していくことが前提となっている。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-19',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 19,
+    questionText: '情報システムの設計のうち，フェールソフトの例はどれか。',
+    choices: [
+      'UPS を設置することによって，停電時に手順どおりにシステムを停止できるようにし，データを保全する。',
+      '制御プログラムの障害時に，システムの暴走を避け，安全に運転を停止できるようにする。',
+      'ハードウェアの障害時に，パフォーマンスは低下するが，構成を縮小して運転を続けられるようにする。',
+      '利用者の誤操作や誤入力を未然に防ぐことによって，システムの誤動作を防止できるようにする。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-20',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 20,
+    questionText: 'サーバ上のデータのバックアップに関する記述として，最も適切なものはどれか。',
+    choices: [
+      '一定の期間を過ぎて利用頻度が下がったデータは，現在のディスクから消去するとともに，バックアップしておいた分も消去する。',
+      'システムの本稼働開始日に全てのデータをバックアップし，それ以降は作業時間を短縮するために，更新頻度が高いデータだけをバックアップする。',
+      '重要データは，バックアップの媒体を取り違えないように，同一の媒体に上書きでバックアップする。',
+      '複数のファイルに分散して格納されているデータは，それぞれのファイルへの一連の更新処理が終了した時点で，バックアップする。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-21',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 21,
+    questionText: 'システムの非機能要件となるものはどれか。',
+    choices: [
+      'システム化を実現する業務の範囲',
+      'システム内での情報（データ）の流れ',
+      'システムの操作性',
+      '他システムとのインタフェースのレイアウト',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-22',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 22,
+    questionText:
+      '情報機器（コンピュータ，プリンタ，ファクシミリなど）の調達に際し，選定の目安となる，製品の稼働時，待機時の消費電力などの基準に適合した製品であることを示す環境ラベルはどれか。',
+    choices: ['FSC 認証ロゴマーク', 'グリーンマーク', '国際エネルギースターロゴ', '統一省エネラベル'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-23',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 23,
+    questionText:
+      '基準値を超える鉛，水銀などの有害物質を電気・電子機器に使用することを制限するために，欧州連合が2006年に施行したものはどれか。',
+    choices: ['ISO 14001', 'RoHS 指令', 'WEEE 指令', 'グリーン購入法'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-24',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 24,
+    questionText: '個人情報保護法で保護される個人情報の条件はどれか。',
+    choices: [
+      '企業が管理している顧客に関する情報に限られる。',
+      '個人が秘密にしているプライバシに関する情報に限られる。',
+      '生存している個人に関する情報に限られる。',
+      '日本国籍を有する個人に関する情報に限られる。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H25-25',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 25,
+    questionText: '日本工業標準調査会を説明したものはどれか。',
+    choices: [
+      '経済産業省に設置されている審議会で，工業標準化法に基づいて工業標準化に関する調査・審議を行っており，特に JIS の制定，改正などに関する審議を行っている。',
+      '電気・電子技術に関する非営利の団体であり，主な活動内容としては，学会活動，書籍の発行，IEEE で始まる規格の標準化を行っている。',
+      '電気機械器具・材料などの標準化に関する事項を調査審議し，JEC 規格の制定及び普及の事業を行っている。',
+      '電子情報技術産業の総合的な発展に資することを目的とした団体であり，JEITA の規格制定及び普及の事業を行っている。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H25_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
