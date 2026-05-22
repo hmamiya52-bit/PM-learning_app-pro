@@ -456,7 +456,7 @@ export default function OfficialMorningSession() {
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
                 解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[correctDisplayIndex]}）</span>}
               </p>
-              <p className={`${textClass} text-slate-700 leading-relaxed`}>
+              <p className={`${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap`}>
                 <MathText text={currentQuestion.explanation} />
               </p>
             </div>
