@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期、平成27年度 春期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期、平成27年度 春期、平成26年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし。H28 問2のみ公式誤問のため注記付き改題）
  * - 正解: IPA 公式解答例 PDF と照合済（H28 問2は公式「全員正解」措置のため、改題版の正解を設定）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - H27 は OCR 投入フェーズのため、次工程で追記予定
+ *   - H26 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -18,14 +18,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12、H27 問4・問5・問11・問20: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12、H27 問4・問5・問11・問20、H26 問2・問8・問14・問18・問19・問20: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28', 'H27'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28', 'H27', 'H26'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -56,6 +56,9 @@ const H28_SPRING_PM_AM2_SOURCE_URL =
 
 const H27_SPRING_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_am2_qs.pdf'
+
+const H26_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -5392,6 +5395,597 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: '',
     categoryId: 'service-management',
     sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-1',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 1,
+    questionText:
+      '情報システムの企画，開発，運用，保守作業に関わる国際標準の一つである SPA (Software Process Assessment) の説明として，適切なものはどれか。',
+    choices: [
+      'ソフトウェアプロセスがどの程度の能力水準にあり，継続的に改善されているかを判定することを目的としている。',
+      'ソフトウェアライフサイクルを合意プロセス，テクニカルプロセス，運用・サービスプロセスなどのプロセス群に分け，作業内容を定めている。',
+      '品質保証に関する要求項目を体系的に規定した国際規格の一部である。',
+      'プロジェクトマネジメントの知識体系と応用のためのガイドである。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'tailoring-models',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-2',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 2,
+    questionText:
+      '図は一般的なプロジェクトにおける開始から終結までの時間の経過に伴って変動する要素について表している。a，bに対応する要素の適切な組はどれか。',
+    choices: [
+      'a：ステークホルダの影響力，b：要求変更への対応コスト',
+      'a：プロジェクト要員数，b：リスク',
+      'a：要求変更への対応コスト，b：プロジェクト要員数',
+      'a：リスク，b：ステークホルダの影響力',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'stakeholder',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'プロジェクトの経過時間に伴う二つの要素の変動。aは開始時に大きく時間とともに小さくなる曲線、bは開始時に小さく時間とともに大きくなる曲線。',
+      caption: '図　プロジェクト期間に伴う要素の変動',
+      viewBox: '0 0 430 250',
+      content: `
+        <defs>
+          <marker id="amH26q2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <line x1="80" y1="190" x2="350" y2="190" stroke="#1e293b" stroke-width="1.6" marker-end="url(#amH26q2)"/>
+        <line x1="80" y1="190" x2="80" y2="40" stroke="#1e293b" stroke-width="1.6"/>
+        <text x="66" y="60" text-anchor="middle" font-size="16" fill="#1e293b">大</text>
+        <text x="66" y="184" text-anchor="middle" font-size="16" fill="#1e293b">小</text>
+        <text x="220" y="222" text-anchor="middle" font-size="15" fill="#1e293b">経過時間</text>
+        <path d="M82 54 C 150 62, 185 105, 220 135 C 250 160, 285 176, 335 185" fill="none" stroke="#111827" stroke-width="2.2"/>
+        <path d="M82 186 C 155 180, 195 162, 222 132 C 248 100, 282 67, 338 48" fill="none" stroke="#111827" stroke-width="2.2"/>
+        <text x="185" y="96" font-size="17" fill="#1e293b">a</text>
+        <text x="190" y="158" font-size="17" fill="#1e293b">b</text>
+      `,
+    },
+  },
+  {
+    id: 'om-H26-3',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 3,
+    questionText: 'PMBOK において，プロジェクト憲章は，どの知識エリアのどのプロセス群で作成するか。',
+    choices: [
+      'プロジェクトコミュニケーションマネジメントの実行プロセス群',
+      'プロジェクトスコープマネジメントの計画プロセス群',
+      'プロジェクト統合マネジメントの計画プロセス群',
+      'プロジェクト統合マネジメントの立上げプロセス群',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'integration',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-4',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 4,
+    questionText:
+      'PMBOK によれば，組織のプロセス資産を “プロセスと手順” と “企業の知識ベース” に分類したとき，“企業の知識ベース” に含まれるものはどれか。',
+    choices: [
+      'WBS のテンプレートやリスクの評価を行う際のテンプレート',
+      '各プロジェクトで作成されたパフォーマンス測定のベースラインや品質のベースラインなどのプロジェクトファイル',
+      '使用するコミュニケーション媒体やセキュリティに対する要求事項',
+      '標準化された作業指示書やパフォーマンス測定基準',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-5',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 5,
+    questionText: 'PMBOK での定義におけるプロジェクトとステークホルダの関係のうち，適切なものはどれか。',
+    choices: [
+      'サプライヤは，プロジェクトが創造するプロダクトやサービスを使用する。',
+      'スポンサは，契約に基づいてプロジェクトに必要な構成アイテムやサービスを提供する。',
+      '納入者は，プロジェクトに対して資金や現物などの財政的資源を提供する。',
+      'プログラムマネージャは，関連するプロジェクトの調和がとれるように，個々のプロジェクトの支援や指導をする。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'stakeholder',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-6',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 6,
+    questionText: 'PMBOK のプロジェクトスコープマネジメントにおいて，WBS の作成に用いるローリングウェーブ計画法の説明はどれか。',
+    choices: [
+      'WBS を補完するため，WBS 要素ごとに詳細な作業の内容などを記述する。',
+      '過去に実施したプロジェクトの WBS をテンプレートとして，新たな WBS を作成する。',
+      '将来実施されるサブプロジェクトについては，上位レベルの WBS にとどめておき，詳細が明確になってから，要素分解して詳細な WBS を作成する。',
+      'プロジェクトの作業をより詳細化するために，WBS の最下位レベルの作業内容や要素成果物を定義する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-7',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 7,
+    questionText:
+      'プロジェクトマネジメントで使用する責任分担表（RAM）の一つである，RACI チャートで示す 4 種類の役割及び責任の組合せのうち，適切なものはどれか。',
+    choices: [
+      '実行責任，情報提供，説明責任，相談対応',
+      '実行責任，情報提供，説明責任，リスク管理',
+      '実行責任，情報提供，相談対応，リスク管理',
+      '実行責任，説明責任，相談対応，リスク管理',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-8',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 8,
+    questionText:
+      '表は，あるプロジェクトの作業リストであり，図は，各作業の関係を表したアローダイアグラムである。このプロジェクトの所要期間を 3 日間短縮するためには，追加費用は最低何万円必要か。',
+    choices: ['9', '11', '12', '14'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '作業リストとアローダイアグラム。作業Aは5日、Bは10日、Cは6日、Dは3日、Eは5日。左から上ノードへA、下ノードへB、上から右へC、下から右へE、上から下へDが進む。',
+      caption: '表・図　作業リストとアローダイアグラム',
+      viewBox: '0 0 650 330',
+      content: `
+        <defs>
+          <marker id="amH26q8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(20 28)">
+          <rect x="0" y="0" width="360" height="192" fill="white" stroke="#1e293b" stroke-width="1.2"/>
+          <line x1="0" y1="42" x2="360" y2="42" stroke="#1e293b" stroke-width="1"/>
+          <line x1="0" y1="72" x2="360" y2="72" stroke="#1e293b" stroke-width="1"/>
+          <line x1="0" y1="102" x2="360" y2="102" stroke="#1e293b" stroke-width="1"/>
+          <line x1="0" y1="132" x2="360" y2="132" stroke="#1e293b" stroke-width="1"/>
+          <line x1="0" y1="162" x2="360" y2="162" stroke="#1e293b" stroke-width="1"/>
+          <line x1="58" y1="0" x2="58" y2="192" stroke="#1e293b" stroke-width="1"/>
+          <line x1="145" y1="0" x2="145" y2="192" stroke="#1e293b" stroke-width="1"/>
+          <line x1="235" y1="0" x2="235" y2="192" stroke="#1e293b" stroke-width="1"/>
+          <text x="29" y="26" text-anchor="middle" font-size="13" fill="#1e293b">作業</text>
+          <text x="101" y="18" text-anchor="middle" font-size="12" fill="#1e293b">標準所要</text>
+          <text x="101" y="34" text-anchor="middle" font-size="12" fill="#1e293b">日数（日）</text>
+          <text x="190" y="18" text-anchor="middle" font-size="12" fill="#1e293b">短縮可能な</text>
+          <text x="190" y="34" text-anchor="middle" font-size="12" fill="#1e293b">日数（日）</text>
+          <text x="298" y="18" text-anchor="middle" font-size="12" fill="#1e293b">1日短縮するのに必要</text>
+          <text x="298" y="34" text-anchor="middle" font-size="12" fill="#1e293b">な追加費用（万円）</text>
+          <text x="29" y="63" text-anchor="middle" font-size="13" fill="#1e293b">A</text><text x="101" y="63" text-anchor="middle" font-size="13" fill="#1e293b">5</text><text x="190" y="63" text-anchor="middle" font-size="13" fill="#1e293b">2</text><text x="298" y="63" text-anchor="middle" font-size="13" fill="#1e293b">2</text>
+          <text x="29" y="93" text-anchor="middle" font-size="13" fill="#1e293b">B</text><text x="101" y="93" text-anchor="middle" font-size="13" fill="#1e293b">10</text><text x="190" y="93" text-anchor="middle" font-size="13" fill="#1e293b">4</text><text x="298" y="93" text-anchor="middle" font-size="13" fill="#1e293b">3</text>
+          <text x="29" y="123" text-anchor="middle" font-size="13" fill="#1e293b">C</text><text x="101" y="123" text-anchor="middle" font-size="13" fill="#1e293b">6</text><text x="190" y="123" text-anchor="middle" font-size="13" fill="#1e293b">2</text><text x="298" y="123" text-anchor="middle" font-size="13" fill="#1e293b">4</text>
+          <text x="29" y="153" text-anchor="middle" font-size="13" fill="#1e293b">D</text><text x="101" y="153" text-anchor="middle" font-size="13" fill="#1e293b">3</text><text x="190" y="153" text-anchor="middle" font-size="13" fill="#1e293b">1</text><text x="298" y="153" text-anchor="middle" font-size="13" fill="#1e293b">5</text>
+          <text x="29" y="183" text-anchor="middle" font-size="13" fill="#1e293b">E</text><text x="101" y="183" text-anchor="middle" font-size="13" fill="#1e293b">5</text><text x="190" y="183" text-anchor="middle" font-size="13" fill="#1e293b">2</text><text x="298" y="183" text-anchor="middle" font-size="13" fill="#1e293b">6</text>
+        </g>
+        <g transform="translate(420 72)">
+          <circle cx="20" cy="90" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="128" cy="34" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="128" cy="146" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="240" cy="90" r="16" fill="white" stroke="#1e293b" stroke-width="1.5"/>
+          <line x1="34" y1="82" x2="112" y2="43" stroke="#475569" stroke-width="1.6" marker-end="url(#amH26q8)"/>
+          <line x1="34" y1="98" x2="112" y2="137" stroke="#475569" stroke-width="1.6" marker-end="url(#amH26q8)"/>
+          <line x1="128" y1="50" x2="128" y2="130" stroke="#475569" stroke-width="1.6" marker-end="url(#amH26q8)"/>
+          <line x1="144" y1="42" x2="224" y2="82" stroke="#475569" stroke-width="1.6" marker-end="url(#amH26q8)"/>
+          <line x1="144" y1="138" x2="224" y2="98" stroke="#475569" stroke-width="1.6" marker-end="url(#amH26q8)"/>
+          <text x="70" y="53" font-size="13" fill="#1e293b" font-weight="bold">A</text><text x="67" y="72" font-size="12" fill="#475569">5</text>
+          <text x="70" y="124" font-size="13" fill="#1e293b" font-weight="bold">B</text><text x="62" y="143" font-size="12" fill="#475569">10</text>
+          <text x="136" y="94" font-size="13" fill="#1e293b" font-weight="bold">D</text><text x="111" y="94" font-size="12" fill="#475569">3</text>
+          <text x="190" y="52" font-size="13" fill="#1e293b" font-weight="bold">C</text><text x="189" y="72" font-size="12" fill="#475569">6</text>
+          <text x="190" y="124" font-size="13" fill="#1e293b" font-weight="bold">E</text><text x="189" y="143" font-size="12" fill="#475569">5</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H26-9',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 9,
+    questionText: 'プロジェクトのスケジュールを管理するときに使用する “クリティカルチェーン法” の特徴はどれか。',
+    choices: [
+      'クリティカルパス上の作業に生産性を向上させるための開発ツールを導入する。',
+      'クリティカルパス上の作業に要員を追加投入する。',
+      'クリティカルパス上の先行作業が終了する前に後続作業に着手し，並行して実施する。',
+      'クリティカルパスを守るために，フィーディングバッファと所要期間バッファを設ける。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-10',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 10,
+    questionText:
+      'プロジェクトマネジメントの実績報告のプロセスにおいて，スコープ，コスト，スケジュールに関して，ベースラインと実績のかい離を明確にするために使用される技法はどれか。',
+    choices: ['what-if シナリオ分析', '傾向分析', '差異分析', 'モンテカルロ分析'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-11',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 11,
+    questionText:
+      'あるソフトウェア会社の社員は週40時間働く。この会社が，開発工数440人時のプログラム開発を引き受けた。開発コストを次の条件で見積もるとき，10人のチームで開発する場合のコストは，1人で開発する場合のコストの約何倍になるか。\n\n〔条件〕\n(1) 10人のチームでは，コミュニケーションをとるための工数が余分に発生する。\n(2) コミュニケーションはチームのメンバが総当たりでとり，その工数は2人1組の組合せごとに週当たり4人時（1人当たり2時間）である。\n(3) 社員の週当たりコストは社員間で差がない。\n(4) (1)～(3)以外の条件は無視できる。',
+    choices: ['1.2', '1.5', '1.8', '2.1'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-12',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 12,
+    questionText: 'リスクマネジメントにおける EMV（期待金額価値）の算出式はどれか。',
+    choices: [
+      'リスク事象発生時の影響金額 × リスク事象の発生確率',
+      'リスク事象発生時の影響金額 ÷ リスク事象の発生確率',
+      'リスク事象発生時の影響金額 × リスク対応に掛かるコスト',
+      'リスク事象発生時の影響金額 ÷ リスク対応に掛かるコスト',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-13',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 13,
+    questionText: 'PMBOK のリスクマネジメントにおけるリスク対応戦略の適用に関する記述のうち，適切なものはどれか。',
+    choices: [
+      '強化は，マイナスのリスクに対して使用される戦略である。',
+      '共有は，プラスのリスクとマイナスのリスクのどちらにも使用される戦略である。',
+      '受容は，プラスのリスクとマイナスのリスクのどちらにも使用される戦略である。',
+      '転嫁は，プラスのリスクに対して使用される戦略である。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-14',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 14,
+    questionText:
+      'COCOMO にはシステム開発の工数を見積もる式の一つに\nMM=3.0×(KDSI)^{1.12}\nがある。開発規模（KDSI）と開発生産性（KDSI／MM）の関係を表したグラフはどれか。ここで，MM は開発工数（人月），KDSI は開発規模（注釈を除いたソースコードの行数，単位は k 行）である。',
+    choices: ['選択肢アのグラフ', '選択肢イのグラフ', '選択肢ウのグラフ', '選択肢エのグラフ'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        '開発規模を横軸、開発生産性を縦軸とする四つの候補グラフ。アは右上がりで次第に緩やか、イは右上がりで次第に急、ウは右下がりで次第に急、エは右下がりで次第に緩やかになる。',
+      caption: '図　開発規模と開発生産性の関係の候補',
+      viewBox: '0 0 620 360',
+      content: `
+        <defs>
+          <marker id="amH26q14" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(35 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ア</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <path d="M35 112 C55 60, 105 44, 176 39" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 28)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">イ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <path d="M35 118 C72 116, 122 108, 146 76 C160 58, 169 37, 178 20" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(35 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">ウ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <path d="M35 22 C90 25, 147 58, 176 120" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+        <g transform="translate(350 205)">
+          <text x="112" y="0" text-anchor="middle" font-size="18" fill="#1e293b" font-weight="bold">エ</text>
+          <line x1="24" y1="124" x2="190" y2="124" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <line x1="24" y1="124" x2="24" y2="18" stroke="#334155" stroke-width="1.4" marker-end="url(#amH26q14)"/>
+          <path d="M35 24 C42 70, 70 100, 112 108 C140 113, 162 113, 178 112" fill="none" stroke="#1e293b" stroke-width="2.2"/>
+          <text x="8" y="72" transform="rotate(-90 8 72)" text-anchor="middle" font-size="12" fill="#1e293b">開発生産性</text>
+          <text x="110" y="149" text-anchor="middle" font-size="12" fill="#1e293b">開発規模</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H26-15',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 15,
+    questionText: 'プロジェクトの状況を把握するために使用するパレート図の用途として，適切なものはどれか。',
+    choices: [
+      '工程の状態や品質の状況を時系列に表した図であり，工程が安定した状態にあるかどうかを判断するために用いる。',
+      '項目別に層別して出現度数の大きさの順に並べるとともに累積和を示した図であり，主要な原因を識別するために用いる。',
+      '二つの特性を横軸と縦軸にとって測定値を打点した図であり，それらの相関を判断するために用いる。',
+      '矢印付き大枝の先端に特性を，中枝，小枝に要因を表した図であり，どれがどれに影響しているかを分析するために用いる。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-16',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 16,
+    questionText:
+      'ソフトウェアの潜在エラー数を推定する方法の一つにエラー埋込み法がある。100個のエラーを故意にプログラムに埋め込んだとき，そのエラーの存在を知らない検査グループが30個のエラーを発見した。そのうち20個は故意に埋め込んでおいたものであった。この時点で，このプログラムには埋込みエラーを除く残存エラー数は幾つと推定できるか。',
+    choices: ['40', '50', '70', '150'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-17',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 17,
+    questionText: 'XP（Extreme Programming）のプラクティスの一つに取り入れられているものはどれか。',
+    choices: ['構造化プログラミング', 'コンポーネント指向プログラミング', 'ビジュアルプログラミング', 'ペアプログラミング'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-18',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 18,
+    questionText:
+      '表はシステムの特性や制約に応じた開発方針と，開発方針に適した開発モデルの組である。a～cに該当する開発モデルの組合せはどれか。',
+    choices: [
+      'a：ウォータフォールモデル，b：進化的モデル，c：段階的モデル',
+      'a：ウォータフォールモデル，b：段階的モデル，c：進化的モデル',
+      'a：進化的モデル，b：ウォータフォールモデル，c：段階的モデル',
+      'a：段階的モデル，b：進化的モデル，c：ウォータフォールモデル',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔開発方針と開発モデル〕',
+      headers: ['開発方針', '開発モデル'],
+      rows: [
+        ['要求が明確なので，全機能を一斉に開発する。', 'a'],
+        ['最初にコア部分を開発し，順次機能を追加していく。', 'b'],
+        ['要求に不明確な部分があるので，開発を繰り返しながら徐々に要求内容を洗練していく。', 'c'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H26-19',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 19,
+    questionText: '次の図は，ITIL のサービスライフサイクルの各段階の説明と流れである。a～dの段階名の適切な組合せはどれか。',
+    choices: [
+      'a：サービスストラテジ，b：サービスオペレーション，c：サービストランジション，d：サービスデザイン',
+      'a：サービスストラテジ，b：サービスデザイン，c：サービストランジション，d：サービスオペレーション',
+      'a：サービスデザイン，b：サービスストラテジ，c：サービストランジション，d：サービスオペレーション',
+      'a：サービスデザイン，b：サービストランジション，c：サービスストラテジ，d：サービスオペレーション',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'svg',
+      ariaLabel:
+        'ITILのサービスライフサイクル。aからb、c、d、継続的サービス改善へ順に流れ、それぞれ右側に説明文がある。',
+      caption: '図　ITIL のサービスライフサイクル',
+      viewBox: '0 0 760 360',
+      content: `
+        <defs>
+          <marker id="amH26q19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+          </marker>
+          <style>text { paint-order: stroke fill; stroke: white; stroke-width: 3px; stroke-linejoin: round; }</style>
+        </defs>
+        <g transform="translate(30 28)">
+          <rect x="0" y="0" width="145" height="42" fill="white" stroke="#1e293b" stroke-width="1.4"/>
+          <rect x="0" y="65" width="145" height="42" fill="white" stroke="#1e293b" stroke-width="1.4"/>
+          <rect x="0" y="130" width="145" height="42" fill="white" stroke="#1e293b" stroke-width="1.4"/>
+          <rect x="0" y="195" width="145" height="42" fill="white" stroke="#1e293b" stroke-width="1.4"/>
+          <rect x="0" y="260" width="145" height="42" fill="white" stroke="#1e293b" stroke-width="1.4"/>
+          <text x="72" y="26" text-anchor="middle" font-size="15" fill="#1e293b">a</text>
+          <text x="72" y="91" text-anchor="middle" font-size="15" fill="#1e293b">b</text>
+          <text x="72" y="156" text-anchor="middle" font-size="15" fill="#1e293b">c</text>
+          <text x="72" y="221" text-anchor="middle" font-size="15" fill="#1e293b">d</text>
+          <text x="72" y="286" text-anchor="middle" font-size="13" fill="#1e293b">継続的サービス改善</text>
+          <line x1="72" y1="42" x2="72" y2="63" stroke="#475569" stroke-width="1.5" marker-end="url(#amH26q19)"/>
+          <line x1="72" y1="107" x2="72" y2="128" stroke="#475569" stroke-width="1.5" marker-end="url(#amH26q19)"/>
+          <line x1="72" y1="172" x2="72" y2="193" stroke="#475569" stroke-width="1.5" marker-end="url(#amH26q19)"/>
+          <line x1="72" y1="237" x2="72" y2="258" stroke="#475569" stroke-width="1.5" marker-end="url(#amH26q19)"/>
+          <text x="190" y="22" font-size="13" fill="#1e293b">ITサービス及びITサービスマネジメントに対する全体的な戦略を確立する。</text>
+          <text x="190" y="82" font-size="13" fill="#1e293b">事業要件を取り入れ，事業が求める品質，信頼性及び柔軟性に応える</text>
+          <text x="190" y="100" font-size="13" fill="#1e293b">サービスと，それを支えるプラクティス及び管理ツールを作り出す。</text>
+          <text x="190" y="142" font-size="13" fill="#1e293b">サービス及びサービス変更を運用に利用できるようにするために，</text>
+          <text x="190" y="160" font-size="13" fill="#1e293b">前の段階の成果を受け取り，事業のニーズを満たすかどうかをテストし，</text>
+          <text x="190" y="178" font-size="13" fill="#1e293b">本番環境に展開する。</text>
+          <text x="190" y="210" font-size="13" fill="#1e293b">顧客とサービス提供者にとっての価値を確保できるように，ITサービスを</text>
+          <text x="190" y="228" font-size="13" fill="#1e293b">効果的かつ効率的に提供しサポートする。</text>
+          <text x="190" y="272" font-size="13" fill="#1e293b">ITサービスマネジメントプロセスとITサービスに対する改善の管理を責務とし，</text>
+          <text x="190" y="290" font-size="13" fill="#1e293b">効率性，有効性及び費用対効果を向上するために改善を加える。</text>
+        </g>
+      `,
+    },
+  },
+  {
+    id: 'om-H26-20',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 20,
+    questionText:
+      'システムの改善に向けて提出された 4 案について，評価項目を設定して採点した結果を，採点結果表に示す。効果及びリスクについては 5 段階評価とし，それぞれの評価項目の重要度に応じて，重み付け表に示すとおりの重み付けを行った上で次の式で総合評価点を算出したとき，総合評価点が最も高い改善案はどれか。\n\n〔総合評価点の算出式〕\n総合評価点＝効果の総評価点－リスクの総評価点',
+    choices: ['案1', '案2', '案3', '案4'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔採点結果表・重み付け表〕',
+      headers: ['区分', '評価項目', '案1', '案2', '案3', '案4', '重み'],
+      rows: [
+        ['効果', 'セキュリティ強化', 3, 4, 5, 2, 4],
+        ['効果', 'システム運用品質向上', 2, 4, 2, 5, 2],
+        ['効果', '作業コスト削減', 5, 4, 2, 4, 3],
+        ['リスク', 'スケジュールリスク', 2, 4, 1, 5, 8],
+        ['リスク', '技術リスク', 4, 1, 5, 1, 3],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H26-21',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 21,
+    questionText: 'IP（知的財産）ライセンス契約の中で規定されるランニングロイヤリティの説明として，適切なものはどれか。',
+    choices: [
+      '技術サポートを受ける際に課される技術料',
+      '技術の開示を受ける際に課される一時金',
+      '特許発明の実施の実績に応じて額が決まる使用料',
+      '毎年メンテナンス費用として課される料金',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-22',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 22,
+    questionText: 'ソフトウェア開発を下請事業者に委託する場合，下請代金支払遅延等防止法に照らして，禁止されている行為はどれか。',
+    choices: [
+      '継続的な取引が行われているので，支払条件，支払期日等を記載した書面をあらかじめ交付し，個々の発注書面にはその事項の記載を省略する。',
+      '顧客の都合で，仕様変更の必要が生じたので，下請事業者と協議の上，発生する費用の増加分を下請代金に加算することで仕様変更に応じてもらう。',
+      '顧客の求める仕様が確定していなかったので，発注の際に下請事業者に仕様が未記載の書面を交付し，仕様が確定した時点では，内容を書面ではなく口頭で伝えた。',
+      '振込手数料を下請事業者が負担する旨を発注前に書面で合意したので，親事業者が負担した実費の範囲内で振込手数料を差し引いて下請代金を支払う。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-23',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 23,
+    questionText: 'コンティンジェンシープランにおける留意点はどれか。',
+    choices: [
+      '企業の全てのシステムを対象とするのではなく，システムの復旧の重要性と緊急性を勘案して対象を決定する。',
+      '災害などへの対応のために，すぐに使用できるよう，バックアップデータはコンピュータ室内又はセンター内に保存しておく。',
+      'バックアップの対象は，機密情報の中から機密度を勘案して選択する。',
+      '被害のシナリオを作成し，これに基づく “予防策策定手順” を策定する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-24',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 24,
+    questionText: 'メールサーバ（SMTP サーバ）の不正利用を防止するために行う設定はどれか。',
+    choices: [
+      'ゾーン転送のアクセス元を制御する。',
+      '第三者中継を禁止する。',
+      'ディレクトリに存在するファイル名の表示を禁止する。',
+      '特定のディレクトリ以外での CGI プログラムの実行を禁止する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H26-25',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 25,
+    questionText: 'SSL に関する記述のうち，適切なものはどれか。',
+    choices: [
+      'SSL で使用する Web サーバのディジタル証明書には IP アドレスの組込みが必須なので，Web サーバの IP アドレスを変更する場合は，ディジタル証明書を再度取得する必要がある。',
+      'SSL で使用する個人認証用のディジタル証明書は，IC カードなどに格納できるので，格納場所を特定の PC に限定する必要はない。',
+      'SSL は Web サーバを経由した特定の利用者間の通信のために開発されたプロトコルであり，Web サーバ提供者への事前の利用者登録が不可欠である。',
+      '日本国内では，SSL で使用する共通鍵の長さは，128 ビット未満に制限されている。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H26_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
