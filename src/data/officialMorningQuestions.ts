@@ -2,11 +2,11 @@
  * 公式午前II（PM 午前II）問題データ
  *
  * 設計書 v0.16 §2.7b / F1.5-P4、および F2-P3 に従い、PM 午前II問題を投入。
- * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期
+ * 投入済み年度: 令和6年度 秋期、令和5年度 秋期、令和4年度 秋期、令和3年度 秋期、令和2年度 10月、平成31年度 春期、平成30年度 春期、平成29年度 春期、平成28年度 春期、平成27年度 春期
  * - 問題文・選択肢: IPA 公式 PDF を Codex が OCR で抽出（一字一句引用、改変なし。H28 問2のみ公式誤問のため注記付き改題）
  * - 正解: IPA 公式解答例 PDF と照合済（H28 問2は公式「全員正解」措置のため、改題版の正解を設定）
  * - 解説: Claude が独自作成（PMBOK第7版＋IPA PM試験シラバス Ver7.1 ベース）
- *   - H29 / H28 は OCR 投入フェーズのため、次工程で追記予定
+ *   - H27 は OCR 投入フェーズのため、次工程で追記予定
  *
  * IPA 著作権規約（memory/risks.md R1 参照）:
  * - 教育目的の引用は許諾・使用料不要
@@ -18,14 +18,14 @@
  * - 問4（EVMグラフ）・問5（アローダイアグラム）・問6（PDM）: SVG として figure に格納
  * - 問12（開発要員投入計画）: HTML テーブルとして figure に格納
  * - 問10（数式選択肢）: 図表なし、選択肢自体に数式記号
- * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12: SVG/table として figure に格納
+ * - R4 問9・問10・問13・問18、R3 問4・問11、R2 問7・問9・問10、R1 問2・問8・問10・問13、H30 問6・問7・問8・問9、H29 問6・問10・問13・問15・問21、H28 問8・問11・問12、H27 問4・問5・問11・問20: SVG/table として figure に格納
  * - レンダリングは OfficialMorningSession.tsx の QuestionFigureView コンポーネントが担当
  * - SVG は viewBox で自動スケール、テーブルは横スクロール対応でモバイル表示崩れ防止
  */
 
 import type { OfficialMorningQuestion } from '../types'
 
-export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28'] as const
+export const MORNING_YEARS = ['R6', 'R5', 'R4', 'R3', 'R2', 'R1', 'H30', 'H29', 'H28', 'H27'] as const
 
 const R6_AUTUMN_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_am2_qs.pdf'
@@ -53,6 +53,9 @@ const H29_SPRING_PM_AM2_SOURCE_URL =
 
 const H28_SPRING_PM_AM2_SOURCE_URL =
   'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_am2_qs.pdf'
+
+const H27_SPRING_PM_AM2_SOURCE_URL =
+  'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_am2_qs.pdf'
 
 export const officialMorningQuestions: OfficialMorningQuestion[] = [
   {
@@ -4943,6 +4946,452 @@ export const officialMorningQuestions: OfficialMorningQuestion[] = [
     explanation: 'DNSSEC は，DNS リソースレコードに認証局相当の鍵によるデジタル署名を付け，リゾルバ側で署名検証することで送信者の正当性とデータの完全性を保証する仕組み。ア はオープンリゾルバ問題に逆行する設定で攻撃悪用される側，ウ はセカンダリ DNS による冗長化（可用性向上）で DNSSEC とは別技術，エ は TSIG（Transaction SIGnature）による DNS 更新認証の説明。',
     categoryId: 'service-management',
     sourceUrl: H28_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-1',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 1,
+    questionText: 'ISO 21500 によれば，プロジェクトガバナンスを維持する責任は誰にあるか。',
+    choices: [
+      'プロジェクトの管理面でプロジェクトマネージャを支援するプロジェクトマネジメントチーム',
+      'プロジェクトの立上げから終結までのプロセスを指揮するプロジェクトマネージャ',
+      'プロジェクトの要求事項を明確にし，プロジェクトの成果を享受する顧客',
+      'プロジェクトを承認して経営的判断を下すプロジェクトスポンサ，又は上級経営レベルでの指導をするプロジェクト運営委員会',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-2',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 2,
+    questionText:
+      '工程別の生産性が次のとおりのとき，全体の生産性を表す式はどれか。\n\n〔工程別の生産性〕\n設計工程：X ステップ／人月\n製造工程：Y ステップ／人月\n試験工程：Z ステップ／人月',
+    choices: [
+      'X＋Y＋Z',
+      'frac{X＋Y＋Z}{3}',
+      'frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}',
+      'frac{1}{frac{1}{X}＋frac{1}{Y}＋frac{1}{Z}}',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-3',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 3,
+    questionText: 'PMBOK によれば，組織のプロセス資産に分類されるものはどれか。',
+    choices: [
+      '課題と欠陥のマネジメントの手順',
+      'ステークホルダのリスク許容度',
+      '組織のインフラストラクチャ',
+      '組織の文化，体制，ガバナンス',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-4',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 4,
+    questionText:
+      '過去のプロジェクトの開発実績から構築した作業配分モデルがある。システム要件定義からシステム内部設計までをモデルどおりに進め，228 日で完了してプログラム開発を開始した。現在，200 本のプログラムのうち 100 本のプログラム開発を完了し，残りの 100 本は未着手の状況である。プログラム開発以降もモデルどおりに進捗すると仮定するとき，プロジェクト全体の完了まで，あと何日掛かるか。',
+    choices: ['140', '150', '161', '172'],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔作業配分モデル〕',
+      headers: ['', 'システム要件定義', 'システム外部設計', 'システム内部設計', 'プログラム開発', 'システム結合', 'システムテスト'],
+      rows: [
+        ['工数比', '0.17', '0.21', '0.16', '0.16', '0.11', '0.19'],
+        ['期間比', '0.25', '0.21', '0.11', '0.11', '0.11', '0.21'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H27-5',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 5,
+    questionText:
+      '表は RACI チャートを用いた，あるプロジェクトの責任分担マトリックスである。設計アクティビティにおいて，説明責任をもつ要員は誰か。',
+    choices: ['阿部', '伊藤と佐藤', '鈴木と田中', '野村'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔RACI チャート〕',
+      headers: ['アクティビティ', '阿部', '伊藤', '佐藤', '鈴木', '田中', '野村'],
+      rows: [
+        ['要件定義', 'C', 'A', 'I', 'I', 'I', 'R'],
+        ['設計', 'R', 'I', 'I', 'C', 'C', 'A'],
+        ['開発', 'A', '－', 'R', '－', 'R', 'I'],
+        ['テスト', 'I', 'I', 'C', 'R', 'A', 'C'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H27-6',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 6,
+    questionText: 'プロジェクトの人的資源マネジメントに関して，“ブルックスの法則”で述べられていることはどれか。',
+    choices: [
+      'エンゲージメントが高まると，プロジェクトメンバは問題に対して自律的に対応するようになる。',
+      '技術が発展し，高度な技術の利用が進むほど，人を中心にしたプロジェクトマネジメントが重要になる。',
+      '担当者の業務を可視化しなければ，いかに優秀なプロジェクトマネージャでも適切な管理はできない。',
+      '遅延しているプロジェクトへの新規要員の追加は，更なる遅れをもたらすだけである。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'team',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-7',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 7,
+    questionText: 'クリティカルチェーン法におけるタスクのスケジューリングとバッファの設定方法のうち，適切なものはどれか。',
+    choices: [
+      'クリティカルパス上にないタスクのチェーンには，バッファを設定しない。',
+      'クリティカルパス上の最後のタスクの終了期と納期の間に，プロジェクト全体で使用するバッファを設定する。',
+      'クリティカルパス上の全てのタスクに，バッファを設定する。',
+      'なるべく前倒しでタスクを開始するように計画し，バッファを少しでも多く確保する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-8',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 8,
+    questionText: '工程管理図表の特徴に関する記述のうち，ガントチャートのものはどれか。',
+    choices: [
+      '計画と実績の時間的推移を表現するのに適し，進み具合及びその傾向がよく分かり，プロジェクト全体の費用と進捗の管理に利用される。',
+      '作業の順序や作業相互の関係を表現したり，重要作業を把握したりするのに適しており，プロジェクトの作業計画などに利用される。',
+      '作業の相互関係の把握には適さないが，作業計画に対する実績を把握するのに適しており，個人やグループの進捗管理に利用される。',
+      '進捗管理上のマイルストーンを把握するのに適しており，プロジェクト全体の進捗管理などに利用される。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-9',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 9,
+    questionText: 'プロジェクトマネジメントにおけるクラッシングの例として，適切なものはどれか。',
+    choices: [
+      'クリティカルパス上の遅れているアクティビティに人員を増強した。',
+      'コストを削減するために，これまで承認されていた残業を禁止した。',
+      '仕様の確定が大幅に遅れたので，プロジェクトの完了予定日を延期した。',
+      '設計が終わったモジュールから順に並行してプログラム開発を実施するように，スケジュールを変更した。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'planning',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-10',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 10,
+    questionText: 'EVM を採用しているプロジェクトにおける，ある時点の CPI が 1.0 を下回っていた場合の対処として，適切なものはどれか。',
+    choices: [
+      '実コストが予算コストを下回っているので，CPI に基づいて完成時総コストを下方修正する。',
+      '実コストを CPI で割った値を使って，完成時総コストを見積もり，予想値とする。',
+      '超過コストの原因を明確にし，CPI の改善策に取り組むとともに，CPI の値を監視する。',
+      'プロジェクトの完成時には CPI が 1.0 となることを利用して，CPI が 1.0 となる完成時期を予測し，スケジュールを見直す。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-11',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 11,
+    questionText:
+      'ファンクションポイント法の一つである IFPUG 法では，機能を機能種別に従ってデータファンクションとトランザクションファンクションとに分類する。機能種別を適切に分類したものはどれか。\n\n〔機能種別〕\nEI：外部入力\nEO：外部出力\nILF：内部論理ファイル\nEIF：外部インタフェースファイル\nEQ：外部照会',
+    choices: ['選択肢アの分類', '選択肢イの分類', '選択肢ウの分類', '選択肢エの分類'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'measurement',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔機能種別の分類〕',
+      headers: ['', 'データファンクション', 'トランザクションファンクション'],
+      rows: [
+        ['ア', 'EI，EO，EQ', 'EIF，ILF'],
+        ['イ', 'EIF，EQ，ILF', 'EI，EO'],
+        ['ウ', 'EIF，ILF', 'EI，EO，EQ'],
+        ['エ', 'ILF', 'EI，EIF，EO，EQ'],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H27-12',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 12,
+    questionText:
+      'PMBOK のリスクマネジメントでは，定性的リスク分析でリスク対応計画の優先順位を設定し，定量的リスク分析で数値によるリスクの等級付けを行う。定性的リスク分析で使用されるものはどれか。',
+    choices: ['感度分析', '期待金額価値分析', 'デシジョンツリー分析', '発生確率・影響度マトリックス'],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'uncertainty',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-13',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 13,
+    questionText: 'プロジェクトの品質コストを適合コストと不適合コストに分類するとき，適合コストに属するものはどれか。',
+    choices: ['クレーム調査費', '損害賠償費', '品質保証教育訓練費', 'プログラム不具合修正費'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-14',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 14,
+    questionText: '品質の定量的評価の指標のうち，ソフトウェアの保守性の評価指標になるものはどれか。',
+    choices: [
+      '（最終成果物に含まれる誤りの件数）÷（最終成果物の量）',
+      '（修正時間の合計）÷（修正件数）',
+      '（変更が必要となるソースコードの行数）÷（移植するソースコードの行数）',
+      '（利用者からの改良要求件数）÷（出荷後の経過月数）',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-15',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 15,
+    questionText:
+      '次の調達の要領で，ソフトウェア開発を外部に委託した。ほぼ計画どおりの日程で全工程を終了して受入れテストを実施したところ，委託した範囲の設計不良によるソフトウェアの欠陥が多数発見された。プロジェクト調達マネジメントの観点から，取得者が実施すべき再発防止の施策として，最も適切なものはどれか。\n\n〔調達の要領〕\n・委託の範囲はシステム開発の一部分であり，ソフトウェア方式設計からソフトウェア結合までを一括して発注する。\n・前年度の実績評価を用いて，ソフトウェア開発の評点が最も高い供給者を選定する。\n・毎月 1 回の進捗確認を実施して，進捗報告書に記載されたソフトウェア構成品目ごとの進捗を確認する。\n・成果物は，委託した全工程が終了したときに一括して検査する。',
+    choices: [
+      '同じ供給者を選定しないように，当該供給者のソフトウェア開発の実績評価の評点を下げる。',
+      '各開発工程の区切りで工程の成果物を提出させて検査し，品質に問題がある場合は原因を特定させて，是正させる。',
+      '進捗確認で，作成した設計書のページ数，作成したプログラムの行数，実施したテストケース数など，定量的な報告を求める。',
+      '進捗確認の頻度を毎月 1 回から毎週 1 回に変更して，進捗をより短い周期で確認する。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'project-work',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-16',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 16,
+    questionText:
+      '安全性と信頼性について，次の方針でプログラム設計を行う場合，その方針を表す用語はどれか。\n\n〔方針〕\n不特定多数の人が使用するプログラムには，自分だけが使用するプログラムに比べて，より多くのデータチェックの機能を組み込む。プログラムが処理できるデータの前提条件を文書に書いておくだけでなく，その前提を満たしていないデータが実際に入力されたときは，エラーメッセージを表示して再入力を促すようにプログラムを作る。',
+    choices: ['フールプルーフ', 'フェールセーフ', 'フェールソフト', 'フォールトトレラント'],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-17',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 17,
+    questionText: 'リーンソフトウェア開発の説明として，適切なものはどれか。',
+    choices: [
+      '経験に基づいたプロセス制御や複雑適応系理論を基本としており，スプリントと呼ばれる周期で“検査と適応”を繰り返しながら開発を進める。',
+      '製造業の現場から生まれた手法をソフトウェア開発に適用したものであり，“ムダをなくす”，“品質を作り込む”など，七つの原則を提示している。',
+      '比較的小規模な開発に適した，プログラミング中心の開発アプローチであり，“コミュニケーション”など五つの価値を定義し，それらを高めるように開発を進める。',
+      '利用者から見て価値があるまとまりを一つの機能単位とし，その単位ごとに，設計や構築などの五つのプロセスを繰り返しながら開発を進める。',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-18',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 18,
+    questionText: 'マッシュアップを利用して Web コンテンツを表示している例として，最も適切なものはどれか。',
+    choices: [
+      'Web ブラウザにプラグインを組み込み，動画やアニメーションを表示する。',
+      '地図上のカーソル移動に伴い，Web ページを切り替えずにスクロール表示する。',
+      '鉄道経路の探索結果上に，各鉄道会社の Web ページへのリンクを表示する。',
+      '店舗案内の Web ページ上に，他のサイトが提供する地図検索機能を利用して出力された情報を表示する。',
+    ],
+    correctIndex: 3,
+    explanation: '',
+    categoryId: 'development-approach',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-19',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 19,
+    questionText: 'IT サービスマネジメントにおける，インシデント及びサービス要求管理の主な活動はどれか。',
+    choices: [
+      'インシデントの影響を最小限にするための既知の誤り記録の作成',
+      'インシデントの解決とサービスの復旧',
+      'インシデントの傾向分析と予防処置',
+      'インシデントの未知の根本原因の特定',
+    ],
+    correctIndex: 1,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-20',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 20,
+    questionText:
+      '新システムの開発を計画している。提案された 4 案の中で，TCO（総所有費用）が最小のものはどれか。ここで，このシステムは開発後，3 年間使用されるものとする。',
+    choices: ['A案', 'B案', 'C案', 'D案'],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+    figure: {
+      type: 'table',
+      caption: '〔TCO 比較（単位 百万円）〕',
+      headers: ['', 'A案', 'B案', 'C案', 'D案'],
+      rows: [
+        ['ハードウェア導入費用', 30, 30, 40, 40],
+        ['システム開発費用', 30, 50, 30, 40],
+        ['導入教育費用', 5, 5, 5, 5],
+        ['ネットワーク通信費用／年', 20, 20, 15, 15],
+        ['保守費用／年', 6, 5, 5, 5],
+        ['システム運用費用／年', 6, 4, 6, 4],
+      ],
+      rowHeaderFirstCol: true,
+    },
+  },
+  {
+    id: 'om-H27-21',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 21,
+    questionText: '非機能要件の使用性に該当するものはどれか。',
+    choices: [
+      '4 時間以内のトレーニングを受けることで，新しい画面を操作できるようになること',
+      '業務量がピークの日であっても，8 時間以内で夜間バッチ処理を完了できること',
+      '現行のシステムから新システムに 72 時間以内で移行できること',
+      '地震などの大規模災害時であっても，144 時間以内にシステムを復旧できること',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'delivery',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-22',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 22,
+    questionText: '不正競争防止法で保護されるものはどれか。',
+    choices: [
+      '特許権を取得した発明',
+      '頒布されている独自のシステム開発手順書',
+      '秘密として管理している，事業活動用の非公開の顧客名簿',
+      '秘密として管理していない，自社システムを開発するための重要な設計書',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-23',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 23,
+    questionText: '広告宣伝のメールを送信する場合，特定電子メール法に照らして適切なものはどれか。',
+    choices: [
+      '送信の許諾を通知する手段をメールに表示していれば，同意を得ていない不特定多数の人にメールを送信することができる。',
+      '送信の同意を得ていない不特定多数の人にメールを送信する場合は，メールの表題部分に未承諾広告であることを明示する。',
+      '取引関係にあるなどの一定の場合を除き，あらかじめ送信に同意した者だけに対して送信するオプトイン方式をとる。',
+      'メールアドレスを自動的に生成するプログラムを利用してメールを送信する場合は，送信者の氏名・連絡先をメールに明示する。',
+    ],
+    correctIndex: 2,
+    explanation: '',
+    categoryId: 'governance',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-24',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 24,
+    questionText: '米国 NIST が制定した，AES における鍵長の条件はどれか。',
+    choices: [
+      '128 ビット，192 ビット，256 ビットから選択する。',
+      '256 ビット未満で任意に指定する。',
+      '暗号化処理単位のブロック長よりも 32 ビット長くする。',
+      '暗号化処理単位のブロック長よりも 32 ビット短くする。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
+  },
+  {
+    id: 'om-H27-25',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 25,
+    questionText: 'テンペスト技術の説明とその対策として，適切なものはどれか。',
+    choices: [
+      'ディスプレイなどから放射される電磁波を傍受し，表示内容などを盗み見る技術であり，その対策としては，電磁波を遮断する。',
+      'データ通信の途中でパケットを横取りし，内容を改ざんする技術であり，その対策としては，ディジタル署名を利用して改ざんを検知する。',
+      'マクロウイルスにおいて使われる技術であり，その対策としては，ウイルス対策ソフトを導入し，最新の定義ファイルを適用する。',
+      '無線 LAN の信号を傍受し，通信内容を解析する技術であり，その対策としては，通信パケットを暗号化する。',
+    ],
+    correctIndex: 0,
+    explanation: '',
+    categoryId: 'service-management',
+    sourceUrl: H27_SPRING_PM_AM2_SOURCE_URL,
   },
 ]
 
