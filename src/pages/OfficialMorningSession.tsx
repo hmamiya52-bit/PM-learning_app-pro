@@ -407,9 +407,12 @@ export default function OfficialMorningSession() {
                 disabled={showExplanation}
                 className={`w-full text-left rounded-xl px-3.5 py-3 ${textClass} text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
               >
-                <span className="inline-block text-xs font-bold text-brand-dark mr-2">
-                  {showExplanation ? ANSWER_LABELS[originalIdx] : DISPLAY_LABELS[displayIdx]}.
-                </span>
+                {showExplanation && (
+                  <span className="block text-xs font-bold text-red-600 mb-1">
+                    解答記号：{ANSWER_LABELS[originalIdx]}
+                  </span>
+                )}
+                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{DISPLAY_LABELS[displayIdx]}.</span>
                 <MathText text={choice.text} />
               </button>
             )
