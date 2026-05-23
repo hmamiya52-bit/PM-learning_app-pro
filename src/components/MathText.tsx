@@ -1,19 +1,27 @@
 import { Fragment, type ReactNode } from 'react'
 
 /**
- * 数式マークアップを含むテキストを React 要素にレンダリングする。
+ * 数式・強調マークアップを含むテキストを React 要素にレンダリングする。
  *
- * 対応マークアップ（LaTeX サブセット風、波括弧でネスト可）:
+ * 数式マークアップ（LaTeX サブセット風、波括弧でネスト可）:
  *   frac{num}{den}  → 分数（縦積み、横線あり）
  *   ^{exp}          → 上付き（指数）
  *   _{sub}          → 下付き
  *
- * 例:
- *   'E=5.2L^{0.98}'                    → E=5.2L⁰⁻⁹⁸ 風
- *   'frac{1}{X}+frac{1}{Y}+frac{1}{Z}'  → 1/X + 1/Y + 1/Z（積み分数）
- *   'frac{1}{frac{1}{X}+frac{1}{Y}+frac{1}{Z}}'  → ネスト OK
+ * 強調マークアップ（ノート規約と同じ、F2-P3 解説品質向上で追加）:
+ *   ==X==           → 赤字・太字（暗記対象キーワード相当、解説中の重要語句）
+ *   __X__           → ネイビー (#9d5b8b)・太字（構造ラベル / 「ア」「イ」等の選択肢ラベル）
  *
- * 数学記号を含まない文字列はそのまま表示される（コスト最小）。
+ * 例:
+ *   'E=5.2L^{0.98}'                       → E=5.2L^0.98 風
+ *   'frac{1}{X}+frac{1}{Y}+frac{1}{Z}'     → 1/X + 1/Y + 1/Z（積み分数）
+ *   '==プロジェクト憲章==は立ち上げで作成' → 「プロジェクト憲章」が赤字太字
+ *   '__ア__ は EVM の説明'                  → 「ア」がネイビー太字
+ *
+ * パース順序: == → __ → frac → ^ → _ の順で先取りマッチ
+ * （`__X__` が `_{` より先に評価されるため衝突しない）
+ *
+ * 数学記号・強調記号を含まない文字列はそのまま表示される（コスト最小）。
  */
 
 function findBalancedClose(s: string, openIdx: number): number {
@@ -43,6 +51,38 @@ function parseMath(text: string, keyPrefix = 'm'): ReactNode {
   }
 
   while (i < text.length) {
+    // ==X== 赤字・太字（強調マークアップ、解説中の重要語句用）
+    if (text.startsWith('==', i)) {
+      const closeIdx = text.indexOf('==', i + 2)
+      if (closeIdx > i + 2) {
+        flush()
+        out.push(
+          <span key={`${keyPrefix}-r${n++}`} className="text-red-600 font-bold">
+            {parseMath(text.slice(i + 2, closeIdx), `${keyPrefix}-r${n - 1}`)}
+          </span>,
+        )
+        i = closeIdx + 2
+        continue
+      }
+    }
+    // __X__ ネイビー・太字（構造ラベル「ア/イ/ウ/エ」等）
+    if (text.startsWith('__', i)) {
+      const closeIdx = text.indexOf('__', i + 2)
+      if (closeIdx > i + 2) {
+        flush()
+        out.push(
+          <span
+            key={`${keyPrefix}-nv${n++}`}
+            className="font-bold"
+            style={{ color: '#9d5b8b' }}
+          >
+            {parseMath(text.slice(i + 2, closeIdx), `${keyPrefix}-nv${n - 1}`)}
+          </span>,
+        )
+        i = closeIdx + 2
+        continue
+      }
+    }
     // frac{num}{den}
     if (text.startsWith('frac{', i)) {
       const numClose = findBalancedClose(text, i + 4)
