@@ -447,7 +447,7 @@ export const serviceManagementQuestions: Question[] = [
   {
     id: 'pm-sm-045',
     topicId: 'service-management',
-    questionText: 'システム監査の実施プロセスは，計画立案 → 予備調査 → 本調査 → {{blank}}の 4 ステップで進む。',
+    questionText: 'システム監査の実施プロセスは，計画立案 → 予備調査 → 本調査 →{{blank}}の 4 ステップで進む。',
     correctAnswer: '監査報告・フォローアップ',
     choices: ['監査報告・フォローアップ', '法令制定・公布', '組織再編・配置転換', '財務監査・税務監査'],
     explanation: '4 ステップ: 計画 / 予備調査（対象理解・リスク特定）/ 本調査（証拠収集）/ 監査報告（指摘事項・改善勧告）。フォローアップで改善状況を再評価する。',
