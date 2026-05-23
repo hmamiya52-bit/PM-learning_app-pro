@@ -56,6 +56,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['テーラリング', '変更管理', 'チームマネジメント', 'リーダー育成'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf',
   },
+
+  // ─── R5 午後I ───────────────────────────────────────────────────
+  {
+    id: 'R5-PM1-1',
+    year: 'R5',
+    yearLabel: '令和5（2023）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 1,
+    title: '価値の共創を目指すプロジェクトチームのマネジメント',
+    keywords: ['価値共創', 'チームマネジメント', 'リーダーシップ', 'テーラリング'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R5-PM1-2',
+    year: 'R5',
+    yearLabel: '令和5（2023）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 2,
+    title: 'システム開発プロジェクトにおけるイコールパートナーシップ',
+    keywords: ['イコールパートナーシップ', '適応力', '回復力', '協力会社'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R5-PM1-3',
+    year: 'R5',
+    yearLabel: '令和5（2023）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: '化学品製造業における予兆検知システム',
+    keywords: ['ステークホルダ', '予兆検知', '開発アプローチ', '知識継承'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
