@@ -11,6 +11,9 @@
 import { categories } from '../src/data/categories'
 import { questions } from '../src/data/questions'
 import { NOTE_DB } from '../src/pages/NoteDetail'
+import { afternoonProblems } from '../src/data/afternoonProblems'
+import { officialAnswers } from '../src/data/officialAnswers'
+import { scoringMap } from '../src/data/scoringMap'
 
 type EmphasisStyle = 'red' | 'navy' | 'plain'
 const VALID_STYLES: ReadonlySet<EmphasisStyle> = new Set(['red', 'navy', 'plain'])
@@ -133,6 +136,64 @@ for (const [categoryId, note] of Object.entries(NOTE_DB)) {
           })
         }
       })
+    }
+  })
+}
+
+// ─────────────────────────────────────────────
+// 4. 午後I データ（afternoonProblems / officialAnswers / scoringMap）の整合性
+//    - id 重複なし
+//    - afternoonProblems / officialAnswers / scoringMap の id 集合が一致
+//    - scoringMap[id].length === officialAnswers[id].answers.length
+//    - RowScore: correct >= partial >= 0
+// ─────────────────────────────────────────────
+const apIds = new Set<string>()
+for (const p of afternoonProblems) {
+  if (apIds.has(p.id)) error(`afternoonProblems の id "${p.id}" が重複`)
+  apIds.add(p.id)
+}
+
+const oaIdSet = new Set<string>()
+const oaAnswerCount = new Map<string, number>()
+for (const o of officialAnswers) {
+  if (oaIdSet.has(o.id)) error(`officialAnswers の id "${o.id}" が重複`)
+  oaIdSet.add(o.id)
+  oaAnswerCount.set(o.id, o.answers.length)
+}
+
+const smIdSet = new Set<string>(Object.keys(scoringMap))
+
+// 3 集合一致
+for (const id of apIds) {
+  if (!oaIdSet.has(id)) error(`afternoonProblems の "${id}" が officialAnswers に存在しない`)
+  if (!smIdSet.has(id)) error(`afternoonProblems の "${id}" が scoringMap に存在しない`)
+}
+for (const id of oaIdSet) {
+  if (!apIds.has(id)) error(`officialAnswers の "${id}" が afternoonProblems に存在しない`)
+}
+for (const id of smIdSet) {
+  if (!apIds.has(id)) error(`scoringMap の "${id}" が afternoonProblems に存在しない`)
+}
+
+// 行数一致 & RowScore 範囲
+for (const id of smIdSet) {
+  const rows = scoringMap[id]
+  const expected = oaAnswerCount.get(id)
+  if (expected !== undefined && rows.length !== expected) {
+    error(
+      `scoringMap[${id}] の行数 ${rows.length} が officialAnswers[${id}].answers.length ${expected} と不一致`
+    )
+  }
+  rows.forEach((r, i) => {
+    if (typeof r.correct !== 'number' || typeof r.partial !== 'number') {
+      error(`scoringMap[${id}][${i}] が RowScore 型でない`)
+      return
+    }
+    if (r.correct < 0 || r.partial < 0) {
+      error(`scoringMap[${id}][${i}] が負値（correct=${r.correct}, partial=${r.partial}）`)
+    }
+    if (r.partial > r.correct) {
+      error(`scoringMap[${id}][${i}] で partial > correct（${r.partial} > ${r.correct}）`)
     }
   })
 }
