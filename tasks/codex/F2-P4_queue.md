@@ -22,7 +22,7 @@
 
 | 優先 | 年度 | yearLabel | era | 試験年 | 状態 | 問題冊子 URL | 解答例 URL |
 |---:|---|---|---|---|---|---|---|
-| - | R6 | 令和6（2024） | reiwa | 2024 | **未着手（F1 サンプル 2 件あり、本タスクで本データに上書き可）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2024r06.html から取得 | 同上 |
+| - | R6 | 令和6（2024） | reiwa | 2024 | **進行中（Codex 担当 / 2026-05-23）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_ans.pdf |
 | 1 | R5 | 令和5（2023） | reiwa | 2023 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2023r05.html から取得 | 同上 |
 | 2 | R4 | 令和4（2022） | reiwa | 2022 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2022r04.html から取得 | 同上 |
 | 3 | R3 | 令和3（2021） | reiwa | 2021 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2021r03.html から取得 | 同上 |
