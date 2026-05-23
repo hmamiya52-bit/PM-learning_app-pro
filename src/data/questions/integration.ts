@@ -35,7 +35,7 @@ export const integrationQuestions: Question[] = [
   {
     id: 'pm-ig-003',
     topicId: 'integration',
-    questionText: 'PMBOK第6版 第4章「統合マネジメント」は，プロジェクト憲章作成・PM計画書作成・作業の指揮・知識マネジメント・監視・統合変更管理・{{blank}}の 7 プロセスで構成される。',
+    questionText: 'PMBOK第6版 第4章「統合マネジメント」は，プロジェクト憲章作成・PM 計画書作成・作業の指揮・知識マネジメント・監視・統合変更管理・{{blank}}の 7 プロセスで構成される。',
     correctAnswer: 'プロジェクトまたはフェーズの終結',
     choices: ['プロジェクトまたはフェーズの終結', 'リスクマネジメント計画', 'コミュニケーション計画', '調達マネジメント計画'],
     explanation: '4.1 憲章 / 4.2 計画書 / 4.3 指揮 / 4.4 知識 / 4.5 監視 / 4.6 変更 / 4.7 終結 の7プロセス。終結プロセスは知識エリアの中で「終結」が含まれる唯一の章。',
@@ -180,7 +180,7 @@ export const integrationQuestions: Question[] = [
   {
     id: 'pm-ig-018',
     topicId: 'integration',
-    questionText: '監視・コントロールプロセスの情報フローは，作業パフォーマンス・データ → 作業パフォーマンス情報 → {{blank}}の順に変換される。',
+    questionText: '監視・コントロールプロセスの情報フローは，作業パフォーマンス・データ → 作業パフォーマンス情報 →{{blank}}の順に変換される。',
     correctAnswer: '作業パフォーマンス報告書',
     choices: ['作業パフォーマンス報告書', '作業パフォーマンス指標', 'プロジェクト指標', 'プロジェクト計画書'],
     explanation: 'データ（生）→ 情報（分析済）→ 報告書（配布用）の 3 段階。データは 4.3，情報は 4.5，報告書は 10.2 で生成される。',
@@ -307,7 +307,7 @@ export const integrationQuestions: Question[] = [
   {
     id: 'pm-ig-031',
     topicId: 'integration',
-    questionText: '変更管理ワークフローの典型的な手順は，変更要求の起票 → ログ登録 → 影響評価 → CCB 審査 → {{blank}}である。',
+    questionText: '変更管理ワークフローの典型的な手順は，変更要求の起票 → ログ登録 → 影響評価 → CCB 審査 →{{blank}}である。',
     correctAnswer: '承認・却下・差し戻し → 実施・反映',
     choices: ['承認・却下・差し戻し → 実施・反映', '配布 → 終結', '計画変更 → 終了', '記録 → 監査'],
     explanation: '起票・分析・審査・実施・反映のフローを定型化することで，変更が「やった/やらない」が曖昧になることを防ぐ。',
