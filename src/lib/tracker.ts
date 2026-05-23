@@ -98,9 +98,9 @@ export function removePlan(problemId: string): void {
   touchAfternoonPlanSyncMeta(problemId)
 }
 
-/** 午後I（PM1）の満点。F2-P4 でコンテンツ揃え時に再確認。 */
+/** 午後I（PM1）は1問50点満点。 */
 export function getMaxScore(_section: 'PM1'): number {
-  return 100
+  return 50
 }
 
 /**

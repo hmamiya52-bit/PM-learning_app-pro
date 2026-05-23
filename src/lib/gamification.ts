@@ -171,28 +171,28 @@ function countMasteredCategories(threshold: number): number {
 /**
  * 午後問題（PM1）関連バッジの判定材料を集約
  *
- * F1-P3 PM化: NW の G1/G2 二分割を廃止し、PM1（100点満点）一本で集計。
+ * F1-P3 PM化: NW の G1/G2 二分割を廃止し、PM1（50点満点）一本で集計。
  * 既存 badges.ts の `g1Over40` / `g2Over80` バッジ ID 互換のため、
- * 変数名は維持（PM1 で 40点以上 / 80点以上）。F2-P6 でバッジ再設計予定。
+ * 変数名は維持（PM1 で 40点以上 / 45点以上）。F2-P6 でバッジ再設計予定。
  */
 function computeAfternoonStats() {
   const records = loadRecords()
   const total = records.length
   let g1Over40 = 0   // PM1 で 40点以上
-  let g2Over80 = 0   // PM1 で 80点以上
+  let g2Over80 = 0   // PM1 で 45点以上（旧ID互換の変数名）
   // 各 problemId について最高得点を集計（万里一空判定用）
   const bestScoreByProblem = new Map<string, number>()
   for (const r of records) {
     if (r.score >= 40) g1Over40++
-    if (r.score >= 80) g2Over80++
+    if (r.score >= 45) g2Over80++
     const prev = bestScoreByProblem.get(r.problemId) ?? -1
     if (r.score > prev) bestScoreByProblem.set(r.problemId, r.score)
   }
-  // 万里一空: 全 afternoonProblems で 60点以上の記録が存在（PM1 100点満点で60% = 60点）
+  // 万里一空: 全 afternoonProblems で 30点以上の記録が存在（PM1 50点満点で60% = 30点）
   let allClearedSixty = afternoonProblems.length > 0
   for (const p of afternoonProblems) {
     const best = bestScoreByProblem.get(p.id) ?? -1
-    if (best < 60) {
+    if (best < 30) {
       allClearedSixty = false
       break
     }
@@ -357,11 +357,11 @@ export function applyAnswer(event: AnswerEvent): AnswerGamificationResult {
   }
 }
 
-/** 午後I（PM1, 100点満点）XP 計算式（F1-P-1 D-LIB-02 で確定: NW G2式を流用） */
+/** 午後I（PM1, 50点満点）XP 計算式（20/30/40点で段階化） */
 function calcPm1Xp(score: number): number {
-  if (score < 40)      return score * 3
-  if (score < 60)      return score * 4
-  if (score < 80)      return score * 8
+  if (score < 20)      return score * 3
+  if (score < 30)      return score * 4
+  if (score < 40)      return score * 8
   return Math.min(score * 15, 1500)
 }
 

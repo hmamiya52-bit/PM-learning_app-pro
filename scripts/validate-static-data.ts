@@ -196,6 +196,10 @@ for (const id of smIdSet) {
       error(`scoringMap[${id}][${i}] で partial > correct（${r.partial} > ${r.correct}）`)
     }
   })
+  const totalScore = rows.reduce((sum, r) => sum + r.correct, 0)
+  if (totalScore !== 50) {
+    error(`scoringMap[${id}] の合計点 ${totalScore} が午後I満点 50 と不一致`)
+  }
 }
 
 // ─────────────────────────────────────────────
