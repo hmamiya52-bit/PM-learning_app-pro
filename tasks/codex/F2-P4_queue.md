@@ -23,7 +23,7 @@
 | 優先 | 年度 | yearLabel | era | 試験年 | 状態 | 問題冊子 URL | 解答例 URL |
 |---:|---|---|---|---|---|---|---|
 | - | R6 | 令和6（2024） | reiwa | 2024 | **完了（Codex / 2026-05-23 / commit c2d91aa）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_ans.pdf |
-| 1 | R5 | 令和5（2023） | reiwa | 2023 | **進行中（Codex 担当 / 2026-05-23）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_ans.pdf |
+| 1 | R5 | 令和5（2023） | reiwa | 2023 | **完了（Codex / 2026-05-23 / commit ba1724d）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_ans.pdf |
 | 2 | R4 | 令和4（2022） | reiwa | 2022 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2022r04.html から取得 | 同上 |
 | 3 | R3 | 令和3（2021） | reiwa | 2021 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2021r03.html から取得 | 同上 |
 | 4 | R2 | 令和2（2020） | reiwa | 2020 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2020r02.html から取得 | 同上 |
@@ -54,6 +54,7 @@ R6 午前II の URL 命名規則: `2024r06a_pm_am2_qs.pdf` / `2024r06a_pm_am2_an
 ```
 （Codex が完了するたびにここに追記）
 - R6: 完了（2026-05-23 / commit c2d91aa） → Claude レビュー待ち
+- R5: 完了（2026-05-23 / commit ba1724d） → Claude レビュー待ち
 ```
 
 例:
