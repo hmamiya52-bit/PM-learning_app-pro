@@ -22,7 +22,7 @@ export interface AfternoonProblem {
 }
 
 export const afternoonProblems: AfternoonProblem[] = [
-  // ─── F1 段階のサンプル2件。F2-P4 で全年度（H25〜現行）に拡張 ───────────────
+  // ─── R6 午後I ───────────────────────────────────────────────────
   {
     id: 'R6-PM1-1',
     year: 'R6',
@@ -30,9 +30,9 @@ export const afternoonProblems: AfternoonProblem[] = [
     era: 'reiwa',
     section: 'PM1',
     number: 1,
-    title: 'サンプル問題1（フェーズ2で本格投入予定）',
-    keywords: ['stakeholder'],
-    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/index.html',
+    title: '顧客体験価値（以下，UX という）を提供するシステム開発プロジェクト',
+    keywords: ['UX', 'ユーザーニーズ', '品質確保', '利用者参加型'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf',
   },
   {
     id: 'R6-PM1-2',
@@ -41,9 +41,20 @@ export const afternoonProblems: AfternoonProblem[] = [
     era: 'reiwa',
     section: 'PM1',
     number: 2,
-    title: 'サンプル問題2（フェーズ2で本格投入予定）',
-    keywords: ['planning'],
-    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/index.html',
+    title: 'プロジェクトマネジメントの計画',
+    keywords: ['マネジメント計画', 'ステークホルダ', '役割分担', '課題管理'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R6-PM1-3',
+    year: 'R6',
+    yearLabel: '令和6（2024）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: 'プロジェクト計画の修整（テーラリング）',
+    keywords: ['テーラリング', '変更管理', 'チームマネジメント', 'リーダー育成'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf',
   },
 ]
 
