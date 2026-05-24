@@ -55,7 +55,7 @@ export interface LocalSyncState {
 
   // === PM追加（F1-P2 開始）===
   importantQuestions: string[]                    // ★F1-P2 重要マーク済み questionId（'q-*' / 'om-*' 両方）
-  morningRecords: MorningRecord[]                  // ★F1-P4 公式午前II 解答履歴
+  morningRecords: MorningRecord[]                  // ★F1-P4 公式午前Ⅱ 解答履歴
   essayAttempts: EssayAttempt[]                    // ★F1-P5 論述 練習履歴（active session は同期しない）
   essayPlans: Record<string, string>               // ★F1-P5 論述 学習計画日 problemId → YYYY-MM-DD
   // ※ savedAnswers ワイルドカードは F2-P4 で wire format 拡張時に対応

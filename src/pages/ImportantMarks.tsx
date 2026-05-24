@@ -16,9 +16,9 @@ import {
  * - 全 pmap:important_questions を取得
  * - q-* と om-* を区別して2セクションに表示
  * - 各行: モードバッジ / 問題文抜粋 / 解除ボタン
- * - 上部に「クイズ全解除」「公式午前II全解除」「全解除」ボタン
+ * - 上部に「クイズ全解除」「公式午前Ⅱ全解除」「全解除」ボタン
  *
- * NOTE: 公式午前II問題（om-*）は F1-P4 で officialMorningQuestions が
+ * NOTE: 公式午前Ⅱ問題（om-*）は F1-P4 で officialMorningQuestions が
  *       実装されるまで「ID表示のみ」となる。
  */
 
@@ -65,7 +65,7 @@ export default function ImportantMarks() {
       })
   }, [quizIds])
 
-  // 公式午前II：F1-P4 で実装されるまで ID 表示のみ
+  // 公式午前Ⅱ：F1-P4 で実装されるまで ID 表示のみ
   const markedMorning: MarkedMorning[] = useMemo(
     () => morningIds.map((id) => ({ id })),
     [morningIds],
@@ -86,13 +86,13 @@ export default function ImportantMarks() {
   }
 
   const handleClearMorning = () => {
-    if (!confirm('公式午前II問題の重要マークを全て解除しますか？')) return
+    if (!confirm('公式午前Ⅱ問題の重要マークを全て解除しますか？')) return
     clearImportantOfMode('om-')
     refresh()
   }
 
   const handleClearAll = () => {
-    if (!confirm('すべての重要マークを解除しますか？\n（クイズ・公式午前II 両方が対象）')) return
+    if (!confirm('すべての重要マークを解除しますか？\n（クイズ・公式午前Ⅱ 両方が対象）')) return
     clearAllImportant()
     refresh()
   }
@@ -113,7 +113,7 @@ export default function ImportantMarks() {
           <div>
             <h1 className="text-2xl font-black text-slate-800">重要マーク管理</h1>
             <p className="text-sm text-slate-500 mt-1">
-              クイズ {quizIds.length} 件 / 公式午前II {morningIds.length} 件
+              クイズ {quizIds.length} 件 / 公式午前Ⅱ {morningIds.length} 件
               <span className="mx-2 text-slate-300">|</span>
               合計 <span className="font-bold text-brand-dark">{totalCount}</span> 件
             </p>
@@ -137,7 +137,7 @@ export default function ImportantMarks() {
               disabled={morningIds.length === 0}
               className="text-xs font-bold rounded-md px-3 py-1.5 border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              公式午前II全解除（{morningIds.length}件）
+              公式午前Ⅱ全解除（{morningIds.length}件）
             </button>
             <button
               type="button"
@@ -203,17 +203,17 @@ export default function ImportantMarks() {
           </section>
         )}
 
-        {/* 公式午前II問題セクション */}
+        {/* 公式午前Ⅱ問題セクション */}
         {markedMorning.length > 0 && (
           <section className="mb-6">
             <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-              公式午前II問題（{markedMorning.length}件）
+              公式午前Ⅱ問題（{markedMorning.length}件）
             </h2>
             <ul className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100 overflow-hidden">
               {markedMorning.map((item) => (
                 <li key={item.id} className="flex items-center gap-3 px-4 py-3">
                   <span className="inline-block text-[10px] font-bold rounded-full px-2 py-0.5 bg-indigo-100 text-indigo-700 flex-shrink-0">
-                    午前II
+                    午前Ⅱ
                   </span>
                   <p className="text-sm text-slate-700 font-mono flex-1 min-w-0 truncate">
                     {item.id}
@@ -230,7 +230,7 @@ export default function ImportantMarks() {
               ))}
             </ul>
             <p className="text-[11px] text-slate-400 mt-1.5">
-              ※ 問題本文の表示は F1-P4（公式午前II 骨組み）で実装予定です。
+              ※ 問題本文の表示は F1-P4（公式午前Ⅱ 骨組み）で実装予定です。
             </p>
           </section>
         )}

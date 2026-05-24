@@ -26,7 +26,7 @@ import NotFound from './pages/NotFound'
  * 開発版 App.tsx（フェーズ1）
  *
  * 設計書 §4.1 に準拠。開発期間中は AuthGuard / Login を使用しない。
- * 未実装画面（公式午前II / 論述 / 重要マーク管理）は import/Route ともコメントアウト。
+ * 未実装画面（公式午前Ⅱ / 論述 / 重要マーク管理）は import/Route ともコメントアウト。
  * F1-P2 → F1-P5 で順次有効化する。
  *
  * 正式版（v1.0.0）では §4.2 に従って AuthGuard を復活させる（F2-P6 実施）。
@@ -45,12 +45,12 @@ export default function App() {
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:categoryId" element={<NoteDetail />} />
 
-          {/* クイズ・公式午前II（F1-P4、F2-UX で Layout 配下に移動） */}
+          {/* クイズ・公式午前Ⅱ（F1-P4、F2-UX で Layout 配下に移動） */}
           <Route path="/quiz" element={<Quiz />} />
           <Route path="/morning/session" element={<OfficialMorningSession />} />
           <Route path="/morning/summary" element={<OfficialMorningSummary />} />
 
-          {/* 公式午前II トップ（F1-P4） */}
+          {/* 公式午前Ⅱ トップ（F1-P4） */}
           <Route path="/morning" element={<OfficialMorningQuiz />} />
 
           {/* 午後I（PM1のみ） */}

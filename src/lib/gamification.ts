@@ -32,7 +32,7 @@ export interface AnswerEvent {
   questionId: string
   topicId: string
   isCorrect: boolean
-  /** F1-P4 D-LIB-07: 'morning' = 公式午前II */
+  /** F1-P4 D-LIB-07: 'morning' = 公式午前Ⅱ */
   mode: 'multiple-choice' | 'written' | 'morning'
   isImportant: boolean
   difficulty: number
@@ -106,7 +106,7 @@ function saveGamification(state: GamificationState): void {
  *
  * F1-P4 D-LIB-07: 'morning' モード追加。設計書 §3.7 line 2356 の式に従う。
  * - 記述: 20
- * - 公式午前II: 5（4択より少し高い）
+ * - 公式午前Ⅱ: 5（4択より少し高い）
  * - 4択: 3
  * 難易度ボーナスは 'morning' には適用しない。
  * 重要マーク・連続正解ボーナスは全モード共通。
@@ -115,10 +115,10 @@ function calcXp(event: AnswerEvent, newStreak: number): number {
   // ベースXP
   let xp: number
   if (event.mode === 'written') xp = 20
-  else if (event.mode === 'morning') xp = 5   // ★F1-P4 公式午前II
+  else if (event.mode === 'morning') xp = 5   // ★F1-P4 公式午前Ⅱ
   else xp = 3                                  // 4択
 
-  // 難易度ボーナス（公式午前IIには適用しない）
+  // 難易度ボーナス（公式午前Ⅱには適用しない）
   if (event.mode !== 'morning') {
     if (event.difficulty === 2) xp += 2
     if (event.difficulty === 3) xp += 5

@@ -14,7 +14,7 @@ import { getMorningFontSize, setMorningFontSize, type FontSize } from '../lib/pr
 import type { BadgeDefinition } from '../data/badges'
 
 /**
- * 公式午前II 出題画面（没入型、/morning/session）
+ * 公式午前Ⅱ 出題画面（没入型、/morning/session）
  *
  * 設計書 v0.15 §2.5 / §7 に基づく:
  * - location.state.questionIds から問題リストを復元
@@ -152,7 +152,7 @@ export default function OfficialMorningSession() {
         isCorrect: correct,
         mode: 'morning',
         isImportant: isImportantMark(currentQuestion.id),
-        difficulty: 1,  // 公式午前IIには difficulty 概念なし、ダミー1（calcXp で morning は difficulty ボーナススキップ）
+        difficulty: 1,  // 公式午前Ⅱには difficulty 概念なし、ダミー1（calcXp で morning は difficulty ボーナススキップ）
       })
       setLastXpGained(gr.xpGained)
       sessionXpRef.current += gr.xpGained
@@ -241,7 +241,7 @@ export default function OfficialMorningSession() {
     upsertQuizSessionEvent(sessionId.current, {
       mode: 'random',  // 互換用、実際の scope は state.scope
       categoryId: null,
-      categoryName: state.yearLabel ? `公式午前II ${state.yearLabel}` : '公式午前II',
+      categoryName: state.yearLabel ? `公式午前Ⅱ ${state.yearLabel}` : '公式午前Ⅱ',
       questionCount: newLogs.length,
       correctCount,
       answerMode: 'multiple-choice',
@@ -306,7 +306,7 @@ export default function OfficialMorningSession() {
           </button>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm truncate">
-              公式午前II {state.yearLabel ?? ''}
+              公式午前Ⅱ {state.yearLabel ?? ''}
               {debugMode && <span className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-yellow-400 text-yellow-900 align-middle">DEBUG</span>}
             </p>
             <p className="text-white/80 text-xs">{questionList.length} 問</p>
@@ -373,7 +373,7 @@ export default function OfficialMorningSession() {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
           <div className="flex items-start justify-between gap-2 mb-2">
             <p className="text-[11px] text-slate-400 flex-1 min-w-0 break-keep">
-              出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前II 問{currentQuestion.number}
+              出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前Ⅱ 問{currentQuestion.number}
             </p>
             <button
               type="button"

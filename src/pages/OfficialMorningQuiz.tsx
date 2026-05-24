@@ -13,7 +13,7 @@ import MorningAchievementReport from '../components/morning/MorningAchievementRe
 import type { MorningRecord, OfficialMorningQuestion } from '../types'
 
 /**
- * 公式午前II トップ画面（/morning）
+ * 公式午前Ⅱ トップ画面（/morning）
  *
  * 設計書 v0.15 §2.5 / §7 に基づく:
  * - 全範囲ランダム + 問題数セレクタ（10/25/50/全問、デフォルト25）
@@ -222,7 +222,7 @@ export default function OfficialMorningQuiz() {
         <header className="rounded-xl bg-brand text-white px-4 py-3 shadow-md">
           <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <h1 className="text-base font-black leading-snug">公式午前II問題</h1>
+              <h1 className="text-base font-black leading-snug">公式午前Ⅱ問題</h1>
               <p className="text-xs text-white/80 mt-0.5">
                 IPA公式 過去問4択 全{allCount}問
                 {stats.total > 0 && (
@@ -481,7 +481,7 @@ export default function OfficialMorningQuiz() {
           <p className="font-bold mb-1">出典について</p>
           <p>
             本アプリは独立行政法人情報処理推進機構（IPA）が公開する情報処理技術者試験
-            プロジェクトマネージャ試験 午前II の過去問題を引用しています。
+            プロジェクトマネージャ試験 午前Ⅱ の過去問題を引用しています。
             問題文・選択肢は IPA 公式のまま引用しています（改変なし）。解説は本アプリ独自作成です。
           </p>
         </footer>

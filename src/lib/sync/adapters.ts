@@ -27,7 +27,7 @@ const KEYS = {
 
   // === PM追加（F1-P2 開始） ===
   IMPORTANT_QUESTIONS: 'pmap:important_questions',  // ★F1-P2 重要マーク
-  MORNING_RECORDS: 'pmap:morning:records',           // ★F1-P4 公式午前II 解答履歴
+  MORNING_RECORDS: 'pmap:morning:records',           // ★F1-P4 公式午前Ⅱ 解答履歴
   ESSAY_ATTEMPTS: 'pmap:essay:attempts',             // ★F1-P5 論述 練習履歴
   ESSAY_PLANS: 'pmap:essay:plans',                   // ★F1-P5 論述 学習計画日
   // ESSAY_ACTIVE は同期対象外（端末ローカルの離脱復帰用）

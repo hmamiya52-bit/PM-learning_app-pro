@@ -77,12 +77,12 @@ export interface Bookmark {
 }
 
 // ─────────────────────────────────────────────────
-// 公式午前II（F1-P4 で追加）
+// 公式午前Ⅱ（F1-P4 で追加）
 // 設計書 v0.15 §2.5 / basic_design §4.4 に従う
 // ─────────────────────────────────────────────────
 
 /**
- * 公式午前II 問題（IPA 過去問の引用）
+ * 公式午前Ⅱ 問題（IPA 過去問の引用）
  * id 接頭辞は 'om-'（重要マークの prefix と整合）
  */
 export interface OfficialMorningQuestion {
@@ -122,7 +122,7 @@ export type QuestionFigure =
     }
 
 /**
- * 公式午前II 解答記録（DP-P2-1 のため、自動解除なし）
+ * 公式午前Ⅱ 解答記録（DP-P2-1 のため、自動解除なし）
  */
 export interface MorningRecord {
   id: string                          // UUID

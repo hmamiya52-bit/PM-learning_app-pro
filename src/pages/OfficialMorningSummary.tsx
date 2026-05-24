@@ -5,7 +5,7 @@ import type { OfficialMorningQuestion } from '../types'
 import MathText from '../components/MathText'
 
 /**
- * 公式午前II サマリー画面（没入型、/morning/summary）
+ * 公式午前Ⅱ サマリー画面（没入型、/morning/summary）
  *
  * 設計書 v0.15 §2.5 / §7 に基づく:
  * - 正答率
@@ -73,7 +73,7 @@ export default function OfficialMorningSummary() {
       {/* ヘッダー（没入型） */}
       <header className="bg-brand text-white shadow-lg sticky top-12 z-10">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
-          <p className="font-bold text-sm flex-1">公式午前II サマリー</p>
+          <p className="font-bold text-sm flex-1">公式午前Ⅱ サマリー</p>
           {state.yearLabel && (
             <span className="text-xs bg-brand-dark text-white/90 rounded-full px-2.5 py-1">
               {state.yearLabel}
@@ -143,7 +143,7 @@ export default function OfficialMorningSummary() {
             onClick={() => navigate('/morning')}
             className="py-3 rounded-xl bg-white border-2 border-slate-200 text-sm font-bold text-slate-700 hover:border-brand hover:text-brand transition-colors"
           >
-            公式午前IIトップへ
+            公式午前Ⅱトップへ
           </button>
           <Link
             to="/"

@@ -417,7 +417,7 @@ export const NOTE_DB: Record<string, NoteData> = {
   // ───────────────────────────────────────────
   stakeholder: {
     summary:
-      'プロジェクトに影響を与える、または影響を受ける個人・組織を識別し、分析・優先順位付け・エンゲージメント計画・監視を行う活動領域。PMBOK第7版では独立したパフォーマンス領域として扱われ、PM試験 午前II・午後I 双方で頻出。',
+      'プロジェクトに影響を与える、または影響を受ける個人・組織を識別し、分析・優先順位付け・エンゲージメント計画・監視を行う活動領域。PMBOK第7版では独立したパフォーマンス領域として扱われ、PM試験 午前Ⅱ・午後I 双方で頻出。',
     sections: [
       // ── A. 定義・基本概念 ──
       {
@@ -523,7 +523,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '登録簿は__生きた文書__であり、関与状況の変化に応じて随時更新する',
           'ステークホルダー登録簿は==コミュニケーション・マネジメント計画==の重要な入力となる',
         ],
-        navyItems: [[{ text: 'PM試験 午前II・午後I で登録簿の構成項目・更新タイミングが頻出。第6版では 13.1.3.1 主要アウトプット（§32 参照）', style: 'navy' }]],
+        navyItems: [[{ text: 'PM試験 午前Ⅱ・午後I で登録簿の構成項目・更新タイミングが頻出。第6版では 13.1.3.1 主要アウトプット（§32 参照）', style: 'navy' }]],
       },
       {
         heading: '10. 識別の入力情報',
@@ -987,7 +987,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__第6版__: ==プロセスベース==。5プロセス群（立上・計画・実行・監視・終結）×10知識エリア = 49プロセス。==ITTO==（インプット・ツール&技法・アウトプット）形式',
           '__第7版__: ==原則ベース==。==12原則==＋==8パフォーマンス領域==＋テーラリング',
           '__本領域での対応__: 第6版「ステークホルダー・マネジメント」知識エリア = 第7版「==ステークホルダー==」パフォーマンス領域',
-          '__IPA PM試験 午前II__ は==第6版用語==に依拠した設問が多数（==ステークホルダー登録簿==／==エンゲージメント計画書==／==13.x プロセス==）',
+          '__IPA PM試験 午前Ⅱ__ は==第6版用語==に依拠した設問が多数（==ステークホルダー登録簿==／==エンゲージメント計画書==／==13.x プロセス==）',
           '近年は第7版概念も出題（==パフォーマンス領域==／==サーバントリーダーシップ==／==価値実現==）',
           '本アプリは両版を併記。試験頻出の==赤字==は第6版用語を優先付与（team カテゴリと同方針）',
           '__両版の枠組み比較__:',
@@ -1002,7 +1002,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       {
         heading: '34. IPA PM試験 過去問頻出論点',
         items: [
-          '__午前II 頻出__:',
+          '__午前Ⅱ 頻出__:',
           '　==ステークホルダー登録簿==の記載項目（識別情報・評価情報・分類）',
           '　==Power/Interest Grid==の象限と対応戦略',
           '　==サリエンスモデル==の3属性（Power/Legitimacy/Urgency）',
@@ -1029,7 +1029,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
     ],
     exam_tips: [
-      '【最重要】ステークホルダー登録簿の3区分（識別情報／評価情報／分類）は午前II頻出。記載項目を空で言えるレベルまで暗記。',
+      '【最重要】ステークホルダー登録簿の3区分（識別情報／評価情報／分類）は午前Ⅱ頻出。記載項目を空で言えるレベルまで暗記。',
       '【マトリクス】Power/Interest Grid の4象限と対応戦略（緊密に管理／満足を保つ／情報提供／監視）を図で覚える。',
       '【関与レベル】5段階（不認識→抵抗→中立→支持→主導）と C/D 表記の意味（現状/望ましい状態）を区別。',
       '【サリエンスモデル】3属性（Power/Legitimacy/Urgency）と所持数による分類（Latent=1, Expectant=2, Definitive=3）。',
@@ -1037,7 +1037,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       '【午後Ⅰ対策】「識別漏れ→終盤の変更要求」「関与レベル低下→懸念ヒアリング」のシナリオパターンを記述で再現できるように。',
       '【PMBOK版差分】本ノートは第6版＋第7版を統合。第6版「ステークホルダー・マネジメント」4プロセス（13.1-13.4）は §32 に集約、版対応関係は §33。試験は両版混在で出題される。',
       '【PMBOK6 4プロセス】13.1 特定（立上げ）／13.2 計画／13.3 マネジメント（実行）／13.4 監視、の順序を暗記。',
-      '【PMBOK6 ITTO】各プロセスの ITTO 主要項目（特にツール&技法）が午前II頻出。',
+      '【PMBOK6 ITTO】各プロセスの ITTO 主要項目（特にツール&技法）が午前Ⅱ頻出。',
     ],
   },
 
@@ -1115,7 +1115,7 @@ export const NOTE_DB: Record<string, NoteData> = {
         items: [
           '__第6版__: ==プロセスベース==。5プロセス群（立上・計画・実行・監視・終結）×10知識エリア = 49プロセス。==ITTO==（インプット・ツール&技法・アウトプット）形式',
           '__第7版__: ==原則ベース==。==12原則==＋==8パフォーマンス領域==＋テーラリング',
-          'IPA PM試験（午前II）は==第6版用語==に依拠した設問が多数（例: 「資源マネジメント計画書」「コスト・ベースライン」「変更管理委員会」）',
+          'IPA PM試験（午前Ⅱ）は==第6版用語==に依拠した設問が多数（例: 「資源マネジメント計画書」「コスト・ベースライン」「変更管理委員会」）',
           '近年は第7版の概念（==サーバントリーダーシップ==／==テーラリング==／==価値実現==）も出題',
           'チーム領域での対応: 第6版「資源マネジメント」=第7版「チーム」パフォーマンス領域',
           '本アプリは両版を==併記==。試験頻出の==赤字==は第6版用語を優先付与',
@@ -1452,7 +1452,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__権限分布の例__: 予算統制／要員割当／優先順位決定／評価権限の所在',
           '__利点__: ==専門性の維持==（機能部門所属）／==プロジェクト推進力==（PM配置）',
           '__欠点__: ==指揮命令系統の二重==／==忠誠の対立==（two-boss problem）',
-          'IPA午前II頻出: 弱・均衡・強の特徴一覧',
+          'IPA午前Ⅱ頻出: 弱・均衡・強の特徴一覧',
         ],
         navyItems: [[{ text: '出典: PMBOK第6版 §2.4.1.2 / 第7版「テーラリング」', style: 'navy' }]],
       },
@@ -1655,7 +1655,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '36. 過去問頻出論点（午前II）',
+        heading: '36. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__リーダーシップ理論__: ==マネジリアル・グリッド==の座標／==SL理論==の4スタイル／==サーバントリーダーシップ==の特徴',
           '__モチベーション理論__: ==マズロー==の階層（特に承認欲求）／==ハーズバーグ==の動機づけ要因 vs 衛生要因／==期待理論==の3要素／==XY理論==の対比',
@@ -1687,7 +1687,7 @@ export const NOTE_DB: Record<string, NoteData> = {
     ],
     exam_tips: [
       '【最重要】PMBOK第6版「資源マネジメント」6プロセス（9.1〜9.6）の==プロセス群==（計画／実行／監視）と==ITTO主要項目==を空で言えるレベルまで暗記。',
-      '【リーダーシップ】==マネジリアル・グリッド==の9,9（チーム型）／==SL理論==のS1〜S4／==サーバントリーダーシップ==の特徴は午前II頻出。',
+      '【リーダーシップ】==マネジリアル・グリッド==の9,9（チーム型）／==SL理論==のS1〜S4／==サーバントリーダーシップ==の特徴は午前Ⅱ頻出。',
       '【モチベーション】==マズロー==5階層／==ハーズバーグ==二要因／==XY理論==／==期待理論== の対比を表で覚える。',
       '【タックマン】5段階の==順序==（形成→混乱→規範→遂行→解散）と各段階のリーダーシップ・スタイルの対応。',
       '【RACI】==A は1人だけ==、==R は複数可==、C は==双方向==、I は==一方向==。試験頻出ルール。',
@@ -1884,7 +1884,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==振り返り==による定期的な調整',
           '試験頻出: 4価値の==右辺・左辺==の逆転や、別文言への差し替えがひっかけパターン',
         ],
-        navyItems: [[{ text: '出典: agilemanifesto.org（2001年）。IPA午前II R6秋期 問17 で出題実績', style: 'navy' }]],
+        navyItems: [[{ text: '出典: agilemanifesto.org（2001年）。IPA午前Ⅱ R6秋期 問17 で出題実績', style: 'navy' }]],
       },
       {
         heading: '13. イテラティブ vs インクリメンタル（適応型の2つの軸）',
@@ -2130,7 +2130,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__受入基準__（Acceptance Criteria）: 「完了」とみなす条件（Given-When-Then 形式が一般的）',
           '試験頻出: INVEST の6要素、特に==Valuable==の主体（開発者ではなく顧客）',
         ],
-        navyItems: [[{ text: 'IPA午前II R6秋期 問16 で INVEST 観点が出題。Bill Wake 2003年提唱', style: 'navy' }]],
+        navyItems: [[{ text: 'IPA午前Ⅱ R6秋期 問16 で INVEST 観点が出題。Bill Wake 2003年提唱', style: 'navy' }]],
       },
       {
         heading: '22. ベロシティ・バーンダウン・バーンアップ',
@@ -2273,7 +2273,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '31. 過去問頻出論点（午前II）',
+        heading: '31. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__アジャイルマニフェスト__: ==4価値==の右辺・左辺対比／別文言への差し替えひっかけ',
           '__INVEST__: 6要素（Independent/Negotiable/Valuable/Estimable/Small/Testable）と==Valuable==の主体',
@@ -2420,7 +2420,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==要求事項文書==（業務／ステークホルダー／ソリューション／品質／プロジェクトの5分類）',
           '　==要求事項トレーサビリティ・マトリクス==（RTM）: 要求の出自・優先度・実装・テストを追跡',
         ],
-        navyItems: [[{ text: 'RTM は午前II・午後I 双方で頻出。「要求 → 設計 → 実装 → テスト」の追跡が機能', style: 'navy' }]],
+        navyItems: [[{ text: 'RTM は午前Ⅱ・午後I 双方で頻出。「要求 → 設計 → 実装 → テスト」の追跡が機能', style: 'navy' }]],
       },
       {
         heading: '7. 5.3 スコープ定義',
@@ -2452,7 +2452,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主要アウトプット__: ==スコープ・ベースライン==（プロジェクト・スコープ記述書＋WBS＋WBS辞書）',
           '__WBS辞書__: 各WBS要素の==詳細記述==（作業内容・責任者・期間・コスト）',
         ],
-        navyItems: [[{ text: 'WBS は午前II 最頻出キーワード。8/80ルール・100%ルール・成果物指向は必須暗記', style: 'navy' }]],
+        navyItems: [[{ text: 'WBS は午前Ⅱ 最頻出キーワード。8/80ルール・100%ルール・成果物指向は必須暗記', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -2670,7 +2670,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__予備期間__: ==コンティンジェンシー予備==（既知のリスク）／==マネジメント予備==（未知のリスク）',
           '試験頻出: ==PERT==の重み付き計算式と==標準偏差==σ = (P-O)/6',
         ],
-        navyItems: [[{ text: 'PERT 期待値 (O+4M+P)/6 と σ = (P-O)/6 は午前II 必須暗記', style: 'navy' }]],
+        navyItems: [[{ text: 'PERT 期待値 (O+4M+P)/6 と σ = (P-O)/6 は午前Ⅱ 必須暗記', style: 'navy' }]],
       },
       {
         heading: '16. 6.5 スケジュール作成（クリティカルパス法 CPM）',
@@ -2688,7 +2688,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==フィーディングバッファ==／==プロジェクトバッファ==で保護',
           '__資源最適化技法__: ==資源平準化==（Resource Leveling）／==資源平滑化==（Resource Smoothing）',
         ],
-        navyItems: [[{ text: 'CPM・トータルフロート計算は午前II/午後I 双方で必出', style: 'navy' }]],
+        navyItems: [[{ text: 'CPM・トータルフロート計算は午前Ⅱ/午後I 双方で必出', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -2880,7 +2880,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__重要な区別__: ==コスト・ベースライン==は==マネジメント予備==を==含まない==',
           'マネジメント予備の使用には==正式な変更承認==が必要',
         ],
-        navyItems: [[{ text: 'コスト・ベースライン vs プロジェクト予算 vs マネジメント予備の階層は午前II 頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'コスト・ベースライン vs プロジェクト予算 vs マネジメント予備の階層は午前Ⅱ 頻出', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -2944,7 +2944,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__sunk cost__（埋没費用）: 既支出は==意思決定に含めない==',
           '試験頻出: NPV計算問題、IRR と資本コストの関係',
         ],
-        navyItems: [[{ text: '午前II の経済性評価問題は計算式の理解で解ける。割引率と現在価値計算の式は暗記', style: 'navy' }]],
+        navyItems: [[{ text: '午前Ⅱ の経済性評価問題は計算式の理解で解ける。割引率と現在価値計算の式は暗記', style: 'navy' }]],
       },
       // ── E. リスク・調達計画 ──
       {
@@ -3062,7 +3062,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__本領域での対応__:',
           '　第6版 §5（スコープ）+ §6（スケジュール）+ §7（コスト）= 第7版「計画」パフォーマンス領域',
           '__IPA PM試験__:',
-          '　==午前II==: 第6版用語（==WBS==・==CPM==・==PERT==・==EVM==・==コスト・ベースライン==）が中心',
+          '　==午前Ⅱ==: 第6版用語（==WBS==・==CPM==・==PERT==・==EVM==・==コスト・ベースライン==）が中心',
           '　==午後I==: 第6版プロセスベースのシナリオが多い',
           '本アプリは両版を併記。試験頻出（==赤字==）は第6版用語を優先付与',
         ],
@@ -3070,7 +3070,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '32. 過去問頻出論点（午前II）',
+        heading: '32. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__WBS__: ==8/80ルール==・==100%ルール==・==成果物指向==・ワークパッケージ',
           '__依存関係__: PDM ==FS/FF/SS/SF==の例示判別',
@@ -3102,7 +3102,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
     ],
     exam_tips: [
-      '【最重要】==WBS==（8/80ルール・100%ルール・成果物指向）／==CPM==（クリティカルパス・フロート計算）／==PERT==（期待値・標準偏差）／==見積もり4技法==は午前II 必出。',
+      '【最重要】==WBS==（8/80ルール・100%ルール・成果物指向）／==CPM==（クリティカルパス・フロート計算）／==PERT==（期待値・標準偏差）／==見積もり4技法==は午前Ⅱ 必出。',
       '【スケジュール】==PDM==の4依存関係（==FS/FF/SS/SF==）と==リード/ラグ==。==クラッシング==（コスト増）vs ==ファストトラッキング==（リスク増）の使い分け。',
       '【コスト】==コスト・ベースライン==（マネジメント予備==含まない==）vs ==プロジェクト予算==（==含む==）。==コンティンジェンシー予備==は既知リスク用。',
       '【経済性評価】==NPV==計算（現在価値割引）／==IRR==と資本コスト／==回収期間==の長短評価。',
@@ -3240,7 +3240,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主要アウトプット__: 承認された変更要求／プロジェクトマネジメント計画書の更新',
           '変更管理は==計画段階でルール化==（変更管理計画書）',
         ],
-        navyItems: [[{ text: 'CCB・統合変更管理プロセスは午前II/午後I 双方で頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'CCB・統合変更管理プロセスは午前Ⅱ/午後I 双方で頻出', style: 'navy' }]],
       },
       // ── C. 調達マネジメント ──
       {
@@ -3277,7 +3277,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==短期/小規模== → T&M',
           '__日本の請負契約__は FP に近い、==準委任契約==は T&M に近い',
         ],
-        navyItems: [[{ text: '契約形態の3類型と派生形は午前II 頻出。リスク配分が判別ポイント', style: 'navy' }]],
+        navyItems: [[{ text: '契約形態の3類型と派生形は午前Ⅱ 頻出。リスク配分が判別ポイント', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -3349,7 +3349,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==パフォーマンス連動== → CPIF',
           '　==主観的成果評価== → CPAF',
         ],
-        navyItems: [[{ text: 'CPFF/CPIF/CPAF の違いは午前II 頻出。報酬計算式の理解が判別ポイント', style: 'navy' }]],
+        navyItems: [[{ text: 'CPFF/CPIF/CPAF の違いは午前Ⅱ 頻出。報酬計算式の理解が判別ポイント', style: 'navy' }]],
       },
       {
         heading: '12. 12.2 調達の実施',
@@ -3456,7 +3456,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　　==4.5 プロジェクト作業の監視・コントロール==の主要アウトプット',
           '__配信先__: ステークホルダー（コミュニケーション計画に基づく）',
         ],
-        navyItems: [[{ text: '3段階の階層は午前II 頻出。「データ → 情報 → 報告書」の生成順序を区別', style: 'navy' }]],
+        navyItems: [[{ text: '3段階の階層は午前Ⅱ 頻出。「データ → 情報 → 報告書」の生成順序を区別', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -3698,7 +3698,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '26. 過去問頻出論点（午前II）',
+        heading: '26. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__契約形態__: 3類型（==FP/CR/T&M==）のリスク配分・選択基準',
           '__FP派生形__: ==FFP==／==FPIF==／==FP-EPA==の特徴',
@@ -3827,7 +3827,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__メリット__: ==変更影響分析==／==テストカバレッジ確認==／==スコープ・クリープ防止==',
           'RTM は==生きた文書==で、進行中も更新',
         ],
-        navyItems: [[{ text: 'RTM は午前II・午後I 双方で頻出。「要求 → 設計 → 実装 → テスト」の追跡が機能', style: 'navy' }]],
+        navyItems: [[{ text: 'RTM は午前Ⅱ・午後I 双方で頻出。「要求 → 設計 → 実装 → テスト」の追跡が機能', style: 'navy' }]],
       },
       {
         heading: '6. プロジェクト・スコープ vs プロダクト・スコープ',
@@ -3970,7 +3970,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__用途__: ==問題発見==／==原因分析==／==データ可視化==に幅広く使う',
           '試験頻出: 各ツールの==正確な名称==と==用途==の対応',
         ],
-        navyItems: [[{ text: '7QC道具は午前II 必出。石川馨「品質管理入門」1965年が起源', style: 'navy' }]],
+        navyItems: [[{ text: '7QC道具は午前Ⅱ 必出。石川馨「品質管理入門」1965年が起源', style: 'navy' }]],
       },
       {
         heading: '14. 新7QC道具',
@@ -4049,7 +4049,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '==正規分布==: ±1σは68.27%、==±2σ==は95.45%、==±3σ==は99.73%',
           '__プロセス能力指数__: ==Cp==／==Cpk==（規格幅とばらつきの比）',
         ],
-        navyItems: [[{ text: '3σ管理・正規分布のパーセンテージは午前II 計算問題で必出', style: 'navy' }]],
+        navyItems: [[{ text: '3σ管理・正規分布のパーセンテージは午前Ⅱ 計算問題で必出', style: 'navy' }]],
       },
       // ── E. 品質規格・モデル ──
       {
@@ -4247,7 +4247,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── H. IPA PM試験 出題傾向 ──
       {
-        heading: '28. 過去問頻出論点（午前II）',
+        heading: '28. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__7QC道具__: ==パレート図==・==特性要因図==・==管理図==・==ヒストグラム==・==散布図==・==チェックシート==・==層別==',
           '__新7QC道具__: ==親和図==・==連関図==・==系統図==・==マトリクス図==・==PDPC==・==アローダイアグラム==・==マトリクスデータ解析==',
@@ -4283,7 +4283,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
     ],
     exam_tips: [
-      '【最重要】==7QC道具==（パレート図・特性要因図・管理図・ヒストグラム・散布図・チェックシート・層別）と==新7QC道具==の対比は午前II 必出。',
+      '【最重要】==7QC道具==（パレート図・特性要因図・管理図・ヒストグラム・散布図・チェックシート・層別）と==新7QC道具==の対比は午前Ⅱ 必出。',
       '【品質コスト】==適合コスト==（予防＋評価）vs ==不適合コスト==（内部不良＋外部不良）。==1-10-100の法則==。',
       '【シックスシグマ】==DMAIC==（既存改善）vs ==DMADV==（新規設計）。==6σ==は3.4不良/百万。',
       '【統計】==3σ管理==は99.73%。プロセス能力指数 Cp/Cpk。管理限界 UCL/LCL。',
@@ -4301,7 +4301,7 @@ export const NOTE_DB: Record<string, NoteData> = {
   // ───────────────────────────────────────────
   measurement: {
     summary:
-      'プロジェクトの==パフォーマンス==を==定量的==に測定し、==意思決定==と==継続的改善==を支援する活動領域。PMBOK第6版では第7章 EVM 中心、第7版では「==測定==」パフォーマンス領域として統合。==EVM 公式==（PV/EV/AC/CPI/SPI/EAC/ETC/VAC/TCPI）は午前II 最頻出。',
+      'プロジェクトの==パフォーマンス==を==定量的==に測定し、==意思決定==と==継続的改善==を支援する活動領域。PMBOK第6版では第7章 EVM 中心、第7版では「==測定==」パフォーマンス領域として統合。==EVM 公式==（PV/EV/AC/CPI/SPI/EAC/ETC/VAC/TCPI）は午前Ⅱ 最頻出。',
     sections: [
       // ── A. 領域概観 ──
       {
@@ -4376,7 +4376,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==パーセント完了法==: 進捗率で按分',
           '　==重み付けマイルストーン法==: 主要マイルストーンに重み配分',
         ],
-        navyItems: [[{ text: 'PV/EV/AC/BAC は EVM の最重要4値。午前II で必ず出題される', style: 'navy' }]],
+        navyItems: [[{ text: 'PV/EV/AC/BAC は EVM の最重要4値。午前Ⅱ で必ず出題される', style: 'navy' }]],
       },
       {
         heading: '5. 差異分析（CV / SV）と健全性判定',
@@ -4457,7 +4457,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==差は引き算==（CV/SV）／==効率は割り算==（CPI/SPI）',
           '　==分子は EV==（CV/SV/CPI/SPI すべて）',
         ],
-        navyItems: [[{ text: '本セクションは午前II/午後I の計算問題の参照シート。全式暗記必須', style: 'navy' }]],
+        navyItems: [[{ text: '本セクションは午前Ⅱ/午後I の計算問題の参照シート。全式暗記必須', style: 'navy' }]],
       },
       {
         heading: '9. アーンドスケジュール（ES）',
@@ -4533,7 +4533,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　例: 「99%のチケットを48時間以内に解決」',
           'カンバンの詳細は development-approach §23 参照',
         ],
-        navyItems: [[{ text: 'リトルの法則は午前II 計算問題で出題。WIP/スループット/リードタイム の関係を暗記', style: 'navy' }]],
+        navyItems: [[{ text: 'リトルの法則は午前Ⅱ 計算問題で出題。WIP/スループット/リードタイム の関係を暗記', style: 'navy' }]],
       },
       {
         heading: '13. ベロシティとキャパシティ計画',
@@ -4731,7 +4731,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '23. 過去問頻出論点（午前II）',
+        heading: '23. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__EVM 基本値__: ==PV==・==EV==・==AC==・==BAC== の定義と計算',
           '__EVM 差異__: ==CV== = EV-AC、==SV== = EV-PV',
@@ -4768,7 +4768,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
     ],
     exam_tips: [
-      '【最重要・EVM】==PV/EV/AC/BAC== の定義と==CV/SV/CPI/SPI/EAC/ETC/VAC/TCPI== の公式を全暗記。午前II/午後I 双方で計算問題が必出。',
+      '【最重要・EVM】==PV/EV/AC/BAC== の定義と==CV/SV/CPI/SPI/EAC/ETC/VAC/TCPI== の公式を全暗記。午前Ⅱ/午後I 双方で計算問題が必出。',
       '【EVM 計算暗記】==CV=EV-AC==、==SV=EV-PV==、==CPI=EV/AC==、==SPI=EV/PV==。==分子は常に EV==。',
       '【TCPI】==BAC維持==なら ==(BAC-EV)/(BAC-AC)==、==EAC維持==なら ==(BAC-EV)/(EAC-AC)==。R6秋期 問4 の出題実績。',
       '【EAC 3公式】標準=BAC/CPI、残作業計画通り=AC+(BAC-EV)、両方継続=AC+(BAC-EV)/(CPI×SPI)。',
@@ -4926,7 +4926,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==RAG==（Red/Amber/Green）色分けで優先度視覚化',
           '__主要アウトプット__: ==リスク登録簿の更新==・==リスク・レポートの更新==',
         ],
-        navyItems: [[{ text: '確率影響度マトリクスは午前II/午後I 頻出。RAG 区分の判断が出る', style: 'navy' }]],
+        navyItems: [[{ text: '確率影響度マトリクスは午前Ⅱ/午後I 頻出。RAG 区分の判断が出る', style: 'navy' }]],
       },
       {
         heading: '8. 11.4 定量的リスク分析',
@@ -4971,7 +4971,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　3. 決定ノードで==最大 EMV==の選択肢を選ぶ',
           '試験頻出: EMV 計算問題・決定木計算問題',
         ],
-        navyItems: [[{ text: 'EMV/決定木は午前II 計算問題で頻出。状況設定から最適選択肢を求める', style: 'navy' }]],
+        navyItems: [[{ text: 'EMV/決定木は午前Ⅱ 計算問題で頻出。状況設定から最適選択肢を求める', style: 'navy' }]],
       },
       {
         heading: '10. モンテカルロ法と感度分析',
@@ -5050,7 +5050,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　影響度==低==→ ==受容==',
           '　PM権限外→ ==エスカレーション==',
         ],
-        navyItems: [[{ text: '脅威5戦略は午前II 必出。「回避」「転嫁」「軽減」「受容」「エスカレーション」の正確な名称', style: 'navy' }]],
+        navyItems: [[{ text: '脅威5戦略は午前Ⅱ 必出。「回避」「転嫁」「軽減」「受容」「エスカレーション」の正確な名称', style: 'navy' }]],
       },
       {
         heading: '14. 機会への5戦略',
@@ -5131,7 +5131,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__更新タイミング__: 11.2〜11.7 各プロセスの都度',
           '__生きた文書__として継続更新',
         ],
-        navyItems: [[{ text: 'リスク登録簿の構成項目は午前II/午後I で記載項目を問う設問が頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'リスク登録簿の構成項目は午前Ⅱ/午後I で記載項目を問う設問が頻出', style: 'navy' }]],
       },
       {
         heading: '18. リスク・レポート',
@@ -5166,7 +5166,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__対応策の効果検証__: 残存リスクと二次リスクを==合計==して評価',
           '試験頻出: 二次リスクと残存リスクの==混同==',
         ],
-        navyItems: [[{ text: '二次リスク vs 残存リスクは午前II 必出ひっかけ。例で確実に区別', style: 'navy' }]],
+        navyItems: [[{ text: '二次リスク vs 残存リスクは午前Ⅱ 必出ひっかけ。例で確実に区別', style: 'navy' }]],
       },
       {
         heading: '20. リスク選好・リスク許容度・スレッショルド',
@@ -5288,7 +5288,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── H. IPA PM試験 出題傾向 ──
       {
-        heading: '26. 過去問頻出論点（午前II）',
+        heading: '26. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__PMBOK6 第11章 7プロセス__: 11.1〜11.7 のプロセス群所属（計画5・実行1・監視1）',
           '__脅威5戦略__: ==回避==／==転嫁==／==軽減==／==受容==／==エスカレーション==',
@@ -5396,7 +5396,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==12原則==の「==システム思考==」「==リーダーシップ==」「==適応性==」',
           '__統合的視点の重要性__は第7版でも変わらず重要',
           '__試験対応__:',
-          '　午前II は==第6版用語==（4.1〜4.7 プロセス）が中心',
+          '　午前Ⅱ は==第6版用語==（4.1〜4.7 プロセス）が中心',
           '　午後I シナリオは==統合的判断==を問う設問',
           '本アプリは両版を併記。試験頻出（==赤字==）は第6版用語を優先',
         ],
@@ -5446,7 +5446,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==承認後変更==はスポンサー再承認必要',
           '試験頻出: 憲章と==計画書==・==スコープ記述書==との混同',
         ],
-        navyItems: [[{ text: 'プロジェクト憲章 vs 計画書 vs スコープ記述書 の使い分けは午前II で頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'プロジェクト憲章 vs 計画書 vs スコープ記述書 の使い分けは午前Ⅱ で頻出', style: 'navy' }]],
       },
       {
         heading: '6. ビジネス文書との関係',
@@ -5573,7 +5573,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__注意__: 3種類とも==承認==が必要（CCB 経由）',
           '試験頻出: 3処置の==違い==を問う設問',
         ],
-        navyItems: [[{ text: '是正処置 vs 予防処置 vs 欠陥修正の区別は午前II 頻出', style: 'navy' }]],
+        navyItems: [[{ text: '是正処置 vs 予防処置 vs 欠陥修正の区別は午前Ⅱ 頻出', style: 'navy' }]],
       },
       // ── E. 統合変更管理 ──
       {
@@ -5643,7 +5643,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__開催頻度__: 定例（週次／隔週）+ 必要時臨時',
           '__決定の文書化__: ==変更ログ==で履歴管理',
         ],
-        navyItems: [[{ text: 'CCB は午前II 必出。構成・役割・権限レベルを暗記', style: 'navy' }]],
+        navyItems: [[{ text: 'CCB は午前Ⅱ 必出。構成・役割・権限レベルを暗記', style: 'navy' }]],
       },
       {
         heading: '16. 変更影響評価',
@@ -5724,7 +5724,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　ベースライン = ==承認された==計画値（変更後は更新される）',
           '__EVM での使用__: PV はベースライン上の値（measurement §4 参照）',
         ],
-        navyItems: [[{ text: 'ベースラインの種類と凍結概念は午前II 頻出。「変更」と「ベースライン更新」の関係', style: 'navy' }]],
+        navyItems: [[{ text: 'ベースラインの種類と凍結概念は午前Ⅱ 頻出。「変更」と「ベースライン更新」の関係', style: 'navy' }]],
       },
       {
         heading: '20. バージョン管理',
@@ -5790,7 +5790,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── H. IPA PM試験 出題傾向 ──
       {
-        heading: '23. 過去問頻出論点（午前II）',
+        heading: '23. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__PMBOK6 第4章 7プロセス__: 4.1〜4.7 のプロセス群所属（立上1・計画1・実行2・監視2・終結1）',
           '__4.6 統合変更管理__・==CCB==の構成と役割',
@@ -6064,7 +6064,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__CCB との違い__: ステアリングコミッティ=戦略的判断、CCB=変更管理に特化',
           '試験頻出: ステアリングコミッティと CCB の==役割の違い==',
         ],
-        navyItems: [[{ text: 'ステアリングコミッティと CCB の違いは午前II 頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'ステアリングコミッティと CCB の違いは午前Ⅱ 頻出', style: 'navy' }]],
       },
       {
         heading: '12. フェーズゲート（段階的コミット）',
@@ -6238,7 +6238,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '20. 過去問頻出論点（午前II）',
+        heading: '20. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__ポートフォリオ／プログラム／プロジェクト 3階層__: 目的の違い（価値最大化／便益／成果物）',
           '__PMO 3類型__: 支援型／コントロール型／指揮型のコントロール度',
@@ -6729,7 +6729,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── F. IPA PM試験 出題傾向 ──
       {
-        heading: '21. 過去問頻出論点（午前II）',
+        heading: '21. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__テーラリングの定義__・PMBOK7 における重要性',
           '__判断要素__: 規模・複雑性・不確実性・チーム経験・規制',
@@ -7044,7 +7044,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__管理プロセス__: ==SLM==（Service Level Management, §15 で詳細）',
           '試験頻出: 3者の==違い==と==階層関係==',
         ],
-        navyItems: [[{ text: 'SLA/OLA/UC の階層は午前II 頻出。「内部」「外部」の判別が問われる', style: 'navy' }]],
+        navyItems: [[{ text: 'SLA/OLA/UC の階層は午前Ⅱ 頻出。「内部」「外部」の判別が問われる', style: 'navy' }]],
       },
       {
         heading: '14. SLA の主要項目',
@@ -7066,7 +7066,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==99.99%==（フォーナイン）= 月==4.32分==、年==52.6分==の停止許容',
           '試験頻出: 可用性% から==許容停止時間==の計算',
         ],
-        navyItems: [[{ text: '可用性パーセンテージと停止時間の計算は午前II 頻出', style: 'navy' }]],
+        navyItems: [[{ text: '可用性パーセンテージと停止時間の計算は午前Ⅱ 頻出', style: 'navy' }]],
       },
       {
         heading: '15. SLM（Service Level Management）プロセス',
@@ -7111,7 +7111,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__連携__: インシデント多発 → 問題管理開始 → 根本原因解決 → インシデント減少',
           '試験頻出: ==MTTR==（短いほど良い）vs ==MTBF==（長いほど良い）',
         ],
-        navyItems: [[{ text: 'MTTR と MTBF の混同は午前II 頻出ひっかけ', style: 'navy' }]],
+        navyItems: [[{ text: 'MTTR と MTBF の混同は午前Ⅱ 頻出ひっかけ', style: 'navy' }]],
       },
       {
         heading: '17. 変更管理（IT 視点）',
@@ -7135,7 +7135,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　PMBOK 4.6: プロジェクト内の==成果物変更==',
           '　ITIL: ==運用中サービス==の==変更==',
         ],
-        navyItems: [[{ text: 'ITIL 変更管理 vs PMBOK 統合変更管理（integration §13）の違いは午前II 頻出', style: 'navy' }]],
+        navyItems: [[{ text: 'ITIL 変更管理 vs PMBOK 統合変更管理（integration §13）の違いは午前Ⅱ 頻出', style: 'navy' }]],
       },
       {
         heading: '18. 構成管理（CMDB）',
@@ -7222,7 +7222,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==コールドサイト==（数日で切替）',
           '試験頻出: ==RPO==（データの巻き戻し）vs ==RTO==（サービス停止許容時間）',
         ],
-        navyItems: [[{ text: 'RPO と RTO の区別は午前II 必出。時間軸の捉え方が異なる', style: 'navy' }]],
+        navyItems: [[{ text: 'RPO と RTO の区別は午前Ⅱ 必出。時間軸の捉え方が異なる', style: 'navy' }]],
       },
       // ── F. 運用引継ぎ・監査 ──
       {
@@ -7361,7 +7361,7 @@ export const NOTE_DB: Record<string, NoteData> = {
       },
       // ── H. IPA PM試験 出題傾向 ──
       {
-        heading: '28. 過去問頻出論点（午前II）',
+        heading: '28. 過去問頻出論点（午前Ⅱ）',
         items: [
           '__ITIL v3 ライフサイクル__: 5フェーズ（戦略・設計・移行・運用・CSI）',
           '__SLA / OLA / UC__: 階層関係と対象（顧客／内部部門／外部サプライヤ）',

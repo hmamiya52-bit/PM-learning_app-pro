@@ -3,7 +3,7 @@
  *
  * 設計書 v0.15 §3.3 / §2.3 に従う、ユーザ手動トグル式の重要マーク機能。
  *
- * - クイズ問題 `q-*` と公式午前II問題 `om-*` の両方を1つの配列で管理
+ * - クイズ問題 `q-*` と公式午前Ⅱ問題 `om-*` の両方を1つの配列で管理
  * - LocalStorage キー: `pmap:important_questions`
  * - 値: 重要マーク済みの questionId の配列（string[]）
  * - 正解しても自動解除されない（DP-P2-1 ユーザ確定）
@@ -66,7 +66,7 @@ export function clearAllImportant(): void {
 
 /**
  * モード別に重要マークをクリア
- * @param prefix 'q-' = クイズ問題, 'om-' = 公式午前II問題
+ * @param prefix 'q-' = クイズ問題, 'om-' = 公式午前Ⅱ問題
  */
 export function clearImportantOfMode(prefix: 'q-' | 'om-'): void {
   save(load().filter((id) => !id.startsWith(prefix)))

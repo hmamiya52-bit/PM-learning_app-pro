@@ -1,5 +1,5 @@
 /**
- * 公式午前II（PM 午前II）解答履歴 CRUD
+ * 公式午前Ⅱ（PM 午前Ⅱ）解答履歴 CRUD
  *
  * 設計書 v0.15 §2.5 / basic_design §5.3 に従う。
  * - LocalStorage キー: `pmap:morning:records`

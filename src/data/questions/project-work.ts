@@ -225,7 +225,7 @@ export const projectWorkQuestions: Question[] = [
     questionText: '目標コストを下回ったらインセンティブを売手と買手で分け合う実費精算契約を{{blank}}契約という。',
     correctAnswer: 'CPIF（コストプラスインセンティブフィー）',
     choices: ['CPIF（コストプラスインセンティブフィー）', 'CPFF（コストプラス確定フィー）', 'CPAF（コストプラス報酬フィー）', 'FPIF（固定価格インセンティブフィー）'],
-    explanation: 'Cost Plus Incentive Fee はコスト効率の良し悪しでフィーが上下する。R2 問13 のような計算問題が午前II で頻出。',
+    explanation: 'Cost Plus Incentive Fee はコスト効率の良し悪しでフィーが上下する。R2 問13 のような計算問題が午前Ⅱ で頻出。',
     difficulty: 2,
     excludeFromWritten: true,
   },

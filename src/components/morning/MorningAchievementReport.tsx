@@ -168,7 +168,7 @@ export default function MorningAchievementReport({
         <header className="flex items-center gap-3 bg-brand-dark px-4 py-3 text-white">
           <div className="min-w-0 flex-1">
             <h2 id="morning-achievement-title" className="text-base font-black">
-              午前II 達成度レポート
+              午前Ⅱ 達成度レポート
             </h2>
             <p className="mt-0.5 text-xs text-white/75">
               年度ごとの問番号をクリックすると、その問題を1問だけ演習できます。
