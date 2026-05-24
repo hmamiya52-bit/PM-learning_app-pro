@@ -231,6 +231,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['定量的マネジメント', 'スケジュール管理', 'リカバリ策', 'SPI'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf',
   },
+
+  // ─── H30 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H30-PM1-1',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: 'SaaS を利用した営業支援システムを導入するプロジェクト',
+    keywords: ['SaaS', '営業支援システム', '要件定義', 'データ移行'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H30-PM1-2',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'システム開発プロジェクトの品質管理',
+    keywords: ['品質管理', '設計限界品質', '品質管理指標', '欠陥分析'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H30-PM1-3',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: '情報システム刷新プロジェクトのコミュニケーション',
+    keywords: ['コミュニケーション', 'ステークホルダ', 'CRM', '子会社活用'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
