@@ -196,6 +196,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['SaaS', '人材管理システム', '要件定義', 'コミュニケーション'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf',
   },
+
+  // ─── R1 午後I ───────────────────────────────────────────────────
+  {
+    id: 'R1-PM1-1',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 1,
+    title: 'コンタクトセンタにおけるサービス利用のための移行',
+    keywords: ['サービス移行', 'コンタクトセンタ', '移行リハーサル', 'リスク対応'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R1-PM1-2',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 2,
+    title: 'IoT を活用した工事管理システムの構築',
+    keywords: ['IoT', '工事管理システム', 'WBS', 'ステークホルダ調整'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R1-PM1-3',
+    year: 'R1',
+    yearLabel: '令和元（2019）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: 'プロジェクトの定量的なマネジメント',
+    keywords: ['定量的マネジメント', 'スケジュール管理', 'リカバリ策', 'SPI'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
