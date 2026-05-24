@@ -266,6 +266,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['コミュニケーション', 'ステークホルダ', 'CRM', '子会社活用'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf',
   },
+
+  // ─── H29 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H29-PM1-1',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: '製造実行システム導入プロジェクトの計画作成',
+    keywords: ['MES', 'プロジェクト計画', 'リスク対応', 'スコープ分割'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H29-PM1-2',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'サプライヤへのシステム開発委託',
+    keywords: ['調達', '請負契約', 'サプライヤ管理', '品質管理'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H29-PM1-3',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: '単体テストの見直し及び成果物の品質向上',
+    keywords: ['単体テスト', '品質向上', 'バグ分析', 'レビュー'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
