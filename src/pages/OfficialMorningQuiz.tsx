@@ -239,34 +239,12 @@ export default function OfficialMorningQuiz() {
                 setMorningRecords(loadMorningRecords())
                 setReportOpen(true)
               }}
-              className="flex-shrink-0 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-bold text-white hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              className="flex-shrink-0 rounded-xl bg-white px-3.5 py-2 text-sm font-black text-brand-dark shadow-sm hover:bg-brand-light focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
-              ▦ 達成度
+              ▦ 達成度レポート
             </button>
           </div>
         </header>
-
-        {/* 問題数セレクタ */}
-        <section>
-          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            出題数
-          </h2>
-          <div className="flex flex-wrap gap-1.5">
-            {([10, 25, 50, 'all'] as QuestionCount[]).map((n) => (
-              <button
-                key={String(n)}
-                onClick={() => setCount(n)}
-                className={`text-xs font-bold rounded-full px-3 py-1.5 transition-colors ${
-                  count === n
-                    ? 'bg-brand text-white'
-                    : 'border border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
-                }`}
-              >
-                {n === 'all' ? '全問' : `${n}問`}
-              </button>
-            ))}
-          </div>
-        </section>
 
         {/* 選択肢表示設定 */}
         <section>
@@ -326,132 +304,176 @@ export default function OfficialMorningQuiz() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setImportantOnly((prev) => !prev)}
-              disabled={!importantOnly && importantQuestions.length === 0}
-              aria-pressed={importantOnly}
-              className={`rounded-xl border-2 px-3 py-3 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <label
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
                 importantOnly
-                  ? 'border-amber-400 bg-amber-50'
-                  : 'border-slate-200 hover:border-amber-300 hover:bg-amber-50/60'
-              }`}
+                  ? 'border-amber-300 bg-amber-50 text-slate-800'
+                  : 'border-slate-200 text-slate-600 hover:border-amber-300'
+              } ${!importantOnly && importantQuestions.length === 0 ? 'opacity-50' : ''}`}
             >
-              <p className="text-sm font-bold text-slate-800">重要マークのみ</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                マーク済み {importantQuestions.length}問
-              </p>
-            </button>
+              <input
+                type="checkbox"
+                checked={importantOnly}
+                disabled={!importantOnly && importantQuestions.length === 0}
+                onChange={(event) => setImportantOnly(event.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-brand"
+              />
+              <span className="min-w-0">
+                <span className="block font-bold">重要マークのみ</span>
+                <span className="block text-[11px] text-slate-400">マーク済み {importantQuestions.length}問</span>
+              </span>
+            </label>
 
-            <button
-              type="button"
-              onClick={() => {
-                setMorningRecords(loadMorningRecords())
-                setWrongOnly((prev) => !prev)
-              }}
-              disabled={!wrongOnly && wrongQuestions.length === 0}
-              aria-pressed={wrongOnly}
-              className={`rounded-xl border-2 px-3 py-3 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+            <label
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
                 wrongOnly
-                  ? 'border-red-400 bg-red-50'
-                  : 'border-slate-200 hover:border-red-300 hover:bg-red-50/60'
-              }`}
+                  ? 'border-red-300 bg-red-50 text-slate-800'
+                  : 'border-slate-200 text-slate-600 hover:border-red-300'
+              } ${!wrongOnly && wrongQuestions.length === 0 ? 'opacity-50' : ''}`}
             >
-              <p className="text-sm font-bold text-slate-800">間違えた問題を復習</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                直近不正解 {wrongQuestions.length}問
-              </p>
-            </button>
+              <input
+                type="checkbox"
+                checked={wrongOnly}
+                disabled={!wrongOnly && wrongQuestions.length === 0}
+                onChange={(event) => {
+                  setMorningRecords(loadMorningRecords())
+                  setWrongOnly(event.target.checked)
+                }}
+                className="mt-0.5 h-4 w-4 accent-brand"
+              />
+              <span className="min-w-0">
+                <span className="block font-bold">間違えた問題を復習</span>
+                <span className="block text-[11px] text-slate-400">直近不正解 {wrongQuestions.length}問</span>
+              </span>
+            </label>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 pt-4">
-            <p className="text-xs text-slate-500">
-              対象 <span className="text-lg font-black tabular-nums text-slate-900">{filteredQuestions.length}</span> 問
-              <span className="mx-1 text-slate-300">/</span>
-              今回 <span className="font-bold tabular-nums text-brand-dark">{plannedCount}</span> 問を出題
+          <div className="border-t border-slate-100 pt-4">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                カテゴリ絞り込み
+              </h3>
+              <button
+                type="button"
+                onClick={() => setSelectedCategoryIds([])}
+                disabled={selectedCategoryIds.length === 0}
+                className="rounded-md border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:border-brand hover:text-brand disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                全て解除
+              </button>
+            </div>
+            {categoryCards.length === 0 ? (
+              <p className="text-xs text-slate-400">
+                カテゴリ別問題はまだ登録されていません。
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {categoryCards.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => toggleCategory(c.id)}
+                    aria-pressed={selectedCategorySet.has(c.id)}
+                    className={`flex flex-col items-start rounded-lg border px-3 py-2 hover:shadow-sm transition-all text-left ${
+                      selectedCategorySet.has(c.id)
+                        ? 'bg-brand-light border-brand text-brand-darker'
+                        : 'bg-white border-slate-200 hover:border-brand'
+                    }`}
+                  >
+                    <p className="text-sm font-bold leading-tight">{c.name}</p>
+                    <p className={`text-[11px] mt-0.5 ${selectedCategorySet.has(c.id) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
+                      {c.count}問
+                    </p>
+                  </button>
+                ))}
+              </div>
+            )}
+            <p className="text-[11px] text-slate-400 mt-2">
+              複数選択できます。未選択なら全カテゴリが対象です。
             </p>
+          </div>
+
+          <div className="border-t border-slate-100 pt-4">
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                年度絞り込み
+              </h3>
+              <button
+                type="button"
+                onClick={() => setSelectedYears([])}
+                disabled={selectedYears.length === 0}
+                className="rounded-md border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:border-brand hover:text-brand disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                全て解除
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {MORNING_YEARS.map((year) => {
+                const list = getMorningQuestionsByYear(year)
+                const yearLabel = list[0]?.yearLabel ?? year
+                return (
+                  <button
+                    key={year}
+                    type="button"
+                    onClick={() => toggleYear(year)}
+                    disabled={list.length === 0}
+                    aria-pressed={selectedYearSet.has(year)}
+                    className={`flex flex-col items-start rounded-lg border px-3 py-2 hover:shadow-sm transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed ${
+                      selectedYearSet.has(year)
+                        ? 'bg-brand-light border-brand text-brand-darker'
+                        : 'bg-white border-slate-200 hover:border-brand'
+                    }`}
+                  >
+                    <p className="text-sm font-bold">{yearLabel}</p>
+                    <p className={`text-[11px] mt-0.5 ${selectedYearSet.has(year) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
+                      {list.length}問
+                    </p>
+                  </button>
+                )
+              })}
+            </div>
+            <p className="text-[11px] text-slate-400 mt-2">
+              複数選択できます。未選択なら全年度が対象です。
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+              <span>
+                対象 <span className="text-lg font-black tabular-nums text-slate-900">{filteredQuestions.length}</span> 問
+              </span>
+              <span className="text-slate-300">/</span>
+              <label className="flex items-center gap-1.5">
+                <span>今回</span>
+                <select
+                  value={String(count)}
+                  onChange={(event) => {
+                    const value = event.target.value
+                    setCount(value === 'all' ? 'all' : Number(value) as QuestionCount)
+                  }}
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand"
+                >
+                  <option value="10">10問</option>
+                  <option value="25">25問</option>
+                  <option value="50">50問</option>
+                  <option value="all">全問</option>
+                </select>
+                <span>を上限に出題</span>
+              </label>
+              <span className="font-bold tabular-nums text-brand-dark">
+                実際 {plannedCount}問
+              </span>
+            </div>
             <button
               type="button"
               onClick={handleStartSelected}
               disabled={filteredQuestions.length === 0}
-              className="w-full sm:w-auto rounded-xl bg-brand px-6 py-3 text-sm font-black text-white shadow-md hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-brand px-6 py-3 text-sm font-black text-white shadow-md hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed sm:w-auto"
             >
               この条件で出題開始
             </button>
           </div>
-        </section>
-
-        {/* カテゴリ別カード */}
-        <section>
-          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            カテゴリ別
-          </h2>
-          {categoryCards.length === 0 ? (
-            <p className="text-xs text-slate-400">
-              カテゴリ別問題はまだ登録されていません。
-            </p>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {categoryCards.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => toggleCategory(c.id)}
-                  aria-pressed={selectedCategorySet.has(c.id)}
-                  className={`flex flex-col items-start rounded-xl border px-3 py-2.5 hover:shadow-md transition-all text-left ${
-                    selectedCategorySet.has(c.id)
-                      ? 'bg-brand-light border-brand text-brand-darker'
-                      : 'bg-white border-slate-200 hover:border-brand'
-                  }`}
-                >
-                  <p className="text-sm font-bold leading-tight">{c.name}</p>
-                  <p className={`text-[11px] mt-0.5 ${selectedCategorySet.has(c.id) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
-                    {c.count}問
-                    <span className="ml-1 opacity-60">{count === 'all' ? '・全問' : `・最大${count}問`}</span>
-                  </p>
-                </button>
-              ))}
-            </div>
-          )}
-          <p className="text-[11px] text-slate-400 mt-2">
-            ※ 複数選択できます。未選択なら全カテゴリが対象です。
-          </p>
-        </section>
-
-        {/* 年度カード */}
-        <section>
-          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-            年度別
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {MORNING_YEARS.map((year) => {
-              const list = getMorningQuestionsByYear(year)
-              const yearLabel = list[0]?.yearLabel ?? year
-              return (
-                <button
-                  key={year}
-                  type="button"
-                  onClick={() => toggleYear(year)}
-                  disabled={list.length === 0}
-                  aria-pressed={selectedYearSet.has(year)}
-                  className={`flex flex-col items-start rounded-xl border px-3 py-2.5 hover:shadow-md transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed ${
-                    selectedYearSet.has(year)
-                      ? 'bg-brand-light border-brand text-brand-darker'
-                      : 'bg-white border-slate-200 hover:border-brand'
-                  }`}
-                >
-                  <p className="text-sm font-bold">{yearLabel}</p>
-                  <p className={`text-[11px] mt-0.5 ${selectedYearSet.has(year) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
-                    {list.length}問
-                  </p>
-                </button>
-              )
-            })}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-2">
-            ※ 複数選択できます。未選択なら全年度が対象です。
-          </p>
         </section>
 
         {/* IPA 出典フッタ */}
