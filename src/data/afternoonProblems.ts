@@ -301,6 +301,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['単体テスト', '品質向上', 'バグ分析', 'レビュー'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf',
   },
+
+  // ─── H28 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H28-PM1-1',
+    year: 'H28',
+    yearLabel: '平成28（2016）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: 'プロジェクトのリスク管理',
+    keywords: ['リスク管理', '要求事項', '設備管理システム', 'タブレット端末'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H28-PM1-2',
+    year: 'H28',
+    yearLabel: '平成28（2016）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'プロジェクトにおけるコミュニケーション',
+    keywords: ['コミュニケーション', 'ステークホルダ', '要求事項', 'チーム改善'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H28-PM1-3',
+    year: 'H28',
+    yearLabel: '平成28（2016）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: 'プロジェクトの進捗管理及びテスト計画',
+    keywords: ['進捗管理', 'EVM', 'テスト計画', '外部設計'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
