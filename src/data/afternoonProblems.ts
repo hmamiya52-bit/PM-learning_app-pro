@@ -371,6 +371,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['システム再構築', 'スコープ変更', 'データ移行', '並行運用'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_qs.pdf',
   },
+
+  // ─── H26 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H26-PM1-1',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: '人材管理システムの構築',
+    keywords: ['人材管理システム', 'スコープマネジメント', '個人情報', '要求整理'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H26-PM1-2',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'プロジェクトの進捗管理',
+    keywords: ['進捗管理', 'プロセス改善', 'レビュー', '外部設計'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H26-PM1-3',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: '生産管理システムの再構築',
+    keywords: ['生産管理システム', '再構築', '契約管理', '移行'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
