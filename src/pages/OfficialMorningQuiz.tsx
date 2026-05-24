@@ -304,51 +304,6 @@ export default function OfficialMorningQuiz() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <label
-              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
-                importantOnly
-                  ? 'border-amber-300 bg-amber-50 text-slate-800'
-                  : 'border-slate-200 text-slate-600 hover:border-amber-300'
-              } ${!importantOnly && importantQuestions.length === 0 ? 'opacity-50' : ''}`}
-            >
-              <input
-                type="checkbox"
-                checked={importantOnly}
-                disabled={!importantOnly && importantQuestions.length === 0}
-                onChange={(event) => setImportantOnly(event.target.checked)}
-                className="mt-0.5 h-4 w-4 accent-brand"
-              />
-              <span className="min-w-0">
-                <span className="block font-bold">重要マークのみ</span>
-                <span className="block text-[11px] text-slate-400">マーク済み {importantQuestions.length}問</span>
-              </span>
-            </label>
-
-            <label
-              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
-                wrongOnly
-                  ? 'border-red-300 bg-red-50 text-slate-800'
-                  : 'border-slate-200 text-slate-600 hover:border-red-300'
-              } ${!wrongOnly && wrongQuestions.length === 0 ? 'opacity-50' : ''}`}
-            >
-              <input
-                type="checkbox"
-                checked={wrongOnly}
-                disabled={!wrongOnly && wrongQuestions.length === 0}
-                onChange={(event) => {
-                  setMorningRecords(loadMorningRecords())
-                  setWrongOnly(event.target.checked)
-                }}
-                className="mt-0.5 h-4 w-4 accent-brand"
-              />
-              <span className="min-w-0">
-                <span className="block font-bold">間違えた問題を復習</span>
-                <span className="block text-[11px] text-slate-400">直近不正解 {wrongQuestions.length}問</span>
-              </span>
-            </label>
-          </div>
-
           <div className="border-t border-slate-100 pt-4">
             <div className="mb-2 flex items-center justify-between gap-2">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -436,6 +391,51 @@ export default function OfficialMorningQuiz() {
             <p className="text-[11px] text-slate-400 mt-2">
               複数選択できます。未選択なら全年度が対象です。
             </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-2">
+            <label
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                importantOnly
+                  ? 'border-amber-300 bg-amber-50 text-slate-800'
+                  : 'border-slate-200 text-slate-600 hover:border-amber-300'
+              } ${!importantOnly && importantQuestions.length === 0 ? 'opacity-50' : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={importantOnly}
+                disabled={!importantOnly && importantQuestions.length === 0}
+                onChange={(event) => setImportantOnly(event.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-brand"
+              />
+              <span className="min-w-0">
+                <span className="block font-bold">重要マークのみ</span>
+                <span className="block text-[11px] text-slate-400">マーク済み {importantQuestions.length}問</span>
+              </span>
+            </label>
+
+            <label
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                wrongOnly
+                  ? 'border-red-300 bg-red-50 text-slate-800'
+                  : 'border-slate-200 text-slate-600 hover:border-red-300'
+              } ${!wrongOnly && wrongQuestions.length === 0 ? 'opacity-50' : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={wrongOnly}
+                disabled={!wrongOnly && wrongQuestions.length === 0}
+                onChange={(event) => {
+                  setMorningRecords(loadMorningRecords())
+                  setWrongOnly(event.target.checked)
+                }}
+                className="mt-0.5 h-4 w-4 accent-brand"
+              />
+              <span className="min-w-0">
+                <span className="block font-bold">間違えた問題を復習</span>
+                <span className="block text-[11px] text-slate-400">直近不正解 {wrongQuestions.length}問</span>
+              </span>
+            </label>
           </div>
 
           <div className="flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
