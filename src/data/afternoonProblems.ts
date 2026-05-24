@@ -91,6 +91,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['ステークホルダ', '予兆検知', '開発アプローチ', '知識継承'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_pm_pm1_qs.pdf',
   },
+
+  // ─── R4 午後I ───────────────────────────────────────────────────
+  {
+    id: 'R4-PM1-1',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 1,
+    title: 'SaaS を利用して短期間にシステムを導入するプロジェクト',
+    keywords: ['SaaS', 'UX改善', 'AIボット', '導入計画'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R4-PM1-2',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 2,
+    title: 'EC サイト刷新プロジェクトにおけるプロジェクト計画',
+    keywords: ['ECサイト刷新', 'プロジェクト計画', '顧客体験価値', 'DevOps'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R4-PM1-3',
+    year: 'R4',
+    yearLabel: '令和4（2022）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: 'プロジェクトにおけるチームビルディング',
+    keywords: ['チームビルディング', 'DX', '心理的安全性', '支援型リーダーシップ'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
