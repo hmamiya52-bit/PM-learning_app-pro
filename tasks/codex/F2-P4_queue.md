@@ -28,7 +28,7 @@
 | 3 | R3 | 令和3（2021） | reiwa | 2021 | **完了（Codex / 2026-05-24 / commit 4ff7a14）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_ans.pdf |
 | 4 | R2 | 令和2（2020） | reiwa | 2020 | **完了（Codex / 2026-05-24 / commit cdf6007）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_ans.pdf |
 | 5 | R1 | 令和元（2019） | reiwa | 2019 | **完了（Codex / 2026-05-24 / commit f586c88）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_ans.pdf |
-| 6 | H30 | 平成30（2018） | heisei | 2018 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2018h30h.html から取得 | 同上 |
+| 6 | H30 | 平成30（2018） | heisei | 2018 | **進行中（Codex 担当 / 2026-05-24）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_ans.pdf |
 | 7 | H29 | 平成29（2017） | heisei | 2017 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2017h29h.html から取得 | 同上 |
 | 8 | H28 | 平成28（2016） | heisei | 2016 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2016h28h.html から取得 | 同上 |
 | 9 | H27 | 平成27（2015） | heisei | 2015 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2015h27h.html から取得 | 同上 |
