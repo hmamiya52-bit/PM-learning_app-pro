@@ -7,8 +7,9 @@ import {
 } from '../data/officialMorningQuestions'
 import { categories } from '../data/categories'
 import { getImportantIds } from '../lib/importantMarks'
-import { loadMorningRecords, getOverallAccuracy } from '../lib/morningRecords'
+import { loadMorningRecords } from '../lib/morningRecords'
 import { getMorningChoiceShuffle, setMorningChoiceShuffle } from '../lib/preferences'
+import MorningAchievementReport from '../components/morning/MorningAchievementReport'
 import type { OfficialMorningQuestion } from '../types'
 
 /**
@@ -38,6 +39,8 @@ export default function OfficialMorningQuiz() {
   const navigate = useNavigate()
   const [count, setCount] = useState<QuestionCount>(25)
   const [shuffleChoices, setShuffleChoices] = useState(() => getMorningChoiceShuffle())
+  const [reportOpen, setReportOpen] = useState(false)
+  const [morningRecords, setMorningRecords] = useState(() => loadMorningRecords())
 
   const allCount = officialMorningQuestions.length
   const importantIds = useMemo(
@@ -71,15 +74,15 @@ export default function OfficialMorningQuiz() {
   )
 
   const stats = useMemo(() => {
-    const overall = getOverallAccuracy()
-    const records = loadMorningRecords()
+    const total = morningRecords.length
+    const correct = morningRecords.filter((r) => r.isCorrect).length
     return {
-      total: overall.total,
-      correct: overall.correct,
-      rate: overall.rate,
-      latestDate: records[0]?.answeredAt.slice(0, 10) ?? null,
+      total,
+      correct,
+      rate: total > 0 ? Math.round((correct / total) * 100) : 0,
+      latestDate: morningRecords[0]?.answeredAt.slice(0, 10) ?? null,
     }
-  }, [])
+  }, [morningRecords])
 
   // 出題リストを構築して Session 画面へ
   const startSession = (
@@ -122,6 +125,11 @@ export default function OfficialMorningQuiz() {
     const name = categories.find((c) => c.id === categoryId)?.name ?? categoryId
     // yearLabel フィールドにカテゴリ名を流用（Summary 画面の表示用、scope=category で区別）
     startSession(list, 'category', name)
+  }
+
+  const handleReportQuestion = (question: OfficialMorningQuestion) => {
+    setReportOpen(false)
+    startSession([question], 'single', `${question.yearLabel} 問${question.number}`)
   }
 
   const handleShuffleChoicesChange = (enabled: boolean) => {
@@ -209,7 +217,7 @@ export default function OfficialMorningQuiz() {
         </section>
 
         {/* メインアクション */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             onClick={handleRandom}
             className="flex items-center gap-3 bg-white rounded-xl border-2 border-brand-light px-4 py-4 hover:border-brand hover:shadow-md transition-all text-left"
@@ -233,6 +241,23 @@ export default function OfficialMorningQuiz() {
               <p className="text-sm font-bold text-slate-800">重要マークのみ</p>
               <p className="text-[11px] text-slate-400 mt-0.5">
                 マーク済み {importantQuestions.length}問
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setMorningRecords(loadMorningRecords())
+              setReportOpen(true)
+            }}
+            className="flex items-center gap-3 bg-white rounded-xl border-2 border-slate-200 px-4 py-4 hover:border-brand hover:shadow-md transition-all text-left"
+          >
+            <span className="text-2xl flex-shrink-0">▦</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-slate-800">達成度レポート</p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                年度×問番号で正誤履歴を確認
               </p>
             </div>
           </button>
@@ -307,6 +332,14 @@ export default function OfficialMorningQuiz() {
         </footer>
 
       </div>
+
+      <MorningAchievementReport
+        open={reportOpen}
+        questions={officialMorningQuestions}
+        records={morningRecords}
+        onClose={() => setReportOpen(false)}
+        onOpenQuestion={handleReportQuestion}
+      />
     </div>
   )
 }
