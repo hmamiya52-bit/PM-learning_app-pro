@@ -161,6 +161,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['マルチベンダ', 'ステークホルダ', 'プロジェクト作業', '変更管理'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_qs.pdf',
   },
+
+  // ─── R2 午後I ───────────────────────────────────────────────────
+  {
+    id: 'R2-PM1-1',
+    year: 'R2',
+    yearLabel: '令和2（2020）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 1,
+    title: 'デジタルトランスフォーメーション（DX）推進におけるプロジェクトの立ち上げ',
+    keywords: ['DX', 'プロジェクト憲章', 'プロジェクト立ち上げ', 'チーム編成'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R2-PM1-2',
+    year: 'R2',
+    yearLabel: '令和2（2020）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 2,
+    title: 'システム開発プロジェクトにおける，プロジェクトチームの開発',
+    keywords: ['プロジェクトチーム開発', '生産性', '自律的チーム', 'メンバ育成'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R2-PM1-3',
+    year: 'R2',
+    yearLabel: '令和2（2020）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: 'SaaS を利用した人材管理システム導入プロジェクト',
+    keywords: ['SaaS', '人材管理システム', '要件定義', 'コミュニケーション'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
