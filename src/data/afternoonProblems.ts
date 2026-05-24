@@ -336,6 +336,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['進捗管理', 'EVM', 'テスト計画', '外部設計'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_qs.pdf',
   },
+
+  // ─── H27 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H27-PM1-1',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: '生産管理システムを導入するプロジェクトのステークホルダマネジメント',
+    keywords: ['ステークホルダ', '生産管理システム', '海外提携', 'PMO'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H27-PM1-2',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'ソフトウェアパッケージの導入',
+    keywords: ['パッケージ導入', '倉庫管理', 'プロジェクト計画', '追加開発'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H27-PM1-3',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: 'システムの再構築',
+    keywords: ['システム再構築', 'スコープ変更', 'データ移行', '並行運用'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
