@@ -10,7 +10,7 @@ import { getImportantIds } from '../lib/importantMarks'
 import { loadMorningRecords } from '../lib/morningRecords'
 import { getMorningChoiceShuffle, setMorningChoiceShuffle } from '../lib/preferences'
 import MorningAchievementReport from '../components/morning/MorningAchievementReport'
-import type { OfficialMorningQuestion } from '../types'
+import type { MorningRecord, OfficialMorningQuestion } from '../types'
 
 /**
  * 公式午前II トップ画面（/morning）
@@ -25,6 +25,7 @@ import type { OfficialMorningQuestion } from '../types'
  */
 
 type QuestionCount = 10 | 25 | 50 | 'all'
+type MorningSessionScope = 'random' | 'year' | 'important' | 'single' | 'category'
 
 function shuffle<T>(arr: T[]): T[] {
   const result = [...arr]
@@ -35,12 +36,26 @@ function shuffle<T>(arr: T[]): T[] {
   return result
 }
 
+function latestResultMap(records: MorningRecord[]): Map<string, boolean> {
+  const result = new Map<string, boolean>()
+  for (const record of records) {
+    if (!result.has(record.questionId)) {
+      result.set(record.questionId, record.isCorrect)
+    }
+  }
+  return result
+}
+
 export default function OfficialMorningQuiz() {
   const navigate = useNavigate()
   const [count, setCount] = useState<QuestionCount>(25)
   const [shuffleChoices, setShuffleChoices] = useState(() => getMorningChoiceShuffle())
   const [reportOpen, setReportOpen] = useState(false)
   const [morningRecords, setMorningRecords] = useState(() => loadMorningRecords())
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([])
+  const [selectedYears, setSelectedYears] = useState<string[]>([])
+  const [importantOnly, setImportantOnly] = useState(false)
+  const [wrongOnly, setWrongOnly] = useState(false)
 
   const allCount = officialMorningQuestions.length
   const importantIds = useMemo(
@@ -50,6 +65,11 @@ export default function OfficialMorningQuiz() {
   const importantQuestions = useMemo(
     () => officialMorningQuestions.filter((q) => importantIds.has(q.id)),
     [importantIds],
+  )
+  const latestResults = useMemo(() => latestResultMap(morningRecords), [morningRecords])
+  const wrongQuestions = useMemo(
+    () => officialMorningQuestions.filter((q) => latestResults.get(q.id) === false),
+    [latestResults],
   )
 
   // カテゴリ別グルーピング（categoryId が設定されている問題のみ）
@@ -84,10 +104,55 @@ export default function OfficialMorningQuiz() {
     }
   }, [morningRecords])
 
+  const selectedCategorySet = useMemo(() => new Set(selectedCategoryIds), [selectedCategoryIds])
+  const selectedYearSet = useMemo(() => new Set(selectedYears), [selectedYears])
+
+  const filteredQuestions = useMemo(
+    () =>
+      officialMorningQuestions.filter((q) => {
+        if (selectedCategorySet.size > 0 && (!q.categoryId || !selectedCategorySet.has(q.categoryId))) {
+          return false
+        }
+        if (selectedYearSet.size > 0 && !selectedYearSet.has(q.year)) {
+          return false
+        }
+        if (importantOnly && !importantIds.has(q.id)) {
+          return false
+        }
+        if (wrongOnly && latestResults.get(q.id) !== false) {
+          return false
+        }
+        return true
+      }),
+    [importantIds, importantOnly, latestResults, selectedCategorySet, selectedYearSet, wrongOnly],
+  )
+
+  const plannedCount =
+    count === 'all' ? filteredQuestions.length : Math.min(count, filteredQuestions.length)
+
+  const activeFilterLabels = useMemo(() => {
+    const labels: string[] = []
+    if (selectedCategoryIds.length > 0) {
+      const names = selectedCategoryIds
+        .map((id) => categories.find((c) => c.id === id)?.name ?? id)
+        .join('・')
+      labels.push(`カテゴリ: ${names}`)
+    }
+    if (selectedYears.length > 0) {
+      const names = selectedYears
+        .map((year) => getMorningQuestionsByYear(year)[0]?.yearLabel ?? year)
+        .join('・')
+      labels.push(`年度: ${names}`)
+    }
+    if (importantOnly) labels.push('重要マークのみ')
+    if (wrongOnly) labels.push('直近不正解のみ')
+    return labels
+  }, [importantOnly, selectedCategoryIds, selectedYears, wrongOnly])
+
   // 出題リストを構築して Session 画面へ
   const startSession = (
     list: OfficialMorningQuestion[],
-    scope: 'random' | 'year' | 'important' | 'single' | 'category',
+    scope: MorningSessionScope,
     yearLabel?: string,
   ) => {
     const shuffled = shuffle(list)
@@ -101,30 +166,42 @@ export default function OfficialMorningQuiz() {
     })
   }
 
-  const handleRandom = () =>
-    startSession(officialMorningQuestions, 'random')
+  const toggleCategory = (categoryId: string) => {
+    setSelectedCategoryIds((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId],
+    )
+  }
 
-  const handleImportant = () => {
-    if (importantQuestions.length === 0) {
-      alert('重要マーク済みの公式午前II問題がありません。\n問題画面の ☆ をタップしてマークしてください。')
+  const toggleYear = (year: string) => {
+    setSelectedYears((prev) =>
+      prev.includes(year)
+        ? prev.filter((id) => id !== year)
+        : [...prev, year],
+    )
+  }
+
+  const clearFilters = () => {
+    setSelectedCategoryIds([])
+    setSelectedYears([])
+    setImportantOnly(false)
+    setWrongOnly(false)
+  }
+
+  const handleStartSelected = () => {
+    if (filteredQuestions.length === 0) {
+      alert('現在の条件に合う問題がありません。条件を変更してください。')
       return
     }
-    startSession(importantQuestions, 'important')
-  }
-
-  const handleYear = (year: string) => {
-    const list = getMorningQuestionsByYear(year)
-    if (list.length === 0) return
-    const yearLabel = list[0].yearLabel
-    startSession(list, 'year', yearLabel)
-  }
-
-  const handleCategory = (categoryId: string) => {
-    const list = byCategory.get(categoryId) ?? []
-    if (list.length === 0) return
-    const name = categories.find((c) => c.id === categoryId)?.name ?? categoryId
-    // yearLabel フィールドにカテゴリ名を流用（Summary 画面の表示用、scope=category で区別）
-    startSession(list, 'category', name)
+    const scope: MorningSessionScope =
+      importantOnly ? 'important'
+      : selectedCategoryIds.length > 0 ? 'category'
+      : selectedYears.length > 0 ? 'year'
+      : 'random'
+    const label =
+      activeFilterLabels.length > 0 ? activeFilterLabels.join(' / ') : '全範囲ランダム'
+    startSession(filteredQuestions, scope, label)
   }
 
   const handleReportQuestion = (question: OfficialMorningQuestion) => {
@@ -143,16 +220,30 @@ export default function OfficialMorningQuiz() {
 
         {/* Header */}
         <header className="rounded-xl bg-brand text-white px-4 py-3 shadow-md">
-          <h1 className="text-base font-black leading-snug">公式午前II問題</h1>
-          <p className="text-xs text-white/80 mt-0.5">
-            IPA公式 過去問4択 全{allCount}問
-            {stats.total > 0 && (
-              <>
-                <span className="mx-1.5 opacity-50">|</span>
-                これまでに {stats.total}問 解答（正答率 {stats.rate}%）
-              </>
-            )}
-          </p>
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-base font-black leading-snug">公式午前II問題</h1>
+              <p className="text-xs text-white/80 mt-0.5">
+                IPA公式 過去問4択 全{allCount}問
+                {stats.total > 0 && (
+                  <>
+                    <span className="mx-1.5 opacity-50">|</span>
+                    これまでに {stats.total}問 解答（正答率 {stats.rate}%）
+                  </>
+                )}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMorningRecords(loadMorningRecords())
+                setReportOpen(true)
+              }}
+              className="flex-shrink-0 rounded-lg bg-white/15 px-3 py-1.5 text-xs font-bold text-white hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              ▦ 達成度
+            </button>
+          </div>
         </header>
 
         {/* 問題数セレクタ */}
@@ -185,21 +276,6 @@ export default function OfficialMorningQuiz() {
           <div className="grid grid-cols-2 gap-2 rounded-xl bg-white border border-slate-200 p-1.5">
             <button
               type="button"
-              onClick={() => handleShuffleChoicesChange(true)}
-              aria-pressed={shuffleChoices}
-              className={`rounded-lg px-3 py-2 text-left transition-colors ${
-                shuffleChoices
-                  ? 'bg-brand text-white shadow-sm'
-                  : 'text-slate-500 hover:bg-slate-50'
-              }`}
-            >
-              <span className="block text-sm font-bold">選択肢ランダム</span>
-              <span className={`block text-[11px] mt-0.5 ${shuffleChoices ? 'text-white/80' : 'text-slate-400'}`}>
-                出題中は①②③④
-              </span>
-            </button>
-            <button
-              type="button"
               onClick={() => handleShuffleChoicesChange(false)}
               aria-pressed={!shuffleChoices}
               className={`rounded-lg px-3 py-2 text-left transition-colors ${
@@ -213,54 +289,97 @@ export default function OfficialMorningQuiz() {
                 最初からア/イ/ウ/エ
               </span>
             </button>
+            <button
+              type="button"
+              onClick={() => handleShuffleChoicesChange(true)}
+              aria-pressed={shuffleChoices}
+              className={`rounded-lg px-3 py-2 text-left transition-colors ${
+                shuffleChoices
+                  ? 'bg-brand text-white shadow-sm'
+                  : 'text-slate-500 hover:bg-slate-50'
+              }`}
+            >
+              <span className="block text-sm font-bold">選択肢ランダム</span>
+              <span className={`block text-[11px] mt-0.5 ${shuffleChoices ? 'text-white/80' : 'text-slate-400'}`}>
+                出題中は①②③④
+              </span>
+            </button>
           </div>
         </section>
 
-        {/* メインアクション */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <button
-            onClick={handleRandom}
-            className="flex items-center gap-3 bg-white rounded-xl border-2 border-brand-light px-4 py-4 hover:border-brand hover:shadow-md transition-all text-left"
-          >
-            <span className="text-2xl flex-shrink-0">🎲</span>
+        {/* 出題条件 + 開始ボタン */}
+        <section className="rounded-xl bg-white border-2 border-brand-light px-4 py-4 shadow-sm space-y-4">
+          <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-800">全範囲ランダム</p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                全{allCount}問から {count === 'all' ? '全問' : `${count}問`} を出題
+              <h2 className="text-sm font-black text-slate-800">出題条件</h2>
+              <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                {activeFilterLabels.length > 0 ? activeFilterLabels.join(' / ') : '全範囲'}
               </p>
             </div>
-          </button>
+            <button
+              type="button"
+              onClick={clearFilters}
+              disabled={activeFilterLabels.length === 0}
+              className="flex-shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold text-slate-500 hover:border-brand hover:text-brand disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              条件クリア
+            </button>
+          </div>
 
-          <button
-            onClick={handleImportant}
-            disabled={importantQuestions.length === 0}
-            className="flex items-center gap-3 bg-white rounded-xl border-2 border-amber-100 px-4 py-4 hover:border-amber-400 hover:shadow-md transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="text-2xl flex-shrink-0">⭐</span>
-            <div className="flex-1 min-w-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setImportantOnly((prev) => !prev)}
+              disabled={!importantOnly && importantQuestions.length === 0}
+              aria-pressed={importantOnly}
+              className={`rounded-xl border-2 px-3 py-3 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                importantOnly
+                  ? 'border-amber-400 bg-amber-50'
+                  : 'border-slate-200 hover:border-amber-300 hover:bg-amber-50/60'
+              }`}
+            >
               <p className="text-sm font-bold text-slate-800">重要マークのみ</p>
               <p className="text-[11px] text-slate-400 mt-0.5">
                 マーク済み {importantQuestions.length}問
               </p>
-            </div>
-          </button>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setMorningRecords(loadMorningRecords())
-              setReportOpen(true)
-            }}
-            className="flex items-center gap-3 bg-white rounded-xl border-2 border-slate-200 px-4 py-4 hover:border-brand hover:shadow-md transition-all text-left"
-          >
-            <span className="text-2xl flex-shrink-0">▦</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-800">達成度レポート</p>
+            <button
+              type="button"
+              onClick={() => {
+                setMorningRecords(loadMorningRecords())
+                setWrongOnly((prev) => !prev)
+              }}
+              disabled={!wrongOnly && wrongQuestions.length === 0}
+              aria-pressed={wrongOnly}
+              className={`rounded-xl border-2 px-3 py-3 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+                wrongOnly
+                  ? 'border-red-400 bg-red-50'
+                  : 'border-slate-200 hover:border-red-300 hover:bg-red-50/60'
+              }`}
+            >
+              <p className="text-sm font-bold text-slate-800">間違えた問題を復習</p>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                年度×問番号で正誤履歴を確認
+                直近不正解 {wrongQuestions.length}問
               </p>
-            </div>
-          </button>
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 pt-4">
+            <p className="text-xs text-slate-500">
+              対象 <span className="text-lg font-black tabular-nums text-slate-900">{filteredQuestions.length}</span> 問
+              <span className="mx-1 text-slate-300">/</span>
+              今回 <span className="font-bold tabular-nums text-brand-dark">{plannedCount}</span> 問を出題
+            </p>
+            <button
+              type="button"
+              onClick={handleStartSelected}
+              disabled={filteredQuestions.length === 0}
+              className="w-full sm:w-auto rounded-xl bg-brand px-6 py-3 text-sm font-black text-white shadow-md hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed"
+            >
+              この条件で出題開始
+            </button>
+          </div>
         </section>
 
         {/* カテゴリ別カード */}
@@ -277,11 +396,17 @@ export default function OfficialMorningQuiz() {
               {categoryCards.map((c) => (
                 <button
                   key={c.id}
-                  onClick={() => handleCategory(c.id)}
-                  className="flex flex-col items-start bg-white rounded-xl border border-slate-200 px-3 py-2.5 hover:border-brand hover:shadow-md transition-all text-left"
+                  type="button"
+                  onClick={() => toggleCategory(c.id)}
+                  aria-pressed={selectedCategorySet.has(c.id)}
+                  className={`flex flex-col items-start rounded-xl border px-3 py-2.5 hover:shadow-md transition-all text-left ${
+                    selectedCategorySet.has(c.id)
+                      ? 'bg-brand-light border-brand text-brand-darker'
+                      : 'bg-white border-slate-200 hover:border-brand'
+                  }`}
                 >
-                  <p className="text-sm font-bold text-slate-800 leading-tight">{c.name}</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-sm font-bold leading-tight">{c.name}</p>
+                  <p className={`text-[11px] mt-0.5 ${selectedCategorySet.has(c.id) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
                     {c.count}問
                     <span className="ml-1 opacity-60">{count === 'all' ? '・全問' : `・最大${count}問`}</span>
                   </p>
@@ -290,7 +415,7 @@ export default function OfficialMorningQuiz() {
             </div>
           )}
           <p className="text-[11px] text-slate-400 mt-2">
-            ※ 各カテゴリで上記「出題数」設定が適用されます（指定数を超える場合はランダム抽出）。
+            ※ 複数選択できます。未選択なら全カテゴリが対象です。
           </p>
         </section>
 
@@ -306,18 +431,26 @@ export default function OfficialMorningQuiz() {
               return (
                 <button
                   key={year}
-                  onClick={() => handleYear(year)}
+                  type="button"
+                  onClick={() => toggleYear(year)}
                   disabled={list.length === 0}
-                  className="flex flex-col items-start bg-white rounded-xl border border-slate-200 px-3 py-2.5 hover:border-brand hover:shadow-md transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-pressed={selectedYearSet.has(year)}
+                  className={`flex flex-col items-start rounded-xl border px-3 py-2.5 hover:shadow-md transition-all text-left disabled:opacity-50 disabled:cursor-not-allowed ${
+                    selectedYearSet.has(year)
+                      ? 'bg-brand-light border-brand text-brand-darker'
+                      : 'bg-white border-slate-200 hover:border-brand'
+                  }`}
                 >
-                  <p className="text-sm font-bold text-slate-800">{yearLabel}</p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">{list.length}問</p>
+                  <p className="text-sm font-bold">{yearLabel}</p>
+                  <p className={`text-[11px] mt-0.5 ${selectedYearSet.has(year) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
+                    {list.length}問
+                  </p>
                 </button>
               )
             })}
           </div>
           <p className="text-[11px] text-slate-400 mt-2">
-            ※ F1段階ではサンプル年度のみ。F2-P3 で全年度（H25〜現行）に拡張予定。
+            ※ 複数選択できます。未選択なら全年度が対象です。
           </p>
         </section>
 
