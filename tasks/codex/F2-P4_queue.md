@@ -33,7 +33,7 @@
 | 8 | H28 | 平成28（2016） | heisei | 2016 | **完了（Codex / 2026-05-24 / commit f952633）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm1_ans.pdf |
 | 9 | H27 | 平成27（2015） | heisei | 2015 | **完了（Codex / 2026-05-24 / commit d63e9d0）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm1_ans.pdf |
 | 10 | H26 | 平成26（2014） | heisei | 2014 | **完了（Codex / 2026-05-24 / commit d4a0f07）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_ans.pdf |
-| 11 | H25 | 平成25（2013） | heisei | 2013 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2013h25h.html から取得 | 同上 |
+| 11 | H25 | 平成25（2013） | heisei | 2013 | **進行中（Codex 担当 / 2026-05-24）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_ans.pdf |
 
 ## URL 取得方法（Codex 用）
 
