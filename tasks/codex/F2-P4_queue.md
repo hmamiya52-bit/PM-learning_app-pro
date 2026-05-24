@@ -29,7 +29,7 @@
 | 4 | R2 | 令和2（2020） | reiwa | 2020 | **完了（Codex / 2026-05-24 / commit cdf6007）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_pm_pm1_ans.pdf |
 | 5 | R1 | 令和元（2019） | reiwa | 2019 | **完了（Codex / 2026-05-24 / commit f586c88）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm1_ans.pdf |
 | 6 | H30 | 平成30（2018） | heisei | 2018 | **完了（Codex / 2026-05-24 / commit da8a3cc）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm1_ans.pdf |
-| 7 | H29 | 平成29（2017） | heisei | 2017 | **進行中（Codex 担当 / 2026-05-24）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_ans.pdf |
+| 7 | H29 | 平成29（2017） | heisei | 2017 | **完了（Codex / 2026-05-24 / commit ed50216）** | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_qs.pdf | https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm1_ans.pdf |
 | 8 | H28 | 平成28（2016） | heisei | 2016 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2016h28h.html から取得 | 同上 |
 | 9 | H27 | 平成27（2015） | heisei | 2015 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2015h27h.html から取得 | 同上 |
 | 10 | H26 | 平成26（2014） | heisei | 2014 | **未着手** | https://www.ipa.go.jp/shiken/mondai-kaiotu/2014h26h.html から取得 | 同上 |
@@ -60,6 +60,7 @@ R6 午前II の URL 命名規則: `2024r06a_pm_am2_qs.pdf` / `2024r06a_pm_am2_an
 - R2: 完了（2026-05-24 / commit cdf6007） → Claude レビュー待ち
 - R1: 完了（2026-05-24 / commit f586c88） → Claude レビュー待ち
 - H30: 完了（2026-05-24 / commit da8a3cc） → Claude レビュー待ち
+- H29: 完了（2026-05-24 / commit ed50216） → Claude レビュー待ち
 ```
 
 例:
