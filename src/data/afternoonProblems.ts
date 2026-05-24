@@ -126,6 +126,41 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['チームビルディング', 'DX', '心理的安全性', '支援型リーダーシップ'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_pm_pm1_qs.pdf',
   },
+
+  // ─── R3 午後I ───────────────────────────────────────────────────
+  {
+    id: 'R3-PM1-1',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 1,
+    title: '新たな事業を実現するためのシステム開発プロジェクトにおけるプロジェクト計画',
+    keywords: ['新事業', 'DX', '段階的詳細化', 'リスク対応'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R3-PM1-2',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 2,
+    title: '業務管理システムの改善のためのシステム開発プロジェクト',
+    keywords: ['顧客満足度', 'マネジメントプロセス', '顧客体験価値', '業務改善'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'R3-PM1-3',
+    year: 'R3',
+    yearLabel: '令和3（2021）',
+    era: 'reiwa',
+    section: 'PM1',
+    number: 3,
+    title: 'マルチベンダのシステム開発プロジェクト',
+    keywords: ['マルチベンダ', 'ステークホルダ', 'プロジェクト作業', '変更管理'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
