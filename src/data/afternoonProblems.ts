@@ -406,6 +406,52 @@ export const afternoonProblems: AfternoonProblem[] = [
     keywords: ['生産管理システム', '再構築', '契約管理', '移行'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm1_qs.pdf',
   },
+
+  // ─── H25 午後I ───────────────────────────────────────────────────
+  {
+    id: 'H25-PM1-1',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 1,
+    title: '設計ドキュメント管理システムの開発プロジェクト',
+    keywords: ['設計ドキュメント管理', 'クラウドサービス', 'スケジュール', 'リスク評価'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H25-PM1-2',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 2,
+    title: 'プロジェクト計画の策定',
+    keywords: ['プロジェクト計画', 'リスクマネジメント', 'ステークホルダ', '新基盤'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H25-PM1-3',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 3,
+    title: 'システム開発プロジェクトの企業合併に伴う計画変更',
+    keywords: ['計画変更', '企業合併', '業務プロセス', 'データ移行'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_qs.pdf',
+  },
+  {
+    id: 'H25-PM1-4',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    era: 'heisei',
+    section: 'PM1',
+    number: 4,
+    title: 'ソフトウェア開発の遂行',
+    keywords: ['ソフトウェア開発', 'ステークホルダ', '品質管理', 'レビュー'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm1_qs.pdf',
+  },
 ]
 
 export const YEARS = [...new Set(afternoonProblems.map((p) => p.year))]
