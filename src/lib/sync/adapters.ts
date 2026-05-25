@@ -8,6 +8,11 @@ import { getTotalXpFromSyncEvents } from './events'
 import { loadSyncMeta } from './device'
 import { BADGES } from '../../data/badges'
 import { questions } from '../../data/questions'
+import {
+  loadAllSavedAnswerSnapshots,
+  saveAllSavedAnswerSnapshots,
+  type AfternoonSavedAnswerSnapshot,
+} from '../afternoonSavedAnswers'
 
 const KEYS = {
   // === NW踏襲（prefix 置換済み） ===
@@ -181,6 +186,24 @@ function mergeDailyXpLedger(
   return { value: merged, updatedCount }
 }
 
+function snapshotTimestamp(snapshot: AfternoonSavedAnswerSnapshot | undefined): number {
+  const parsed = Date.parse(snapshot?.savedAt ?? '')
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+function mergeSavedAnswerSnapshots(
+  current: Record<string, AfternoonSavedAnswerSnapshot>,
+  incoming: Record<string, AfternoonSavedAnswerSnapshot> | undefined,
+): Record<string, AfternoonSavedAnswerSnapshot> {
+  const merged = { ...current }
+  for (const [recordId, snapshot] of Object.entries(incoming ?? {})) {
+    if (!merged[recordId] || snapshotTimestamp(snapshot) >= snapshotTimestamp(merged[recordId])) {
+      merged[recordId] = snapshot
+    }
+  }
+  return merged
+}
+
 function refreshLocalDailyXpLedger(): DailyXpLedger {
   const meta = loadSyncMeta()
   const current = normalizeLedger(loadJson<DailyXpLedger>(KEYS.DAILY_XP_LEDGER, {}))
@@ -208,6 +231,7 @@ export function readLocalSyncState(): LocalSyncState {
     morningRecords: loadJson<MorningRecord[]>(KEYS.MORNING_RECORDS, []),         // ★F1-P4
     essayAttempts: loadJson<EssayAttempt[]>(KEYS.ESSAY_ATTEMPTS, []),            // ★F1-P5
     essayPlans: loadJson<Record<string, string>>(KEYS.ESSAY_PLANS, {}),          // ★F1-P5
+    savedAnswerSnapshots: loadAllSavedAnswerSnapshots(),
   }
 }
 
@@ -406,6 +430,10 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
 
   // ★F1-P5 essayPlans: 単純 spread（incoming 優先、タイムスタンプは持っていないため）
   const essayPlans: Record<string, string> = { ...current.essayPlans, ...incoming.essayPlans }
+  const savedAnswerSnapshots = mergeSavedAnswerSnapshots(
+    current.savedAnswerSnapshots,
+    incoming.savedAnswerSnapshots,
+  )
 
   saveJson(KEYS.ANSWER_RECORDS, answerRecords)
   saveJson(KEYS.STUDY_SESSIONS, studySessions)
@@ -419,6 +447,7 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
   saveJson(KEYS.MORNING_RECORDS, morningRecords)           // ★F1-P4
   saveJson(KEYS.ESSAY_ATTEMPTS, essayAttempts)             // ★F1-P5
   saveJson(KEYS.ESSAY_PLANS, essayPlans)                   // ★F1-P5
+  saveAllSavedAnswerSnapshots(savedAnswerSnapshots)
 
   return {
     addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,

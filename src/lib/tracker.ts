@@ -1,4 +1,5 @@
 import { touchAfternoonPlanSyncMeta } from './sync/adapters'
+import { savedAnswerSnapshotExists } from './afternoonSavedAnswers'
 
 export interface PracticeRecord {
   id: string
@@ -99,7 +100,8 @@ export function removePlan(problemId: string): void {
 }
 
 /** 午後I（PM1）は1問50点満点。 */
-export function getMaxScore(_section: 'PM1'): number {
+export function getMaxScore(section: 'PM1'): number {
+  void section
   return 50
 }
 
@@ -111,9 +113,5 @@ export function getMaxScore(_section: 'PM1'): number {
  * 設計原則「キー定義は lib に集約」に従い lib 側のヘルパーに集約。
  */
 export function savedAnswersExists(recordId: string): boolean {
-  try {
-    return localStorage.getItem(`pmap:savedAnswers:${recordId}`) !== null
-  } catch {
-    return false
-  }
+  return savedAnswerSnapshotExists(recordId)
 }

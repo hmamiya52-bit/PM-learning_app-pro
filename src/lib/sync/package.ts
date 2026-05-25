@@ -164,6 +164,10 @@ function mergeTargetStates(base: LocalSyncState, incoming: LocalSyncState): Loca
     ),
     // ★F1-P5: essayPlans は incoming 優先で spread
     essayPlans: { ...(base.essayPlans ?? {}), ...(incoming.essayPlans ?? {}) },
+    savedAnswerSnapshots: {
+      ...(base.savedAnswerSnapshots ?? {}),
+      ...(incoming.savedAnswerSnapshots ?? {}),
+    },
   }
 }
 
@@ -189,10 +193,16 @@ function compactStateForTarget(state: LocalSyncState, target: LocalSyncState | u
   const targetBookmarkIds = new Set((target.bookmarks ?? []).map((bookmark) => bookmark.questionId))
   const targetTrackerIds = new Set((target.trackerRecords ?? []).map((record) => record.id))
   const questionMastery: Record<string, MasteryState> = {}
+  const savedAnswerSnapshots: LocalSyncState['savedAnswerSnapshots'] = {}
 
   for (const [key, value] of Object.entries(state.questionMastery)) {
     if (masteryRank(value) > masteryRank(target.questionMastery?.[key])) {
       questionMastery[key] = value
+    }
+  }
+  for (const [recordId, snapshot] of Object.entries(state.savedAnswerSnapshots ?? {})) {
+    if (JSON.stringify(snapshot) !== JSON.stringify(target.savedAnswerSnapshots?.[recordId])) {
+      savedAnswerSnapshots[recordId] = snapshot
     }
   }
 
@@ -226,6 +236,7 @@ function compactStateForTarget(state: LocalSyncState, target: LocalSyncState | u
     })(),
     // ★F1-P5: essayPlans は全量送信（タイムスタンプ持たないため簡略化、F2-P4で再検討）
     essayPlans: { ...(state.essayPlans ?? {}) },
+    savedAnswerSnapshots,
   }
 }
 

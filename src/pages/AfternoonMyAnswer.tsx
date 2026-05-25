@@ -8,6 +8,14 @@ import { addRecord, getMaxScore, loadRecords } from '../lib/tracker'
 import { scoringMap } from '../data/scoringMap'
 import { addActivityEvent } from '../lib/activityLog'
 import { applyAfternoonRecord } from '../lib/gamification'  // F1-P-1 D-LIB-01 リネーム
+import {
+  loadSavedAnswers,
+  loadSavedScorings,
+  saveSavedAnswerSnapshot,
+  type AfternoonAnswerMap,
+  type AfternoonMarking,
+  type AfternoonScoringMap,
+} from '../lib/afternoonSavedAnswers'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 
@@ -15,9 +23,9 @@ import type { BadgeDefinition } from '../data/badges'
 // Types & storage
 // ----------------------------------------------------------------
 
-type MyAnswers = Record<string, string>
-type Marking = 'correct' | 'partial' | 'wrong'
-type Scorings = Record<string, Marking>
+type MyAnswers = AfternoonAnswerMap
+type Marking = AfternoonMarking
+type Scorings = AfternoonScoringMap
 
 function storageKey(id: string) { return `pmap:myAnswer:${id}` }
 
@@ -30,19 +38,6 @@ function loadMyAnswers(id: string): MyAnswers {
 
 function saveMyAnswers(id: string, answers: MyAnswers) {
   localStorage.setItem(storageKey(id), JSON.stringify(answers))
-}
-
-function savedAnswersKey(recordId: string) { return `pmap:savedAnswers:${recordId}` }
-
-function loadSavedAnswers(recordId: string): MyAnswers {
-  try {
-    const raw = localStorage.getItem(savedAnswersKey(recordId))
-    return raw ? JSON.parse(raw) : {}
-  } catch { return {} }
-}
-
-function saveSavedAnswers(recordId: string, answers: MyAnswers) {
-  localStorage.setItem(savedAnswersKey(recordId), JSON.stringify(answers))
 }
 
 function today(): string {
@@ -153,12 +148,20 @@ function AnswerInputTable({
             const val = myAnswers[rowKey] ?? ''
             const renderQ = row.showQ && row.qLabel !== ''
             const answerColspan = row.showQ && row.qLabel === '' ? 2 : 1
+            const selectedMarking = scorings[rowKey]
+            const markingLabels: Record<Marking, string> = { correct: '○', partial: '△', wrong: '×' }
+            const markingText: Record<Marking, string> = { correct: '正解', partial: '部分点', wrong: '不正解' }
 
-            const markingButtons = checkMode && (
+            const markingControls = checkMode && readOnly && selectedMarking ? (
+              <div className="flex gap-2.5 px-1 pb-1.5 pt-0.5">
+                <span className="text-[11px] font-bold rounded px-1.5 py-0.5 bg-slate-100 text-slate-600">
+                  自己採点: {markingLabels[selectedMarking]} {markingText[selectedMarking]}
+                </span>
+              </div>
+            ) : checkMode && !readOnly ? (
               <div className="flex gap-2.5 px-1 pb-1.5 pt-0.5">
                 {(['correct', 'partial', 'wrong'] as Marking[]).map(m => {
                   const isSelected = scorings[rowKey] === m
-                  const labels: Record<Marking, string> = { correct: '○', partial: '△', wrong: '×' }
                   const colors: Record<Marking, string> = {
                     correct: isSelected ? 'bg-emerald-500 text-white' : 'border border-emerald-400 text-emerald-600',
                     partial: isSelected ? 'bg-amber-400 text-white' : 'border border-amber-400 text-amber-600',
@@ -170,12 +173,12 @@ function AnswerInputTable({
                       onClick={() => onMark(rowKey, m)}
                       className={`text-[11px] font-bold rounded px-1.5 py-0.5 transition-colors ${colors[m]}`}
                     >
-                      {labels[m]}
+                      {markingLabels[m]}
                     </button>
                   )
                 })}
               </div>
-            )
+            ) : null
 
             const inputContent = row.essay ? (
               <div>
@@ -195,7 +198,7 @@ function AnswerInputTable({
                     {row.a}
                   </div>
                 )}
-                {markingButtons}
+                {markingControls}
               </div>
             ) : (
               <div>
@@ -213,7 +216,7 @@ function AnswerInputTable({
                     {row.a}
                   </div>
                 )}
-                {markingButtons}
+                {markingControls}
               </div>
             )
 
@@ -276,9 +279,26 @@ function AnswerInputTable({
 
 export default function AfternoonMyAnswer() {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const viewRecordId = searchParams.get('recordId')
+
+  return (
+    <AfternoonMyAnswerContent
+      key={`${id ?? 'missing'}:${viewRecordId ?? 'draft'}`}
+      id={id}
+      viewRecordId={viewRecordId}
+    />
+  )
+}
+
+function AfternoonMyAnswerContent({
+  id,
+  viewRecordId,
+}: {
+  id: string | undefined
+  viewRecordId: string | null
+}) {
+  const navigate = useNavigate()
   const isViewMode = !!viewRecordId
 
   const answerSet = officialAnswers.find(a => a.id === id)
@@ -291,7 +311,10 @@ export default function AfternoonMyAnswer() {
   const [checkMode, setCheckMode] = useState(isViewMode)
   const [showClearModal, setShowClearModal] = useState(false)
   const [showFinishConfirm, setShowFinishConfirm] = useState(false)
-  const [scorings, setScorings] = useState<Scorings>({})
+  const [scorings, setScorings] = useState<Scorings>(() => {
+    if (viewRecordId) return loadSavedScorings(viewRecordId)
+    return {}
+  })
   const [recorded, setRecorded] = useState(false)
   const [savedRecordId, setSavedRecordId] = useState<string | null>(null)
   const [savedXp, setSavedXp] = useState(0)
@@ -309,22 +332,6 @@ export default function AfternoonMyAnswer() {
       .sort((a, b) => a.date.localeCompare(b.date))
     const idx = records.findIndex(r => r.id === viewRecordId)
     return idx >= 0 ? idx + 1 : null
-  }, [viewRecordId, id])
-
-  // 閲覧モード ⇄ 編集モード切り替え時に state をリセット
-  useEffect(() => {
-    if (viewRecordId) {
-      setMyAnswers(loadSavedAnswers(viewRecordId))
-      setCheckMode(true)
-      setScorings({})
-    } else {
-      // 編集モードに戻ったとき: 下書き（空でも可）を読み込み直す
-      setMyAnswers(id ? loadMyAnswers(id) : {})
-      setCheckMode(false)
-      setScorings({})
-      setRecorded(false)
-      setSavedRecordId(null)
-    }
   }, [viewRecordId, id])
 
   const timer = useTimer()
@@ -375,6 +382,7 @@ export default function AfternoonMyAnswer() {
   const markedCount = Object.keys(scorings).length
   const maxScore = getMaxScore('PM1')
   const rowScores = scoringMap[id] ?? []
+  const allRowsMarked = totalRows > 0 && markedCount === totalRows
   const calculatedScore = Object.entries(scorings).reduce((sum, [rowKey, marking]) => {
     const pts = rowScores[parseInt(rowKey)]
     if (!pts) return sum
@@ -384,9 +392,15 @@ export default function AfternoonMyAnswer() {
   }, 0)
 
   const handleRecordToTracker = () => {
+    if (!allRowsMarked || recorded) return
+
     const record = addRecord({ problemId: id, date: today(), score: calculatedScore })
-    // 解答を記録IDに紐づけて保存し、下書きをクリア
-    saveSavedAnswers(record.id, myAnswers)
+    saveSavedAnswerSnapshot(record.id, {
+      answers: myAnswers,
+      scorings,
+      score: calculatedScore,
+      savedAt: new Date().toISOString(),
+    })
     // F1-P-1 D-LIB-01 リネーム: recordAfternoonXp(section, score) → applyAfternoonRecord(score, problemId)
     const result = applyAfternoonRecord(calculatedScore, id)
     addActivityEvent({
@@ -515,7 +529,7 @@ export default function AfternoonMyAnswer() {
               </p>
               {viewRecord && (
                 <p className="text-[10px] text-teal-600 mt-0.5">
-                  解答日：{viewRecord.date.replace(/-/g, '/')}　スコア：{viewRecord.score}点
+                  解答日：{viewRecord.date.replace(/-/g, '/')} / スコア：{viewRecord.score}点
                 </p>
               )}
             </div>
@@ -564,13 +578,20 @@ export default function AfternoonMyAnswer() {
                 推定スコア:
                 <span className="font-bold ml-1 text-amber-900">{calculatedScore} / {maxScore}点</span>
               </p>
+              {!allRowsMarked && (
+                <p className="text-[10px] text-amber-600">
+                  全設問を○/△/×で採点すると記録できます。
+                </p>
+              )}
             </div>
             <button
               onClick={handleRecordToTracker}
-              disabled={recorded}
+              disabled={recorded || !allRowsMarked}
               className={`text-xs font-bold rounded-lg px-3 py-1.5 flex-shrink-0 transition-colors ${
                 recorded
                   ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  : !allRowsMarked
+                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
                   : 'bg-indigo-600 text-white hover:bg-indigo-700'
               }`}
             >

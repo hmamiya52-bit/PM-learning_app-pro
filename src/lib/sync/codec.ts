@@ -14,6 +14,7 @@ import {
 import type { AnswerRecord, Bookmark } from '../../types'
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
+import type { AfternoonMarking, AfternoonSavedAnswerSnapshot } from '../afternoonSavedAnswers'
 import type { MasteryState } from '../storage'
 
 type SyncPackageWithoutChecksum = Omit<SyncPackage, 'checksum'>
@@ -22,6 +23,13 @@ type CompactAnswerRecord = [Ref, 0 | 1, 0 | 1, number, string?]
 type CompactBookmark = [Ref, number]
 type CompactQuestionMastery = [Ref, 1 | 2 | 3] | [Ref, 0 | 1, 1 | 2 | 3]
 type CompactTrackerRecord = [string, Ref, number, number, string?]
+type CompactSavedAnswerSnapshot = [
+  string,
+  Record<string, string>,
+  Record<string, 1 | 2 | 3>,
+  number?,
+  number?,
+]
 type CompactDailyXpLedger = [string, [number, number][]][]
 type CompactEvent = [string, string, number, string, number, number, unknown?]
 type CompactGamification = [
@@ -42,6 +50,7 @@ interface CompactState {
   b: CompactBookmark[]
   q: CompactQuestionMastery[]
   p: CompactTrackerRecord[]
+  r?: CompactSavedAnswerSnapshot[]
   g: CompactGamification
   x: CompactDailyXpLedger
 }
@@ -213,6 +222,52 @@ function decodeTrackerRecord(record: CompactTrackerRecord): PracticeRecord {
   }
 }
 
+function encodeMarking(marking: AfternoonMarking): 1 | 2 | 3 {
+  if (marking === 'correct') return 1
+  if (marking === 'partial') return 2
+  return 3
+}
+
+function decodeMarking(value: number): AfternoonMarking | undefined {
+  if (value === 1) return 'correct'
+  if (value === 2) return 'partial'
+  if (value === 3) return 'wrong'
+  return undefined
+}
+
+function encodeSavedAnswerSnapshot(
+  recordId: string,
+  snapshot: AfternoonSavedAnswerSnapshot,
+): CompactSavedAnswerSnapshot {
+  const scorings: Record<string, 1 | 2 | 3> = {}
+  for (const [rowKey, marking] of Object.entries(snapshot.scorings ?? {})) {
+    scorings[rowKey] = encodeMarking(marking)
+  }
+
+  const compact: CompactSavedAnswerSnapshot = [recordId, snapshot.answers ?? {}, scorings]
+  if (typeof snapshot.score === 'number' || snapshot.savedAt) {
+    compact.push(typeof snapshot.score === 'number' ? snapshot.score : -1)
+  }
+  if (snapshot.savedAt) compact.push(encodeTimestamp(snapshot.savedAt))
+  return compact
+}
+
+function decodeSavedAnswerSnapshot(record: CompactSavedAnswerSnapshot): [string, AfternoonSavedAnswerSnapshot] {
+  const scorings: AfternoonSavedAnswerSnapshot['scorings'] = {}
+  for (const [rowKey, marking] of Object.entries(record[2] ?? {})) {
+    const decoded = decodeMarking(marking)
+    if (decoded) scorings[rowKey] = decoded
+  }
+
+  return [record[0], {
+    version: 1,
+    answers: record[1] ?? {},
+    scorings,
+    score: typeof record[3] === 'number' && record[3] >= 0 ? record[3] : undefined,
+    savedAt: typeof record[4] === 'number' ? decodeTimestamp(record[4]) : undefined,
+  }]
+}
+
 function encodeDailyXpLedger(ledger: DailyXpLedger): CompactDailyXpLedger {
   return Object.entries(ledger).map(([deviceId, daily]) => [
     deviceId,
@@ -305,6 +360,9 @@ function encodeState(state: LocalSyncState): CompactState {
     b: state.bookmarks.map(encodeBookmark),
     q: [],
     p: state.trackerRecords.map(encodeTrackerRecord),
+    r: Object.entries(state.savedAnswerSnapshots ?? {}).map(([recordId, snapshot]) => (
+      encodeSavedAnswerSnapshot(recordId, snapshot)
+    )),
     g: encodeGamification(state.gamification),
     x: encodeDailyXpLedger(state.dailyXpLedger),
   }
@@ -317,6 +375,9 @@ function decodeState(state: CompactState): LocalSyncState {
     const value = rankToMastery(rank)
     if (value) questionMastery[key] = value
   }
+  const savedAnswerSnapshots = Object.fromEntries(
+    (state.r ?? []).map(decodeSavedAnswerSnapshot),
+  )
 
   return {
     answerRecords: state.a.map(decodeAnswerRecord),
@@ -332,6 +393,7 @@ function decodeState(state: CompactState): LocalSyncState {
     morningRecords: [],
     essayAttempts: [],
     essayPlans: {},
+    savedAnswerSnapshots,
   }
 }
 

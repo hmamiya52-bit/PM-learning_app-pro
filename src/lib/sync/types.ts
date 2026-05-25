@@ -1,5 +1,6 @@
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
+import type { AfternoonSavedAnswerSnapshot } from '../afternoonSavedAnswers'
 import type { AnswerRecord, Bookmark, StudySession, MorningRecord, EssayAttempt } from '../../types'
 import type { MasteryState } from '../storage'
 
@@ -58,7 +59,7 @@ export interface LocalSyncState {
   morningRecords: MorningRecord[]                  // ★F1-P4 公式午前Ⅱ 解答履歴
   essayAttempts: EssayAttempt[]                    // ★F1-P5 論述 練習履歴（active session は同期しない）
   essayPlans: Record<string, string>               // ★F1-P5 論述 学習計画日 problemId → YYYY-MM-DD
-  // ※ savedAnswers ワイルドカードは F2-P4 で wire format 拡張時に対応
+  savedAnswerSnapshots: Record<string, AfternoonSavedAnswerSnapshot>
 }
 
 export interface SyncPackageSummary {

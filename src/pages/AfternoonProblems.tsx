@@ -8,6 +8,7 @@ import {
   loadPlans, setPlan, removePlan, getMaxScore,
   savedAnswersExists,
 } from '../lib/tracker'
+import { deleteSavedAnswerSnapshot } from '../lib/afternoonSavedAnswers'
 import type { PracticeRecord } from '../lib/tracker'
 
 /**
@@ -633,6 +634,7 @@ export default function AfternoonProblems() {
 
   function handleDeleteRecord(id: string) {
     deleteRecord(id)
+    deleteSavedAnswerSnapshot(id)
     setRecords(loadRecords())
   }
 
