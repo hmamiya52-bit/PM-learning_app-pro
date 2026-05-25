@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   appliedRefreshDiagnosticQuestions,
+  appliedRefreshDetails,
   appliedRefreshFinalQuestions,
   appliedRefreshTopics,
   type AppliedRefreshQuestion,
@@ -224,6 +225,7 @@ export default function AppliedRefresh() {
   const completedCount = state.completedTopicIds.length
   const finalAnswered = Object.keys(state.finalAnswers).length
   const finalScore = scoreQuestions(appliedRefreshFinalQuestions, state.finalAnswers)
+  const activeDetail = appliedRefreshDetails[activeTopic.id]
   const recommendedTopics = diagnosticDone && weakTopicIds.length > 0
     ? appliedRefreshTopics.filter((topic) => weakSet.has(topic.id))
     : appliedRefreshTopics.slice(0, 4)
@@ -443,6 +445,78 @@ export default function AppliedRefresh() {
                   </ul>
                 </div>
               </div>
+
+              {activeDetail && (
+                <>
+                  <div className="px-4 py-4 border-b border-slate-100">
+                    <h3 className="text-xs font-black text-slate-700 mb-3">深掘りノート</h3>
+                    <div className="space-y-3">
+                      {activeDetail.lessonBlocks.map((block) => (
+                        <section key={block.heading} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                          <h4 className="text-xs font-black text-slate-800">{block.heading}</h4>
+                          <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{block.body}</p>
+                          <ul className="grid sm:grid-cols-3 gap-2 mt-3">
+                            {block.bullets.map((bullet) => (
+                              <li key={bullet} className="rounded-lg bg-white border border-slate-200 px-2.5 py-2 text-[11px] text-slate-600 leading-relaxed">
+                                {bullet}
+                              </li>
+                            ))}
+                          </ul>
+                        </section>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid lg:grid-cols-[1fr_220px] gap-0 border-b border-slate-100">
+                    <div className="px-4 py-4 border-b lg:border-b-0 lg:border-r border-slate-100">
+                      <h3 className="text-xs font-black text-slate-700 mb-2">典型シナリオ: {activeDetail.scenario.title}</h3>
+                      <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
+                        {activeDetail.scenario.situation}
+                      </p>
+                      <ul className="space-y-2 mt-3">
+                        {activeDetail.scenario.readAsPm.map((item) => (
+                          <li key={item} className="flex gap-2 text-xs text-slate-600 leading-relaxed">
+                            <span className="text-emerald-600 font-black">PM</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="text-xs text-slate-700 leading-relaxed mt-3 rounded-lg bg-white border border-slate-200 px-3 py-2">
+                        <span className="font-black text-slate-800">最初の一手: </span>
+                        {activeDetail.scenario.firstAction}
+                      </p>
+                    </div>
+                    <div className="px-4 py-4">
+                      <h3 className="text-xs font-black text-slate-700 mb-2">混同しやすい点</h3>
+                      <ul className="space-y-2">
+                        {activeDetail.traps.map((trap) => (
+                          <li key={trap} className="text-[11px] text-slate-600 leading-relaxed rounded-lg bg-rose-50 border border-rose-100 px-2.5 py-2">
+                            {trap}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="px-4 py-4 border-b border-slate-100">
+                    <h3 className="text-xs font-black text-slate-700 mb-2">1分ミニ演習</h3>
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3">
+                      <p className="text-xs font-bold text-amber-900 leading-relaxed">{activeDetail.miniDrill.prompt}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-2">
+                        {activeDetail.miniDrill.hints.map((hint) => (
+                          <span key={hint} className="text-[10px] font-bold rounded-full bg-white border border-amber-200 text-amber-700 px-2 py-0.5">
+                            {hint}
+                          </span>
+                        ))}
+                      </div>
+                      <details className="mt-3">
+                        <summary className="cursor-pointer text-[11px] font-black text-amber-800">解答例を見る</summary>
+                        <p className="text-xs text-amber-900 leading-relaxed mt-2">{activeDetail.miniDrill.modelAnswer}</p>
+                      </details>
+                    </div>
+                  </div>
+                </>
+              )}
 
               <div className="px-4 py-4 border-b border-slate-100">
                 <h3 className="text-xs font-black text-slate-700 mb-2">フラッシュカード</h3>
