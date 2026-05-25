@@ -161,7 +161,7 @@ export default function EssayList() {
         )}
 
         <p className="text-[11px] text-slate-400 leading-relaxed">
-          ※ F1 段階ではサンプル問題のみ。F2-P5 で全年度（H25〜現行）の本格データを投入予定。
+          ※ 午後IIの公式設問を新しい年度から順次投入中です。練習画面から公式問題冊子・出題趣旨・採点講評を確認できます。
         </p>
 
       </div>

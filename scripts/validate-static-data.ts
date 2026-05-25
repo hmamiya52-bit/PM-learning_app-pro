@@ -14,6 +14,7 @@ import { NOTE_DB } from '../src/pages/NoteDetail'
 import { afternoonProblems } from '../src/data/afternoonProblems'
 import { officialAnswers } from '../src/data/officialAnswers'
 import { scoringMap } from '../src/data/scoringMap'
+import { essayProblems } from '../src/data/essayProblems'
 
 type EmphasisStyle = 'red' | 'navy' | 'plain'
 const VALID_STYLES: ReadonlySet<EmphasisStyle> = new Set(['red', 'navy', 'plain'])
@@ -199,6 +200,54 @@ for (const id of smIdSet) {
   const totalScore = rows.reduce((sum, r) => sum + r.correct, 0)
   if (totalScore !== 50) {
     error(`scoringMap[${id}] の合計点 ${totalScore} が午後I満点 50 と不一致`)
+  }
+}
+
+// ─────────────────────────────────────────────
+// 5. 午後II 論述データ（essayProblems）の整合性
+//    - id 重複なし
+//    - categoryIds が categories に存在
+//    - 設問ア・イ・ウが1件ずつ存在
+//    - 推奨字数 range が 0 <= min <= max
+// ─────────────────────────────────────────────
+const essayIds = new Set<string>()
+const expectedEssayLabels = ['ア', 'イ', 'ウ'] as const
+for (const p of essayProblems) {
+  if (essayIds.has(p.id)) error(`essayProblems の id "${p.id}" が重複`)
+  essayIds.add(p.id)
+  if (!p.theme || p.theme.trim() === '') {
+    error(`essayProblems ${p.id} の theme が空`)
+  }
+  if (p.theme.includes('サンプル')) {
+    error(`essayProblems ${p.id} にサンプル表記が残っている`)
+  }
+  if (!p.categoryIds || p.categoryIds.length === 0) {
+    error(`essayProblems ${p.id} の categoryIds が空`)
+  }
+  for (const categoryId of p.categoryIds) {
+    if (!categoryIds.has(categoryId)) {
+      error(`essayProblems ${p.id} の categoryId "${categoryId}" が categories に存在しない`)
+    }
+  }
+  const labels = p.setsumons.map((s) => s.label)
+  for (const label of expectedEssayLabels) {
+    if (labels.filter((v) => v === label).length !== 1) {
+      error(`essayProblems ${p.id} の設問${label}が1件ではない`)
+    }
+  }
+  for (const s of p.setsumons) {
+    if (!s.text || s.text.trim() === '') {
+      error(`essayProblems ${p.id} 設問${s.label}の text が空`)
+    }
+    if (s.recommendedChars.min < 0) {
+      error(`essayProblems ${p.id} 設問${s.label}の recommendedChars.min が負値`)
+    }
+    if (s.recommendedChars.max <= 0) {
+      error(`essayProblems ${p.id} 設問${s.label}の recommendedChars.max が0以下`)
+    }
+    if (s.recommendedChars.min > s.recommendedChars.max) {
+      error(`essayProblems ${p.id} 設問${s.label}で min > max`)
+    }
   }
 }
 

@@ -156,6 +156,8 @@ export interface EssayProblem {
   setsumons: EssaySetsumon[]
   categoryIds: string[]               // 関連 PM カテゴリ ID（複数可）
   questionPdfUrl?: string
+  answerPdfUrl?: string               // 論述式問題では出題趣旨 PDF
+  commentaryPdfUrl?: string           // 採点講評 PDF
 }
 
 /** 5項目×5段階の自己評価 */

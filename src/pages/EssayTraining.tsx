@@ -42,6 +42,10 @@ function countChars(s: string | undefined): number {
   return (s ?? '').length
 }
 
+function formatRecommendedChars(range: { min: number; max: number }): string {
+  return range.min > 0 ? `${range.min}〜${range.max}字` : `${range.max}字以内`
+}
+
 export default function EssayTraining() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -258,7 +262,7 @@ export default function EssayTraining() {
   // 過去履歴
   const pastAttempts = useMemo(
     () => (id ? getAttemptsByProblem(id) : []),
-    [id, session?.step],  // step 変化で再読込（保存して終了直後の表示にも反映）
+    [id],
   )
 
   // ── 競合セッション警告 ─────────────────────────────────
@@ -318,7 +322,7 @@ export default function EssayTraining() {
             <p className="text-xs font-bold text-brand-dark">
               設問{q.label}
               <span className="ml-2 text-[10px] text-slate-400 font-normal tabular-nums">
-                {body.length}字 / 推奨 {q.recommendedChars.min}〜{q.recommendedChars.max}字
+                {body.length}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
               </span>
             </p>
             <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
@@ -350,6 +354,41 @@ export default function EssayTraining() {
           </p>
           <h1 className="text-base font-black leading-snug mt-0.5">{problem.theme}</h1>
         </header>
+
+        {(problem.questionPdfUrl || problem.answerPdfUrl || problem.commentaryPdfUrl) && (
+          <div className="flex flex-wrap gap-2">
+            {problem.questionPdfUrl && (
+              <a
+                href={problem.questionPdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 hover:border-brand hover:text-brand"
+              >
+                公式問題冊子
+              </a>
+            )}
+            {problem.answerPdfUrl && (
+              <a
+                href={problem.answerPdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 hover:border-brand hover:text-brand"
+              >
+                出題趣旨
+              </a>
+            )}
+            {problem.commentaryPdfUrl && (
+              <a
+                href={problem.commentaryPdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-600 hover:border-brand hover:text-brand"
+              >
+                採点講評
+              </a>
+            )}
+          </div>
+        )}
 
         {/* ステップインジケータ */}
         <div className="flex items-center gap-2 text-[11px]">
@@ -392,7 +431,7 @@ export default function EssayTraining() {
               <div className="px-4 pb-4 space-y-3 border-t border-slate-100">
                 {problem.setsumons.map((q) => (
                   <div key={q.label}>
-                    <p className="text-xs font-bold text-brand-dark">設問{q.label}（推奨 {q.recommendedChars.min}〜{q.recommendedChars.max}字）</p>
+                    <p className="text-xs font-bold text-brand-dark">設問{q.label}（推奨 {formatRecommendedChars(q.recommendedChars)}）</p>
                     <p className="text-sm text-slate-700 leading-relaxed mt-0.5">{q.text}</p>
                   </div>
                 ))}
