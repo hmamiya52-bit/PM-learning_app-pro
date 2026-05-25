@@ -34,6 +34,14 @@ function IconHelp({ className }: { className?: string }) {
   )
 }
 
+function IconSeed({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8m0 0C8 13 5 10.5 5 7V4h3c3.5 0 6 2.5 6 6v3Zm0 0c4 0 7-2.5 7-6V4h-3c-3.5 0-6 2.5-6 6" />
+    </svg>
+  )
+}
+
 function IconBook({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -84,7 +92,7 @@ function IconSync({ className }: { className?: string }) {
 }
 
 /**
- * 学習メニュー（6項目）— F1-P6 後の UX 整理（2回目）:
+ * 学習メニュー（7項目）— F1-P6 後の UX 整理（2回目）:
  *   削除済み:
  *     - 重要問題モード:  ModeSelect の「重要のみ」トグルで実現
  *     - 弱点克服モード:  ModeSelect の「弱点のみ」トグルで実現（F1-P6 後改修）
@@ -103,15 +111,17 @@ function IconSync({ className }: { className?: string }) {
 const MENU_CARDS: MenuCard[] = [
   // 1. アプリの使い方
   { to: '/how-to-use',          title: 'アプリの使い方',     description: '各学習モードの活用方法',     iconBg: 'bg-brand-light',    iconColor: 'text-brand',      icon: <IconHelp className="w-6 h-6 text-brand" /> },
-  // 2. ノートモード
+  // 2. 応用情報リフレッシュ
+  { to: '/applied-refresh',     title: '応用情報リフレッシュ', description: 'PM学習前の基礎復習',       iconBg: 'bg-emerald-50',     iconColor: 'text-emerald-600', icon: <IconSeed className="w-6 h-6 text-emerald-600" /> },
+  // 3. ノートモード
   { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',        iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
-  // 3. 午前Ⅱ問題演習
+  // 4. 午前Ⅱ問題演習
   { to: '/morning',             title: '午前Ⅱ問題演習',     description: '過去問4択 出典:IPA',         iconBg: 'bg-indigo-50',      iconColor: 'text-indigo-600', icon: <IconFileText className="w-6 h-6 text-indigo-600" /> },
-  // 4. 午後Ⅰ問題演習
+  // 5. 午後Ⅰ問題演習
   { to: '/afternoon',           title: '午後Ⅰ問題演習',     description: '自己採点・記録',             iconBg: 'bg-purple-50',      iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
-  // 5. 午後Ⅱ問題演習（論述）
+  // 6. 午後Ⅱ問題演習（論述）
   { to: '/essay',               title: '午後Ⅱ問題演習',     description: '論述・自己採点',             iconBg: 'bg-pink-50',        iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
-  // 6. デバイス同期
+  // 7. デバイス同期
   { to: '/sync',                title: 'デバイス同期',       description: 'QRコードで他端末へ',         iconBg: 'bg-sky-50',         iconColor: 'text-sky-600',    icon: <IconSync className="w-6 h-6 text-sky-600" /> },
 ]
 

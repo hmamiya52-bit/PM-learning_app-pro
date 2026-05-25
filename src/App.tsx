@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
+import AppliedRefresh from './pages/AppliedRefresh'
 import Quiz from './pages/Quiz'
 import OfficialMorningQuiz from './pages/OfficialMorningQuiz'          // F1-P4 で追加
 import OfficialMorningSession from './pages/OfficialMorningSession'    // F1-P4 で追加
@@ -41,6 +42,7 @@ export default function App() {
             没入型ローカルヘッダーは sticky top-12 で Layout ヘッダーの下に配置。 */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/applied-refresh" element={<AppliedRefresh />} />
           <Route path="/how-to-use" element={<HowToUse />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/notes/:categoryId" element={<NoteDetail />} />
