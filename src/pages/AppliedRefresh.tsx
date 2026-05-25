@@ -77,6 +77,83 @@ function cx(...classes: Array<string | false | undefined>): string {
   return classes.filter(Boolean).join(' ')
 }
 
+const HIGHLIGHT_GROUPS = [
+  {
+    className: 'font-black text-emerald-700 bg-emerald-50 rounded px-0.5',
+    terms: ['PM試験', 'PM本編', '午後Ⅰ', '午前Ⅱ', 'PM'],
+  },
+  {
+    className: 'font-black text-indigo-700 bg-indigo-50 rounded px-0.5',
+    terms: [
+      '非機能要件',
+      'ステークホルダ',
+      'インシデント管理',
+      '問題管理',
+      '変更管理',
+      'テーラリング',
+      'プロダクトバックログ',
+      'バックアップ',
+      'トランザクション',
+      'ロードバランサ',
+      'WBS',
+      'EVM',
+      'RTO',
+      'RPO',
+      'SLA',
+      '認証',
+      '認可',
+      '監査',
+      '要求',
+      '要件',
+      '仕様',
+      '品質',
+      'レビュー',
+      'テスト',
+      'リスク',
+      'ベースライン',
+      '請負',
+      '準委任',
+      '派遣',
+    ],
+  },
+  {
+    className: 'font-bold text-rose-700 bg-rose-50 rounded px-0.5',
+    terms: ['確認不足', '合意不足', '漏れ', '不足', '遅延', '不具合', '障害', '手戻り', '混同', '後工程', 'リスクが高い'],
+  },
+  {
+    className: 'font-bold text-amber-700 bg-amber-50 rounded px-0.5',
+    terms: ['最初', 'まず', '必要', '確認', '合意', '分析', '分類', '測定', '承認', '影響', '判断'],
+  },
+] as const
+
+const HIGHLIGHT_CLASS_BY_TERM = new Map<string, string>(
+  HIGHLIGHT_GROUPS.flatMap((group) => group.terms.map((term) => [term, group.className] as [string, string])),
+)
+
+const HIGHLIGHT_PATTERN = new RegExp(
+  `(${Array.from(HIGHLIGHT_CLASS_BY_TERM.keys())
+    .sort((a, b) => b.length - a.length)
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    .join('|')})`,
+  'g',
+)
+
+function RichText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(HIGHLIGHT_PATTERN).map((part, index) => {
+        const className = HIGHLIGHT_CLASS_BY_TERM.get(part)
+        if (!className) return part
+        return (
+          <span key={`${part}-${index}`} className={className}>
+            {part}
+          </span>
+        )
+      })}
+    </>
+  )
+}
+
 function IconSeed() {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -152,8 +229,13 @@ function ChoiceQuestion({
       </div>
       {answered && (
         <p className="text-[11px] text-slate-600 bg-slate-50 rounded-lg px-3 py-2 mt-3 leading-relaxed">
-          {selected === question.answerIndex ? '正解。' : '確認ポイント: '}
-          {question.explanation}
+          <span className={cx(
+            'font-black rounded px-1 py-0.5 mr-1',
+            selected === question.answerIndex ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700',
+          )}>
+            {selected === question.answerIndex ? '正解' : '確認ポイント'}
+          </span>
+          <RichText text={question.explanation} />
         </p>
       )}
     </div>
@@ -418,7 +500,9 @@ export default function AppliedRefresh() {
                   )}
                 </div>
                 <h2 className="text-base font-black text-slate-800">{activeTopic.title}</h2>
-                <p className="text-xs text-slate-600 mt-2 leading-relaxed">{activeTopic.overview}</p>
+                <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                  <RichText text={activeTopic.overview} />
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-0 border-b border-slate-100">
@@ -428,7 +512,7 @@ export default function AppliedRefresh() {
                     {activeTopic.keyPoints.map((point) => (
                       <li key={point} className="flex gap-2 text-xs text-slate-600 leading-relaxed">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                        {point}
+                        <span><RichText text={point} /></span>
                       </li>
                     ))}
                   </ul>
@@ -439,7 +523,7 @@ export default function AppliedRefresh() {
                     {activeTopic.pmBridge.map((item) => (
                       <li key={item} className="flex gap-2 text-xs text-slate-600 leading-relaxed">
                         <span className="text-emerald-600 font-black">→</span>
-                        {item}
+                        <span><RichText text={item} /></span>
                       </li>
                     ))}
                   </ul>
@@ -454,11 +538,13 @@ export default function AppliedRefresh() {
                       {activeDetail.lessonBlocks.map((block) => (
                         <section key={block.heading} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
                           <h4 className="text-xs font-black text-slate-800">{block.heading}</h4>
-                          <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">{block.body}</p>
+                          <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                            <RichText text={block.body} />
+                          </p>
                           <ul className="grid sm:grid-cols-3 gap-2 mt-3">
                             {block.bullets.map((bullet) => (
                               <li key={bullet} className="rounded-lg bg-white border border-slate-200 px-2.5 py-2 text-[11px] text-slate-600 leading-relaxed">
-                                {bullet}
+                                <RichText text={bullet} />
                               </li>
                             ))}
                           </ul>
@@ -471,19 +557,19 @@ export default function AppliedRefresh() {
                     <div className="px-4 py-4 border-b lg:border-b-0 lg:border-r border-slate-100">
                       <h3 className="text-xs font-black text-slate-700 mb-2">典型シナリオ: {activeDetail.scenario.title}</h3>
                       <p className="text-xs text-slate-600 leading-relaxed bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2">
-                        {activeDetail.scenario.situation}
+                        <RichText text={activeDetail.scenario.situation} />
                       </p>
                       <ul className="space-y-2 mt-3">
                         {activeDetail.scenario.readAsPm.map((item) => (
                           <li key={item} className="flex gap-2 text-xs text-slate-600 leading-relaxed">
                             <span className="text-emerald-600 font-black">PM</span>
-                            {item}
+                            <span><RichText text={item} /></span>
                           </li>
                         ))}
                       </ul>
                       <p className="text-xs text-slate-700 leading-relaxed mt-3 rounded-lg bg-white border border-slate-200 px-3 py-2">
                         <span className="font-black text-slate-800">最初の一手: </span>
-                        {activeDetail.scenario.firstAction}
+                        <RichText text={activeDetail.scenario.firstAction} />
                       </p>
                     </div>
                     <div className="px-4 py-4">
@@ -491,7 +577,7 @@ export default function AppliedRefresh() {
                       <ul className="space-y-2">
                         {activeDetail.traps.map((trap) => (
                           <li key={trap} className="text-[11px] text-slate-600 leading-relaxed rounded-lg bg-rose-50 border border-rose-100 px-2.5 py-2">
-                            {trap}
+                            <RichText text={trap} />
                           </li>
                         ))}
                       </ul>
@@ -501,17 +587,21 @@ export default function AppliedRefresh() {
                   <div className="px-4 py-4 border-b border-slate-100">
                     <h3 className="text-xs font-black text-slate-700 mb-2">1分ミニ演習</h3>
                     <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3">
-                      <p className="text-xs font-bold text-amber-900 leading-relaxed">{activeDetail.miniDrill.prompt}</p>
+                      <p className="text-xs font-bold text-amber-900 leading-relaxed">
+                        <RichText text={activeDetail.miniDrill.prompt} />
+                      </p>
                       <div className="flex flex-wrap gap-1.5 mt-2">
                         {activeDetail.miniDrill.hints.map((hint) => (
                           <span key={hint} className="text-[10px] font-bold rounded-full bg-white border border-amber-200 text-amber-700 px-2 py-0.5">
-                            {hint}
+                            <RichText text={hint} />
                           </span>
                         ))}
                       </div>
                       <details className="mt-3">
                         <summary className="cursor-pointer text-[11px] font-black text-amber-800">解答例を見る</summary>
-                        <p className="text-xs text-amber-900 leading-relaxed mt-2">{activeDetail.miniDrill.modelAnswer}</p>
+                        <p className="text-xs text-amber-900 leading-relaxed mt-2">
+                          <RichText text={activeDetail.miniDrill.modelAnswer} />
+                        </p>
                       </details>
                     </div>
                   </div>
@@ -523,8 +613,12 @@ export default function AppliedRefresh() {
                 <div className="grid sm:grid-cols-2 gap-2">
                   {activeTopic.flashcards.map((card) => (
                     <details key={card.front} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-                      <summary className="cursor-pointer text-xs font-bold text-slate-700">{card.front}</summary>
-                      <p className="text-xs text-slate-600 mt-2 leading-relaxed">{card.back}</p>
+                      <summary className="cursor-pointer text-xs font-bold text-slate-700">
+                        <RichText text={card.front} />
+                      </summary>
+                      <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                        <RichText text={card.back} />
+                      </p>
                     </details>
                   ))}
                 </div>
