@@ -29,7 +29,7 @@ import type {
  * 論述トレーニング 練習画面（/essay/:id）
  *
  * 設計書 v0.15 §2.6 Step 6 + §2.6 line 1264-1306 に基づく:
- * - 設問パネル + タイマー + 解答エリア（ア/イ/ウ）
+ * - タイマー + 設問ごとの解答エリア（設問ア→解答欄アの順で近接表示）
  * - 「下書き保存」ボタン（即座保存）
  * - 入力停止 3秒後の自動保存（debounce）
  * - 「採点へ進む」 → 5項目×5段階自己評価 → 振り返り → 「保存して終了」
@@ -422,47 +422,38 @@ export default function EssayTraining() {
               onResume={handleResumeTimer}
             />
 
-            {/* 設問パネル */}
-            <details className="bg-white border border-slate-200 rounded-xl group" open>
-              <summary className="px-4 py-3 cursor-pointer font-bold text-sm text-slate-700 flex items-center justify-between">
-                設問
-                <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <div className="px-4 pb-4 space-y-3 border-t border-slate-100">
-                {problem.setsumons.map((q) => (
-                  <div key={q.label}>
-                    <p className="text-xs font-bold text-brand-dark">設問{q.label}（推奨 {formatRecommendedChars(q.recommendedChars)}）</p>
-                    <p className="text-sm text-slate-700 leading-relaxed mt-0.5">{q.text}</p>
-                  </div>
-                ))}
-              </div>
-            </details>
-
-            {/* 解答エリア */}
+            {/* 設問 + 解答エリア */}
             {problem.setsumons.map((q) => {
               const value = q.label === 'ア' ? bodyA : q.label === 'イ' ? bodyI : bodyU
               const setter = q.label === 'ア' ? setBodyA : q.label === 'イ' ? setBodyI : setBodyU
               return (
-                <div key={q.label} className="bg-white border border-slate-200 rounded-xl px-4 py-3">
-                  <p className="text-xs font-bold text-brand-dark mb-1.5">設問{q.label}</p>
-                  <textarea
-                    value={value}
-                    onChange={(e) => {
-                      setter(e.target.value)
-                      // 入力時に session が未作成なら作成
-                      if (!session) ensureSession()
-                    }}
-                    placeholder="ここに解答を入力…（入力停止3秒後に自動保存）"
-                    className="w-full min-h-[180px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
-                  />
-                  <div className="mt-1.5">
-                    <EssayCharCounter
-                      value={countChars(value)}
-                      min={q.recommendedChars.min}
-                      max={q.recommendedChars.max}
-                    />
+                <section key={q.label} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+                  <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/80">
+                    <p className="text-xs font-bold text-brand-dark">
+                      設問{q.label}（推奨 {formatRecommendedChars(q.recommendedChars)}）
+                    </p>
+                    <p className="text-sm text-slate-700 leading-relaxed mt-1">{q.text}</p>
                   </div>
-                </div>
+                  <div className="px-4 py-3">
+                    <textarea
+                      value={value}
+                      onChange={(e) => {
+                        setter(e.target.value)
+                        // 入力時に session が未作成なら作成
+                        if (!session) ensureSession()
+                      }}
+                      placeholder="ここに解答を入力…（入力停止3秒後に自動保存）"
+                      className="w-full min-h-[180px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
+                    />
+                    <div className="mt-1.5">
+                      <EssayCharCounter
+                        value={countChars(value)}
+                        min={q.recommendedChars.min}
+                        max={q.recommendedChars.max}
+                      />
+                    </div>
+                  </div>
+                </section>
               )
             })}
 
