@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { essayProblems, getEssayProblemById } from '../data/essayProblems'
 import EssayTimer from '../components/essay/EssayTimer'
 import EssayCharCounter from '../components/essay/EssayCharCounter'
-import EssaySelfReview, { defaultSelfReview } from '../components/essay/EssaySelfReview'
+import EssaySelfReview from '../components/essay/EssaySelfReview'
 import EssayAttemptHistory from '../components/essay/EssayAttemptHistory'
 import {
   loadActive,
@@ -18,6 +18,7 @@ import {
 } from '../lib/essay'
 import { applyEssayComplete } from '../lib/gamification'
 import { addActivityEvent } from '../lib/activityLog'
+import { defaultSelfReview, formatRecommendedChars } from '../lib/essayReview'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 import type {
@@ -40,10 +41,6 @@ import type {
 
 function countChars(s: string | undefined): number {
   return (s ?? '').length
-}
-
-function formatRecommendedChars(range: { min: number; max: number }): string {
-  return range.min > 0 ? `${range.min}〜${range.max}字` : `${range.max}字以内`
 }
 
 export default function EssayTraining() {

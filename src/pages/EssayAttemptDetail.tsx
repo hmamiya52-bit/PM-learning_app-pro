@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getEssayProblemById } from '../data/essayProblems'
 import { getAttempt } from '../lib/essay'
+import { formatRecommendedChars } from '../lib/essayReview'
 
 /**
  * 論述 履歴詳細画面（/essay/:id/attempts/:attemptId）
@@ -123,7 +124,7 @@ export default function EssayAttemptDetail() {
               <div className="flex items-baseline justify-between mb-1">
                 <p className="text-xs font-bold text-brand-dark">設問{q.label}</p>
                 <p className="text-[10px] text-slate-400 tabular-nums">
-                  {body.length}字 / 推奨 {q.recommendedChars.min}〜{q.recommendedChars.max}字
+                  {body.length}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
                 </p>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed mb-2">{q.text}</p>

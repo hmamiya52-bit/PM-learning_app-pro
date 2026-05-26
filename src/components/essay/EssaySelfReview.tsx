@@ -73,14 +73,3 @@ export default function EssaySelfReview({ value, onChange }: Props) {
     </div>
   )
 }
-
-/** デフォルト値（採点開始時の初期値、全項目3） */
-export function defaultSelfReview(): EssaySelfReview {
-  return {
-    relevance: 3,
-    structure: 3,
-    concreteness: 3,
-    consistency: 3,
-    charCount: 3,
-  }
-}

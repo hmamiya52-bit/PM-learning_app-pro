@@ -19,7 +19,10 @@ export default function EssayCharCounter({ value, min, max }: Props) {
   let label = '未着手'
   const rangeLabel = min > 0 ? `${min}〜${max}字` : `${max}字以内`
 
-  if (value > max) {
+  if (value === 0) {
+    colorClass = 'text-slate-400'
+    label = '未着手'
+  } else if (value > max) {
     colorClass = 'text-red-500'
     label = `${value - max}字オーバー`
   } else if (min <= 0 && value > 0) {
