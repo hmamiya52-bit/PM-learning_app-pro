@@ -382,6 +382,378 @@ export const essayProblems: EssayProblem[] = [
     answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm2_ans.pdf',
     commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_pm_pm2_cmnt.pdf',
   },
+  {
+    id: 'H30-PM2-1',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 1,
+    theme: 'システム開発プロジェクトにおける非機能要件に関する関係部門との連携について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトの特徴，代表的な非機能要件の概要，並びにその非機能要件に関して関係部門と連携を図る際に注意を払う必要があった点及びその理由について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた代表的な非機能要件に関し，関係部門と十分な連携を図るために検討して実施した取組みについて，主なタスクの内容と関係部門，及び関係部門の役割とともに，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた取組みに関する実施結果の評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['stakeholder', 'planning', 'integration'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H30-PM2-2',
+    year: 'H30',
+    yearLabel: '平成30（2018）',
+    number: 2,
+    theme: 'システム開発プロジェクトにおける本稼働間近で発見された問題への対応について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトにおけるプロジェクトの特徴，本稼働間近で発見され，予定された稼働日までに解決することが困難であった問題，及び困難と判断した理由について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた問題の状況をどのように把握し，影響などをどのように分析したか。また，暫定的な稼働を迎えるために立案した問題に対する当面の対応策は何か。関係部門との調整や合意の内容を含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた対応策の実施状況と評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['delivery', 'uncertainty', 'stakeholder', 'integration'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H29-PM2-1',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 1,
+    theme: 'システム開発プロジェクトにおける信頼関係の構築・維持について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトにおけるプロジェクトの特徴，信頼関係を構築したステークホルダ，及びステークホルダとの信頼関係の構築が重要と考えた理由について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べたステークホルダとの信頼関係を構築するための取組み，及び信頼関係を維持していくための取組みはそれぞれ，どのようなものであったか。工夫した点を含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問アで述べたプロジェクトにおいて，ステークホルダとの信頼関係が解決に貢献した問題，その解決において信頼関係が果たした役割，及び今後に向けて改善が必要と考えた点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['stakeholder', 'team', 'integration'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H29-PM2-2',
+    year: 'H29',
+    yearLabel: '平成29（2017）',
+    number: 2,
+    theme: 'システム開発プロジェクトにおける品質管理について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトの特徴，品質面の要求事項，及び品質管理計画を策定する上でプロジェクトの特徴に応じて考慮した点について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた考慮した点を踏まえて，どのような品質管理計画を策定し，どのように品質管理を実施したかについて，考慮した点と特に関連が深い工程を中心に，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた品質管理計画の内容の評価，実施結果の評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['measurement', 'governance', 'planning', 'delivery'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H28-PM2-1',
+    year: 'H28',
+    yearLabel: '平成28（2016）',
+    number: 1,
+    theme: '他の情報システムの成果物を再利用した情報システムの構築について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わった情報システム構築プロジェクトにおけるプロジェクトの特徴，並びに他の情報システムの成果物を再利用した際の再利用の範囲・方法，及びその決定理由について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた成果物の再利用に関し，期待した効果，有効利用を図る上での課題と対策，及び対策の実施状況について，特に工夫をした点を含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた期待した効果の実現状況と評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['development-approach', 'delivery', 'integration', 'planning'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H28-PM2-2',
+    year: 'H28',
+    yearLabel: '平成28（2016）',
+    number: 2,
+    theme: '情報システム開発プロジェクトの実行中におけるリスクのコントロールについて',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わった情報システム開発プロジェクトにおけるプロジェクトの特徴，及びプロジェクトの実行中に察知したプロジェクト目標の達成を阻害するリスクにつながる兆候について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた兆候をそのままにした場合に顕在化すると考えたリスクとそのように考えた理由，対応が必要と判断したリスクへの予防処置，及びリスクの顕在化に備えて策定した対応計画について，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べたリスクへの予防処置の実施状況と評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['uncertainty', 'measurement', 'planning', 'integration'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H27-PM2-1',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 1,
+    theme: '情報システム開発プロジェクトにおけるサプライヤの管理について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わった情報システム開発プロジェクトにおけるプロジェクトの特徴，及び外部のサプライヤから請負で調達した範囲とその理由について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べたプロジェクトにおいて，発注者とサプライヤの間で作成した進捗の管理と品質の管理の仕組みについて，請負で調達する場合を考慮して工夫した点を含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた進捗の管理と品質の管理の仕組みの実施状況と評価，及び今後の改善点について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['governance', 'stakeholder', 'delivery', 'measurement'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H27-PM2-2',
+    year: 'H27',
+    yearLabel: '平成27（2015）',
+    number: 2,
+    theme: '情報システム開発プロジェクトにおける品質の評価，分析について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わった情報システム開発プロジェクトの目標や特徴，評価指標や評価指標値の目標範囲などを定めた工程のうち，実績値が目標範囲を逸脱した工程を挙げて，その工程で評価指標や評価指標値の目標範囲などをどのように定めたかについて，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた評価指標で，実績値が目標範囲をどのように逸脱し，その原因をどのように分析して，どのような原因を特定したか。また，影響をどのように分析したか。重要と考えた点を中心に，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで特定した原因や影響への対応策，同様の事象の再発を防ぐための改善策，及びそれらの策を実施する上で必要となった見直し内容とそれらの策の実施状況の監視方法について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['measurement', 'delivery', 'governance', 'project-work'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000000f52-att/2015h27h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H26-PM2-1',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 1,
+    theme: 'システム開発プロジェクトにおける工数の見積りとコントロールについて',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトにおけるプロジェクトの特徴と，見積りのために入手した情報について，あなたがどの時点で工数を見積もったかを含めて，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べた見積り時点において，プロジェクトの特徴，入手した情報の精度などの特徴を踏まえてどのように工数を見積もったか。見積りをできるだけ正確に行うために工夫したことを含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問アで述べたプロジェクトにおいて，見積りどおりに工数をコントロールするためのプロジェクト運営面での施策，その実施状況及び評価について，あなたが重要と考えた施策を中心に，発見した問題とその対策を含めて，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['planning', 'measurement', 'project-work'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H26-PM2-2',
+    year: 'H26',
+    yearLabel: '平成26（2014）',
+    number: 2,
+    theme: 'システム開発プロジェクトにおける要員のマネジメントについて',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトにおけるプロジェクトの特徴，プロジェクト組織体制，要員に期待した能力について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べたプロジェクトの遂行中に，要員に期待した能力が十分に発揮されていないと認識した事態，立案した対応策とその工夫，及び対応策の実施状況について，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた事態が発生した根本原因と立案した再発防止策について，再発防止策の実施状況を含めて，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['team', 'planning', 'governance', 'project-work'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000001dzu-att/2014h26h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H25-PM2-1',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 1,
+    theme: 'システム開発業務における情報セキュリティの確保について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトのプロジェクトとしての特徴，情報セキュリティ上のリスクが特定された開発業務及び特定されたリスクについて，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べたリスクに対してどのような運営面の予防策をどのように立案したか。また，立案した予防策をどのようにメンバに周知したか。重要と考えた点を中心に，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イで述べた予防策をメンバが遵守していることを確認するためのモニタリングの仕組み，及び発見された問題とその対処について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['uncertainty', 'governance', 'project-work'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_cmnt.pdf',
+  },
+  {
+    id: 'H25-PM2-2',
+    year: 'H25',
+    yearLabel: '平成25（2013）',
+    number: 2,
+    theme: 'システム開発プロジェクトにおけるトレードオフの解消について',
+    setsumons: [
+      {
+        label: 'ア',
+        text:
+          'あなたが携わったシステム開発プロジェクトにおけるプロジェクトの概要とプロジェクトの制約条件について，800字以内で述べよ。',
+        recommendedChars: { min: 0, max: 800 },
+      },
+      {
+        label: 'イ',
+        text:
+          '設問アで述べたプロジェクトの遂行中に発生した問題の中で，トレードオフの解消が必要になった問題とそのトレードオフはどのようなものであったか。また，このトレードオフをどのように解消したかについて，工夫した点を含めて，800字以上1,600字以内で具体的に述べよ。',
+        recommendedChars: { min: 800, max: 1600 },
+      },
+      {
+        label: 'ウ',
+        text:
+          '設問イのトレードオフの解消策に対する評価，残された問題，その解決方針について，600字以上1,200字以内で具体的に述べよ。',
+        recommendedChars: { min: 600, max: 1200 },
+      },
+    ],
+    categoryIds: ['integration', 'planning', 'uncertainty', 'stakeholder'],
+    questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_qs.pdf',
+    answerPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_ans.pdf',
+    commentaryPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/ug65p90000002e6g-att/2013h25h_pm_pm2_cmnt.pdf',
+  },
 ]
 
 /** ID で問題取得 */
