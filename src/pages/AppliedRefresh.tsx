@@ -77,6 +77,15 @@ function cx(...classes: Array<string | false | undefined>): string {
   return classes.filter(Boolean).join(' ')
 }
 
+// HIGHLIGHT_GROUPS: 2026-05-26 改修
+// 旧: 4 グループ × 47 語（rose 警戒語・amber 行動語含む）→ 1 段落あたり 5〜10 語ハイライトで過剰
+// 新: 2 グループ × 22 語に絞り込み（本編ノート規約の 2 色＝重要語/構造ラベルに準拠）
+//   - emerald: PM 試験識別子（学習導線を示す強い文脈付け）
+//   - indigo:  応用情報レベルで覚えるべき固有・技術用語のみ
+// 削除した語:
+//   - 普通すぎる単語: 要求, 要件, 仕様, 品質, レビュー, テスト, リスク, ベースライン
+//   - 警戒語（rose）: 確認不足, 合意不足, 漏れ, 不足, 遅延, 不具合, 障害, 手戻り, 混同, 後工程, リスクが高い
+//   - 行動語（amber）: 最初, まず, 必要, 確認, 合意, 分析, 分類, 測定, 承認, 影響, 判断
 const HIGHLIGHT_GROUPS = [
   {
     className: 'font-black text-emerald-700 bg-emerald-50 rounded px-0.5',
@@ -103,26 +112,10 @@ const HIGHLIGHT_GROUPS = [
       '認証',
       '認可',
       '監査',
-      '要求',
-      '要件',
-      '仕様',
-      '品質',
-      'レビュー',
-      'テスト',
-      'リスク',
-      'ベースライン',
       '請負',
       '準委任',
       '派遣',
     ],
-  },
-  {
-    className: 'font-bold text-rose-700 bg-rose-50 rounded px-0.5',
-    terms: ['確認不足', '合意不足', '漏れ', '不足', '遅延', '不具合', '障害', '手戻り', '混同', '後工程', 'リスクが高い'],
-  },
-  {
-    className: 'font-bold text-amber-700 bg-amber-50 rounded px-0.5',
-    terms: ['最初', 'まず', '必要', '確認', '合意', '分析', '分類', '測定', '承認', '影響', '判断'],
   },
 ] as const
 
