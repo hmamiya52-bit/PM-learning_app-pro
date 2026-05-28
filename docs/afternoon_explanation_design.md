@@ -12,6 +12,29 @@
 | 午後I 解説の深さ | **本文PDFを読んで根拠付き**（Claude が問題本文 PDF を読み、根拠箇所・出題意図まで踏み込む） |
 | 午後II 模範解答の形式 | **フル参考答案を1テーマ1本**（各 EssayProblem に完成答案 1 本、「論述例の一つ」と明示） |
 
+## 0.1 細部要件確定（ユーザ決定 2026-05-29 第2回）
+
+| 項目 | 決定 | 根拠 |
+|---|---|---|
+| **A1 午後I解説の粒度** | **全解答行に point/basis/reasoning。pitfall は難所のみ任意** | 自己採点後の「どこが足りないか」に網羅的に答える。pitfall は部分点が割れやすい/高配点の設問に集中 |
+| **A3 午後I解説の表示動線** | **`AfternoonMyAnswer` の checkMode に統合。デフォルト折りたたみ** | 自分の解答・公式解答例・根拠解説を一画面で見られる学習価値を優先。ただし初期表示は折りたたみ（縦長化防止・応用情報M4教訓） |
+| **B3 午後II参考答案の字数** | **やや上限寄り**（ア≒750 / イ≒1400 / ウ≒1100字目安） | 合格答案の現実に近い分量。具体性・厚みを出す |
+| **C1/C2 フェーズ・優先順位** | **F2-P8（午後I解説）を独立起票し先行**。F2-P9（午後II参考答案）と F2-P7（仕上げ）は後 | 最大の学習ギャップ（午後I解説皆無）を先に埋める |
+
+### 0.2 残り細部の推奨デフォルト（F2-P9 着手時にユーザ確認）
+
+午後Iを先行するため、以下の午後II寄り項目は推奨案を据え置き、F2-P9 着手時に再確認する。
+
+| 項目 | 推奨デフォルト |
+|---|---|
+| A2 部分点との連携 | `pitfall`/`reasoning` 内で必要時のみ「この語が無いと部分点」等を言及（scoringMap の数値は転記しない） |
+| A5 午後I マークアップ強度 | 解説本文は原則プレーン。本当に効く重要語のみ `==赤==`、構造ラベルに `__navy__` を 1文1-2語まで |
+| B1 午後II 文体 | 一人称体験談形式（「私は〜のプロジェクトで〜」）。実際のPM論述に倣う |
+| B2 想定事例の作り込み | 各答案に架空PJ設定（業種・規模・期間・状況）を 2-3 文で具体化。24本で業種/論点が重複しないよう配分 |
+| B4 designNote / pitfalls | 両方とも作成（designNote 150-300字、pitfalls 2-4件）。丸暗記でなく設計の型を学ばせる |
+| B6 「論述例の一つ」注記 | 文言「これは論述例の一つです。唯一の正解ではありません」をリビール冒頭に固定配置 |
+| C3 detailed_design 反映 | 本セッションで §2.7g（F2-P8/P9）として反映済。§2.4/§2.6 本文は実装着手時に追記 |
+
 ## 1. 背景・目的
 
 - **午後I**: 現状 `officialAnswers.ts` に IPA 公式「解答例」(37問)はあるが、**「なぜその解答か」の解説が皆無**。自己採点後に学習者が「自分の部分点解答のどこが足りないか／本文のどこが根拠か」を理解できない。最大の学習ギャップ。
@@ -77,12 +100,16 @@ Claude が各年度の問題本文 PDF（`afternoonProblems[].questionPdfUrl`）
 - ノート規約 `==赤==`（重要語）/ `__navy__`（構造ラベル）を**踏襲可だが過剰強調禁止**（応用情報 M2 の教訓: 1文に1-2語まで）。
 - 機械的にハイライトせず、本当に効く語のみ。
 
-### 4.4 UI 配置（`src/pages/AfternoonAnswerDetail.tsx`）
+### 4.4 UI 配置（**確定: `src/pages/AfternoonMyAnswer.tsx` の checkMode に統合**）
 
-- 解答テーブルの**下**に「解説」セクションを追加。
-- 冒頭に `overview` ブロック（brand 系の囲み）。
-- 各 `設問` 単位で **アコーディオン（`<details>`）** にして行解説を格納。モバイルで縦長化しない（応用情報 M4 の教訓）。
-- 自己採点（`/afternoon/answers/:id/myAnswer`）からの遷移後に解説を見られる導線。**自分で解いてから解説**の順序を崩さない。
+> 設計書初版は `AfternoonAnswerDetail.tsx` 案だったが、2026-05-29 第2回決定で **答え合わせ画面（`AfternoonMyAnswer`）の checkMode 統合**に変更。自分の解答・公式解答例・根拠解説を一画面で見られる学習価値を優先。
+
+- checkMode（答え合わせ中）に入ると、各行の `解答例` ボックス（現状 `bg-indigo-50` の枠）の**直下**に、その行の `point/basis/reasoning/pitfall` を **アコーディオン（`<details>`）** で表示。
+- **デフォルトは折りたたみ**（`<details>` を `open` にしない）。モバイルで縦長化させない（応用情報 M4 の教訓）。`<summary>` は「解説を見る」等。
+- `overview`（問題全体の趣旨）は、答え合わせ結果カード付近またはテーブル冒頭に 1 ブロック表示（こちらも折りたたみ可）。
+- 対応付け: 行解説の `rowKey = ${s}|${q ?? ''}|${t ?? ''}` を `AfternoonMyAnswer` の各行（`processRows` の行）に突合。
+- **自分で解いてから解説**の順序を崩さない（checkMode = 答え合わせに入って初めて解説が出る。書く前は非表示）。
+- `AfternoonAnswerDetail.tsx`（解答例の閲覧専用画面）への解説追加は当面行わない（重複保守を避ける）。将来必要なら overview のみ補助表示を検討。
 
 ### 4.5 分量・段階投入
 
@@ -112,7 +139,7 @@ export const essaySampleAnswers: Record<string, EssaySampleAnswer> = { /* ... */
 ```
 
 - フル参考答案 1テーマ1本＝**24本**（R6〜H25 各年度2問）。
-- 各 `byLabel` は推奨字数（`essayProblems[].setsumons[].recommendedChars`）の範囲内で執筆（ア≤800 / イ800-1600 / ウ600-1200）。
+- 各 `byLabel` は推奨字数（`essayProblems[].setsumons[].recommendedChars`）の範囲内で、**やや上限寄り**を狙う（ア≒750 / イ≒1400 / ウ≒1100字目安。2026-05-29 決定）。
 - `designNote`/`pitfalls` で「なぜこの構成か」を補い、丸暗記でなく**設計の型**を学ばせる。
 
 ### 5.2 「論述例の一つ」framing（必須）
@@ -148,16 +175,19 @@ export const essaySampleAnswers: Record<string, EssaySampleAnswer> = { /* ... */
 - 解説・参考答案の**文章生成は Claude が行う**（品質が機能価値の本体のため委譲不可）。
 - Codex には「型定義の追加」「空マップの雛形生成」「整合検証ツール」「ビルド確認」など機械的作業を割り当てる。
 
-## 7. 実装タスク順序（次セッション）
+## 7. 実装タスク順序（確定: F2-P8 → F2-P9）
 
-1. `src/types` or 各 data ファイルに型追加（`AfternoonExplanation` / `EssaySampleAnswer`）。
-2. `src/data/afternoonExplanations.ts` 雛形作成（空マップ＋型）。
-3. 午後I 解説 **パイロット R6/R5/R4（22問）** を Claude が本文PDF精読の上で執筆。
-4. `AfternoonAnswerDetail.tsx` に解説セクション（overview＋設問アコーディオン）実装。
-5. build＋実機（モバイル/デスクトップ）確認 → commit `[C]`。
-6. ユーザ価値検証 → OK なら残り15問へ展開。
-7. （午後II）`src/data/essaySampleAnswers.ts` 雛形作成。
-8. 午後II 参考答案 **パイロット R6/R5（4本）** を Claude が執筆。
+### F2-P8 午後I 独自解説（先行）
+1. `AfternoonExplanation` 型 + `src/data/afternoonExplanations.ts` 雛形（空マップ）作成。【本セッションで着手可】
+2. 午後I 解説 **パイロット R6/R5/R4（22問）** を Claude が本文PDF精読の上で執筆（全行 point/basis/reasoning、pitfall は難所のみ）。
+3. `AfternoonMyAnswer.tsx` の checkMode に行解説アコーディオン（折りたたみ）＋ overview を統合。`rowKey` で突合。
+4. build＋実機（モバイル375×812/デスクトップ）確認 → commit `[C]`。
+5. ユーザ価値検証 → OK なら残り15問へ展開。
+
+### F2-P9 午後II 参考答案（後続）
+6. `EssaySampleAnswer` 型 + `src/data/essaySampleAnswers.ts` 雛形作成。
+7. §0.2 の午後II 細部（文体・事例・designNote・注記）をユーザ確認。
+8. 午後II 参考答案 **パイロット R6/R5（4本）** を Claude が執筆（やや上限寄り字数）。
 9. `EssayAttemptDetail.tsx` に「参考答案を見る」リビール実装（書く前は非表示）。
 10. build＋実機確認 → commit → ユーザ妥当性確認 → 残り20本へ展開。
 
