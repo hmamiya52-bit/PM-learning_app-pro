@@ -275,9 +275,25 @@ function TopicPill({
 }
 
 export default function AppliedRefresh() {
-  const [screen, setScreen] = useState<Screen>('diagnostic')
-  const [state, setState] = useState<RefreshState>(() => loadState())
-  const [activeTopicId, setActiveTopicId] = useState(appliedRefreshTopics[0]?.id ?? '')
+  const initialState = (() => loadState())()
+  // M4 修正: 既存進捗があれば最後に触ったテーマ or 弱点 1 件目を初期 active に。
+  // 初回訪問時のみトピック先頭。これにより refresh タブを開いた直後から本文がすぐ読める。
+  const initialActiveTopic = (() => {
+    const initialWeak = getWeakTopicIds(appliedRefreshDiagnosticQuestions, initialState.diagnosticAnswers)
+    if (initialWeak.length > 0) return initialWeak[0]
+    return appliedRefreshTopics[0]?.id ?? ''
+  })()
+  // M4 修正: 既存進捗があれば 2 回目以降の訪問者を弱点復習画面（または quiz）にダイレクト
+  const initialScreen: Screen = (() => {
+    const hasDiagnostic = Object.keys(initialState.diagnosticAnswers).length > 0
+    if (!hasDiagnostic) return 'diagnostic'
+    const diagnosticDone =
+      Object.keys(initialState.diagnosticAnswers).length === appliedRefreshDiagnosticQuestions.length
+    return diagnosticDone ? 'refresh' : 'diagnostic'
+  })()
+  const [screen, setScreen] = useState<Screen>(initialScreen)
+  const [state, setState] = useState<RefreshState>(initialState)
+  const [activeTopicId, setActiveTopicId] = useState(initialActiveTopic)
 
   function updateState(updater: (current: RefreshState) => RefreshState) {
     setState((current) => {
@@ -320,16 +336,24 @@ export default function AppliedRefresh() {
   }
 
   function answerTopicCheck(questionId: string, choiceIndex: number) {
-    updateState((current) => ({
-      ...current,
-      topicCheckAnswers: { ...current.topicCheckAnswers, [questionId]: choiceIndex },
-    }))
-  }
-
-  function markTopicDone(topicId: string) {
+    // M3 修正: topic.check に正解した時点で対象トピックを自動的に completed に追加。
+    // 自己申告ボタンを廃止し、客観指標（正誤）で達成度を判定する。
+    const question = appliedRefreshTopics
+      .map((t) => t.check)
+      .find((c) => c.id === questionId)
+    const topicId = question?.topicId
+    const isCorrect = question ? choiceIndex === question.answerIndex : false
     updateState((current) => {
-      if (current.completedTopicIds.includes(topicId)) return current
-      return { ...current, completedTopicIds: [...current.completedTopicIds, topicId] }
+      const nextTopicCheck = { ...current.topicCheckAnswers, [questionId]: choiceIndex }
+      const shouldComplete =
+        isCorrect && topicId && !current.completedTopicIds.includes(topicId)
+      return {
+        ...current,
+        topicCheckAnswers: nextTopicCheck,
+        completedTopicIds: shouldComplete
+          ? [...current.completedTopicIds, topicId]
+          : current.completedTopicIds,
+      }
     })
   }
 
@@ -460,26 +484,62 @@ export default function AppliedRefresh() {
 
         {screen === 'refresh' && (
           <section className="grid lg:grid-cols-[240px_1fr] gap-3" aria-labelledby="refresh-heading">
-            <div className="space-y-2">
-              <div className="bg-white border border-slate-200 rounded-xl px-3 py-3">
+            {/* M4 修正: モバイル幅では本文を先頭に置きたいため lg 未満ではトピック一覧を折畳み（details）化 */}
+            <div className="space-y-2 lg:order-first">
+              <details className="lg:hidden bg-white border border-slate-200 rounded-xl group" open={!activeTopicId}>
+                <summary className="px-3 py-3 cursor-pointer flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-black text-slate-800">弱点別リフレッシュ</h2>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                      テーマを切り替えるにはタップ（現在: <span className="text-brand-dark font-bold">{activeTopic.shortTitle}</span>）
+                    </p>
+                  </div>
+                  <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform ml-2">▼</span>
+                </summary>
+                <div className="px-3 pb-3 pt-1 grid grid-cols-2 gap-2 border-t border-slate-100">
+                  {appliedRefreshTopics.map((topic) => (
+                    <TopicPill
+                      key={topic.id}
+                      topic={topic}
+                      active={activeTopic.id === topic.id}
+                      completed={completedSet.has(topic.id)}
+                      weak={weakSet.has(topic.id)}
+                      onClick={() => {
+                        setActiveTopicId(topic.id)
+                        // モバイルでは選択後すぐ本文へスクロール
+                        if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+                          requestAnimationFrame(() => {
+                            document
+                              .getElementById('refresh-topic-article')
+                              ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                          })
+                        }
+                      }}
+                    />
+                  ))}
+                </div>
+              </details>
+              <div className="hidden lg:block bg-white border border-slate-200 rounded-xl px-3 py-3">
                 <h2 id="refresh-heading" className="text-sm font-black text-slate-800">弱点別リフレッシュ</h2>
                 <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
                   1テーマ約7〜9分。診断で弱かったテーマには印が付きます。
                 </p>
               </div>
-              {appliedRefreshTopics.map((topic) => (
-                <TopicPill
-                  key={topic.id}
-                  topic={topic}
-                  active={activeTopic.id === topic.id}
-                  completed={completedSet.has(topic.id)}
-                  weak={weakSet.has(topic.id)}
-                  onClick={() => setActiveTopicId(topic.id)}
-                />
-              ))}
+              <div className="hidden lg:contents">
+                {appliedRefreshTopics.map((topic) => (
+                  <TopicPill
+                    key={topic.id}
+                    topic={topic}
+                    active={activeTopic.id === topic.id}
+                    completed={completedSet.has(topic.id)}
+                    weak={weakSet.has(topic.id)}
+                    onClick={() => setActiveTopicId(topic.id)}
+                  />
+                ))}
+              </div>
             </div>
 
-            <article className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+            <article id="refresh-topic-article" className="bg-white border border-slate-200 rounded-xl overflow-hidden lg:order-last">
               <div className="px-4 py-4 border-b border-slate-100">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
                   <span className="text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5">
@@ -623,19 +683,32 @@ export default function AppliedRefresh() {
                   selected={state.topicCheckAnswers[activeTopic.check.id]}
                   onSelect={(choiceIndex) => answerTopicCheck(activeTopic.check.id, choiceIndex)}
                 />
+                {/* M3 修正: 自己申告ボタンを廃止し、確認問題の正誤による客観的な達成度表示へ変更 */}
                 <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => markTopicDone(activeTopic.id)}
-                    className={cx(
-                      'text-xs font-bold rounded-lg px-3 py-2 transition-colors',
-                      completedSet.has(activeTopic.id)
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        : 'bg-emerald-600 text-white hover:bg-emerald-700',
-                    )}
-                  >
-                    {completedSet.has(activeTopic.id) ? '復習済み' : 'このテーマを復習済みにする'}
-                  </button>
+                  {(() => {
+                    const selected = state.topicCheckAnswers[activeTopic.check.id]
+                    if (selected === undefined) {
+                      return (
+                        <span className="text-[11px] text-slate-400 font-bold rounded-lg border border-slate-200 bg-white px-3 py-2">
+                          確認問題に挑戦して達成度を更新
+                        </span>
+                      )
+                    }
+                    const isCorrect = selected === activeTopic.check.answerIndex
+                    if (isCorrect) {
+                      return (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-black rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2">
+                          <IconCheck />
+                          このテーマは復習完了（確認問題に正解）
+                        </span>
+                      )
+                    }
+                    return (
+                      <span className="text-[11px] font-bold rounded-lg bg-amber-50 text-amber-700 border border-amber-200 px-3 py-2">
+                        確認問題に再挑戦してください
+                      </span>
+                    )
+                  })()}
                 </div>
               </div>
             </article>
@@ -680,66 +753,212 @@ export default function AppliedRefresh() {
           </section>
         )}
 
-        {screen === 'roadmap' && (
-          <section className="bg-white border border-slate-200 rounded-xl px-4 py-4" aria-labelledby="roadmap-heading">
-            <h2 id="roadmap-heading" className="text-sm font-black text-slate-800">5日でPM本編へ戻るロードマップ</h2>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              応用情報を丸ごとやり直さず、PM試験に効く前提知識だけを短く戻す流れです。
-            </p>
+        {screen === 'roadmap' && (() => {
+          // M1 修正: 診断結果に応じてロードマップを個別化
+          // - 診断未完了: Day1 で診断を促す + 固定 Day2-5
+          // - 診断完了 + 弱点なし: Day1 診断完了表示 + Day2 確認テスト直行ルート
+          // - 診断完了 + 弱点あり: Day1 診断完了 + 弱点トピックを Day 形式で並べる + 最終 Day で確認テスト
+          type RoadmapStep = {
+            id: string
+            day: string
+            title: string
+            body: string
+            action?: () => void
+            actionLabel?: string
+            tone: 'pending' | 'done' | 'highlight' | 'final'
+          }
 
-            <div className="grid md:grid-cols-5 gap-2 mt-4">
-              {[
-                { day: 'Day 1', title: '診断', body: '初回診断を解き、弱点テーマを決める。' },
-                { day: 'Day 2', title: '開発・要件', body: '要件定義、開発プロセス、品質を復習。' },
-                { day: 'Day 3', title: 'PM基礎', body: 'WBS、変更管理、リスク、進捗対応を復習。' },
-                { day: 'Day 4', title: '基盤・運用', body: 'セキュリティ、可用性、サービス管理を復習。' },
-                { day: 'Day 5', title: '確認', body: '確認テスト後、午前Ⅱまたは午後Ⅰに進む。' },
-              ].map((item) => (
-                <div key={item.day} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
-                  <p className="text-[10px] font-black text-emerald-600">{item.day}</p>
-                  <p className="text-xs font-black text-slate-800 mt-1">{item.title}</p>
-                  <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">{item.body}</p>
-                </div>
-              ))}
-            </div>
+          const weakCount = weakTopicIds.length
+          const weakTopicsList = appliedRefreshTopics.filter((t) => weakSet.has(t.id))
+          const steps: RoadmapStep[] = []
 
-            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <h3 className="text-xs font-black text-amber-800">あなた向けの最初の復習候補</h3>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {recommendedTopics.map((topic) => (
-                  <button
-                    key={topic.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveTopicId(topic.id)
-                      setScreen('refresh')
-                    }}
-                    className="text-[11px] font-bold rounded-full bg-white border border-amber-200 text-amber-800 px-3 py-1 hover:bg-amber-100"
-                  >
-                    {topic.shortTitle}
-                  </button>
-                ))}
+          if (!diagnosticDone) {
+            steps.push({
+              id: 'day1-diag',
+              day: 'Day 1',
+              title: '初回診断',
+              body: `${diagnosticAnswered}/${appliedRefreshDiagnosticQuestions.length} 問解答済み。残りを解いて弱点を決めます。`,
+              action: () => setScreen('diagnostic'),
+              actionLabel: '診断を開く',
+              tone: 'highlight',
+            })
+            steps.push({
+              id: 'day2-dev',
+              day: 'Day 2',
+              title: '開発・要件',
+              body: '要件定義、開発プロセス、品質を復習。',
+              tone: 'pending',
+            })
+            steps.push({
+              id: 'day3-pm',
+              day: 'Day 3',
+              title: 'PM基礎',
+              body: 'WBS、変更管理、リスク、進捗対応を復習。',
+              tone: 'pending',
+            })
+            steps.push({
+              id: 'day4-infra',
+              day: 'Day 4',
+              title: '基盤・運用',
+              body: 'セキュリティ、可用性、サービス管理を復習。',
+              tone: 'pending',
+            })
+            steps.push({
+              id: 'day5-final',
+              day: 'Day 5',
+              title: '確認テスト',
+              body: '確認テストで仕上げ、午前Ⅱ または 午後Ⅰ へ進む。',
+              tone: 'final',
+            })
+          } else if (weakCount === 0) {
+            // 弱点ゼロ短縮ルート
+            steps.push({
+              id: 'day1-done',
+              day: 'Day 1',
+              title: '診断完了',
+              body: `${diagnosticScore}/${appliedRefreshDiagnosticQuestions.length} 問正解。基礎は整っています。`,
+              tone: 'done',
+            })
+            steps.push({
+              id: 'day2-final-fast',
+              day: 'Day 2',
+              title: '確認テスト',
+              body: '弱点が見つからなかったため、確認テストで仕上げてから PM 本編へ進めます。',
+              action: () => setScreen('quiz'),
+              actionLabel: '確認テストへ',
+              tone: 'final',
+            })
+          } else {
+            // 弱点あり個別化ルート
+            steps.push({
+              id: 'day1-done',
+              day: 'Day 1',
+              title: '診断完了',
+              body: `${diagnosticScore}/${appliedRefreshDiagnosticQuestions.length} 問正解。弱点 ${weakCount} テーマを復習します。`,
+              tone: 'done',
+            })
+            // 弱点トピックを Day 形式で並べる（最大 4 枠まで）
+            const displayWeakTopics = weakTopicsList.slice(0, 4)
+            displayWeakTopics.forEach((topic, index) => {
+              const isCompleted = completedSet.has(topic.id)
+              steps.push({
+                id: `day${index + 2}-weak-${topic.id}`,
+                day: `Day ${index + 2}`,
+                title: `${isCompleted ? '✓ ' : ''}${topic.shortTitle}`,
+                body: `${topic.domain} / ${topic.minutes} 分${isCompleted ? '・復習完了済' : ''}`,
+                action: () => {
+                  setActiveTopicId(topic.id)
+                  setScreen('refresh')
+                },
+                actionLabel: isCompleted ? '再復習する' : 'このテーマを復習',
+                tone: isCompleted ? 'done' : 'highlight',
+              })
+            })
+            // 4 件超過分は注記
+            if (weakTopicsList.length > 4) {
+              const more = weakTopicsList.length - 4
+              steps.push({
+                id: `day-more`,
+                day: '+',
+                title: `他 ${more} テーマ`,
+                body: '弱点復習タブから個別に開けます。',
+                action: () => setScreen('refresh'),
+                actionLabel: '弱点復習へ',
+                tone: 'pending',
+              })
+            }
+            steps.push({
+              id: 'day-final',
+              day: `Day ${Math.min(displayWeakTopics.length + 2, 6)}`,
+              title: '確認テスト',
+              body: '弱点復習が一通り終わったら、別問題の確認テストで定着を確認。',
+              action: () => setScreen('quiz'),
+              actionLabel: '確認テストへ',
+              tone: 'final',
+            })
+          }
+
+          const headlineText = !diagnosticDone
+            ? '診断 → 弱点復習 → 確認テストの順に進めます'
+            : weakCount === 0
+              ? '基礎が整っています。確認テストで仕上げて PM 本編へ。'
+              : `あなたの弱点 ${weakCount} テーマを順番に復習する個別ロードマップです`
+
+          return (
+            <section className="bg-white border border-slate-200 rounded-xl px-4 py-4" aria-labelledby="roadmap-heading">
+              <h2 id="roadmap-heading" className="text-sm font-black text-slate-800">
+                {!diagnosticDone ? 'PM本編へ戻るロードマップ' : 'あなた向けロードマップ'}
+              </h2>
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{headlineText}</p>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
+                {steps.map((step) => {
+                  const toneClasses: Record<RoadmapStep['tone'], string> = {
+                    pending: 'border-slate-200 bg-slate-50',
+                    done: 'border-emerald-200 bg-emerald-50',
+                    highlight: 'border-amber-200 bg-amber-50',
+                    final: 'border-brand bg-brand-light/30',
+                  }
+                  const dayColor: Record<RoadmapStep['tone'], string> = {
+                    pending: 'text-slate-500',
+                    done: 'text-emerald-600',
+                    highlight: 'text-amber-700',
+                    final: 'text-brand-dark',
+                  }
+                  return (
+                    <div
+                      key={step.id}
+                      className={cx(
+                        'rounded-xl border px-3 py-3 flex flex-col gap-1',
+                        toneClasses[step.tone],
+                      )}
+                    >
+                      <p className={cx('text-[10px] font-black', dayColor[step.tone])}>{step.day}</p>
+                      <p className="text-xs font-black text-slate-800">{step.title}</p>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">{step.body}</p>
+                      {step.action && (
+                        <button
+                          type="button"
+                          onClick={step.action}
+                          className="mt-1 text-[11px] font-bold rounded-md bg-white border border-slate-200 text-slate-700 px-2 py-1 hover:bg-slate-100 self-start"
+                        >
+                          {step.actionLabel} →
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
-            </div>
 
-            <div className="flex flex-wrap gap-2 mt-4">
-              <button
-                type="button"
-                onClick={() => setScreen('diagnostic')}
-                className="text-xs font-bold rounded-lg bg-emerald-600 text-white px-3 py-2 hover:bg-emerald-700"
-              >
-                診断から始める
-              </button>
-              <button
-                type="button"
-                onClick={() => setScreen('refresh')}
-                className="text-xs font-bold rounded-lg border border-slate-200 text-slate-600 px-3 py-2 hover:bg-slate-50"
-              >
-                復習を開く
-              </button>
-            </div>
-          </section>
-        )}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {!diagnosticDone ? (
+                  <button
+                    type="button"
+                    onClick={() => setScreen('diagnostic')}
+                    className="text-xs font-bold rounded-lg bg-emerald-600 text-white px-3 py-2 hover:bg-emerald-700"
+                  >
+                    診断から始める
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setScreen('refresh')}
+                    className="text-xs font-bold rounded-lg bg-emerald-600 text-white px-3 py-2 hover:bg-emerald-700"
+                  >
+                    弱点復習を開く
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setScreen('quiz')}
+                  className="text-xs font-bold rounded-lg border border-slate-200 text-slate-600 px-3 py-2 hover:bg-slate-50"
+                >
+                  確認テストを開く
+                </button>
+              </div>
+            </section>
+          )
+        })()}
       </div>
     </div>
   )
