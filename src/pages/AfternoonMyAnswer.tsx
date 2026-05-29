@@ -18,6 +18,7 @@ import {
 } from '../lib/afternoonSavedAnswers'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
+import { getAfternoonExplanation, makeRowKey, type AfternoonRowExplanation } from '../data/afternoonExplanations'
 
 // ----------------------------------------------------------------
 // Types & storage
@@ -106,6 +107,7 @@ function AnswerInputTable({
   scorings,
   onMark,
   readOnly = false,
+  rowExplanations,
 }: {
   answerSet: OfficialAnswerSet
   myAnswers: MyAnswers
@@ -114,6 +116,7 @@ function AnswerInputTable({
   scorings: Scorings
   onMark: (rowIndex: string, marking: Marking) => void
   readOnly?: boolean
+  rowExplanations?: Record<string, AfternoonRowExplanation>
 }) {
   const rows = processRows(answerSet.answers)
 
@@ -180,6 +183,23 @@ function AnswerInputTable({
               </div>
             ) : null
 
+            const exp = checkMode ? rowExplanations?.[makeRowKey(row.s, row.q, row.t)] : undefined
+            const explanationAccordion = exp ? (
+              <details className="mx-1 mb-1 mt-0.5 rounded border border-slate-200 bg-slate-50">
+                <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-slate-600 marker:text-slate-400">
+                  解説を見る
+                </summary>
+                <div className="px-2 pb-2 pt-0.5 space-y-1.5 text-[11px] leading-relaxed text-slate-700">
+                  <p><span className="font-bold text-slate-500">出題の力点</span>：{exp.point}</p>
+                  <p><span className="font-bold text-slate-500">本文の根拠</span>：{exp.basis}</p>
+                  <p><span className="font-bold text-slate-500">なぜこの解答か</span>：{exp.reasoning}</p>
+                  {exp.pitfall && (
+                    <p><span className="font-bold text-amber-600">ありがちな失点</span>：{exp.pitfall}</p>
+                  )}
+                </div>
+              </details>
+            ) : null
+
             const inputContent = row.essay ? (
               <div>
                 <textarea
@@ -198,6 +218,7 @@ function AnswerInputTable({
                     {row.a}
                   </div>
                 )}
+                {explanationAccordion}
                 {markingControls}
               </div>
             ) : (
@@ -216,6 +237,7 @@ function AnswerInputTable({
                     {row.a}
                   </div>
                 )}
+                {explanationAccordion}
                 {markingControls}
               </div>
             )
@@ -335,6 +357,14 @@ function AfternoonMyAnswerContent({
   }, [viewRecordId, id])
 
   const timer = useTimer()
+
+  // 午後I 独自解説（F2-P8）。未投入の問は undefined（フォールバック）
+  const explanation = useMemo(() => (id ? getAfternoonExplanation(id) : undefined), [id])
+  const explanationByRowKey = useMemo(() => {
+    const map: Record<string, AfternoonRowExplanation> = {}
+    explanation?.rows.forEach((r) => { map[r.rowKey] = r })
+    return map
+  }, [explanation])
 
   useEffect(() => {
     if (id && !isViewMode) saveMyAnswers(id, myAnswers)
@@ -623,6 +653,16 @@ function AfternoonMyAnswerContent({
           </div>
         )}
 
+        {/* 問題全体の解説（概要）— 答え合わせ時のみ・デフォルト折りたたみ */}
+        {checkMode && explanation?.overview && (
+          <details className="bg-white rounded-xl border border-slate-200 px-4 py-2.5">
+            <summary className="cursor-pointer select-none text-xs font-bold text-brand-dark marker:text-slate-400">
+              この問題の解説（概要）
+            </summary>
+            <p className="mt-2 text-[12px] leading-relaxed text-slate-700">{explanation.overview}</p>
+          </details>
+        )}
+
         {/* Input table */}
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <AnswerInputTable
@@ -633,6 +673,7 @@ function AfternoonMyAnswerContent({
             scorings={scorings}
             onMark={handleMark}
             readOnly={isViewMode}
+            rowExplanations={explanationByRowKey}
           />
         </div>
 
