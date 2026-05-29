@@ -34,12 +34,16 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = { /* 
 - 未投入問は `afternoonExplanations[id]` が `undefined` → checkMode で「解説準備中」フォールバック（段階投入を許容）。
 
 ## 実装ステップ
-1. 型 + 空マップ雛形作成（`afternoonExplanations.ts`）。【Codex 委譲可】
-2. パイロット **R6 / R5 / R4（約22問）** を Claude が本文PDF精読の上で執筆。【委譲不可】
-3. `AfternoonMyAnswer.tsx` checkMode に行解説アコーディオン（折りたたみ）＋ overview を統合。`rowKey` で `processRows` の行と突合。
-4. `rowKey` 整合検証（officialAnswers の全行に対応解説があるか／余剰がないか）。【Codex 委譲可】
-5. `npm run build` + 実機（モバイル375×812 / デスクトップ）確認 → commit `[C]`。
-6. ユーザ価値検証 → OK なら残り15問へ展開。
+1. 型 + 空マップ雛形作成（`afternoonExplanations.ts`）。【済】
+2. checkMode 用の行解説（overview＋rows）を Claude が本文PDF精読の上で執筆。【委譲不可】
+3. `AfternoonMyAnswer.tsx` checkMode に行解説アコーディオン（折りたたみ）＋ overview を統合。`rowKey` で `processRows` の行と突合。【済】
+4. **詳細解説ページ**（`AfternoonExplanationDetail.tsx`・ルート `/afternoon/answers/:id/explanation`）。`AfternoonExplanation.detail`（問題文の解説／設問別の考え方プロセス＋詳細解説／習得すべき知識）を執筆。解答例画面・答え合わせ画面から導線。【委譲不可・ユーザ要望で追加】
+5. `npm run build` + 実機確認 → commit `[C]`。
+6. ユーザ価値検証 → OK なら残り問へ展開。
+
+## 進捗（2026-05-29）
+- R6-PM1-1: checkMode 行解説（overview＋8行）＋詳細解説（detail）執筆・UI 実装・実機確認 済。
+- 次: R6-PM1-2 / R6-PM1-3 → R5 → R4。各問とも「行解説」と「詳細解説」の両方を執筆する。
 
 ## 担当（2026-05-29 確定: Claude 単独 🅒）
 **F2-P8 は Codex と分担せず Claude 単独で実施**。理由:

@@ -2,6 +2,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { officialAnswers } from '../data/officialAnswers'
 import type { OfficialAnswerSet } from '../data/officialAnswers'
 import { afternoonProblems } from '../data/afternoonProblems'
+import { getAfternoonExplanation } from '../data/afternoonExplanations'
 import { processRows, BORDER_OUTER, BORDER_INNER, BORDER_HEAD } from '../lib/answerTable'
 
 // ----------------------------------------------------------------
@@ -120,6 +121,7 @@ export default function AfternoonAnswerDetail() {
 
   const answerSet = officialAnswers.find(a => a.id === id)
   const problem = answerSet ? afternoonProblems.find(p => p.id === answerSet.id) : null
+  const hasDetail = id ? !!getAfternoonExplanation(id)?.detail : false
 
   if (!answerSet) {
     return (
@@ -181,6 +183,14 @@ export default function AfternoonAnswerDetail() {
           >
             解答欄で練習する
           </Link>
+          {hasDetail && (
+            <Link
+              to={`/afternoon/answers/${id}/explanation`}
+              className="text-xs font-bold text-white bg-amber-500 rounded-lg px-3 py-1.5 hover:bg-amber-600 transition-colors"
+            >
+              詳細解説を読む
+            </Link>
+          )}
         </div>
 
         {/* Table */}

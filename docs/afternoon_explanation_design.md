@@ -101,6 +101,17 @@ Claude が各年度の問題本文 PDF（`afternoonProblems[].questionPdfUrl`）
 - ノート規約 `==赤==`（重要語）/ `__navy__`（構造ラベル）を**踏襲可だが過剰強調禁止**（応用情報 M2 の教訓: 1文に1-2語まで）。
 - 機械的にハイライトせず、本当に効く語のみ。
 
+### 4.3b 詳細解説ページ（★2026-05-29 追加・ユーザ要望）
+
+checkMode の行解説（要点）に加え、**深掘り学習用の詳細解説ページ**を新設する。
+
+- ルート: `/afternoon/answers/:id/explanation`（`src/pages/AfternoonExplanationDetail.tsx`）。
+- 内容: ①**問題文の解説**（題材・状況・問題の構造をかみ砕く）、②**設問別 詳細解説**（各設問の「問われていること」＋**考え方のプロセス**（ステップ列）＋解答例＋詳細解説）、③**この問題で習得すべき知識**（PM用語＋説明）。
+- データ: `AfternoonExplanation.detail`（任意）。型は `AfternoonDetailedExplanation`（`problemCommentary` / `questionDetails[]` / `keyKnowledge[]`）。未投入なら「準備中」フォールバック。
+- 導線: 解答例画面（`AfternoonAnswerDetail`）と答え合わせ画面（`AfternoonMyAnswer` checkMode）から「詳細解説」リンク。`detail` がある問のみ表示。
+- 工数は大きいが、ユーザ判断で許容（深い理解を優先）。checkMode 解説＝即時の答え合わせ支援、詳細ページ＝腰を据えた学習、と役割分担。
+- 注意: マークアップ整合チェッカーは現状 `detail` 配下を走査しないため、全角`＝`等は執筆時に手動で回避する（将来チェッカー拡張候補）。
+
 ### 4.4 UI 配置（**確定: `src/pages/AfternoonMyAnswer.tsx` の checkMode に統合**）
 
 > 設計書初版は `AfternoonAnswerDetail.tsx` 案だったが、2026-05-29 第2回決定で **答え合わせ画面（`AfternoonMyAnswer`）の checkMode 統合**に変更。自分の解答・公式解答例・根拠解説を一画面で見られる学習価値を優先。

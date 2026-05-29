@@ -30,7 +30,7 @@ export const afternoonProblems: AfternoonProblem[] = [
     era: 'reiwa',
     section: 'PM1',
     number: 1,
-    title: '顧客体験価値（以下，UX という）を提供するシステム開発プロジェクト',
+    title: '顧客体験価値を提供するシステム開発プロジェクト',
     keywords: ['UX', 'ユーザーニーズ', '品質確保', '利用者参加型'],
     questionPdfUrl: 'https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_pm_pm1_qs.pdf',
   },

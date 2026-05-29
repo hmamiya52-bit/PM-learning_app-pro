@@ -663,6 +663,19 @@ function AfternoonMyAnswerContent({
           </details>
         )}
 
+        {/* 詳細解説ページへの導線 — 答え合わせ時のみ */}
+        {checkMode && explanation?.detail && id && (
+          <Link
+            to={`/afternoon/answers/${id}/explanation`}
+            className="flex items-center justify-between gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 hover:bg-amber-100 transition-colors"
+          >
+            <span className="text-[12px] font-bold text-amber-800">
+              さらに深く理解する：詳細解説ページ
+            </span>
+            <span className="text-[12px] font-bold text-amber-600 flex-shrink-0">→</span>
+          </Link>
+        )}
+
         {/* Input table */}
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
           <AnswerInputTable
