@@ -88,7 +88,7 @@ export const planningQuestions: Question[] = [
     questionText: '製品・サービス・成果がどのような特徴を持つかを記述したものを{{blank}}スコープという。',
     correctAnswer: 'プロダクト',
     choices: ['プロダクト', 'プロジェクト', 'ステークホルダー', 'コントロール'],
-    explanation: 'プロダクトスコープ＝何を作るか，プロジェクトスコープ＝それを作るための作業。両者を区別して管理する。',
+    explanation: 'プロダクトスコープは何を作るか，プロジェクトスコープはそれを作るための作業。両者を区別して管理する。',
     difficulty: 1,
   },
   {
@@ -225,7 +225,7 @@ export const planningQuestions: Question[] = [
     questionText: 'プロジェクトの最短所要時間を決定する一連のアクティビティ（最長経路）を{{blank}}という。',
     correctAnswer: 'クリティカルパス',
     choices: ['クリティカルパス', 'クリティカルチェーン', 'ベースラインパス', 'マスターパス'],
-    explanation: 'Critical Path はトータルフロート＝ゼロのアクティビティ列。CPM はこのパスを特定し，遅延すれば全体が遅延する制約系を可視化する技法。',
+    explanation: 'Critical Path はトータルフロートがゼロのアクティビティ列。CPM はこのパスを特定し，遅延すれば全体が遅延する制約系を可視化する技法。',
     difficulty: 1,
   },
   {

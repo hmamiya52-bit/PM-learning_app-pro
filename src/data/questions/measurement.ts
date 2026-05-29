@@ -151,7 +151,7 @@ export const measurementQuestions: Question[] = [
     questionText: 'CV と SV の組合せから判定すると，CV < 0 かつ SV > 0 のとき，プロジェクトは{{blank}}状態である。',
     correctAnswer: 'コスト超過だがスケジュール先行',
     choices: ['コスト超過だがスケジュール先行', 'コストとスケジュールとも遅延', '健全（順調）', 'コスト余裕でスケジュール遅延'],
-    explanation: 'CV と SV の符号で 4 象限の健全性判定ができる。CV < 0 ＝コスト超過，SV > 0 ＝スケジュール先行を組み合わせて読み取る。',
+    explanation: 'CV と SV の符号で 4 象限の健全性判定ができる。CV < 0 はコスト超過，SV > 0 はスケジュール先行を組み合わせて読み取る。',
     difficulty: 2,
   },
   // ─── §6 効率指数 ───

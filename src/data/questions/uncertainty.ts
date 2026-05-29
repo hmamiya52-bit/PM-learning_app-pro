@@ -153,7 +153,7 @@ export const uncertaintyQuestions: Question[] = [
     questionText: '個別リスクを発生確率（縦軸）と影響度（横軸）の 2 軸でプロットして優先順位を見える化する図を{{blank}}という。',
     correctAnswer: '確率影響度マトリクス',
     choices: ['確率影響度マトリクス', 'リスク登録簿', 'トルネード図', '感度分析グラフ'],
-    explanation: 'Probability and Impact Matrix。5×5 などのグリッドで色分け（赤＝最重要，黄＝中，緑＝低）して優先順位を直感的に把握する。',
+    explanation: 'Probability and Impact Matrix。5×5 などのグリッドで色分け（赤は最重要，黄は中，緑は低）して優先順位を直感的に把握する。',
     difficulty: 2,
   },
   {

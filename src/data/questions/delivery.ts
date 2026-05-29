@@ -79,7 +79,7 @@ export const deliveryQuestions: Question[] = [
     questionText: '製品・サービスの特徴を記述したものを{{blank}}スコープ，それを作るための作業を記述したものをプロジェクト・スコープという。',
     correctAnswer: 'プロダクト',
     choices: ['プロダクト', 'プロセス', 'ステークホルダー', '組織'],
-    explanation: 'プロダクト・スコープ＝何を作るか，プロジェクト・スコープ＝それを作るためにどう作業するか。両者を区別して管理することがスコープ・マネジメントの基本。',
+    explanation: 'プロダクト・スコープは何を作るか，プロジェクト・スコープはそれを作るためにどう作業するか。両者を区別して管理することがスコープ・マネジメントの基本。',
     difficulty: 1,
   },
   // ─── §7 8.1 品質計画 ───
@@ -176,7 +176,7 @@ export const deliveryQuestions: Question[] = [
     questionText: '品質コストの適合コストには，{{blank}}と「評価コスト」が含まれる。',
     correctAnswer: '予防コスト',
     choices: ['予防コスト', '修正コスト', '訴訟コスト', 'リコールコスト'],
-    explanation: '予防コスト＝教育・プロセス文書化・品質計画（不具合発生前の投資）。評価コスト＝検査・テスト（成果物の品質確認）。修正・訴訟・リコールは不適合コスト側。',
+    explanation: '予防コストは教育・プロセス文書化・品質計画（不具合発生前の投資）。評価コストは検査・テスト（成果物の品質確認）。修正・訴訟・リコールは不適合コスト側。',
     difficulty: 3,
   },
   // ─── §13 7QC ───
@@ -458,7 +458,7 @@ export const deliveryQuestions: Question[] = [
     questionText: 'UAT の主な技法には，アルファテスト・ベータテスト・ブラックボックステスト・{{blank}}がある。',
     correctAnswer: '契約適合性テスト',
     choices: ['契約適合性テスト', '単体テスト', 'インフラテスト', '負荷テスト'],
-    explanation: '契約適合性テスト（Contract Acceptance Test）は契約書記載の要件に対する合格確認。アルファ＝開発元施設での社内テスト，ベータ＝限定ユーザ実環境テスト。',
+    explanation: '契約適合性テスト（Contract Acceptance Test）は契約書記載の要件に対する合格確認。アルファは開発元施設での社内テスト，ベータは限定ユーザ実環境テスト。',
     difficulty: 2,
     excludeFromWritten: true,
   },

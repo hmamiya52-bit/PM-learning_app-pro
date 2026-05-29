@@ -155,7 +155,7 @@ export const integrationQuestions: Question[] = [
     questionText: 'PMBOK第6版 4.5「プロジェクト作業の監視・コントロール」プロセスでは，計画と実績を比較してパフォーマンスを{{blank}}する。',
     correctAnswer: '測定・分析・予測',
     choices: ['測定・分析・予測', '記録・集計・報告', '評価・承認・配布', '監査・是正・終結'],
-    explanation: '監視（Monitor）＝定常的測定，コントロール（Control）＝差異への対応。両者の組合せで Predict（予測）まで踏み込む。',
+    explanation: '監視（Monitor）は定常的測定，コントロール（Control）は差異への対応。両者の組合せで Predict（予測）まで踏み込む。',
     difficulty: 2,
   },
   {

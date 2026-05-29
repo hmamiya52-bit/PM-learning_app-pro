@@ -30,7 +30,7 @@ export const governanceQuestions: Question[] = [
     questionText: 'プロジェクト・ガバナンスが「what／why」を扱うのに対し，プロジェクト・マネジメントは「{{blank}}」を扱う。',
     correctAnswer: 'how',
     choices: ['how', 'who', 'when', 'where'],
-    explanation: 'ガバナンス＝統制・方向付け（何のために何をするか），マネジメント＝実行・運営（どうやって達成するか）。両者は階層関係にある。',
+    explanation: 'ガバナンスは統制・方向付け（何のために何をするか），マネジメントは実行・運営（どうやって達成するか）。両者は階層関係にある。',
     difficulty: 2,
   },
   // ─── §2 フレームワーク ───
@@ -233,7 +233,7 @@ export const governanceQuestions: Question[] = [
     questionText: 'ステアリングコミッティは戦略的方向付けを担うのに対し，CCB は{{blank}}を担う。',
     correctAnswer: '変更要求の評価と承認',
     choices: ['変更要求の評価と承認', '日常業務の指揮', 'プロジェクトの監査', '組織横断の標準化'],
-    explanation: 'ステアリングコミッティ＝戦略レベル，CCB＝変更管理レベル。両者を混同しないこと。CCB はステアリングコミッティの下位機関として位置付けられる場合もある。',
+    explanation: 'ステアリングコミッティは戦略レベル，CCB は変更管理レベル。両者を混同しないこと。CCB はステアリングコミッティの下位機関として位置付けられる場合もある。',
     difficulty: 3,
     excludeFromWritten: true,
   },
