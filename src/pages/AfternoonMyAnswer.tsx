@@ -19,6 +19,7 @@ import {
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 import { getAfternoonExplanation, makeRowKey, type AfternoonRowExplanation } from '../data/afternoonExplanations'
+import { MarkupText } from '../components/MarkupText'
 
 // ----------------------------------------------------------------
 // Types & storage
@@ -190,11 +191,11 @@ function AnswerInputTable({
                   解説を見る
                 </summary>
                 <div className="px-2 pb-2 pt-0.5 space-y-1.5 text-[11px] leading-relaxed text-slate-700">
-                  <p><span className="font-bold text-slate-500">出題の力点</span>：{exp.point}</p>
-                  <p><span className="font-bold text-slate-500">本文の根拠</span>：{exp.basis}</p>
-                  <p><span className="font-bold text-slate-500">なぜこの解答か</span>：{exp.reasoning}</p>
+                  <p><span className="font-bold text-slate-500">出題の力点</span>：<MarkupText text={exp.point} /></p>
+                  <p><span className="font-bold text-slate-500">本文の根拠</span>：<MarkupText text={exp.basis} /></p>
+                  <p><span className="font-bold text-slate-500">なぜこの解答か</span>：<MarkupText text={exp.reasoning} /></p>
                   {exp.pitfall && (
-                    <p><span className="font-bold text-amber-600">ありがちな失点</span>：{exp.pitfall}</p>
+                    <p><span className="font-bold text-amber-600">ありがちな失点</span>：<MarkupText text={exp.pitfall} /></p>
                   )}
                 </div>
               </details>
@@ -303,12 +304,14 @@ export default function AfternoonMyAnswer() {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
   const viewRecordId = searchParams.get('recordId')
+  const forceCheck = searchParams.get('check') === '1'
 
   return (
     <AfternoonMyAnswerContent
-      key={`${id ?? 'missing'}:${viewRecordId ?? 'draft'}`}
+      key={`${id ?? 'missing'}:${viewRecordId ?? 'draft'}:${forceCheck ? 'check' : ''}`}
       id={id}
       viewRecordId={viewRecordId}
+      forceCheck={forceCheck}
     />
   )
 }
@@ -316,9 +319,11 @@ export default function AfternoonMyAnswer() {
 function AfternoonMyAnswerContent({
   id,
   viewRecordId,
+  forceCheck = false,
 }: {
   id: string | undefined
   viewRecordId: string | null
+  forceCheck?: boolean
 }) {
   const navigate = useNavigate()
   const isViewMode = !!viewRecordId
@@ -330,7 +335,7 @@ function AfternoonMyAnswerContent({
     if (viewRecordId) return loadSavedAnswers(viewRecordId)
     return id ? loadMyAnswers(id) : {}
   })
-  const [checkMode, setCheckMode] = useState(isViewMode)
+  const [checkMode, setCheckMode] = useState(isViewMode || forceCheck)
   const [showClearModal, setShowClearModal] = useState(false)
   const [showFinishConfirm, setShowFinishConfirm] = useState(false)
   const [scorings, setScorings] = useState<Scorings>(() => {
@@ -659,7 +664,7 @@ function AfternoonMyAnswerContent({
             <summary className="cursor-pointer select-none text-xs font-bold text-brand-dark marker:text-slate-400">
               この問題の解説（概要）
             </summary>
-            <p className="mt-2 text-[12px] leading-relaxed text-slate-700">{explanation.overview}</p>
+            <p className="mt-2 text-[12px] leading-relaxed text-slate-700"><MarkupText text={explanation.overview} /></p>
           </details>
         )}
 

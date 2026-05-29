@@ -1,7 +1,8 @@
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { officialAnswers } from '../data/officialAnswers'
 import { afternoonProblems } from '../data/afternoonProblems'
 import { getAfternoonExplanation } from '../data/afternoonExplanations'
+import { MarkupText } from '../components/MarkupText'
 
 /**
  * 午後I 詳細解説ページ（/afternoon/answers/:id/explanation）
@@ -12,7 +13,6 @@ import { getAfternoonExplanation } from '../data/afternoonExplanations'
  */
 export default function AfternoonExplanationDetail() {
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
 
   const answerSet = id ? officialAnswers.find((a) => a.id === id) : undefined
   const problem = answerSet ? afternoonProblems.find((p) => p.id === answerSet.id) : undefined
@@ -51,12 +51,12 @@ export default function AfternoonExplanationDetail() {
               </div>
               <h1 className="text-sm font-black leading-snug">{problem?.title ?? '詳細解説'}</h1>
             </div>
-            <button
-              onClick={() => navigate(-1)}
+            <Link
+              to="/afternoon"
               className="text-[11px] text-indigo-300 hover:text-white transition-colors flex-shrink-0 mt-0.5"
             >
-              ← 戻る
-            </button>
+              問題一覧に戻る
+            </Link>
           </div>
         </section>
 
@@ -73,16 +73,10 @@ export default function AfternoonExplanationDetail() {
             </a>
           )}
           <Link
-            to={`/afternoon/answers/${id}`}
-            className="text-xs font-bold text-indigo-600 border border-indigo-300 rounded-lg px-3 py-1.5 hover:bg-indigo-50 transition-colors"
-          >
-            解答例を見る
-          </Link>
-          <Link
-            to={`/afternoon/answers/${id}/myAnswer`}
+            to={`/afternoon/answers/${id}/myAnswer?check=1`}
             className="text-xs font-bold text-teal-600 border border-teal-300 rounded-lg px-3 py-1.5 hover:bg-teal-50 transition-colors"
           >
-            解答欄で練習する
+            解答欄に戻る
           </Link>
         </div>
 
@@ -109,7 +103,7 @@ export default function AfternoonExplanationDetail() {
                 問題文の解説
               </h2>
               <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
-                {detail.problemCommentary}
+                <MarkupText text={detail.problemCommentary} />
               </p>
             </section>
 
@@ -123,7 +117,7 @@ export default function AfternoonExplanationDetail() {
                 <div key={qd.rowKey} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
                   <div className="bg-indigo-50 px-4 py-2 border-b border-indigo-100">
                     <p className="text-xs font-black text-indigo-800">{qd.heading}</p>
-                    <p className="text-[12px] text-slate-600 leading-snug mt-0.5">{qd.asked}</p>
+                    <p className="text-[12px] text-slate-600 leading-snug mt-0.5"><MarkupText text={qd.asked} /></p>
                   </div>
                   <div className="px-4 py-3 space-y-3">
                     {/* 考え方のプロセス */}
@@ -135,7 +129,7 @@ export default function AfternoonExplanationDetail() {
                             <span className="flex-shrink-0 w-4 h-4 mt-0.5 rounded-full bg-brand-light text-brand-dark text-[10px] font-bold flex items-center justify-center">
                               {i + 1}
                             </span>
-                            <span>{step}</span>
+                            <span><MarkupText text={step} /></span>
                           </li>
                         ))}
                       </ol>
@@ -148,7 +142,7 @@ export default function AfternoonExplanationDetail() {
                     {/* 詳細解説 */}
                     <div>
                       <p className="text-[11px] font-bold text-slate-500 mb-1">解説</p>
-                      <p className="text-[12px] leading-relaxed text-slate-700">{qd.commentary}</p>
+                      <p className="text-[12px] leading-relaxed text-slate-700"><MarkupText text={qd.commentary} /></p>
                     </div>
                   </div>
                 </div>
@@ -165,7 +159,7 @@ export default function AfternoonExplanationDetail() {
                 {detail.keyKnowledge.map((k, i) => (
                   <li key={i} className="border-l-2 border-brand-light pl-3">
                     <p className="text-[12px] font-bold text-slate-800">{k.term}</p>
-                    <p className="text-[12px] leading-relaxed text-slate-600 mt-0.5">{k.description}</p>
+                    <p className="text-[12px] leading-relaxed text-slate-600 mt-0.5"><MarkupText text={k.description} /></p>
                   </li>
                 ))}
               </ul>
