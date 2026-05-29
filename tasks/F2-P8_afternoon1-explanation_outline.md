@@ -41,10 +41,24 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = { /* 
 5. `npm run build` + 実機（モバイル375×812 / デスクトップ）確認 → commit `[C]`。
 6. ユーザ価値検証 → OK なら残り15問へ展開。
 
-## Codex 分担
-| Claude（委譲不可） | Codex（委譲可） |
-|---|---|
-| 本文PDF精読、解説の内容そのもの、根拠付け、マークアップ判断、テンプレ確定、Codex成果物レビュー | 型定義追加、空マップ雛形、`rowKey` 整合チェックスクリプト、build/型検証 |
+## 担当（2026-05-29 確定: Claude 単独 🅒）
+**F2-P8 は Codex と分担せず Claude 単独で実施**。理由:
+- 委譲可能な機械作業が極小（〜5%。型/空マップは作成済、残るは PNG化スクリプト・rowKey検証のみ）。
+- ターン制では分担しても並列化されず、効果は「Claudeトークン節約」だけ。だがその節約対象（PDF精読＋執筆≒100k超）はそもそも委譲不可。委譲可能な小タスクは指示書＋レビューの調整コストが自作を上回る → オフロードが逆効果。
+- F2-P1〜P4 のような大量OCR/整形が無く、コンテンツ純度が高い領域のため Codex の比較優位が出ない。
+
+| Claude（全工程） |
+|---|
+| 本文PDF精読、解説執筆、checkMode UI統合、PNG化スクリプト、rowKey整合検証、build/型検証 |
+
+## PDF 取得手順（画像ベースPDF対応）
+- IPA 午後I 問題PDFは**画像ベース（テキスト抽出0文字）** → PyMuPDF でページPNG化して精読。
+  ```
+  pip install pymupdf
+  python -c "import fitz; d=fitz.open('qs.pdf'); [d[i].get_pixmap(dpi=150).save(f'p{i}.png') for i in range(d.page_count)]"
+  ```
+- 150DPI で日本語判読可を実機確認済。
+- **著作権**: IPA ページ画像（PNG/PDF）はリポジトリにコミットしない。毎セッション ephemeral 生成し作業後に削除。
 
 ## 品質ゲート
 - `npm run build` PASS / マークアップ整合（`__`/`==` 偶数、全角`＝`混入なし）。
