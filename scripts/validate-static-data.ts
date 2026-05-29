@@ -15,6 +15,7 @@ import { afternoonProblems } from '../src/data/afternoonProblems'
 import { officialAnswers } from '../src/data/officialAnswers'
 import { scoringMap } from '../src/data/scoringMap'
 import { essayProblems } from '../src/data/essayProblems'
+import { afternoonExplanations } from '../src/data/afternoonExplanations'
 
 type EmphasisStyle = 'red' | 'navy' | 'plain'
 const VALID_STYLES: ReadonlySet<EmphasisStyle> = new Set(['red', 'navy', 'plain'])
@@ -23,6 +24,147 @@ let errorCount = 0
 const error = (msg: string) => {
   console.error(`[NG] ${msg}`)
   errorCount++
+}
+
+type MarkupSeverity = 'NG' | 'WARN'
+type TokenLike = { text: string }
+
+interface MarkupFinding {
+  severity: MarkupSeverity
+  location: string
+  rule: string
+  excerpt: string
+}
+
+const markupFindings: MarkupFinding[] = []
+
+const countOccurrences = (text: string, needle: string): number => text.split(needle).length - 1
+
+const excerpt = (text: string, max = 80): string => {
+  const singleLine = text.replace(/\s+/g, ' ').trim()
+  return singleLine.length > max ? `${singleLine.slice(0, max - 1)}...` : singleLine
+}
+
+const addMarkupFinding = (
+  severity: MarkupSeverity,
+  location: string,
+  rule: string,
+  sample: string
+) => {
+  const finding: MarkupFinding = {
+    severity,
+    location,
+    rule,
+    excerpt: excerpt(sample),
+  }
+  markupFindings.push(finding)
+  const prefix = severity === 'NG' ? 'MARKUP-NG' : 'MARKUP-WARN'
+  console.log(`[${prefix}] ${finding.location} : ${finding.rule} ${finding.excerpt}`)
+}
+
+const countMatches = (text: string, pattern: RegExp): number => [...text.matchAll(pattern)].length
+
+const checkMarkupString = (location: string, value: unknown) => {
+  if (typeof value !== 'string') return
+
+  if (countOccurrences(value, '==') % 2 !== 0) {
+    addMarkupFinding('NG', location, 'MK1 unmatched == marker count is odd', value)
+  }
+  if (countOccurrences(value, '__') % 2 !== 0) {
+    addMarkupFinding('NG', location, 'MK2 unmatched __ marker count is odd', value)
+  }
+  if (value.includes('＝')) {
+    addMarkupFinding('NG', location, 'MK3 fullwidth equals is not allowed', value)
+  }
+  if (/={3,}|_{3,}/.test(value)) {
+    addMarkupFinding('NG', location, 'MK4 triple-or-more markup marker is not allowed', value)
+  }
+  if (/==[^=]+===/.test(value)) {
+    addMarkupFinding('NG', location, 'MK5 red marker is directly followed by =', value)
+  }
+
+  const redPairCount = countMatches(value, /==[^=]+==/g)
+  const navyPairCount = countMatches(value, /__[^_]+__/g)
+  if (redPairCount >= 3) {
+    addMarkupFinding('WARN', location, `MK6 red emphasis appears ${redPairCount} times`, value)
+  }
+  if (navyPairCount >= 3) {
+    addMarkupFinding('WARN', location, `MK6 navy emphasis appears ${navyPairCount} times`, value)
+  }
+}
+
+const isTokenLike = (value: unknown): value is TokenLike => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'text' in value &&
+    typeof (value as { text?: unknown }).text === 'string'
+  )
+}
+
+const checkMarkupTokens = (location: string, rows: unknown) => {
+  if (!Array.isArray(rows)) return
+
+  rows.forEach((tokens, rowIndex) => {
+    if (!Array.isArray(tokens)) return
+    tokens.forEach((token, tokenIndex) => {
+      if (!isTokenLike(token)) return
+      if (token.text.includes('==') || token.text.includes('__')) {
+        addMarkupFinding(
+          'NG',
+          `${location}[${rowIndex}][${tokenIndex}].text`,
+          'MK7 token text must not contain raw == or __ markup',
+          token.text
+        )
+      }
+    })
+  })
+}
+
+const runMarkupValidation = () => {
+  for (const [categoryId, note] of Object.entries(NOTE_DB)) {
+    checkMarkupString(`NOTE_DB[${categoryId}].summary`, note.summary)
+    note.exam_tips?.forEach((tip, index) => {
+      checkMarkupString(`NOTE_DB[${categoryId}].exam_tips[${index}]`, tip)
+    })
+    note.sections?.forEach((section, sectionIndex) => {
+      checkMarkupString(`NOTE_DB[${categoryId}].sections[${sectionIndex}].heading`, section.heading)
+      section.items?.forEach((item, itemIndex) => {
+        checkMarkupString(
+          `NOTE_DB[${categoryId}].sections[${sectionIndex}].items[${itemIndex}]`,
+          item
+        )
+      })
+      checkMarkupTokens(
+        `NOTE_DB[${categoryId}].sections[${sectionIndex}].richItems`,
+        section.richItems
+      )
+      checkMarkupTokens(
+        `NOTE_DB[${categoryId}].sections[${sectionIndex}].navyItems`,
+        section.navyItems
+      )
+    })
+  }
+
+  for (const q of questions) {
+    checkMarkupString(`questions[${q.id}].explanation`, q.explanation)
+  }
+
+  for (const [id, explanation] of Object.entries(afternoonExplanations)) {
+    checkMarkupString(`afternoonExplanations[${id}].overview`, explanation.overview)
+    explanation.rows.forEach((row, rowIndex) => {
+      checkMarkupString(`afternoonExplanations[${id}].rows[${rowIndex}].point`, row.point)
+      checkMarkupString(`afternoonExplanations[${id}].rows[${rowIndex}].basis`, row.basis)
+      checkMarkupString(`afternoonExplanations[${id}].rows[${rowIndex}].reasoning`, row.reasoning)
+      checkMarkupString(`afternoonExplanations[${id}].rows[${rowIndex}].pitfall`, row.pitfall)
+    })
+  }
+
+  const markupNg = markupFindings.filter((finding) => finding.severity === 'NG').length
+  const markupWarn = markupFindings.filter((finding) => finding.severity === 'WARN').length
+
+  // MARKUP findings are an advisory gate for now. Promote this to errorCount when data cleanup is complete.
+  console.log(`[MARKUP] NG: ${markupNg} / WARN: ${markupWarn}`)
 }
 
 // ─────────────────────────────────────────────
@@ -254,6 +396,8 @@ for (const p of essayProblems) {
 // ─────────────────────────────────────────────
 // 結果
 // ─────────────────────────────────────────────
+runMarkupValidation()
+
 if (errorCount === 0) {
   console.log('[OK] 全データの整合性確認完了')
   process.exit(0)

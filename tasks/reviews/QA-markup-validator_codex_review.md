@@ -1,0 +1,539 @@
+﻿# QA マークアップ整合チェッカー / 機械レビュー Codex 作業メモ
+
+## 実施内容
+- `scripts/validate-static-data.ts` に MK1-MK7 のマークアップ検査を追加。
+- `NOTE_DB` / `questions` / `afternoonExplanations` を走査対象に追加。
+- MARKUP 検出は `errorCount` に加算しない advisory gate として実装。既存の `validate-data` exit code は変更なし。
+- コンテンツデータ本体は未変更。
+
+## MARKUP 検出結果
+- 集計: [MARKUP] NG: 12 / WARN: 478
+
+### NG（Claude 対応候補）
+- [MARKUP-NG] NOTE_DB[planning].sections[33].items[2] : MK1 unmatched == marker count is odd 計画立案・段階的詳細化・ローリングウェーブ計画法などの基本概念は版を超えて維持。__計画書==＋==ベースライン==の二段構成も継続
+- [MARKUP-NG] NOTE_DB[planning].sections[33].items[2] : MK2 unmatched __ marker count is odd 計画立案・段階的詳細化・ローリングウェーブ計画法などの基本概念は版を超えて維持。__計画書==＋==ベースライン==の二段構成も継続
+- [MARKUP-NG] questions[pm-pl-008].explanation : MK3 fullwidth equals is not allowed プロダクトスコープ＝何を作るか，プロジェクトスコープ＝それを作るための作業。両者を区別して管理する。
+- [MARKUP-NG] questions[pm-pl-022].explanation : MK3 fullwidth equals is not allowed Critical Path はトータルフロート＝ゼロのアクティビティ列。CPM はこのパスを特定し，遅延すれば全体が遅延する制約系を可視化する技法。
+- [MARKUP-NG] questions[pm-dv-007].explanation : MK3 fullwidth equals is not allowed プロダクト・スコープ＝何を作るか，プロジェクト・スコープ＝それを作るためにどう作業するか。両者を区別して管理することがスコープ・マネジメントの基本。
+- [MARKUP-NG] questions[pm-dv-017].explanation : MK3 fullwidth equals is not allowed 予防コスト＝教育・プロセス文書化・品質計画（不具合発生前の投資）。評価コスト＝検査・テスト（成果物の品質確認）。修正・訴訟・リコールは不適合コスト側。
+- [MARKUP-NG] questions[pm-dv-046].explanation : MK3 fullwidth equals is not allowed 契約適合性テスト（Contract Acceptance Test）は契約書記載の要件に対する合格確認。アルファ＝開発元施設での社内テスト，ベータ＝限定ユーザ...
+- [MARKUP-NG] questions[pm-ms-015].explanation : MK3 fullwidth equals is not allowed CV と SV の符号で 4 象限の健全性判定ができる。CV < 0 ＝コスト超過，SV > 0 ＝スケジュール先行を組み合わせて読み取る。
+- [MARKUP-NG] questions[pm-un-015].explanation : MK3 fullwidth equals is not allowed Probability and Impact Matrix。5×5 などのグリッドで色分け（赤＝最重要，黄＝中，緑＝低）して優先順位を直感的に把握する。
+- [MARKUP-NG] questions[pm-ig-015].explanation : MK3 fullwidth equals is not allowed 監視（Monitor）＝定常的測定，コントロール（Control）＝差異への対応。両者の組合せで Predict（予測）まで踏み込む。
+- [MARKUP-NG] questions[pm-gv-002].explanation : MK3 fullwidth equals is not allowed ガバナンス＝統制・方向付け（何のために何をするか），マネジメント＝実行・運営（どうやって達成するか）。両者は階層関係にある。
+- [MARKUP-NG] questions[pm-gv-023].explanation : MK3 fullwidth equals is not allowed ステアリングコミッティ＝戦略レベル，CCB＝変更管理レベル。両者を混同しないこと。CCB はステアリングコミッティの下位機関として位置付けられる場合もある。
+
+### WARN（過剰強調の疑い）
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[7].items[5] : MK6 red emphasis appears 3 times 組織内の==組織図==・==プロジェクト憲章==・==調達文書==も識別の入力となる
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[10].items[0] : MK6 navy emphasis appears 3 times 識別漏れの典型例: __間接的影響者__（地域住民・労組）、__規制当局__、__退職予定の現業ユーザ__
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[24].items[0] : MK6 red emphasis appears 5 times ==送信者==（Sender）→ ==符号化==（Encode）→ ==メディア==（Medium）→ ==復号==（Decode）→ ==受信者==（Rec...
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[25].items[3] : MK6 navy emphasis appears 4 times 会議体の設計原則: __目的__・__参加者__・__時間__・__アジェンダ__を事前定義
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[29].items[0] : MK6 navy emphasis appears 3 times 関与レベル低下の典型シグナル: __会議欠席__、__レビュー遅延__、__非協力的態度__
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[30].items[4] : MK6 red emphasis appears 3 times 承認された変更は==コミュニケーション計画==・==登録簿==・==分析マトリクス==に反映
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[0] : MK6 red emphasis appears 3 times PMBOK第6版は==ステークホルダー・マネジメント==を独立した==第13章==の知識エリアとして定義し、==4プロセス==で整理する
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[3] : MK6 red emphasis appears 4 times 主要インプット: ==プロジェクト憲章==／==ビジネス文書==／==合意書==／==調達文書==
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[4] : MK6 red emphasis appears 3 times 主要ツール&技法: 専門家の判断／==データ収集==（質問書）／==データ分析==（ステークホルダー分析）／==データ表現==（マッピング）／会議
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[8] : MK6 red emphasis appears 3 times 主要ツール&技法: 専門家の判断／==データ収集==（ベンチマーキング）／==データ分析==（仮定分析）／==データ表現==（評価マトリクス）／会議
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[12] : MK6 red emphasis appears 3 times 主要ツール&技法: ==コミュニケーション・スキル==（フィードバック）／==対人スキル==（紛争マネジメント／文化的認識／交渉／観察と対話／政治的認識）／=...
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[16] : MK6 red emphasis appears 9 times 主要ツール&技法: ==データ分析==（==代替案分析==／==根本原因分析==／==ステークホルダー分析==）／==意思決定==（多基準意思決定分析）／==...
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[31].items[18] : MK6 red emphasis appears 5 times __試験頻出ポイント__: ITTOの主要項目（==データ表現==／==対人スキル==／==データ分析==）、==ステークホルダー登録簿==と==エンゲージメ...
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[32].items[1] : MK6 red emphasis appears 3 times __第7版__: ==原則ベース==。==12原則==＋==8パフォーマンス領域==＋テーラリング
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[32].items[3] : MK6 red emphasis appears 4 times __IPA PM試験 午前Ⅱ__ は==第6版用語==に依拠した設問が多数（==ステークホルダー登録簿==／==エンゲージメント計画書==／==13.x プロ...
+- [MARKUP-WARN] NOTE_DB[stakeholder].sections[32].items[4] : MK6 red emphasis appears 3 times 近年は第7版概念も出題（==パフォーマンス領域==／==サーバントリーダーシップ==／==価値実現==）
+- [MARKUP-WARN] NOTE_DB[team].exam_tips[1] : MK6 red emphasis appears 3 times 【リーダーシップ】==マネジリアル・グリッド==の9,9（チーム型）／==SL理論==のS1〜S4／==サーバントリーダーシップ==の特徴は午前Ⅱ頻出。
+- [MARKUP-WARN] NOTE_DB[team].exam_tips[2] : MK6 red emphasis appears 4 times 【モチベーション】==マズロー==5階層／==ハーズバーグ==二要因／==XY理論==／==期待理論== の対比を表で覚える。
+- [MARKUP-WARN] NOTE_DB[team].exam_tips[4] : MK6 red emphasis appears 4 times 【RACI】==A は1人だけ==、==R は複数可==、C は==双方向==、I は==一方向==。試験頻出ルール。
+- [MARKUP-WARN] NOTE_DB[team].exam_tips[6] : MK6 red emphasis appears 4 times 【コンフリクト】キルマン5モードのうち==問題解決==（Collaborate）が==最善==。==スケジュール==が==最頻発==の発生源。
+- [MARKUP-WARN] NOTE_DB[team].exam_tips[7] : MK6 red emphasis appears 5 times 【ひっかけ】==期待理論 vs 公平理論==、==XY vs Z==、==衛生要因 vs 動機づけ要因==、==9.5 vs 9.6==、==PMBOK6 v...
+- [MARKUP-WARN] NOTE_DB[team].sections[1].items[1] : MK6 red emphasis appears 4 times ==チーム==: ==共通目標==と==相互依存==を持ち、==共同責任==で動く集団
+- [MARKUP-WARN] NOTE_DB[team].sections[1].items[3] : MK6 red emphasis appears 4 times 構成要素: ==プロジェクトマネージャ==／==コアチーム==（常駐）／==拡張チーム==（必要時参加）／==サブジェクト・マター・エキスパート（SME）==
+- [MARKUP-WARN] NOTE_DB[team].sections[4].items[4] : MK6 red emphasis appears 3 times 2023年改訂で==Power Skills==（対人）／==Business Acumen==（ビジネス）／==Ways of Working==（仕事の進...
+- [MARKUP-WARN] NOTE_DB[team].sections[5].items[1] : MK6 red emphasis appears 3 times __第7版__: ==原則ベース==。==12原則==＋==8パフォーマンス領域==＋テーラリング
+- [MARKUP-WARN] NOTE_DB[team].sections[5].items[3] : MK6 red emphasis appears 3 times 近年は第7版の概念（==サーバントリーダーシップ==／==テーラリング==／==価値実現==）も出題
+- [MARKUP-WARN] NOTE_DB[team].sections[6].items[1] : MK6 red emphasis appears 3 times __クルト・レビンの3類型__: ==専制型==（独裁的）／==民主型==（参加型）／==放任型==（自由放任）
+- [MARKUP-WARN] NOTE_DB[team].sections[6].items[3] : MK6 red emphasis appears 4 times __リッカートのシステム4__: ==独善的専制型==（システム1）／==温情的専制型==（システム2）／==相談型==（システム3）／==集団参画型==（シ...
+- [MARKUP-WARN] NOTE_DB[team].sections[7].items[0] : MK6 red emphasis appears 3 times ==2軸モデル==: ==業績への関心==（Concern for Production, 横軸）と==人間への関心==（Concern for People...
+- [MARKUP-WARN] NOTE_DB[team].sections[9].items[1] : MK6 red emphasis appears 4 times パスゴール4スタイル: ==指示型==（Directive）／==支援型==（Supportive）／==参加型==（Participative）／==達成志...
+- [MARKUP-WARN] NOTE_DB[team].sections[10].items[1] : MK6 red emphasis appears 4 times 4要素: ==理想化された影響力==（Idealized Influence）／==鼓舞による動機づけ==（Inspirational Motivation）...
+- [MARKUP-WARN] NOTE_DB[team].sections[14].items[1] : MK6 red emphasis appears 3 times ==動機づけ要因==（Motivators）: ==達成・承認・仕事自体・責任・昇進・成長==。満たされると==満足==
+- [MARKUP-WARN] NOTE_DB[team].sections[14].items[2] : MK6 red emphasis appears 3 times ==衛生要因==（Hygiene Factors）: ==給与・対人関係・作業条件・会社方針・上司の質==。満たされても満足は生まないが、欠けると==不満==
+- [MARKUP-WARN] NOTE_DB[team].sections[16].items[0] : MK6 red emphasis appears 3 times __期待理論__（Vroom）: 動機づけは ==期待==（Expectancy）×==手段性==（Instrumentality）×==誘意性==（Vale...
+- [MARKUP-WARN] NOTE_DB[team].sections[16].items[5] : MK6 red emphasis appears 3 times __公平理論__（Adams）: 自分の==投入==／==成果==比を==他者と比較==して公平性を評価
+- [MARKUP-WARN] NOTE_DB[team].sections[19].items[0] : MK6 red emphasis appears 3 times ==チーム憲章==（Team Charter）: チームの==価値観・運営ルール==を==成文化==した文書
+- [MARKUP-WARN] NOTE_DB[team].sections[19].items[2] : MK6 red emphasis appears 6 times 主要記載項目: ==チームの価値観==／==コミュニケーション・ガイドライン==／==意思決定基準==／==コンフリクト解決プロセス==／==会議体==／==...
+- [MARKUP-WARN] NOTE_DB[team].sections[19].items[5] : MK6 red emphasis appears 3 times チーム==形成期==に==全員参加==で策定することで==自主性==が生まれる
+- [MARKUP-WARN] NOTE_DB[team].sections[20].items[7] : MK6 red emphasis appears 3 times ==規範==（Norms）: 明文化されていない==暗黙のルール==。新メンバーへの==オンボーディング==で伝達される
+- [MARKUP-WARN] NOTE_DB[team].sections[21].items[1] : MK6 red emphasis appears 4 times 利点: ==地理的制約の解消==／==コスト削減==／==多様な人材確保==／==24時間体制==
+- [MARKUP-WARN] NOTE_DB[team].sections[21].items[2] : MK6 red emphasis appears 4 times 課題: ==コミュニケーション低下==／==文化差==／==孤立感==／==タイムゾーン==
+- [MARKUP-WARN] NOTE_DB[team].sections[22].items[0] : MK6 red emphasis appears 4 times ==9.4 チームの育成==（Develop Team）: ==実行プロセス群==に属し、メンバーの==コンピテンシー==と==相互交流==を高めチーム環境を...
+- [MARKUP-WARN] NOTE_DB[team].sections[22].items[1] : MK6 red emphasis appears 5 times __主要インプット__: ==資源マネジメント計画書==／==チーム憲章==／==プロジェクト・チームの任命==／==スケジュール==／==プロジェクト・カレ...
+- [MARKUP-WARN] NOTE_DB[team].sections[23].items[1] : MK6 red emphasis appears 3 times __機能型組織__（Functional）: 機能部門（営業・開発・運用等）を縦割りで配置。==機能部門マネージャ==が==強い権限==、PMは==調整役==
+- [MARKUP-WARN] NOTE_DB[team].sections[23].items[2] : MK6 red emphasis appears 3 times __マトリクス型組織__（Matrix）: 機能部門と==プロジェクト==の==2軸==で人員を配置。PMと機能部門マネージャが==権限を共有==
+- [MARKUP-WARN] NOTE_DB[team].sections[23].items[3] : MK6 red emphasis appears 3 times __プロジェクト型組織__（Projectized）: ==プロジェクト==を主軸に編成。PMが==最大権限==、メンバーは==専任==
+- [MARKUP-WARN] NOTE_DB[team].sections[24].items[1] : MK6 red emphasis appears 3 times __弱いマトリクス__（Weak Matrix）: PMは==コーディネータ==または==エクスペダイタ==（連絡係）。==決定権なし==
+- [MARKUP-WARN] NOTE_DB[team].sections[25].items[0] : MK6 red emphasis appears 4 times ==RAM==（Responsibility Assignment Matrix, 責任分担マトリクス）: ==作業==と==担当者==の==対応関係==を表...
+- [MARKUP-WARN] NOTE_DB[team].sections[25].items[1] : MK6 red emphasis appears 3 times 行 = ==WBS要素==（作業）、列 = ==メンバー==、セル = ==役割==
+- [MARKUP-WARN] NOTE_DB[team].sections[25].items[4] : MK6 red emphasis appears 3 times __A（Accountable, 説明責任）__: ==最終承認==・==説明責任==を負う者（==1人だけ==）
+- [MARKUP-WARN] NOTE_DB[team].sections[26].items[0] : MK6 red emphasis appears 5 times ==9.1 資源マネジメント計画==（Plan Resource Management）: ==計画プロセス群==。==チーム資源==と==物的資源==の見積...
+- [MARKUP-WARN] NOTE_DB[team].sections[26].items[1] : MK6 red emphasis appears 5 times __主要インプット__: ==プロジェクト憲章==／==プロジェクトマネジメント計画書==／==要求事項文書==／==リスク登録簿==／==EEFs/OPAs...
+- [MARKUP-WARN] NOTE_DB[team].sections[26].items[2] : MK6 red emphasis appears 4 times __主要ツール&技法__: ==専門家の判断==／==データ表現==（=階層図／責任分担マトリクス／テキスト形式）／==組織理論==／==会議==
+- [MARKUP-WARN] NOTE_DB[team].sections[26].items[8] : MK6 red emphasis appears 8 times ==資源の特定==／==獲得==／==役割と責任==／==組織図==／==育成計画==／==チーム管理==／==認知と報奨==／==コンプライアンス==
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[0] : MK6 red emphasis appears 4 times __9.2 活動資源の見積もり__（Estimate Activity Resources, 計画）: 各==アクティビティ==に必要な==チーム資源==と=...
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[1] : MK6 red emphasis appears 4 times 主要技法: ==ボトムアップ見積もり==／==類推見積もり==／==パラメトリック見積もり==／==代替案分析==
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[2] : MK6 red emphasis appears 3 times アウトプット: ==資源要求事項==／==見積もりの根拠==／==資源ブレークダウン・ストラクチャー==（RBS）
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[4] : MK6 red emphasis appears 4 times 主要技法: ==事前割当==／==交渉==／==獲得==（外部から採用）／==バーチャルチーム==
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[5] : MK6 red emphasis appears 3 times アウトプット: ==物的資源の割当==／==プロジェクトチームの任命==／==資源カレンダー==
+- [MARKUP-WARN] NOTE_DB[team].sections[27].items[9] : MK6 red emphasis appears 3 times __注意__: 9.6 は==物的資源==のみが対象。==チーム==の監視は==9.5 チームのマネジメント==
+- [MARKUP-WARN] NOTE_DB[team].sections[28].items[8] : MK6 red emphasis appears 3 times ==キャリア開発==: メンバーの==成長機会==の提供（プロジェクト経験を==スキル獲得==の場とする）
+- [MARKUP-WARN] NOTE_DB[team].sections[29].items[0] : MK6 red emphasis appears 3 times ==PMO==（Project Management Office）: プロジェクト管理の==標準化・支援==を行う==組織横断的==な部署
+- [MARKUP-WARN] NOTE_DB[team].sections[29].items[2] : MK6 red emphasis appears 5 times __支援型 PMO__（Supportive）: ==テンプレート提供==／==ベストプラクティス共有==／==トレーニング==。==コントロール度==: =...
+- [MARKUP-WARN] NOTE_DB[team].sections[29].items[3] : MK6 red emphasis appears 4 times __コントロール型 PMO__（Controlling）: ==フレームワーク強制==／==準拠状況の監査==。==コントロール度==: ==中==
+- [MARKUP-WARN] NOTE_DB[team].sections[29].items[4] : MK6 red emphasis appears 4 times __指揮型 PMO__（Directive）: ==プロジェクトを直接管理==／PM を==PMO に配属==。==コントロール度==: ==高==
+- [MARKUP-WARN] NOTE_DB[team].sections[30].items[8] : MK6 red emphasis appears 3 times 紛争は==否定すべきものではなく==、適切に==マネジメント==することで==創造性==を生む
+- [MARKUP-WARN] NOTE_DB[team].sections[31].items[1] : MK6 red emphasis appears 3 times __1. 撤退／回避__（Withdraw／Avoid）: 自己主張==低==・協調==低==。「触れない」。==一時退避==に有効、根本解決にならない
+- [MARKUP-WARN] NOTE_DB[team].sections[31].items[2] : MK6 red emphasis appears 3 times __2. 鎮静／受容__（Smooth／Accommodate）: 自己主張==低==・協調==高==。「相手に合わせる」。==関係維持==重視
+- [MARKUP-WARN] NOTE_DB[team].sections[31].items[3] : MK6 red emphasis appears 3 times __3. 妥協／和解__（Compromise／Reconcile）: 自己主張==中==・協調==中==。「中間を取る」。==双方一部不満==
+- [MARKUP-WARN] NOTE_DB[team].sections[31].items[4] : MK6 red emphasis appears 3 times __4. 強制／指示__（Force／Direct）: 自己主張==高==・協調==低==。「権限で押し通す」。==緊急時==に有効
+- [MARKUP-WARN] NOTE_DB[team].sections[31].items[5] : MK6 red emphasis appears 3 times __5. 協力／問題解決__（Collaborate／Problem Solve）: 自己主張==高==・協調==高==。「Win-Win」。==最も望ましい...
+- [MARKUP-WARN] NOTE_DB[team].sections[32].items[0] : MK6 red emphasis appears 7 times ==9.5 チームのマネジメント==（Manage Team）: ==実行プロセス群==。チームメンバーの==パフォーマンス==を==追跡==し==フィードバ...
+- [MARKUP-WARN] NOTE_DB[team].sections[32].items[1] : MK6 red emphasis appears 5 times __主要インプット__: ==プロジェクトマネジメント計画書==（特に資源マネジメント計画書）／==チーム憲章==／==チーム・パフォーマンス評価==／==問...
+- [MARKUP-WARN] NOTE_DB[team].sections[32].items[10] : MK6 red emphasis appears 3 times __主要アウトプット__: ==変更要求==／==プロジェクトマネジメント計画書の更新==／==プロジェクト文書の更新==
+- [MARKUP-WARN] NOTE_DB[team].sections[33].items[6] : MK6 red emphasis appears 3 times __6.__ スポンサー／==経営層==に==エスカレーション==（==最終手段==）
+- [MARKUP-WARN] NOTE_DB[team].sections[33].items[7] : MK6 red emphasis appears 3 times ==当事者間解決==が==望ましい==が、解決できない場合は==早期エスカレーション==が長期化を防ぐ
+- [MARKUP-WARN] NOTE_DB[team].sections[33].items[8] : MK6 red emphasis appears 3 times ==エスカレーション==の条件は==チーム憲章==に==事前明文化==しておく
+- [MARKUP-WARN] NOTE_DB[team].sections[34].items[8] : MK6 red emphasis appears 4 times __配慮事項__: ==言語==（共通語＋翻訳）／==タイムゾーン==（会議時間の輪番）／==祝祭日==／==コミュニケーション・スタイル==（直接的／間接的）
+- [MARKUP-WARN] NOTE_DB[team].sections[34].items[11] : MK6 red emphasis appears 3 times ==文化的差異==は==コンフリクトの源==にも==創造性の源==にもなる
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[0] : MK6 red emphasis appears 3 times __リーダーシップ理論__: ==マネジリアル・グリッド==の座標／==SL理論==の4スタイル／==サーバントリーダーシップ==の特徴
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[1] : MK6 red emphasis appears 4 times __モチベーション理論__: ==マズロー==の階層（特に承認欲求）／==ハーズバーグ==の動機づけ要因 vs 衛生要因／==期待理論==の3要素／==XY理...
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[3] : MK6 red emphasis appears 3 times __RACI__: A は==1人だけ==／R と A の違い／C は==双方向==・I は==一方向==
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[5] : MK6 red emphasis appears 3 times __資源マネジメント・プロセス（PMBOK6）__: 6プロセスのうちどれが==計画==／==実行==／==監視==に属するか
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[6] : MK6 red emphasis appears 3 times __ITTO__: ==チームの育成==（9.4）／==チームのマネジメント==（9.5）の==ツール&技法==
+- [MARKUP-WARN] NOTE_DB[team].sections[35].items[8] : MK6 red emphasis appears 4 times __PMO__: ==支援型==／==コントロール型==／==指揮型==の==コントロール度==
+- [MARKUP-WARN] NOTE_DB[team].sections[36].items[5] : MK6 red emphasis appears 3 times __RACI__: A は==必ず1人==、R は==複数可==／C と I の==方向性==
+- [MARKUP-WARN] NOTE_DB[team].sections[36].items[6] : MK6 red emphasis appears 4 times __マトリクス組織__: ==弱==（PM弱）・==均衡==（権限均等）・==強==（PM強）の==逆順==
+- [MARKUP-WARN] NOTE_DB[team].sections[37].items[1] : MK6 navy emphasis appears 3 times 新原則「==自律的な文化を築くこと==（Build an Empowered Culture）」が明文化され、チームの__エンパワーメント__・__心理的安全...
+- [MARKUP-WARN] NOTE_DB[development-approach].summary : MK6 red emphasis appears 7 times プロジェクトを進める手順とリリース戦略を扱う活動領域。==予測型==（ウォーターフォール）／==適応型==（アジャイル）／==ハイブリッド==の3類型を中心に...
+- [MARKUP-WARN] NOTE_DB[development-approach].exam_tips[3] : MK6 red emphasis appears 3 times 【カンバン】==WIP制限==／==プル方式==／==リトルの法則==（WIP=スループット×リードタイム）。
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[0].items[0] : MK6 red emphasis appears 3 times ==プロジェクトライフサイクル==: プロジェクトの==開始から完了==までに通過する一連の==フェーズ==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[0].items[7] : MK6 red emphasis appears 3 times PMBOK第7版は==ライフサイクル==と==開発アプローチ==を==パフォーマンス領域==の中心概念に格上げ
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[1].items[1] : MK6 red emphasis appears 4 times ==予測型==（Predictive）: 計画駆動。要件・スコープを==上流で確定==し順次実行。「==プロジェクト型==」「==ウォーターフォール==」と同...
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[1].items[2] : MK6 red emphasis appears 4 times ==適応型==（Adaptive）: 価値駆動。要件を==段階的に詳細化==し、==短い反復==で動くものを出す。==アジャイル==の総称
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[2].items[1] : MK6 red emphasis appears 3 times __目的__: プロジェクトの==成果物と価値==を最も効果的に提供するため、適切な==開発アプローチ==と==ライフサイクル==を選択・適応する
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[3].items[3] : MK6 red emphasis appears 6 times アジャイル実務ガイドの主要章: ==ライフサイクル選定==／==アジャイル環境作り==／==アジャイル組織変革==／==スクラム==／==XP==／==カンバ...
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[4].items[8] : MK6 red emphasis appears 4 times __Cynefin フレームワーク__: ==単純==／==困難==／==複雑==／==混沌==の4領域でアプローチを変える
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[6].items[1] : MK6 red emphasis appears 6 times __フェーズ__: ==要求定義== → ==基本設計== → ==詳細設計== → ==実装== → ==テスト== → ==運用・保守==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[10].items[0] : MK6 red emphasis appears 3 times __アジャイルの起源__: ==2001年== ユタ州 ==Snowbird== で17名の有志が==アジャイルマニフェスト==を発表
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[10].items[7] : MK6 red emphasis appears 5 times __リーン思想の影響__: ==トヨタ生産方式==（TPS）由来の==ムダ排除==／==ジャストインタイム==／==カイゼン==／==自働化==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[17].items[3] : MK6 red emphasis appears 3 times ==スクラムマスター==（SM, Scrum Master）: ==スクラムの実践支援==・障害除去（==サーバントリーダー==）
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[17].items[4] : MK6 red emphasis appears 3 times 主な責務: スクラムの==コーチング==／==障害物の除去==／チームの==自己組織化==促進
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[18].items[1] : MK6 red emphasis appears 3 times ==スプリント==（Sprint）: ==1-4週==間（最大1ヶ月）の==コンテナイベント==。他の4イベントを内包
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[18].items[3] : MK6 red emphasis appears 3 times 決定事項: ==なぜ==このスプリントが価値ある？／==何を==できる？／==どう==実現する？
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[18].items[4] : MK6 red emphasis appears 3 times ==デイリースクラム==（Daily Scrum）: 毎日 ==15分==。==開発者==が主催
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[19].items[7] : MK6 red emphasis appears 3 times ==インクリメント==（Increment）: ==動作する==プロダクトの==検査可能==な成果
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[20].items[1] : MK6 red emphasis appears 3 times __標準フォーマット__: 「==As a== (ユーザ役割) , ==I want== (機能) , ==so that== (価値)」
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[21].items[6] : MK6 red emphasis appears 3 times ==バーンアップチャート==（Burnup Chart）: ==完了量==と==スコープ==を時間軸でプロット
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[23].items[10] : MK6 red emphasis appears 5 times __コアバリュー__: ==コミュニケーション==／==シンプルさ==／==フィードバック==／==勇気==／==尊敬==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[24].items[6] : MK6 red emphasis appears 7 times 7原則: ==ムダ排除==／==学習増幅==／==決定遅延==／==早期提供==／==チームエンパワーメント==／==統合性==／==全体最適化==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[25].items[7] : MK6 red emphasis appears 5 times __共通の課題__: 複数チーム==調整==／==依存関係==／==共有バックログ==／==リリース同期==／==アーキテクチャ整合==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[29].items[1] : MK6 red emphasis appears 4 times 目的: ==リードタイム短縮==／==デプロイ頻度向上==／==失敗率低減==／==復旧時間短縮==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[30].items[3] : MK6 red emphasis appears 3 times __スクラムイベント__: 5イベントの==名前==・==順序==・==タイムボックス==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[30].items[6] : MK6 red emphasis appears 3 times __カンバン__: ==WIP制限==／==リトルの法則==／==プル方式==
+- [MARKUP-WARN] NOTE_DB[development-approach].sections[32].items[0] : MK6 red emphasis appears 3 times 第8版 7 領域には「==開発アプローチとライフサイクル==」領域が単独で存在せず、__テーラリング__の文脈と原則「==価値に焦点を当てること==」「==全...
+- [MARKUP-WARN] NOTE_DB[planning].summary : MK6 red emphasis appears 9 times プロジェクトの==スコープ==・==スケジュール==・==コスト==・リスクを==計画==する活動領域。PMBOK第6版では第5/6/7章の3知識エリアで詳細...
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[0] : MK6 red emphasis appears 4 times 【最重要】==WBS==（8/80ルール・100%ルール・成果物指向）／==CPM==（クリティカルパス・フロート計算）／==PERT==（期待値・標準偏差）...
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[1] : MK6 red emphasis appears 5 times 【スケジュール】==PDM==の4依存関係（==FS/FF/SS/SF==）と==リード/ラグ==。==クラッシング==（コスト増）vs ==ファストトラッキ...
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[2] : MK6 red emphasis appears 5 times 【コスト】==コスト・ベースライン==（マネジメント予備==含まない==）vs ==プロジェクト予算==（==含む==）。==コンティンジェンシー予備==は既...
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[3] : MK6 red emphasis appears 3 times 【経済性評価】==NPV==計算（現在価値割引）／==IRR==と資本コスト／==回収期間==の長短評価。
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[4] : MK6 red emphasis appears 3 times 【見積もり技法】==ボトムアップ==が最高精度、==類推==が最低精度。==3点見積もり（PERT）==の重み付き式 (O+4M+P)/6。
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[5] : MK6 red emphasis appears 3 times 【スコープ】==スコープ・ベースライン==は記述書＋WBS＋WBS辞書。==スコープ妥当性確認==（顧客受入）vs ==スコープコントロール==（変更管理）。
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[6] : MK6 red emphasis appears 3 times 【リスク】==RBS==・==SWOT==・==プロンプトリスト==（PESTLE/TECOP）。リスクは「事象・原因・影響」の3要素で記述。
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[7] : MK6 red emphasis appears 8 times 【調達計画】==make-or-buy 分析==は==コスト==・==スキル==・==戦略==・==知財==で判断。==SOW==・==RFP/RFQ==・=...
+- [MARKUP-WARN] NOTE_DB[planning].exam_tips[8] : MK6 red emphasis appears 5 times 【ひっかけ】==Validation==（顧客受入）vs ==Verification==（仕様適合）／==コンティンジェンシー==vs ==マネジメント予備...
+- [MARKUP-WARN] NOTE_DB[planning].sections[0].items[0] : MK6 red emphasis appears 3 times PMBOK第7版「==計画==」パフォーマンス領域は、==スコープ／スケジュール／コスト==等を==十分かつ協調的に==組織化する活動を扱う
+- [MARKUP-WARN] NOTE_DB[planning].sections[1].items[12] : MK6 red emphasis appears 3 times __ベースライン__: ==スコープ==／==スケジュール==／==コスト==の3つ（変更管理の基準）
+- [MARKUP-WARN] NOTE_DB[planning].sections[2].items[0] : MK6 red emphasis appears 3 times ==テーラリング==（Tailoring）: プロジェクト特性に応じて==プロセス／手法／成果物==を==調整==
+- [MARKUP-WARN] NOTE_DB[planning].sections[5].items[3] : MK6 red emphasis appears 3 times ==インタビュー==／==フォーカスグループ==／==ワークショップ==
+- [MARKUP-WARN] NOTE_DB[planning].sections[5].items[4] : MK6 red emphasis appears 3 times ==アンケート==／==観察==／==プロトタイピング==
+- [MARKUP-WARN] NOTE_DB[planning].sections[5].items[6] : MK6 red emphasis appears 3 times ==ブレーンストーミング==／==親和図==／==マインドマップ==
+- [MARKUP-WARN] NOTE_DB[planning].sections[5].items[7] : MK6 red emphasis appears 3 times ==投票==／==独裁==／==多基準意思決定分析==（意思決定技法）
+- [MARKUP-WARN] NOTE_DB[planning].sections[6].items[2] : MK6 red emphasis appears 3 times __主要技法__: 専門家の判断／==プロダクト分析==／==代替案分析==／==ファシリテーション==
+- [MARKUP-WARN] NOTE_DB[planning].sections[12].items[3] : MK6 red emphasis appears 4 times ==FS==（Finish-to-Start）: 前作業==完了==後に後作業==開始==（==最も一般的==）
+- [MARKUP-WARN] NOTE_DB[planning].sections[13].items[7] : MK6 red emphasis appears 3 times __早期開始__（ES, Early Start）／==早期完了==（EF）／==最遅開始==（LS）／==最遅完了==（LF）
+- [MARKUP-WARN] NOTE_DB[planning].sections[14].items[6] : MK6 red emphasis appears 4 times ==3点見積もり==（Three-Point）: ==楽観値(O)==・==悲観値(P)==・==最確値(M)==
+- [MARKUP-WARN] NOTE_DB[planning].sections[14].items[10] : MK6 red emphasis appears 3 times ==データ分析==／==意思決定==／==会議==
+- [MARKUP-WARN] NOTE_DB[planning].sections[15].items[1] : MK6 red emphasis appears 4 times ==クリティカルパス法==（CPM, Critical Path Method）: ==最長==の経路を==クリティカルパス==とし、プロジェクト==最短期間...
+- [MARKUP-WARN] NOTE_DB[planning].sections[17].items[1] : MK6 red emphasis appears 3 times __目的__: ==スケジュール・ベースライン==に対する==進捗監視==と==変更管理==
+- [MARKUP-WARN] NOTE_DB[planning].sections[17].items[3] : MK6 red emphasis appears 5 times ==データ分析==: ==EVM==／==アーンドスケジュール==／==トレンド分析==／==差異分析==
+- [MARKUP-WARN] NOTE_DB[planning].sections[21].items[9] : MK6 red emphasis appears 3 times __重要な区別__: ==コスト・ベースライン==は==マネジメント予備==を==含まない==
+- [MARKUP-WARN] NOTE_DB[planning].sections[22].items[2] : MK6 red emphasis appears 3 times ==計画値==（PV, Planned Value）／==出来高==（EV, Earned Value）／==実コスト==（AC, Actual Cost）
+- [MARKUP-WARN] NOTE_DB[planning].sections[24].items[4] : MK6 red emphasis appears 3 times ==データ分析==（==根本原因分析==・前提条件分析・==SWOT==・文書分析）
+- [MARKUP-WARN] NOTE_DB[planning].sections[24].items[5] : MK6 red emphasis appears 5 times ==対人スキル==（ファシリテーション）／==プロンプトリスト==（==PESTLE==・==TECOP==・==VUCA==）
+- [MARKUP-WARN] NOTE_DB[planning].sections[24].items[8] : MK6 red emphasis appears 3 times リスクは「==事象==」と「==原因==」と「==影響==」の3要素を明確化
+- [MARKUP-WARN] NOTE_DB[planning].sections[25].items[2] : MK6 red emphasis appears 3 times ==リスク ID==／==リスク記述==／==カテゴリ==（RBSで分類）
+- [MARKUP-WARN] NOTE_DB[planning].sections[26].items[3] : MK6 red emphasis appears 3 times ==スケジュール計画==: マイルストーンの==承認者==・==報告先==を特定
+- [MARKUP-WARN] NOTE_DB[planning].sections[26].items[4] : MK6 red emphasis appears 3 times ==コスト計画==: ==予算承認者==・==CCB メンバー==を特定
+- [MARKUP-WARN] NOTE_DB[planning].sections[26].items[6] : MK6 red emphasis appears 3 times ==調達計画==: ==サプライヤ==・==契約承認者==を特定
+- [MARKUP-WARN] NOTE_DB[planning].sections[28].items[9] : MK6 red emphasis appears 3 times 計画書は==承認後==に==ベースライン==化され、変更は==統合変更管理==で扱う
+- [MARKUP-WARN] NOTE_DB[planning].sections[29].items[8] : MK6 red emphasis appears 4 times ==スコープ==・==スケジュール==・==予算==の==バランス==
+- [MARKUP-WARN] NOTE_DB[planning].sections[30].items[5] : MK6 red emphasis appears 6 times ==午前Ⅱ==: 第6版用語（==WBS==・==CPM==・==PERT==・==EVM==・==コスト・ベースライン==）が中心
+- [MARKUP-WARN] NOTE_DB[planning].sections[31].items[0] : MK6 red emphasis appears 3 times __WBS__: ==8/80ルール==・==100%ルール==・==成果物指向==・ワークパッケージ
+- [MARKUP-WARN] NOTE_DB[planning].sections[31].items[5] : MK6 red emphasis appears 4 times __見積もり技法__: 4技法（==類推==／==パラメトリック==／==ボトムアップ==／==3点==）の特徴対比
+- [MARKUP-WARN] NOTE_DB[planning].sections[31].items[7] : MK6 red emphasis appears 3 times __経済性評価__: ==NPV==計算・==IRR==と資本コスト・==回収期間==
+- [MARKUP-WARN] NOTE_DB[planning].sections[31].items[9] : MK6 red emphasis appears 3 times __調達計画__: ==make-or-buy 分析==・==SOW==・==入札文書==（RFP/RFQ）
+- [MARKUP-WARN] NOTE_DB[planning].sections[33].items[0] : MK6 red emphasis appears 4 times 第8版で第7版「==計画==」パフォーマンス領域は「==スコープ==」「==スケジュール==」「==ファイナンス==」の 3 領域に分割・細分化（__第6版の...
+- [MARKUP-WARN] NOTE_DB[planning].sections[33].items[1] : MK6 red emphasis appears 3 times 第6版の「==スコープマネジメント==」「==スケジュールマネジメント==」「==コストマネジメント==」知識エリアと第8版の領域名がほぼ一致
+- [MARKUP-WARN] NOTE_DB[project-work].summary : MK6 red emphasis appears 7 times プロジェクトの==実行==・==調達==・==知識管理==・==コミュニケーション==を扱う活動領域。PMBOK第6版では第4章（統合管理 実行）・第10章（...
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[0] : MK6 red emphasis appears 4 times 【最重要】契約形態の==3類型==（FP/CR/T&M）の==リスク配分==／派生形（==FFP/FPIF/FP-EPA==・==CPFF/CPIF/CPAF...
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[1] : MK6 red emphasis appears 4 times 【調達文書】==RFP==（提案）／==RFQ==（見積）／==RFI==（情報）／==SOW==（作業範囲）の使い分け。
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[2] : MK6 red emphasis appears 3 times 【入札方式】==一般競争==／==指名競争==／==随意契約==の原則と例外。
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[5] : MK6 red emphasis appears 4 times 【知識管理】==形式知 vs 暗黙知==／==SECI モデル==（共同化・表出化・連結化・内面化）／==教訓登録簿==は==継続的==に更新。
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[6] : MK6 red emphasis appears 3 times 【契約形態】==請負契約==（成果物完成義務）vs ==準委任契約==（業務遂行義務）。アジャイルは==準委任==が一般的。
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[7] : MK6 red emphasis appears 4 times 【法律】==下請法==／==職務著作==（法人帰属）／==個人情報保護法==／==営業秘密==（不正競争防止法）。
+- [MARKUP-WARN] NOTE_DB[project-work].exam_tips[8] : MK6 red emphasis appears 3 times 【ひっかけ】==FP vs CR==のリスク配分／==CPFF/CPIF/CPAF==の報酬決定方式／==9.5 vs 9.6==（チーム vs 物的資源）。
+- [MARKUP-WARN] NOTE_DB[project-work].sections[2].items[2] : MK6 red emphasis appears 3 times ==監視==（Monitor）: 計画と==実績の差異==を==追跡==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[2].items[3] : MK6 red emphasis appears 3 times ==コントロール==（Control）: 差異に対する==是正処置==・==予防処置==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[3].items[1] : MK6 red emphasis appears 3 times __目的__: ==計画書==の通りに作業を==指揮==し、==承認された変更==を実装
+- [MARKUP-WARN] NOTE_DB[project-work].sections[4].items[6] : MK6 red emphasis appears 4 times ==知識マネジメント==: ==ナレッジ・カフェ==・==ワークショップ==・==コミュニティ・オブ・プラクティス==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[4].items[7] : MK6 red emphasis appears 4 times ==情報マネジメント==: ==リポジトリ==・==ライブラリ==・==Wiki==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[4].items[8] : MK6 red emphasis appears 3 times ==対人スキル==: ==アクティブ・リスニング==・==ネットワーキング==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[5].items[1] : MK6 red emphasis appears 4 times __目的__: ==プロジェクト全体==の進捗・パフォーマンスを==監視==し、計画書からの==差異==を==是正==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[5].items[3] : MK6 red emphasis appears 6 times ==データ分析==: ==代替案分析==／==コスト便益分析==／==EVA==／==トレンド分析==／==差異分析==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[5].items[11] : MK6 red emphasis appears 4 times ==ステータス・レポート==（現状）／==トレンド・レポート==（傾向）／==予測レポート==（将来予測）／==バリアンス・レポート==（差異）
+- [MARKUP-WARN] NOTE_DB[project-work].sections[6].items[1] : MK6 red emphasis appears 5 times __目的__: ==全変更要求==を==一元管理==して==影響評価==・==承認==・==実装==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[6].items[4] : MK6 red emphasis appears 3 times 変更要求の==評価==・==承認/却下==・==延期==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[6].items[7] : MK6 red emphasis appears 5 times __変更管理ワークフロー__: 変更要求 → ==影響分析== → CCB審議 → ==承認/却下== → ==実装== → ==検証== → ==文書化==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[9].items[5] : MK6 red emphasis appears 3 times ==FP-EPA==（Fixed Price with Economic Price Adjustment, 経済価格調整条項付固定価格）: ==長期契約==...
+- [MARKUP-WARN] NOTE_DB[project-work].sections[9].items[6] : MK6 red emphasis appears 3 times __使用条件__: ==為替変動==・==原材料価格変動==・==金利変動==が想定される複数年契約
+- [MARKUP-WARN] NOTE_DB[project-work].sections[11].items[1] : MK6 red emphasis appears 3 times __目的__: ==入札==・==提案評価==・==契約締結==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[11].items[12] : MK6 red emphasis appears 3 times __調達文書__: ==RFP==（Request for Proposal, 提案依頼書）／==RFQ==（Request for Quotation, 見...
+- [MARKUP-WARN] NOTE_DB[project-work].sections[11].items[13] : MK6 red emphasis appears 3 times __選定基準__: ==最低価格==／==総合評価==／==スコアリング・モデル==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[12].items[1] : MK6 red emphasis appears 5 times ==一般競争入札==: ==公告==で==広く参加者を募集==。==透明性高==・==コスト低減==が期待
+- [MARKUP-WARN] NOTE_DB[project-work].sections[12].items[2] : MK6 red emphasis appears 3 times ==指名競争入札==: ==実績のある業者==を==指名==して入札（参加者限定）
+- [MARKUP-WARN] NOTE_DB[project-work].sections[13].items[1] : MK6 red emphasis appears 4 times __目的__: ==契約履行==の==監視==・==パフォーマンス管理==・==変更管理==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[13].items[4] : MK6 red emphasis appears 4 times ==データ分析==: ==パフォーマンス評価==／==EVA==／==トレンド分析==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[13].items[7] : MK6 red emphasis appears 3 times __主要アウトプット__: ==終結された調達==／==作業パフォーマンス情報==／==調達文書の更新==／変更要求
+- [MARKUP-WARN] NOTE_DB[project-work].sections[13].items[9] : MK6 red emphasis appears 3 times ADR（Alternative Dispute Resolution, ==代替的紛争解決==）: ==調停==・==仲裁==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[14].items[1] : MK6 red emphasis appears 6 times __目的__: ==情報==の==収集==・==配信==・==保管==・==検索==・==適時/適切==な利用
+- [MARKUP-WARN] NOTE_DB[project-work].sections[14].items[9] : MK6 red emphasis appears 5 times ==対人スキル==（==アクティブ・リスニング==・==非言語==・==プレゼンテーション==・==ファシリテーション==）
+- [MARKUP-WARN] NOTE_DB[project-work].sections[15].items[1] : MK6 red emphasis appears 3 times __目的__: ==コミュニケーション・ニーズ==が==満たされている==ことを==確認==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[17].items[3] : MK6 red emphasis appears 3 times ==トレンド・レポート==（Trend Report）: ==時系列==での==傾向==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[17].items[7] : MK6 red emphasis appears 3 times ==バリアンス・レポート==（Variance Report）: ==計画 vs 実績==の==差異==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[18].items[1] : MK6 red emphasis appears 4 times __目的__: 計画書通りに==チームメンバー==・==施設==・==設備==等を==獲得==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[18].items[2] : MK6 red emphasis appears 4 times __主要技法__: ==事前割当==／==交渉==／==獲得==（外部採用）／==バーチャルチーム==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[18].items[4] : MK6 red emphasis appears 4 times __目的__: ==物的資源==が==計画通り==に利用されているか==監視==・==是正==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[19].items[5] : MK6 red emphasis appears 3 times 例: ==マニュアル==・==設計書==・==チェックリスト==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[20].items[0] : MK6 red emphasis appears 4 times ==教訓==（Lessons Learned）: プロジェクトで得た==成功要因==・==失敗要因==・==良い実践==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[21].items[2] : MK6 red emphasis appears 3 times ==Wiki==・==Confluence==・==SharePoint==等のツール
+- [MARKUP-WARN] NOTE_DB[project-work].sections[21].items[5] : MK6 red emphasis appears 3 times ==社内勉強会==・==技術ブログ==・==社内 LT==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[22].items[5] : MK6 red emphasis appears 3 times ==代金支払遅延==・==不当返品==・==買い叩き==の禁止
+- [MARKUP-WARN] NOTE_DB[project-work].sections[24].items[0] : MK6 red emphasis appears 3 times ==NDA==（Non-Disclosure Agreement, 守秘義務契約）: ==秘密情報==の==取扱いを規定==する契約
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[1] : MK6 red emphasis appears 3 times __FP派生形__: ==FFP==／==FPIF==／==FP-EPA==の特徴
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[2] : MK6 red emphasis appears 3 times __CR派生形__: ==CPFF==／==CPIF==／==CPAF==の特徴
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[3] : MK6 red emphasis appears 3 times __入札方式__: ==一般競争==／==指名競争==／==随意契約==の使い分け
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[4] : MK6 red emphasis appears 4 times __調達文書__: ==RFP==／==RFQ==／==RFI==／==SOW==の役割区別
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[7] : MK6 red emphasis appears 4 times __報告書種別__: ==ステータス==／==トレンド==／==予測==／==バリアンス==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[8] : MK6 red emphasis appears 3 times __知識管理__: ==形式知 vs 暗黙知==／==SECI モデル==／==教訓登録簿==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[25].items[9] : MK6 red emphasis appears 4 times __法律__: ==下請法==／==職務著作==／==請負 vs 準委任==／==NDA==
+- [MARKUP-WARN] NOTE_DB[project-work].sections[26].items[2] : MK6 red emphasis appears 3 times __CPFF vs CPIF vs CPAF__: 報酬の決定方式（==固定==／==パフォーマンス連動==／==主観評価==）
+- [MARKUP-WARN] NOTE_DB[project-work].sections[26].items[3] : MK6 red emphasis appears 3 times __RFP vs RFQ vs RFI__: ==提案依頼==／==見積依頼==／==情報依頼==の使い分け
+- [MARKUP-WARN] NOTE_DB[project-work].sections[26].items[7] : MK6 red emphasis appears 3 times __個人情報__: ==取得時の利用目的通知==・==同意==・==第三者提供制限==
+- [MARKUP-WARN] NOTE_DB[delivery].summary : MK6 red emphasis appears 10 times プロジェクトの==成果物==と==価値==を==十分かつ協調的==に提供する活動領域。PMBOK第6版では第8章「==品質マネジメント==」3プロセス＋第5章...
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[1] : MK6 red emphasis appears 3 times 【品質コスト】==適合コスト==（予防＋評価）vs ==不適合コスト==（内部不良＋外部不良）。==1-10-100の法則==。
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[2] : MK6 red emphasis appears 3 times 【シックスシグマ】==DMAIC==（既存改善）vs ==DMADV==（新規設計）。==6σ==は3.4不良/百万。
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[4] : MK6 red emphasis appears 3 times 【規格】==ISO 9001:2015==の7原則と==PDCA+リスク思考==。==CMMI==の5成熟度レベル。
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[5] : MK6 red emphasis appears 4 times 【アジャイル品質】==DoD==／==TDD==（Red-Green-Refactor）／==BDD==（Given-When-Then）／==CI/CD==。
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[6] : MK6 red emphasis appears 5 times 【受入】==UAT==は実ユーザの最終受入。==アルファ==／==ベータ==／==OAT==／==CAT==の使い分け。
+- [MARKUP-WARN] NOTE_DB[delivery].exam_tips[8] : MK6 red emphasis appears 4 times 【ひっかけ】==品質 vs グレード==／==予防 vs 評価==／==8.2 vs 8.3==／==DMAIC vs DMADV==の混同。
+- [MARKUP-WARN] NOTE_DB[delivery].sections[0].items[0] : MK6 red emphasis appears 4 times PMBOK第7版「==デリバリー==」パフォーマンス領域は、==スコープ==と==品質==に着目し、==成果物と価値==を提供する活動を扱う
+- [MARKUP-WARN] NOTE_DB[delivery].sections[1].items[7] : MK6 red emphasis appears 3 times __価値実現__の流れ: 要求 → 設計 → 実装 → ==受入== → ==運用== → ==便益測定==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[2].items[4] : MK6 red emphasis appears 4 times __品質マネジメントの目的__: ==顧客満足==／==予防==／==継続的改善==／==マネジメント責任==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[3].items[5] : MK6 red emphasis appears 3 times ==ブレーンストーミング==／==親和図==／==マインドマップ==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[3].items[6] : MK6 red emphasis appears 3 times ==アンケート==／==観察==／==プロトタイピング==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[4].items[10] : MK6 red emphasis appears 3 times __メリット__: ==変更影響分析==／==テストカバレッジ確認==／==スコープ・クリープ防止==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[6].items[1] : MK6 red emphasis appears 3 times __目的__: ==品質要求事項==と==品質基準==を識別し、==品質マネジメントの方法==を文書化
+- [MARKUP-WARN] NOTE_DB[delivery].sections[6].items[5] : MK6 red emphasis appears 3 times ==データ分析==（==コスト便益分析==・==品質コスト分析==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[6].items[7] : MK6 red emphasis appears 5 times ==データ表現==（==フローチャート==・==ロジカル・データ・モデル==・==マトリクス図==・==マインドマップ==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[6].items[14] : MK6 red emphasis appears 3 times ==プロジェクト文書の更新==（==リスク登録簿==・==ステークホルダー登録簿==等）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[7].items[4] : MK6 red emphasis appears 5 times ==データ分析==（==代替案分析==・==文書分析==・==プロセス分析==・==根本原因分析==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[7].items[6] : MK6 red emphasis appears 7 times ==データ表現==（==親和図==・==特性要因図==・==フローチャート==・==ヒストグラム==・==マトリクス図==・==散布図==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[7].items[7] : MK6 red emphasis appears 3 times ==監査==（==品質監査==）: ==プロセス遵守==の独立評価
+- [MARKUP-WARN] NOTE_DB[delivery].sections[7].items[10] : MK6 red emphasis appears 4 times ==品質改善手法==（==PDCA==・==シックスシグマ==・==リーン==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[8].items[1] : MK6 red emphasis appears 4 times __目的__: ==品質活動の結果==を==監視==し、==パフォーマンス評価==と==必要な変更の推奨==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[8].items[3] : MK6 red emphasis appears 5 times ==データ収集==（==チェックリスト==・==チェックシート==・==統計的サンプリング==・==アンケート==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[8].items[4] : MK6 red emphasis appears 3 times ==データ分析==（==パフォーマンス・レビュー==・==根本原因分析==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[8].items[7] : MK6 red emphasis appears 5 times ==データ表現==（==特性要因図==・==管理図==・==ヒストグラム==・==散布図==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[9].items[9] : MK6 red emphasis appears 6 times 例: ==欠陥密度==（バグ数／KLOC）／==失敗率==／==適合率==／==テストカバレッジ==／==平均故障間隔==（MTBF）／==平均修復時間==（...
+- [MARKUP-WARN] NOTE_DB[delivery].sections[9].items[10] : MK6 red emphasis appears 5 times __SMART原則__: メトリクスは==Specific==／==Measurable==／==Achievable==／==Relevant==／==Ti...
+- [MARKUP-WARN] NOTE_DB[delivery].sections[10].items[0] : MK6 red emphasis appears 3 times ==品質==（Quality）: 製品やプロセスが==要求事項==を==満たしている度合==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[12].items[1] : MK6 red emphasis appears 3 times ==パレート図==（Pareto Chart）: 不良原因を==頻度順==で並べた棒グラフ＋累積曲線。==80-20の法則==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[12].items[2] : MK6 red emphasis appears 3 times ==特性要因図==（Cause-and-Effect Diagram, ==フィッシュボーン図==・==石川ダイアグラム==）: 結果と原因の関係
+- [MARKUP-WARN] NOTE_DB[delivery].sections[12].items[8] : MK6 red emphasis appears 3 times __用途__: ==問題発見==／==原因分析==／==データ可視化==に幅広く使う
+- [MARKUP-WARN] NOTE_DB[delivery].sections[13].items[1] : MK6 red emphasis appears 3 times ==親和図==（Affinity Diagram, ==KJ法==に近い）: 大量の情報を==類似性==でグループ化
+- [MARKUP-WARN] NOTE_DB[delivery].sections[13].items[4] : MK6 red emphasis appears 5 times ==マトリクス図==（Matrix Diagram）: 2軸の対応関係（==L型==・==T型==・==X型==・==Y型==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[15].items[15] : MK6 red emphasis appears 4 times __役割__: ==チャンピオン==／==マスター・ブラックベルト==／==ブラックベルト==／==グリーンベルト==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[16].items[7] : MK6 red emphasis appears 3 times ==計量値管理図==: ==X-R図==（平均と範囲）・==X-s図==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[16].items[8] : MK6 red emphasis appears 3 times ==計数値管理図==: ==p図==（不良率）・==c図==（欠点数）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[16].items[11] : MK6 red emphasis appears 3 times ==正規分布==: ±1σは68.27%、==±2σ==は95.45%、==±3σ==は99.73%
+- [MARKUP-WARN] NOTE_DB[delivery].sections[20].items[0] : MK6 red emphasis appears 4 times ==アジャイル品質==の特徴: ==継続的検証==・==早期フィードバック==・==チーム責任==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[20].items[1] : MK6 red emphasis appears 3 times ==DoD==（Definition of Done, 完了の定義）: 「==完了==」とみなす==共通基準==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[20].items[11] : MK6 red emphasis appears 3 times __テスト・カバレッジ__: ==文カバレッジ==／==分岐カバレッジ==／==条件カバレッジ==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[21].items[5] : MK6 red emphasis appears 3 times ==静的解析==（==Lint==・==SonarQube==等）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[22].items[5] : MK6 red emphasis appears 3 times __メリット__: 仕様の==明確化==／==デグレ防止==／==設計改善==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[24].items[0] : MK6 red emphasis appears 3 times ==UAT==（User Acceptance Test）: ==実ユーザ==による==最終受入テスト==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[24].items[12] : MK6 red emphasis appears 4 times __UAT の成果物__: ==テスト・シナリオ==／==テスト・データ==／==テスト結果報告書==／==サインオフ・ドキュメント==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[25].items[1] : MK6 red emphasis appears 3 times __目的__: ==すべての活動==を==終結==し、==正式に完了==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[25].items[4] : MK6 red emphasis appears 5 times ==データ分析==（==文書分析==・==回帰分析==・==トレンド分析==・==差異分析==）
+- [MARKUP-WARN] NOTE_DB[delivery].sections[26].items[0] : MK6 red emphasis appears 3 times ==ベネフィット実現マネジメント==（Benefits Realization Management）: プロジェクト==投資==が==ビジネス便益==を生む...
+- [MARKUP-WARN] NOTE_DB[delivery].sections[27].items[0] : MK6 red emphasis appears 7 times __7QC道具__: ==パレート図==・==特性要因図==・==管理図==・==ヒストグラム==・==散布図==・==チェックシート==・==層別==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[27].items[1] : MK6 red emphasis appears 7 times __新7QC道具__: ==親和図==・==連関図==・==系統図==・==マトリクス図==・==PDPC==・==アローダイアグラム==・==マトリクスデー...
+- [MARKUP-WARN] NOTE_DB[delivery].sections[27].items[3] : MK6 red emphasis appears 3 times __品質コスト__: ==適合コスト==（予防・評価）vs ==不適合コスト==（内部不良・外部不良）。==1-10-100の法則==
+- [MARKUP-WARN] NOTE_DB[delivery].sections[29].items[0] : MK6 red emphasis appears 3 times 第8版 7 領域に「==デリバリー==」領域は存在せず、デリバリー概念は原則「==価値に焦点を当てること==」「==品質をプロセスと成果物に組み込むこと==」...
+- [MARKUP-WARN] NOTE_DB[measurement].summary : MK6 red emphasis appears 6 times プロジェクトの==パフォーマンス==を==定量的==に測定し、==意思決定==と==継続的改善==を支援する活動領域。PMBOK第6版では第7章 EVM 中心...
+- [MARKUP-WARN] NOTE_DB[measurement].exam_tips[1] : MK6 red emphasis appears 4 times 【EVM 計算暗記】==CV=EV-AC==、==SV=EV-PV==、==CPI=EV/AC==、==SPI=EV/PV==。==分子は常に EV==。
+- [MARKUP-WARN] NOTE_DB[measurement].exam_tips[2] : MK6 red emphasis appears 4 times 【TCPI】==BAC維持==なら ==(BAC-EV)/(BAC-AC)==、==EAC維持==なら ==(BAC-EV)/(EAC-AC)==。R6秋期 ...
+- [MARKUP-WARN] NOTE_DB[measurement].exam_tips[6] : MK6 red emphasis appears 5 times 【BSC】4視点（==財務==／==顧客==／==業務プロセス==／==学習と成長==）と==戦略マップ==の因果関係。
+- [MARKUP-WARN] NOTE_DB[measurement].sections[0].items[0] : MK6 red emphasis appears 4 times PMBOK第7版「==測定==」パフォーマンス領域は、==プロジェクトのパフォーマンス==を==監視・評価==し、==適切な対応==を取る活動を扱う
+- [MARKUP-WARN] NOTE_DB[measurement].sections[2].items[0] : MK6 red emphasis appears 3 times ==KPI==（Key Performance Indicator, 主要業績評価指標）: ==パフォーマンス==の==主要指標==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[2].items[1] : MK6 red emphasis appears 3 times 例: ==プロジェクト進捗率==・==コスト効率指数==（CPI）・==顧客満足度==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[2].items[8] : MK6 red emphasis appears 3 times ==KRI==（Key Risk Indicator, 主要リスク指標）: ==リスク==の==主要指標==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[2].items[9] : MK6 red emphasis appears 4 times 例: ==離職率==・==バグ密度==・==スケジュール遅延日数==・==コスト超過率==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[3].items[2] : MK6 red emphasis appears 3 times ==PV==（Planned Value, 計画値）: ==当初計画==で==今までに完了しているはず==のコスト
+- [MARKUP-WARN] NOTE_DB[measurement].sections[3].items[4] : MK6 red emphasis appears 3 times ==EV==（Earned Value, 出来高）: ==実際に完了した作業==の==当初計画コスト==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[3].items[6] : MK6 red emphasis appears 3 times ==AC==（Actual Cost, 実コスト）: ==実際に完了した作業==の==実際にかかったコスト==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[3].items[8] : MK6 red emphasis appears 3 times ==BAC==（Budget at Completion, 完成時総予算）: プロジェクト==全体==の==計画予算==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[12].items[11] : MK6 red emphasis appears 3 times ==休暇==・==トレーニング==・==会議==を控除
+- [MARKUP-WARN] NOTE_DB[measurement].sections[16].items[0] : MK6 red emphasis appears 3 times ==BSC==（Balanced Scorecard, バランススコアカード）: ==戦略実行==のための==多次元評価フレームワーク==（Kaplan & ...
+- [MARKUP-WARN] NOTE_DB[measurement].sections[16].items[9] : MK6 red emphasis appears 3 times ==短期 vs 長期==・==財務 vs 非財務==・==遅行 vs 先行==指標のバランス
+- [MARKUP-WARN] NOTE_DB[measurement].sections[17].items[2] : MK6 red emphasis appears 3 times ==Objective==（目標）: ==定性的==で==野心的==な目標（3-5個）
+- [MARKUP-WARN] NOTE_DB[measurement].sections[18].items[4] : MK6 red emphasis appears 3 times ==ROI==（Return on Investment, 投資収益率）= (==利益 - 投資==) / ==投資==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[18].items[8] : MK6 red emphasis appears 3 times ==回収期間==（Payback Period）: 投資を==回収==するまでの==期間==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[19].items[3] : MK6 red emphasis appears 3 times ==トレンド・レポート==（Trend Report）: ==時系列==の==傾向==（改善／悪化）
+- [MARKUP-WARN] NOTE_DB[measurement].sections[19].items[5] : MK6 red emphasis appears 3 times ==バリアンス・レポート==（Variance Report）: ==計画 vs 実績==の==差異==（CV／SV）
+- [MARKUP-WARN] NOTE_DB[measurement].sections[19].items[6] : MK6 red emphasis appears 3 times __配信頻度__: 計画書で定義（==週次==／==月次==／==フェーズ末==）
+- [MARKUP-WARN] NOTE_DB[measurement].sections[19].items[7] : MK6 red emphasis appears 3 times __配信形式__: ==メール==／==ダッシュボード==／==対面会議==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[20].items[0] : MK6 red emphasis appears 3 times ==ダッシュボード==: ==KPI/メトリクス==を==一画面==で可視化
+- [MARKUP-WARN] NOTE_DB[measurement].sections[20].items[12] : MK6 red emphasis appears 4 times __ツール例__: ==Tableau==／==Power BI==／==Looker==／==Grafana==
+- [MARKUP-WARN] NOTE_DB[measurement].sections[22].items[0] : MK6 red emphasis appears 4 times __EVM 基本値__: ==PV==・==EV==・==AC==・==BAC== の定義と計算
+- [MARKUP-WARN] NOTE_DB[measurement].sections[22].items[3] : MK6 red emphasis appears 4 times __EVM 完了予測__: ==EAC==・==ETC==・==VAC==・==TCPI== の公式
+- [MARKUP-WARN] NOTE_DB[uncertainty].summary : MK6 red emphasis appears 11 times ==リスク==（不確かな事象が発生した場合の影響）と==機会==（プラスのリスク）を==識別==・==分析==・==対応==・==監視==する活動領域。PMB...
+- [MARKUP-WARN] NOTE_DB[uncertainty].exam_tips[1] : MK6 red emphasis appears 5 times 【脅威5戦略】==回避==／==転嫁==／==軽減==／==受容==（能動・受動）／==エスカレーション==。
+- [MARKUP-WARN] NOTE_DB[uncertainty].exam_tips[2] : MK6 red emphasis appears 5 times 【機会5戦略】==活用==／==共有==／==強化==／==受容==／==エスカレーション==。脅威↔機会の対応（回避↔活用・転嫁↔共有・軽減↔強化）を暗記。
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[0].items[0] : MK6 red emphasis appears 5 times PMBOK第7版「==不確かさ==」パフォーマンス領域は、==リスク==・==曖昧さ==・==複雑性==・==変動性==を扱う
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[1].items[0] : MK6 red emphasis appears 5 times ==リスク==（Risk）: ==不確かな事象==が==発生した場合==に==プロジェクト目標==に==影響を与える==事象または状態
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[2].items[8] : MK6 red emphasis appears 3 times __プロセス群分布__: ==計画== 5プロセス（11.1-11.5）／==実行== 1プロセス（11.6）／==監視== 1プロセス（11.7）
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[5].items[0] : MK6 red emphasis appears 3 times ==RBS==（Risk Breakdown Structure, リスク・ブレークダウン・ストラクチャー）: リスクを==カテゴリ別==に==階層分解==し...
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[6].items[1] : MK6 red emphasis appears 4 times __目的__: 個別リスクの==確率==と==影響度==を==評価==し、==優先順位==を付ける
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[6].items[4] : MK6 red emphasis appears 4 times ==データ分析==: ==リスクデータ品質評価==／==リスク確率影響度評価==／==他のリスクパラメータ評価==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[8].items[0] : MK6 red emphasis appears 3 times ==EMV==（Expected Monetary Value, 期待金額価値）: リスクの==期待値==を==金額==で表現
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[8].items[5] : MK6 red emphasis appears 3 times ==決定木分析==（Decision Tree Analysis）: ==選択肢ごとの EMV==を計算して==最適な選択肢==を選ぶ
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[9].items[0] : MK6 red emphasis appears 3 times ==モンテカルロ法==（Monte Carlo Simulation）: ==乱数==を使って==確率分布==を生成するシミュレーション手法
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[9].items[2] : MK6 red emphasis appears 3 times ==スケジュール==: 各アクティビティ所要時間の==確率分布==から完了日の==確率分布==を導出
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[9].items[9] : MK6 red emphasis appears 3 times ==感度分析==（Sensitivity Analysis）: ==どのリスクが==プロジェクト目標に==最も影響するか==を分析
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[10].items[0] : MK6 red emphasis appears 3 times ==プロジェクト全体リスク==: ==個別リスク==の==集合体==としてのリスク
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[11].items[1] : MK6 red emphasis appears 3 times __目的__: 個別リスクと全体リスクへの==対応戦略==を==選定==・==計画==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[11].items[10] : MK6 red emphasis appears 4 times ==データ分析==: ==代替案分析==・==コスト便益分析==・==決定分析==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[12].items[9] : MK6 red emphasis appears 3 times 影響度==極高==→ ==回避== または ==転嫁==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[15].items[1] : MK6 red emphasis appears 3 times __目的__: ==対応策の有効性==を監視・==新規リスク特定==・==リスク登録簿更新==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[17].items[1] : MK6 red emphasis appears 3 times __目的__: ==リスク全体==の==サマリー==・==上位リスク==の俯瞰
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[17].items[7] : MK6 red emphasis appears 3 times __配信先__: ==ステアリングコミッティ==・==スポンサー==・==上位経営層==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[17].items[11] : MK6 red emphasis appears 3 times ==レポート==: ==全体俯瞰==と==上位リスク==のサマリー
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[18].items[0] : MK6 red emphasis appears 3 times ==残存リスク==（Residual Risk）: ==対応策実施後==も==残っているリスク==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[18].items[3] : MK6 red emphasis appears 3 times ==二次リスク==（Secondary Risk）: ==対応策の実施==によって==新たに発生==するリスク
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[18].items[7] : MK6 red emphasis appears 3 times ==残存==: ==元のリスク==の==消えない部分==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[19].items[1] : MK6 red emphasis appears 3 times ==リスク選好==（Risk Appetite）: 組織が==積極的に取りに行く==リスクの==量==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[20].items[0] : MK6 red emphasis appears 4 times ==リスク・プロファイル==（Risk Profile）: 組織または個人の==リスク選好==・==許容度==の==パターン==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[21].items[2] : MK6 red emphasis appears 4 times ==スプリント計画==で==リスクの高い項目==を==早期取込み==（==高リスク順==）
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[22].items[0] : MK6 red emphasis appears 3 times __統合リスク__: 複数の==サブシステム==・==サプライヤ==・==チーム==の統合時に発生
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[3] : MK6 red emphasis appears 3 times ==曖昧さ==（Ambiguity）: ==意味・選択肢==が==不明確==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[4] : MK6 red emphasis appears 3 times ==複雑性==（Complexity）: ==要素間の関係==が==複雑==で予測困難
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[5] : MK6 red emphasis appears 3 times ==変動性==（Volatility）: ==変化の頻度==と==速さ==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[9] : MK6 red emphasis appears 4 times ==曖昧さ==: ==プロトタイピング==・==実験==・==段階的詳細化==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[10] : MK6 red emphasis appears 4 times ==複雑性==: ==小さな試行==・==創発的アプローチ==・==アジャイル==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[23].items[11] : MK6 red emphasis appears 3 times ==変動性==: ==アジリティ==・==適応型ライフサイクル==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[24].items[0] : MK6 red emphasis appears 4 times ==リスク・トリガー==（Risk Trigger）: リスクが==発生する直前==に==観測可能==な==兆候==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[25].items[1] : MK6 red emphasis appears 5 times __脅威5戦略__: ==回避==／==転嫁==／==軽減==／==受容==／==エスカレーション==
+- [MARKUP-WARN] NOTE_DB[uncertainty].sections[25].items[2] : MK6 red emphasis appears 5 times __機会5戦略__: ==活用==／==共有==／==強化==／==受容==／==エスカレーション==
+- [MARKUP-WARN] NOTE_DB[integration].summary : MK6 red emphasis appears 9 times プロジェクトの==全要素==を==統合==し、==変更==と==構成==を管理する活動領域。PMBOK第6版では第4章「==統合マネジメント==」7プロセス（...
+- [MARKUP-WARN] NOTE_DB[integration].exam_tips[6] : MK6 red emphasis appears 3 times 【構成管理】==構成項目==（CI）・==バージョン管理==・==ベースライン==。変更管理はプロセス、構成管理は成果物。
+- [MARKUP-WARN] NOTE_DB[integration].exam_tips[7] : MK6 red emphasis appears 3 times 【ベースライン】3大（スコープ・スケジュール・コスト）と==パフォーマンス測定ベースライン==（PMB）。==凍結==と==承認後変更==の関係。
+- [MARKUP-WARN] NOTE_DB[integration].sections[0].items[0] : MK6 red emphasis appears 3 times ==統合マネジメント==（Integration Management）: プロジェクトの==他の知識エリア==の活動を==調整・統合==する
+- [MARKUP-WARN] NOTE_DB[integration].sections[2].items[1] : MK6 red emphasis appears 4 times __第7版での扱い__: 統合マネジメントは==独立領域として消滅==、複数の==原則==と==パフォーマンス領域==に==分散==
+- [MARKUP-WARN] NOTE_DB[integration].sections[2].items[6] : MK6 red emphasis appears 4 times ==12原則==の「==システム思考==」「==リーダーシップ==」「==適応性==」
+- [MARKUP-WARN] NOTE_DB[integration].sections[3].items[1] : MK6 red emphasis appears 4 times __目的__: プロジェクトを==正式==に==認可==し、==プロジェクトマネージャ==を==特定==
+- [MARKUP-WARN] NOTE_DB[integration].sections[3].items[3] : MK6 red emphasis appears 3 times ==ビジネス文書==（==ビジネスケース==・==ベネフィット・マネジメント計画書==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[3].items[14] : MK6 red emphasis appears 3 times __発行者__: ==スポンサー==または==上位組織==（PMが書くこともあるが==承認はスポンサー==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[4].items[10] : MK6 red emphasis appears 3 times ==プロジェクトマネージャー==・==責任==・==権限レベル==
+- [MARKUP-WARN] NOTE_DB[integration].sections[5].items[1] : MK6 red emphasis appears 3 times ==ビジネスケース==（Business Case）: プロジェクト==投資==の==正当化==
+- [MARKUP-WARN] NOTE_DB[integration].sections[5].items[6] : MK6 red emphasis appears 3 times ビジネス・ニーズ → ==ビジネスケース== → ==憲章== → ==プロジェクト==
+- [MARKUP-WARN] NOTE_DB[integration].sections[5].items[9] : MK6 red emphasis appears 3 times ビジネス文書は==PM 以外==（==スポンサー==・==ビジネス部門==）が作成
+- [MARKUP-WARN] NOTE_DB[integration].sections[6].items[2] : MK6 red emphasis appears 3 times __目的__: 全==サブシディアリー計画書==と==ベースライン==を==統合==
+- [MARKUP-WARN] NOTE_DB[integration].sections[7].items[3] : MK6 red emphasis appears 3 times __統合視点での重要性__: ==他の知識エリア==の==実行プロセス==を==調整==
+- [MARKUP-WARN] NOTE_DB[integration].sections[9].items[1] : MK6 red emphasis appears 5 times __目的__: ==プロジェクト全体==の==進捗==・==パフォーマンス==を==監視==・==是正==
+- [MARKUP-WARN] NOTE_DB[integration].sections[9].items[7] : MK6 red emphasis appears 6 times ==データ分析==（==代替案分析==／==コスト便益分析==／==EVA==／==トレンド分析==／==差異分析==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[10].items[2] : MK6 red emphasis appears 4 times ==スコープ==（EV）・==コスト==（AC）・==スケジュール==（PV/SPI）を==一元評価==
+- [MARKUP-WARN] NOTE_DB[integration].sections[11].items[1] : MK6 red emphasis appears 4 times ==是正処置==（Corrective Action）: ==過去==に発生した==問題==を==修正==
+- [MARKUP-WARN] NOTE_DB[integration].sections[11].items[3] : MK6 red emphasis appears 3 times ==予防処置==（Preventive Action）: ==将来予測される==問題を==事前に防止==
+- [MARKUP-WARN] NOTE_DB[integration].sections[11].items[5] : MK6 red emphasis appears 3 times ==欠陥修正==（Defect Repair）: ==成果物の不具合==を==修正==
+- [MARKUP-WARN] NOTE_DB[integration].sections[12].items[1] : MK6 red emphasis appears 5 times __目的__: ==全変更要求==を==一元管理==して==影響評価==・==承認==・==実装==
+- [MARKUP-WARN] NOTE_DB[integration].sections[12].items[4] : MK6 red emphasis appears 5 times ==スコープ==・==スケジュール==・==コスト==・==品質==への影響を==同時評価==
+- [MARKUP-WARN] NOTE_DB[integration].sections[12].items[11] : MK6 red emphasis appears 3 times ==変更管理ツール==（==構成管理システム==・==変更管理システム==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[12].items[12] : MK6 red emphasis appears 3 times ==データ分析==（==代替案分析==・==コスト便益分析==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[12].items[13] : MK6 red emphasis appears 4 times ==意思決定==（==投票==・==独裁==・==多基準意思決定分析==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[13].items[10] : MK6 red emphasis appears 3 times ==変更ID==／==要求者==／==要求日==
+- [MARKUP-WARN] NOTE_DB[integration].sections[14].items[0] : MK6 red emphasis appears 4 times ==CCB==（Change Control Board, 変更管理委員会）: 変更要求を==審議==・==承認==する==正式組織==
+- [MARKUP-WARN] NOTE_DB[integration].sections[14].items[7] : MK6 red emphasis appears 3 times ==変更要求の評価==・==承認/却下==・==延期==
+- [MARKUP-WARN] NOTE_DB[integration].sections[17].items[0] : MK6 red emphasis appears 5 times ==構成管理==（Configuration Management）: ==製品==・==プロジェクト情報==の==バージョン==を==管理==
+- [MARKUP-WARN] NOTE_DB[integration].sections[17].items[2] : MK6 red emphasis appears 4 times 例: ==ソフトウェアモジュール==／==設計文書==／==テストスクリプト==／==計画書==
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[0] : MK6 red emphasis appears 3 times ==バージョン管理==（Version Control）: 文書・成果物の==変更履歴==を==追跡==
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[7] : MK6 red emphasis appears 3 times ==Draft==（草案）→ ==Review==（レビュー中）→ ==Approved==（承認済み）
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[8] : MK6 red emphasis appears 3 times ==v0.1==／==v0.2==／==v1.0==（正式版）
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[10] : MK6 red emphasis appears 4 times ==ソースコード==: ==Git==／==SVN==／==Mercurial==
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[11] : MK6 red emphasis appears 4 times ==文書==: ==SharePoint==／==Confluence==／==Google Docs==
+- [MARKUP-WARN] NOTE_DB[integration].sections[19].items[12] : MK6 red emphasis appears 3 times ==設計==: ==Figma==／==Adobe Cloud==
+- [MARKUP-WARN] NOTE_DB[integration].sections[20].items[7] : MK6 red emphasis appears 5 times ==データ分析==（==文書分析==／==回帰分析==／==トレンド分析==／==差異分析==）
+- [MARKUP-WARN] NOTE_DB[integration].sections[22].items[4] : MK6 red emphasis appears 3 times __変更要求__の3種類: ==是正処置==／==予防処置==／==欠陥修正==
+- [MARKUP-WARN] NOTE_DB[governance].summary : MK6 red emphasis appears 11 times プロジェクトを==組織の戦略==と==整合==させ、==意思決定==と==権限==の枠組みを提供する活動領域。PMBOK第6版では第2章「環境」・第13章「ス...
+- [MARKUP-WARN] NOTE_DB[governance].exam_tips[7] : MK6 red emphasis appears 4 times 【PMI 倫理】4価値観（==責任==・==尊重==・==公正==・==誠実==）と願望/必須基準の区別。
+- [MARKUP-WARN] NOTE_DB[governance].sections[0].items[0] : MK6 red emphasis appears 5 times ==プロジェクト・ガバナンス==（Project Governance）: プロジェクトの==意思決定==・==報告==・==監督==の==枠組み==
+- [MARKUP-WARN] NOTE_DB[governance].sections[1].items[1] : MK6 red emphasis appears 3 times ==ガバナンス・ボディ==（==ステアリングコミッティ==・==CCB==等）
+- [MARKUP-WARN] NOTE_DB[governance].sections[1].items[9] : MK6 red emphasis appears 3 times ==組織の成熟度==・==プロジェクト規模==・==リスクレベル==に応じてテーラリング
+- [MARKUP-WARN] NOTE_DB[governance].sections[3].items[1] : MK6 red emphasis appears 3 times ==ポートフォリオ==（Portfolio）: 戦略目標達成のための==プロジェクト・プログラム==の==集合==
+- [MARKUP-WARN] NOTE_DB[governance].sections[3].items[3] : MK6 red emphasis appears 4 times ==プログラム==（Program）: ==相互関連==する==複数プロジェクト==を==統合管理==
+- [MARKUP-WARN] NOTE_DB[governance].sections[3].items[7] : MK6 red emphasis appears 3 times ==ポートフォリオ==: ==価値最大化==・==戦略整合==
+- [MARKUP-WARN] NOTE_DB[governance].sections[4].items[2] : MK6 red emphasis appears 3 times ==戦略==から==実行==への==一貫性==
+- [MARKUP-WARN] NOTE_DB[governance].sections[5].items[0] : MK6 red emphasis appears 3 times ==戦略整合==: プロジェクトが==組織戦略==と==整合==している状態
+- [MARKUP-WARN] NOTE_DB[governance].sections[6].items[0] : MK6 red emphasis appears 4 times ==プログラム・マネジメント==: 複数の==相互関連プロジェクト==を==統合管理==して==プログラム便益==を実現
+- [MARKUP-WARN] NOTE_DB[governance].sections[6].items[3] : MK6 red emphasis appears 3 times ==成果==: プログラムは==便益==、プロジェクトは==成果物==
+- [MARKUP-WARN] NOTE_DB[governance].sections[7].items[3] : MK6 red emphasis appears 5 times ==サービス==: ==テンプレート==／==ベストプラクティス==／==トレーニング==／==情報資源==
+- [MARKUP-WARN] NOTE_DB[governance].sections[7].items[9] : MK6 red emphasis appears 4 times ==サービス==: 支援型 + ==フレームワーク強制==／==準拠状況監査==／==ガバナンス==
+- [MARKUP-WARN] NOTE_DB[governance].sections[7].items[15] : MK6 red emphasis appears 3 times ==サービス==: ==プロジェクト直接管理==／PM を==PMO に配属==
+- [MARKUP-WARN] NOTE_DB[governance].sections[8].items[1] : MK6 red emphasis appears 4 times ==方法論策定==: ==PMBOK==採用／独自==テーラリング==／==標準テンプレート==
+- [MARKUP-WARN] NOTE_DB[governance].sections[8].items[3] : MK6 red emphasis appears 3 times ==プロジェクト支援==: ==コーチング==／==コンサルティング==
+- [MARKUP-WARN] NOTE_DB[governance].sections[8].items[5] : MK6 red emphasis appears 4 times ==知識管理==: ==教訓リポジトリ==／==事例集==／==コミュニティ==
+- [MARKUP-WARN] NOTE_DB[governance].sections[11].items[0] : MK6 red emphasis appears 3 times ==フェーズゲート==（Phase Gate, ==Stage Gate==）: フェーズ間の==Go/No-Go 判定ポイント==
+- [MARKUP-WARN] NOTE_DB[governance].sections[13].items[0] : MK6 red emphasis appears 4 times ==COBIT==（Control Objectives for Information and Related Technologies）: ==IT ガバ...
+- [MARKUP-WARN] NOTE_DB[governance].sections[14].items[0] : MK6 red emphasis appears 4 times ==JIS Q 38500==（==ISO/IEC 38500==）: ==組織の IT ガバナンス==に関する==国際規格==
+- [MARKUP-WARN] NOTE_DB[governance].sections[14].items[1] : MK6 red emphasis appears 4 times __目的__: ==経営層==が IT の==現在・将来の利用==を==評価・指示・モニター==するための==指針==
+- [MARKUP-WARN] NOTE_DB[governance].sections[15].items[0] : MK6 red emphasis appears 3 times ==ISO/IEC 27001==: ==情報セキュリティマネジメントシステム==（ISMS）の==国際規格==
+- [MARKUP-WARN] NOTE_DB[governance].sections[17].items[0] : MK6 red emphasis appears 5 times ==コンプライアンス==（Compliance）: ==法令==・==規制==・==業界基準==・==組織方針==の遵守
+- [MARKUP-WARN] NOTE_DB[governance].sections[18].items[2] : MK6 red emphasis appears 3 times ==プロセス監査==: ==PM プロセス==の==遵守==状況
+- [MARKUP-WARN] NOTE_DB[governance].sections[18].items[3] : MK6 red emphasis appears 4 times ==パフォーマンス監査==: ==コスト==・==スケジュール==・==品質==の評価
+- [MARKUP-WARN] NOTE_DB[governance].sections[18].items[4] : MK6 red emphasis appears 3 times ==コンプライアンス監査==: ==法令==・==規程==の遵守
+- [MARKUP-WARN] NOTE_DB[tailoring-models].summary : MK6 red emphasis appears 14 times プロジェクト特性に応じて==プロセス==・==手法==・==成果物==を==調整==する活動領域。PMBOK第6版では各章末「テーラリング」と==付録 X1=...
+- [MARKUP-WARN] NOTE_DB[tailoring-models].exam_tips[1] : MK6 red emphasis appears 6 times 【Cynefin】4領域（==単純==・==困難==・==複雑==・==混沌==）+ ==無秩序==。アジャイル適用は==複雑==領域。
+- [MARKUP-WARN] NOTE_DB[tailoring-models].exam_tips[3] : MK6 red emphasis appears 4 times 【プロセスモデル】==PDCA==（改善）／==DMAIC==（データ駆動改善）／==DMADV==（新規設計）／==OODA==（高変動環境）。
+- [MARKUP-WARN] NOTE_DB[tailoring-models].exam_tips[4] : MK6 red emphasis appears 3 times 【変革モデル】==ADKAR==（個人の5段階）／==コッター==（組織の8段階）／==Bridges==（終わり→中立圏→始まり）。
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[0].items[0] : MK6 red emphasis appears 5 times ==テーラリング==（Tailoring）: プロジェクト特性に応じて==プロセス==・==手法==・==成果物==を==調整==する活動
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[3].items[8] : MK6 red emphasis appears 3 times ==修正==（プロセスの==粒度==・==順序==を変える）
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[4].items[1] : MK6 red emphasis appears 6 times __モデルの定義__: ==現実==を==単純化==して==理解==・==予測==・==制御==するための==枠組み==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[7].items[17] : MK6 red emphasis appears 3 times ==終わり==（Ending）→ ==中立圏==（Neutral Zone）→ ==始まり==（New Beginning）
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[8].items[4] : MK6 red emphasis appears 3 times ==複雑==（Complex）: 創発的、原因-結果は==事後==に==判明==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[8].items[15] : MK6 red emphasis appears 4 times 4領域: ==単純==・==複雑==・==複雑系==・==無秩序==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[8].items[16] : MK6 red emphasis appears 3 times ==アジャイル適用領域==: ==複雑==・==複雑系==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[9].items[9] : MK6 red emphasis appears 3 times ==手法==（PMBOK7 第7版）: ==単独==で使える==ツール==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[12].items[7] : MK6 red emphasis appears 3 times ==レトロスペクティブ==: チームの==振り返り==・==改善==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[13].items[1] : MK6 red emphasis appears 4 times __目的__: ==不確かさ==・==複雑性==・==変動性==への==実践的対応==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[13].items[4] : MK6 red emphasis appears 3 times ==実験==（Experiment）: 仮説の==検証==・==反証==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[15].items[3] : MK6 red emphasis appears 4 times 投資の==正当化==・==代替案分析==・==推奨案==・==成功評価基準==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[17].items[1] : MK6 red emphasis appears 4 times ==ステータスレポート==・==トレンドレポート==・==予測レポート==・==バリアンスレポート==
+- [MARKUP-WARN] NOTE_DB[tailoring-models].sections[18].items[0] : MK6 red emphasis appears 3 times ==テーラリング判断ワークシート==: 各要素を==評価==して==推奨アプローチ==を導出するツール
+- [MARKUP-WARN] NOTE_DB[service-management].summary : MK6 red emphasis appears 12 times IT サービスの==提供==・==運用==・==継続的改善==を扱う活動領域（==PMBOK 外==）。==ITIL v3/v4==・==ISO/IEC 20...
+- [MARKUP-WARN] NOTE_DB[service-management].exam_tips[0] : MK6 red emphasis appears 5 times 【最重要・ITIL v3】5ライフサイクル（==戦略==・==設計==・==移行==・==運用==・==CSI==）と各プロセス。
+- [MARKUP-WARN] NOTE_DB[service-management].exam_tips[2] : MK6 red emphasis appears 3 times 【可用性計算】99.9% = 月==43.2分==、99.99% = 月==4.32分==、99.999% = 月==25.9秒== の停止許容。
+- [MARKUP-WARN] NOTE_DB[service-management].exam_tips[5] : MK6 red emphasis appears 5 times 【変更管理】3類型（==標準==/==通常==/==緊急==）と==CAB==の役割。ITIL 変更管理と PMBOK 4.6 統合変更管理は==別物==。
+- [MARKUP-WARN] NOTE_DB[service-management].exam_tips[8] : MK6 red emphasis appears 4 times 【個人情報保護法】取扱事業者の義務（==利用目的通知==・==同意==・==安全管理==・==第三者提供制限==）。
+- [MARKUP-WARN] NOTE_DB[service-management].sections[0].items[0] : MK6 red emphasis appears 8 times ==サービスマネジメント==（Service Management）: 顧客に==価値==を提供する==サービス==を==計画==・==設計==・==移行==...
+- [MARKUP-WARN] NOTE_DB[service-management].sections[0].items[1] : MK6 red emphasis appears 4 times __定義（ITIL）__: 「==サービス==の形態で==顧客==に==価値==を提供するための==組織能力==の集合」
+- [MARKUP-WARN] NOTE_DB[service-management].sections[0].items[3] : MK6 red emphasis appears 3 times ==プロジェクト==: ==有期==・==成果物==指向（一回限り）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[0].items[4] : MK6 red emphasis appears 3 times ==サービスマネジメント==: ==継続的==・==サービス==提供（運用フェーズ）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[0].items[11] : MK6 red emphasis appears 4 times ==プロジェクトマネージャ試験==でも==運用引継ぎ==・==SLA==・==法務==が出題
+- [MARKUP-WARN] NOTE_DB[service-management].sections[1].items[0] : MK6 red emphasis appears 3 times ==ITIL==（Information Technology Infrastructure Library）: ==IT サービスマネジメント==の==ベス...
+- [MARKUP-WARN] NOTE_DB[service-management].sections[1].items[12] : MK6 red emphasis appears 6 times ==SLA==・==インシデント管理==・==問題管理==・==変更管理==・==構成管理==の==基本用語==は両版共通
+- [MARKUP-WARN] NOTE_DB[service-management].sections[2].items[0] : MK6 red emphasis appears 4 times ==ISO/IEC 20000==: ==IT サービスマネジメントシステム==（==SMS==）の==国際規格==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[2].items[2] : MK6 red emphasis appears 6 times __目的__: ==組織==が SMS を==確立==・==実施==・==維持==・==継続的に改善==するための==要件==を規定
+- [MARKUP-WARN] NOTE_DB[service-management].sections[3].items[0] : MK6 red emphasis appears 5 times ==サービス戦略==: ==顧客ニーズ==と==市場機会==に基づき==サービス==を==戦略的に==計画
+- [MARKUP-WARN] NOTE_DB[service-management].sections[3].items[8] : MK6 red emphasis appears 4 times ==サービスポートフォリオ==（==パイプライン==・==カタログ==・==廃止==）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[4].items[8] : MK6 red emphasis appears 3 times ==サービスレベル管理==（==SLM==、==SLA==の策定・管理）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[5].items[0] : MK6 red emphasis appears 3 times ==サービス移行==: 新規・変更サービスを==本番環境==に==移行==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[6].items[0] : MK6 red emphasis appears 4 times ==サービス運用==: ==日常的==な==サービス提供==・==サポート==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[7].items[0] : MK6 red emphasis appears 6 times ==継続的サービス改善==（==CSI==）: ==PDCA==サイクルで==サービス==・==プロセス==を==改善==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[8].items[1] : MK6 red emphasis appears 6 times __目的__: ==組織==の==全コンポーネント==・==活動==が==連携==して==価値==を==共創==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[9].items[0] : MK6 red emphasis appears 3 times ==サービスバリューチェーン==（==SVC==）: ITIL 4 の==6つの活動==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[10].items[2] : MK6 red emphasis appears 3 times ==組織構造==・==文化==・==コミュニケーション==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[10].items[3] : MK6 red emphasis appears 3 times ==役割と責任==・==スキル==・==コンピテンシー==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[11].items[8] : MK6 red emphasis appears 3 times ==7. 最適化と自動化==（Optimize and Automate）: ==人間==の介入は==最適化後==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[12].items[1] : MK6 red emphasis appears 5 times ==SLA==（Service Level Agreement, ==サービスレベル合意==）: ==顧客==と==サービスプロバイダ==の==合意==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[12].items[2] : MK6 red emphasis appears 3 times ==OLA==（Operational Level Agreement, ==運用レベル合意==）: ==プロバイダ内部==の部門間合意
+- [MARKUP-WARN] NOTE_DB[service-management].sections[12].items[3] : MK6 red emphasis appears 4 times ==UC==（Underpinning Contract, ==補強契約==）: プロバイダと==外部サプライヤ==の==契約==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[12].items[8] : MK6 red emphasis appears 4 times __重要原則__: ==SLA==の==サービスレベル== ≦ ==OLA== ≦ ==UC==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[13].items[13] : MK6 red emphasis appears 3 times ==99.9%==（スリーナイン）= 月==43.2分==、年==8.76時間==の停止許容
+- [MARKUP-WARN] NOTE_DB[service-management].sections[13].items[14] : MK6 red emphasis appears 3 times ==99.99%==（フォーナイン）= 月==4.32分==、年==52.6分==の停止許容
+- [MARKUP-WARN] NOTE_DB[service-management].sections[14].items[0] : MK6 red emphasis appears 7 times ==SLM==（Service Level Management, ==サービスレベル管理==）: ==SLA==の==策定==・==監視==・==報告==・...
+- [MARKUP-WARN] NOTE_DB[service-management].sections[15].items[1] : MK6 red emphasis appears 4 times ==目的==: ==サービス回復==を==迅速に==（==根本原因==は問わない）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[15].items[7] : MK6 red emphasis appears 3 times ==目的==: インシデントの==根本原因==を特定し==再発防止==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[16].items[0] : MK6 red emphasis appears 4 times ==変更管理==（Change Management）: IT サービスの==変更==を==計画的==に==管理==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[16].items[2] : MK6 red emphasis appears 3 times ==変更==による==サービス影響==の==最小化==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[16].items[6] : MK6 red emphasis appears 3 times ==標準変更==（Standard Change）: ==事前承認済み==・==定型的==（パスワードリセット等）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[16].items[7] : MK6 red emphasis appears 3 times ==通常変更==（Normal Change）: ==CAB==（Change Advisory Board）の==審議==が必要
+- [MARKUP-WARN] NOTE_DB[service-management].sections[16].items[8] : MK6 red emphasis appears 3 times ==緊急変更==（Emergency Change）: ==ECAB==（Emergency CAB）で==迅速==承認
+- [MARKUP-WARN] NOTE_DB[service-management].sections[17].items[0] : MK6 red emphasis appears 4 times ==構成管理==（Configuration Management, ITIL）: ==構成項目==の==情報==を==中央管理==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[18].items[0] : MK6 red emphasis appears 3 times ==リリース管理==（Release Management）: 変更を==まとめて==本番環境に==展開==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[19].items[1] : MK6 red emphasis appears 3 times ==目的==: ==コスト効率==の高い==容量計画==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[19].items[6] : MK6 red emphasis appears 4 times ==KPI==: ==使用率==・==応答時間==・==スループット==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[19].items[14] : MK6 red emphasis appears 4 times __冗長化手法__: ==デュアル==（==アクティブ・スタンバイ==）／==クラスタ==／==ロードバランシング==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[20].items[0] : MK6 red emphasis appears 4 times ==IT サービス継続性管理==（ITSCM, IT Service Continuity Management）: ==災害==・==重大障害==時の==サ...
+- [MARKUP-WARN] NOTE_DB[service-management].sections[20].items[3] : MK6 red emphasis appears 4 times ==RPO==（Recovery Point Objective, ==目標復旧時点==）: ==データ==の==最大許容損失時間==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[20].items[4] : MK6 red emphasis appears 4 times ==RTO==（Recovery Time Objective, ==目標復旧時間==）: ==サービス==の==最大許容停止時間==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[20].items[5] : MK6 red emphasis appears 3 times ==RLO==（Recovery Level Objective, ==目標復旧レベル==）: 復旧後の==サービスレベル==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[22].items[0] : MK6 red emphasis appears 6 times ==システム監査==: 情報システムの==信頼性==・==安全性==・==効率性==を==独立した立場==で==評価==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[22].items[8] : MK6 red emphasis appears 3 times ==内部監査==: ==組織内部==の==監査人==（独立部門）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[22].items[9] : MK6 red emphasis appears 4 times ==外部監査==: ==外部監査法人==（==公認会計士==・==システム監査技術者==）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[23].items[1] : MK6 red emphasis appears 3 times ==システム管理基準==（経済産業省）: 監査==対象==の==管理基準==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[23].items[12] : MK6 red emphasis appears 3 times ==証拠==の==入手==・==評価==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[24].items[0] : MK6 red emphasis appears 3 times ==個人情報保護法==（日本）: ==個人情報==の==取扱い==を規制
+- [MARKUP-WARN] NOTE_DB[service-management].sections[24].items[2] : MK6 red emphasis appears 3 times ==利用目的==の==通知==・==公表==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[24].items[4] : MK6 red emphasis appears 5 times ==安全管理措置==（==組織的==・==人的==・==物理的==・==技術的==）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[24].items[6] : MK6 red emphasis appears 3 times ==本人開示==・==訂正==・==利用停止==への対応
+- [MARKUP-WARN] NOTE_DB[service-management].sections[24].items[12] : MK6 red emphasis appears 3 times ==違反時の制裁金==: 最大 ==2000万ユーロ==または==全世界売上の4%==の高い方
+- [MARKUP-WARN] NOTE_DB[service-management].sections[25].items[1] : MK6 red emphasis appears 3 times ==国==・==地方公共団体==・==重要社会基盤事業者==の責務
+- [MARKUP-WARN] NOTE_DB[service-management].sections[25].items[6] : MK6 red emphasis appears 3 times ==アクセス制御機能==による==識別符号==の==不正使用==等の禁止
+- [MARKUP-WARN] NOTE_DB[service-management].sections[25].items[8] : MK6 red emphasis appears 4 times ==識別符号==の==不正取得==・==保管==・==助長==も禁止
+- [MARKUP-WARN] NOTE_DB[service-management].sections[25].items[10] : MK6 red emphasis appears 3 times ==経営層==の==10原則==・==重要10項目==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[26].items[3] : MK6 red emphasis appears 3 times ==複製権==・==翻案権==・==公衆送信権==
+- [MARKUP-WARN] NOTE_DB[service-management].sections[28].items[2] : MK6 red emphasis appears 4 times __MTTR vs MTBF__: ==MTTR==（修復時間、==短いほど良い==）vs ==MTBF==（故障間隔、==長いほど良い==）
+- [MARKUP-WARN] NOTE_DB[service-management].sections[29].items[0] : MK6 red emphasis appears 4 times 第8版で「==サービスマネジメント==」は PMBOK の領域構造に直接の対応はないが、新原則「==持続可能性==」「==価値焦点==」と「==ファイナンス=...
+
+## 機械レビュー結果
+- `npm run validate-data`: PASS。既存整合性エラー 0。MARKUP は advisory として NG 12 / WARN 478 を出力。
+- `npm run build`: PASS。Vite の chunk size warning は継続（`dist/assets/index-*.js` が 500 kB 超）。
+- `npm run lint`: FAIL（23 errors / 4 warnings）。今回追加した `scripts/validate-static-data.ts` 単体の `npx eslint scripts/validate-static-data.ts` は PASS。
+
+### lint 主な内容
+- `src/components/CategoryCard.tsx`: unused var / irregular whitespace。
+- `src/components/ImportantToggle.tsx`, `src/components/Layout.tsx`, `src/pages/DeviceSync.tsx`, `src/pages/NoteDetail.tsx`, `src/pages/OfficialMorningSession.tsx`: React Hooks の `set-state-in-effect`。
+- `src/components/history/XpChart.tsx`: render 後の変数再代入。
+- `src/components/quiz/QuizQuestion.tsx`, `src/pages/OfficialMorningSession.tsx`: render 中の `Math.random`。
+- `src/data/officialMorningQuestions.ts`, `src/pages/NoteDetail.tsx`, `src/pages/QuizSummary.tsx`: irregular whitespace。
+- `src/lib/gamification.ts`: unused vars `_problemId`, `_payload`。
+- `src/pages/ImportantMarks.tsx`, `src/pages/OfficialMorningSummary.tsx`, `src/pages/Quiz.tsx`: warnings。
+
+### 未使用 export / dead code grep（明らかなもののみ）
+- src\pages\OfficialMorningSession.tsx:72:  // ★デバッグモード（正式版 v1.0.0 では削除予定 / detailed_design §2.7e.x 参照）
+- src\pages\OfficialMorningSession.tsx:314:          {/* ★デバッグモードトグル（正式版 v1.0.0 で削除） */}
+
+### TODO / FIXME / XXX / デバッグ grep
+- src\pages\OfficialMorningSession.tsx:72:  // ★デバッグモード（正式版 v1.0.0 では削除予定 / detailed_design §2.7e.x 参照）
+- src\pages\OfficialMorningSession.tsx:134:      // ★デバッグモード: 解答記録・XP加算・バッジ判定をすべてスキップ
+- src\pages\OfficialMorningSession.tsx:180:  // ★デバッグモード: 問題切替時に解説を自動表示
+- src\pages\OfficialMorningSession.tsx:188:  // ★デバッグモード: 前後ナビゲーション（解答記録なし、進捗カウントなし）
+- src\pages\OfficialMorningSession.tsx:207:  // ★デバッグモード ON/OFF 切替
+- src\pages\OfficialMorningSession.tsx:223:    // ★デバッグモード: 記録せず単に次へ進む（最後なら何もしない）
+- src\pages\OfficialMorningSession.tsx:314:          {/* ★デバッグモードトグル（正式版 v1.0.0 で削除） */}
+- src\pages\OfficialMorningSession.tsx:322:            title="デバッグモード（解説常時表示・記録なし）"
+- src\pages\OfficialMorningSession.tsx:349:        {/* ★デバッグモード: 問題上に前後ナビ（記録に影響しない） */}
+- src\pages\OfficialMorningSession.tsx:429:            {/* 正誤判定ブロック（デバッグモード時は非表示） */}
+- src\pages\OfficialMorningSession.tsx:462:            {/* 次の問題へボタン（デバッグモード時は非表示、前後ナビで移動） */}
+
+## 所見
+- MARKUP-NG は `questions` の全角イコール 10件と、`NOTE_DB[planning]` の `__` / `==` 開閉ミスマッチ 2件。コンテンツ修正は本タスク範囲外のため未対応。
+- WARN は MK6 の過剰強調のみ。学習ノートの性質上、強調密度が高い文が多く検出されるため、将来 hard gate 化する前に閾値調整または対象限定の検討が必要。
