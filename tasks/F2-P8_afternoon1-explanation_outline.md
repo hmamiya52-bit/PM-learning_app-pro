@@ -42,8 +42,12 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = { /* 
 6. ユーザ価値検証 → OK なら残り問へ展開。
 
 ## 進捗（2026-05-29）
-- R6-PM1-1: checkMode 行解説（overview＋8行）＋詳細解説（detail）執筆・UI 実装・実機確認 済。
+- R6-PM1-1: checkMode 行解説（overview＋8行）＋詳細解説（detail：問題文6セクション＋設問別＋習得知識）執筆・UI 実装・実機確認 済。基準サンプル。
+- UI・導線・強調表示（MarkupText）すべて実装済。新規問は `afternoonExplanations.ts` にデータ追加するだけで全導線が有効化。
 - 次: R6-PM1-2 / R6-PM1-3 → R5 → R4。各問とも「行解説」と「詳細解説」の両方を執筆する。
+
+## ★量産ルール（必読・正本）
+**`docs/afternoon_explanation_authoring_rules.md`**（2026-05-29 確立）に、データ型・PDF精読ワークフロー・各フィールド執筆基準・問題文セクション解説の作り方・マークアップ規約・検証・1問チェックリストを集約。**新セッションはこの文書だけ読めば量産に入れる。**
 
 ## 担当（2026-05-29 確定: Claude 単独 🅒）
 **F2-P8 は Codex と分担せず Claude 単独で実施**。理由:

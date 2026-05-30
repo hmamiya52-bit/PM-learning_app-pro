@@ -269,7 +269,7 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
             to={`/afternoon/answers/${problem.id}`}
             className="text-[11px] font-bold text-brand-dark border border-brand-light bg-white hover:bg-brand-light/40 rounded-md px-2.5 py-1.5 inline-flex items-center gap-1 transition-colors"
           >
-            🗒 公式解答を表示
+            🗒 公式解答
           </Link>
         )}
         {hasDetail && (
