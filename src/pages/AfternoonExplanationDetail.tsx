@@ -96,15 +96,22 @@ export default function AfternoonExplanationDetail() {
           </div>
         ) : (
           <>
-            {/* 問題文の解説 */}
+            {/* 問題文の解説（本文のセクションごとに紐解く） */}
             <section className="bg-white rounded-xl border border-slate-200 px-4 py-4">
-              <h2 className="text-sm font-black text-brand-dark mb-2 flex items-center gap-2">
+              <h2 className="text-sm font-black text-brand-dark mb-3 flex items-center gap-2">
                 <span className="inline-block w-1.5 h-4 bg-brand rounded-full" />
                 問題文の解説
               </h2>
-              <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
-                <MarkupText text={detail.problemCommentary} />
-              </p>
+              <div className="space-y-4">
+                {detail.problemSections.map((sec, i) => (
+                  <div key={i} className={i > 0 ? 'pt-3 border-t border-slate-100' : ''}>
+                    <p className="text-[13px] font-bold text-indigo-800 mb-1">{sec.heading}</p>
+                    <p className="text-[13px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+                      <MarkupText text={sec.body} />
+                    </p>
+                  </div>
+                ))}
+              </div>
             </section>
 
             {/* 設問別 詳細解説 */}
