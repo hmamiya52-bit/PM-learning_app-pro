@@ -50,10 +50,83 @@ export interface AfternoonProblemSection {
   body: string
 }
 
+/** 図表のアクセント配色（関係図ノード／比較表の強調列に使用） */
+export type AfternoonFigureAccent =
+  | 'brand'
+  | 'indigo'
+  | 'emerald'
+  | 'amber'
+  | 'rose'
+  | 'slate'
+
+/** 比較表の1行（観点＋各列の値） */
+export interface AfternoonCompareRow {
+  /** 観点（左端の見出し列。MarkupText 可） */
+  label: string
+  /** 各列の値（columns[1..] に対応。MarkupText 可） */
+  cells: string[]
+}
+
+/**
+ * 関係図のノード。グリッド座標（col,row）で配置する。
+ * モバイル可読性のため col は 0〜1 を目安に（=最大2列幅）。長さは row で稼ぐ。
+ * col/row は小数可（例 col:0.5 で中央寄せの三角配置）。
+ */
+export interface AfternoonDiagramNode {
+  id: string
+  /** 表示ラベル（改行は \n。1〜3行・短語推奨） */
+  label: string
+  /** グリッド列（0始まり・小数可） */
+  col: number
+  /** グリッド行（0始まり・小数可） */
+  row: number
+  /** 配色アクセント（既定 slate） */
+  accent?: AfternoonFigureAccent
+}
+
+/** 関係図のエッジ（ノード間の矢印） */
+export interface AfternoonDiagramEdge {
+  from: string
+  to: string
+  /** 矢印に添えるラベル（短語） */
+  label?: string
+  /** 破線にする */
+  dashed?: boolean
+  /** 双方向矢印にする */
+  bidirectional?: boolean
+}
+
+/** 図表（比較表 or 関係図）。詳細解説ページの problemSections の後に表示する */
+export type AfternoonFigure =
+  | {
+      kind: 'compare'
+      /** 図表タイトル */
+      title: string
+      /** 補足（表の下に小さく表示。MarkupText 可） */
+      note?: string
+      /** 列見出し。columns[0] は観点列の見出し（例「観点」「段階」） */
+      columns: string[]
+      /** 行（観点＋各列の値） */
+      rows: AfternoonCompareRow[]
+      /** 強調する列の index（columns 基準。例 [2] でその列を色付け） */
+      highlightCols?: number[]
+    }
+  | {
+      kind: 'diagram'
+      /** 図表タイトル */
+      title: string
+      /** 補足（図の下に小さく表示。MarkupText 可） */
+      note?: string
+      nodes: AfternoonDiagramNode[]
+      edges?: AfternoonDiagramEdge[]
+    }
+
 /** 詳細解説（深掘りページ用。任意。未投入なら詳細ページ非表示） */
 export interface AfternoonDetailedExplanation {
   /** 問題文をセクションごとに紐解く解説 */
   problemSections: AfternoonProblemSection[]
+  /** 図表（比較表・関係図）。任意。problemSections の後・設問別解説の前に表示 */
+  figures?: AfternoonFigure[]
   /** 各設問の詳細解説＋考え方のプロセス */
   questionDetails: AfternoonQuestionDetail[]
   /** この問題で習得すべき知識 */
@@ -442,6 +515,50 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '本プロジェクト最大のリスクは__開発スケジュールの遅延__。制度改正作業で==課題対応の合意に時間==を要した教訓から、課ごとの課題対応で再び遅延が起きないよう、全部門の進捗会議に__PMO全員__の参加を必須とし、課題対応の調整をPMOの責務とした（下線④）。\n' +
             'あわせて、各課が個別のやり方で行ってきた==開発成果物の構成管理==を見直し、共通PMMの下で一元管理へ統一して開発効率の改善を図る（下線⑤）。\n' +
             '→ 設問3(1)は下線④、設問3(2)は下線⑤に対応する。',
+        },
+      ],
+      figures: [
+        {
+          kind: 'compare',
+          title: '共通PMM と 各課PMM の使い分け（テーラリングの核心）',
+          columns: ['観点', '共通PMM（全課で統一）', '各課PMM（個別最適）'],
+          highlightCols: [1],
+          rows: [
+            {
+              label: '適用範囲',
+              cells: ['全部門の開発に==共通==で適用', '課ごとに異なってよい範囲に適用'],
+            },
+            {
+              label: 'ねらい',
+              cells: ['課を越えた==統合・標準化==', '各部門特性への==最適化・習熟=='],
+            },
+            {
+              label: '本問での具体',
+              cells: [
+                '進捗会議へPMO全員参加／課題対応の調整／成果物の一元管理',
+                '従来どおり各課の進め方を尊重',
+              ],
+            },
+          ],
+          note: 'F氏は特定の課のPMMを全課に押し付けず（==設問1(2)==の失点回避）、影響の大きいプロセスだけ共通PMMに揃えた。これが「共通化と個別最適の両立」。',
+        },
+        {
+          kind: 'diagram',
+          title: '課題対応の体制 ― PMOと部会によるエスカレーション',
+          nodes: [
+            { id: 'mem', label: 'メンバー\n(本PJと制度改正を兼任)', col: 0.5, row: 0, accent: 'slate' },
+            { id: 'pmo', label: 'PMO\n(全課長で構成)', col: 0.5, row: 1, accent: 'indigo' },
+            { id: 'pm', label: 'F氏（PM）', col: 0, row: 2, accent: 'brand' },
+            { id: 'bucho', label: 'システム部長', col: 1, row: 2, accent: 'slate' },
+            { id: 'bukai', label: '部会\n(部長・PM・各課長)', col: 0.5, row: 3, accent: 'amber' },
+          ],
+          edges: [
+            { from: 'mem', to: 'pmo', label: '稼働報告' },
+            { from: 'pmo', to: 'pm', label: '本PJ' },
+            { from: 'pmo', to: 'bucho', label: '制度改正' },
+            { from: 'pmo', to: 'bukai', label: '対応困難時', dashed: true },
+          ],
+          note: '兼任メンバーの稼働は各課長(PMO)が管理（設問2(1)）。問題は本PJはF氏／制度改正はシステム部長へ報告。課内で解決できない遅れは部会で全員協議（設問2(3)）。',
         },
       ],
       questionDetails: [

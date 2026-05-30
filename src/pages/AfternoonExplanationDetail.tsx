@@ -3,6 +3,7 @@ import { officialAnswers } from '../data/officialAnswers'
 import { afternoonProblems } from '../data/afternoonProblems'
 import { getAfternoonExplanation } from '../data/afternoonExplanations'
 import { MarkupText } from '../components/MarkupText'
+import { AfternoonFigureView } from '../components/AfternoonFigure'
 
 /**
  * 午後I 詳細解説ページ（/afternoon/answers/:id/explanation）
@@ -113,6 +114,21 @@ export default function AfternoonExplanationDetail() {
                 ))}
               </div>
             </section>
+
+            {/* 図解で整理（比較表・関係図） */}
+            {detail.figures && detail.figures.length > 0 && (
+              <section className="bg-white rounded-xl border border-slate-200 px-4 py-4">
+                <h2 className="text-sm font-black text-brand-dark mb-3 flex items-center gap-2">
+                  <span className="inline-block w-1.5 h-4 bg-brand rounded-full" />
+                  図解で整理
+                </h2>
+                <div className="space-y-3">
+                  {detail.figures.map((fig, i) => (
+                    <AfternoonFigureView key={i} figure={fig} />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* 設問別 詳細解説 */}
             <section className="space-y-3">
