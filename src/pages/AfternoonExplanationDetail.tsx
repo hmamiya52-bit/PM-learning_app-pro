@@ -187,6 +187,27 @@ export default function AfternoonExplanationDetail() {
                 ))}
               </ul>
             </section>
+
+            {/* 応用できる解法の型 */}
+            {detail.solvingTips && detail.solvingTips.length > 0 && (
+              <section className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-4">
+                <h2 className="text-sm font-black text-amber-800 mb-1 flex items-center gap-2">
+                  <span>🎯</span>
+                  応用できる解法の型
+                </h2>
+                <p className="text-[11px] text-amber-700/80 mb-3">
+                  この問題で使った、ほかの午後Ⅰにも転用できる解き方のコツ。
+                </p>
+                <ul className="space-y-2">
+                  {detail.solvingTips.map((tip, i) => (
+                    <li key={i} className="flex gap-2 text-[12px] leading-relaxed text-slate-700">
+                      <span className="flex-shrink-0 text-amber-500 font-black">✓</span>
+                      <span><MarkupText text={tip} /></span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </>
         )}
 
