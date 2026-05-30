@@ -124,6 +124,20 @@ officialAnswers の各行に1つ。フィールド:
 - 設問解法のテクニック（例「設問の限定語を読む」）も含めてよい。
 - 例（R6-PM1-1）: 価値駆動の要件定義／ステークホルダ選定／段階的・反復的検証／本番に近い環境での検証／予測型での品質作り込み／設問の限定語の読解。
 
+### 5.4 figures（図表）— **2026-05-30 追加・新規問でも付与する**
+- 型: `AfternoonFigure`（`detail.figures?: AfternoonFigure[]`）。描画は `src/components/AfternoonFigure.tsx`。詳細ページ「図解で整理」に表示。
+- **`compare`（比較表）**: `columns`（[0]は観点列）＋`rows[{label,cells[]}]`。`highlightCols?` で列強調。**列は3つまで**（モバイル375）。午後Iは「2つの対比」が核なので最有効（開発課↔運用課／予測型↔適応型／ベテラン↔中堅 等）。
+- **`diagram`（SVG関係図）**: `nodes[{id,label,col,row,accent}]`＋`edges[{from,to,label?,dashed?,bidirectional?}]`。グリッド配置で自動描画。
+  - **col は 0〜1 に収める（=最大2列幅）。長さは row で稼ぐ**。3者関係はダイヤ配置（上0.5 / 中段0・1 / 下0.5）。col/row 小数可。
+  - `label` の改行は `\n`・短語（1〜3行）。`accent`: brand/indigo/emerald/amber/rose/slate。
+  - 用途: フロー（判定・承認・段階）／ハブ（1因→複数効果、中心col0→col1×複数row）／対等関係（bidirectional）。
+- 1問あたり **1〜2図**（比較表＋関係図のミックス推奨）。cells/label/note も==/__可・**全角＝禁止**（§6の手動検査対象）。
+
+### 5.5 solvingTips（応用できる解法の型）— **2026-05-30 追加・新規問でも付与する**
+- 型: `detail.solvingTips?: string[]`。詳細ページ末尾「応用できる解法の型」（琥珀ボックス）に表示。
+- **その問題固有の知識でなく、午後I全体に転用できる汎用テクニック**を3点前後。設問番号を添えて具体化する。
+- 例: 限定語にしるしを付け方向を固定／下線の根拠は手前の段落／二要素・高配点は分けて両方書く／対比は一文で／「効果・狙い」は成果（〜できる）まで／役割の取り違え注意。
+
 ---
 
 ## 6. マークアップ規約（強調）
@@ -139,7 +153,12 @@ officialAnswers の各行に1つ。フィールド:
 - **全角イコール `＝` は使わない**（「は」「：」等に置換）。半角 `=` の連続（`===`）も禁止。
 
 ### 検査の穴に注意（重要）
-- マークアップ検査（`validate-data` の MK1〜MK7）は **`rows` と `overview` のみ走査**し、**`detail` 配下は走査しない**。
+- マークアップ検査（`validate-data` の MK1〜MK7）は **`rows` と `overview` のみ走査**し、**`detail`（problemSections/figures/solvingTips/questionDetails/keyKnowledge）配下は走査しない**。
+- **量産中に `==開き → __閉じ` の不整合と全角＝混入を頻発させた**（基準サンプル踏襲時に特に）。執筆後に必ず下記の**厳密検査**を実行する:
+  ```bash
+  python -c "import re;[print(i) for i,l in enumerate(open('src/data/afternoonExplanations.ts',encoding='utf-8'),1) if '==' in re.sub(r'__[^_]+__','',re.sub(r'==[^=]+==','',l)) or '__' in re.sub(r'__[^_]+__','',re.sub(r'==[^=]+==','',l))]"
+  # 何も出なければ stray marker 0（==/__ の開閉が全行で整合）
+  ```
 - → `detail` の `==`/`__`/`＝` は**手動で**均衡・回避すること。目視＋下記の簡易チェックを使う:
   ```bash
   grep -c "＝" src/data/afternoonExplanations.ts          # 0 であること
