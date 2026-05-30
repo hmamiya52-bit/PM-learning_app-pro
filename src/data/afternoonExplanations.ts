@@ -275,6 +275,42 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '→ 設問3(1)(2)・設問4(1)(2) の舞台。',
         },
       ],
+      figures: [
+        {
+          kind: 'compare',
+          title: 'UX品質を作り込む3段階の検証',
+          columns: ['段階', '検証の環境・手段', '主に確かめること'],
+          rows: [
+            {
+              label: '要件定義',
+              cells: ['__ワイヤフレーム__で利用場面を提示', '操作性・視認性や==検索〜予約の合計時間=='],
+            },
+            {
+              label: '設計',
+              cells: ['__モックアップ__（限定環境）', '要件どおりのUXに適合するか'],
+            },
+            {
+              label: '総合テスト',
+              cells: ['==本番に近い環境・実データ==', '対価に見合う価値か／追加ニーズ'],
+            },
+          ],
+          note: '主観的なUXは、==UXを理解する同じ利用者==が各段階で繰り返し検証することで、要件と実装のズレを早期に発見できる（設問2・3(1)）。',
+        },
+        {
+          kind: 'diagram',
+          title: '同じ利用者による反復検証の流れ',
+          nodes: [
+            { id: 'req', label: '要件定義\nワイヤフレーム', col: 0.5, row: 0, accent: 'indigo' },
+            { id: 'des', label: '設計\nモックアップ', col: 0.5, row: 1, accent: 'indigo' },
+            { id: 'test', label: '総合テスト\n本番に近い環境', col: 0.5, row: 2, accent: 'emerald' },
+          ],
+          edges: [
+            { from: 'req', to: 'des', label: '同じ利用者' },
+            { from: 'des', to: 'test', label: '同じ利用者' },
+          ],
+          note: '評価者が変わるとUXの評価がぶれる。==同じ利用者==に継続検証させ、一貫した目線で適合を確かめるのが設問2の核心。',
+        },
+      ],
       questionDetails: [
         {
           rowKey: '1|(1)|',
@@ -800,6 +836,42 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '→ 設問2(1)は下線⑤、(2)は下線⑥、(3)は下線⑦、(4)は下線⑧に対応する。',
         },
       ],
+      figures: [
+        {
+          kind: 'compare',
+          title: '予測型 と 適応型 開発アプローチ',
+          columns: ['観点', '予測型', '適応型'],
+          highlightCols: [2],
+          rows: [
+            { label: '前提', cells: ['要求が初めに固まる', '要求が==順次変わる=='] },
+            {
+              label: '進め方',
+              cells: ['計画を策定し==計画どおり実行==', '==仮説検証==を繰り返し探索的に進める'],
+            },
+            { label: '本問', cells: ['A銀行標準（土台）', '要素を加味して__修整__'] },
+          ],
+          note: 'I課長は、習熟した予測型標準を土台に適応型の要素を加味して__修整（テーラリング）__した。第8版PMBOKの考え方。',
+        },
+        {
+          kind: 'diagram',
+          title: '開発項目の定義プロセス（取込みの判定フロー）',
+          nodes: [
+            { id: 'req', label: '新たな要求事項', col: 0.5, row: 0, accent: 'slate' },
+            { id: 'judge', label: '企画部が\n判定基準で選別', col: 0.5, row: 1, accent: 'indigo' },
+            { id: 'risk', label: '遅延リスクを評価\n(高・中・低)', col: 0.5, row: 2, accent: 'amber' },
+            { id: 'pm', label: '低\nPM承認で取込み', col: 0, row: 3, accent: 'emerald' },
+            { id: 'ddb', label: '高・中\nDDBに付議', col: 1, row: 3, accent: 'rose' },
+          ],
+          edges: [
+            { from: 'req', to: 'judge' },
+            { from: 'judge', to: 'risk' },
+            { from: 'risk', to: 'pm', label: '低' },
+            { from: 'risk', to: 'ddb', label: '高・中' },
+            { from: 'ddb', to: 'pm', dashed: true },
+          ],
+          note: '高・中でも、__他の要求事項を外して__計画の余地を作り、リスクを低(30%未満)に下げればPM承認で取り込める（設問1(3)の難所）。',
+        },
+      ],
       questionDetails: [
         {
           rowKey: '1|(1)|',
@@ -1046,6 +1118,39 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             'F氏はメンバーと協議し、行動の基本原則を定めた。(1)担当作業には各自の==チャレンジングな作業==を含める、(2)チャレンジで得たものを他メンバーに提供し、自分の専門に固執せず__他メンバーの意見__を柔軟に取り入れる（下線⑦）。\n' +
             'これらに基づいて作業を進めることで、チームの__価値の共創力__を高めることを狙う。\n' +
             '→ 設問3は下線⑦に対応する。',
+        },
+      ],
+      figures: [
+        {
+          kind: 'diagram',
+          title: '異なる強みをもつ3社による価値の共創',
+          nodes: [
+            { id: 'e', label: 'E社\n(IT・アジャイル)', col: 0.5, row: 0, accent: 'indigo' },
+            { id: 'g', label: 'G社\n(住宅・事業変革)', col: 0, row: 1, accent: 'slate' },
+            { id: 'h', label: 'H社\n(xR・UI/UX)', col: 1, row: 1, accent: 'slate' },
+            { id: 'x', label: 'X社\n体験価値を共創', col: 0.5, row: 2, accent: 'brand' },
+          ],
+          edges: [
+            { from: 'e', to: 'x' },
+            { from: 'g', to: 'x' },
+            { from: 'h', to: 'x' },
+          ],
+          note: '各社の強みをX社に結集し、単独では生めない==新たな体験価値==を共創する。思いを統一・共有する設問2(1)が要。',
+        },
+        {
+          kind: 'compare',
+          title: '支援型 と 指示型 リーダーシップ',
+          columns: ['観点', '支援型（本問の基本）', '指示型（抑制）'],
+          highlightCols: [1],
+          rows: [
+            {
+              label: 'やること',
+              cells: ['活動を阻害する要因を除き==環境を整える==', '作業分担などを==主導的に決める=='],
+            },
+            { label: '適する相手', cells: ['==前向き・自律的==なメンバー', '受け身・未成熟なメンバー'] },
+            { label: '本問', cells: ['前向きな状況なので基本に', '効果をできるだけ抑える'] },
+          ],
+          note: 'メンバーの状況で両者を__修整（テーラリング）__し、各自の__セルフリーダーシップ__を引き出す（設問1(3)(4)）。',
         },
       ],
       questionDetails: [
@@ -1302,6 +1407,37 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '・適応力と__回復力（空欄b）__を強化する。\n' +
             '・契約は請負をやめ、改正民法で準委任に新設された__成果完成型（空欄c）__を用い、さらに成果連動の__CPIF（空欄dはインセンティブ・フィー）__の採用も検討する。\n' +
             '→ 設問4(1)〜(4)の根拠がこのセクションに集中する。',
+        },
+      ],
+      figures: [
+        {
+          kind: 'diagram',
+          title: 'イコールパートナーシップ(EPS)：対等な共創関係',
+          nodes: [
+            { id: 'cust', label: '顧客', col: 0.5, row: 0, accent: 'slate' },
+            { id: 's', label: 'S社\n(受託者かつ発注者)', col: 0.5, row: 1, accent: 'indigo' },
+            { id: 'a', label: 'A社（協力会社）', col: 0.5, row: 2, accent: 'emerald' },
+          ],
+          edges: [
+            { from: 'cust', to: 's', label: '対等', bidirectional: true },
+            { from: 's', to: 'a', label: '対等', bidirectional: true },
+          ],
+          note: 'S社は顧客には受託者、A社には発注者。発注者の==優越的立場==が悪影響を及ぼさぬよう意識し（設問4(1)）、対等な共創関係を目指す。',
+        },
+        {
+          kind: 'compare',
+          title: '請負 と 準委任（成果完成型）＋ CPIF',
+          columns: ['観点', '請負', '準委任（成果完成型）'],
+          highlightCols: [2],
+          rows: [
+            { label: '性格', cells: ['仕事の==完成==義務を負う', '==成果の完成==に対し報酬'] },
+            { label: 'モチベ', cells: ['生産性向上の意欲が上がる', '==下がりがち==（A社の声）'] },
+            {
+              label: '本問の工夫',
+              cells: ['—', 'CPIFの__インセンティブ・フィー__で意欲を維持'],
+            },
+          ],
+          note: '改正民法(2020)で準委任に__成果完成型__が新設。移行の弱点（意欲低下）を成果連動報酬で補う（設問4(3)(4)）。',
         },
       ],
       questionDetails: [
@@ -1584,6 +1720,34 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '→ 二フェーズの特性は設問3(1)、模擬実施機能の狙い（ノウハウ継承）は設問3(2)に対応する。',
         },
       ],
+      figures: [
+        {
+          kind: 'compare',
+          title: 'ベテラン技術者 と 中堅技術者 の役割（取り違え注意）',
+          columns: ['観点', 'ベテラン技術者', '中堅技術者'],
+          rows: [
+            {
+              label: '強み・状況',
+              cells: ['予兆検知の知見・交換修理の==ノウハウ==', '早期に==仕様を理解==し活用したい'],
+            },
+            {
+              label: '要件定義での役割',
+              cells: ['ノウハウを==提示（提供）==する', '使えるかを==確認（検証）==する'],
+            },
+          ],
+          note: '提示側（ベテラン）と検証側（中堅）を==取り違えると失点==。設問2(3)は各7点の難所。',
+        },
+        {
+          kind: 'diagram',
+          title: 'ハイブリッド：適応型の要件定義 → 予測型の開発',
+          nodes: [
+            { id: 'req', label: '要件定義\n適応型（探索）', col: 0.5, row: 0, accent: 'amber' },
+            { id: 'dev', label: '開発\n予測型（計画遵守）', col: 0.5, row: 1, accent: 'indigo' },
+          ],
+          edges: [{ from: 'req', to: 'dev', label: 'スコープ確定' }],
+          note: '予兆に効くデータの組合せを==探索的==に特定（2週間サイクル・半年）し、確定後は==計画どおり==1年で完了（設問3(1)）。',
+        },
+      ],
       questionDetails: [
         {
           rowKey: '1||',
@@ -1833,6 +1997,31 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '第2次の範囲は、表1のNo.1〜3で判断する。No.1（API有り）は要求を詳細化して対応。No.2（API無し）は工数見積もりに加え、==成果が十分か==を評価して対応を判断する（No.2の成果は、顧客の真のニーズを踏まえたギフトの企画・販売）。\n' +
             'No.3（市場トレンド分析でSNS広告）は、==デジタルマーケティング戦略==が前提となるため今回は対象外。ただしプロジェクト終了時に__AI活用ノウハウ__を取りまとめ、今後のNo.3検討に活かす。\n' +
             '→ 設問3(1)はNo.2の評価、(2)はNo.3対象外の理由、(3)はノウハウ活用に対応する。',
+        },
+      ],
+      figures: [
+        {
+          kind: 'compare',
+          title: '第1次開発 と 第2次開発（段階的リリース）',
+          columns: ['観点', '第1次開発', '第2次開発'],
+          highlightCols: [1],
+          rows: [
+            { label: '対象', cells: ['問合せ対応のUX改善', '商品企画・販売の強化'] },
+            { label: '実現方法', cells: ['==パラメータ設定の変更だけ==', '==API==で機能拡張'] },
+            { label: '期限', cells: ['==2か月後==（商戦・必達）', '9か月後'] },
+          ],
+          note: '納期が固いので、軽い改修（中核UX）を==第1次で先行==し、重い機能を第2次へ。期限超過のリスクを下げる（設問1）。',
+        },
+        {
+          kind: 'compare',
+          title: '表1 No.1〜3 の対応判断',
+          columns: ['機能', 'API', '判断'],
+          rows: [
+            { label: 'No.1', cells: ['有り', '対応（要求を詳細化）'] },
+            { label: 'No.2', cells: ['無し', '==成果が十分か==を評価して判断（設問3(1)）'] },
+            { label: 'No.3', cells: ['無し', '==対象外==（戦略立案が先・設問3(2)）'] },
+          ],
+          note: '対応有無は工数だけでなく==創出する成果==で判断。No.3はノウハウを蓄積し将来に備える（設問3(3)）。',
         },
       ],
       questionDetails: [
@@ -2093,6 +2282,37 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             '→ 設問3(1)は下線⑥（導入効果）、(2)は下線⑦（見直しの狙い）に対応する。',
         },
       ],
+      figures: [
+        {
+          kind: 'compare',
+          title: '開発課 と 運用課 のミッション（対立軸）',
+          columns: ['観点', '開発課', '運用課'],
+          rows: [
+            {
+              label: 'ミッション',
+              cells: ['利用部門の要求を==迅速に実現==', 'システムの==安定運用==（SLA遵守）'],
+            },
+            { label: '自動化ツール', cells: ['導入に積極的', '自動デプロイに否定的'] },
+          ],
+          note: '重視点の違いが対立の正体（設問1(1)）。__DevOps__は両課を一体化し、迅速さと安定を両立させる。',
+        },
+        {
+          kind: 'diagram',
+          title: 'デプロイ承認プロセスの見直し（DevOps）',
+          nodes: [
+            { id: 'auto', label: '自動化ツール\n(作業を自動実行)', col: 0.5, row: 0, accent: 'slate' },
+            { id: 'evi', label: '作業の証跡\n＋開発課の最終確認', col: 0.5, row: 1, accent: 'indigo' },
+            { id: 'appr', label: '運用課が承認', col: 0.5, row: 2, accent: 'amber' },
+            { id: 'dep', label: 'デプロイ', col: 0.5, row: 3, accent: 'emerald' },
+          ],
+          edges: [
+            { from: 'auto', to: 'evi' },
+            { from: 'evi', to: 'appr' },
+            { from: 'appr', to: 'dep' },
+          ],
+          note: '証跡でガバナンス上の手続を担保しつつ運用課が統制を保つ。==スピードと統制を両立==させる（設問3(2)・7点）。',
+        },
+      ],
       questionDetails: [
         {
           rowKey: '1|(1)|開発課',
@@ -2345,6 +2565,36 @@ export const afternoonExplanations: Record<string, AfternoonExplanation> = {
             'G氏はメンバーと合意して運営方法を定めた。⑤対立する意見にも耳を傾け率直に述べる、⑥PMの指示待ちでなく==メンバー間の対話で意思決定==する、⑦困難な状況は==ためらわず他メンバーに伝える==、という原則。\n' +
             'さらに⑧本プロジェクトは__新事業の実現__が目的なので、有益なら事業開発部と協議して==予算も期限も柔軟に見直す==。\n' +
             '→ 設問3(1)は下線⑤、(2)は下線⑥、(3)は下線⑦、(4)は下線⑧に対応する。',
+        },
+      ],
+      figures: [
+        {
+          kind: 'diagram',
+          title: '心理的安全性が生む3つの効果',
+          nodes: [
+            { id: 'safe', label: '心理的安全性\n(率直に言える)', col: 0, row: 1, accent: 'brand' },
+            { id: 'e1', label: '良い意思決定\n(設問3(2)・9点)', col: 1, row: 0, accent: 'emerald' },
+            { id: 'e2', label: '早期に支援・解決\n(設問3(3))', col: 1, row: 1, accent: 'emerald' },
+            { id: 'e3', label: 'パフォーマンス\n発揮', col: 1, row: 2, accent: 'emerald' },
+          ],
+          edges: [
+            { from: 'safe', to: 'e1' },
+            { from: 'safe', to: 'e2' },
+            { from: 'safe', to: 'e3' },
+          ],
+          note: '対立を恐れず率直に言える==心理的安全性==が、良い意思決定・早期解決・成果発揮の土台になる。',
+        },
+        {
+          kind: 'compare',
+          title: '統制型 と 自律的マネジメント',
+          columns: ['観点', '従来（統制型）', '本問（自律的）'],
+          highlightCols: [2],
+          rows: [
+            { label: '意思決定', cells: ['PMの指示', '==メンバー間の対話==で決定'] },
+            { label: '意見', cells: ['言いづらい', '対立も恐れず==率直に=='] },
+            { label: 'リーダー', cells: ['支配型', '__支援型__'] },
+          ],
+          note: 'G氏は統制型から自律的マネジメントへ転換。CDOのトップメッセージと無記名アンケートで素地を作る（設問1(3)・2）。',
         },
       ],
       questionDetails: [
