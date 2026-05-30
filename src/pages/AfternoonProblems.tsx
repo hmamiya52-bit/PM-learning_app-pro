@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { afternoonProblems, YEARS } from '../data/afternoonProblems'
 import type { AfternoonProblem } from '../data/afternoonProblems'
 import { officialAnswers } from '../data/officialAnswers'
+import { getAfternoonExplanation } from '../data/afternoonExplanations'
 import {
   loadRecords, addRecord, deleteRecord,
   loadPlans, setPlan, removePlan, getMaxScore,
@@ -237,6 +238,7 @@ interface DetailPanelProps {
 
 function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPanelProps) {
   const { problem, records, hasAnswer, plannedDate, maxScore } = row
+  const hasDetail = !!getAfternoonExplanation(problem.id)?.detail
   const [planEditing, setPlanEditing] = useState(false)
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
@@ -268,6 +270,14 @@ function DetailPanel({ row, onRecord, onDeleteRecord, onPlanChange }: DetailPane
             className="text-[11px] font-bold text-brand-dark border border-brand-light bg-white hover:bg-brand-light/40 rounded-md px-2.5 py-1.5 inline-flex items-center gap-1 transition-colors"
           >
             🗒 公式解答を表示
+          </Link>
+        )}
+        {hasDetail && (
+          <Link
+            to={`/afternoon/answers/${problem.id}/explanation`}
+            className="text-[11px] font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-md px-2.5 py-1.5 inline-flex items-center gap-1 transition-colors"
+          >
+            📖 解説ページ
           </Link>
         )}
       </div>
