@@ -33,7 +33,7 @@
 ```ts
 AfternoonExplanation {
   id: string                       // officialAnswers.id と一致（例 'R6-PM1-2'）
-  overview: string                 // 概要（100-200字）= checkMode 冒頭ブロック
+  overview: string                 // 概要（目安100-200字。分かりやすさ優先で超過可）= checkMode 冒頭ブロック
   rows: AfternoonRowExplanation[]  // 行解説（officialAnswers.answers と rowKey で 1:1）
   detail?: {                       // 詳細解説ページ用
     problemSections: { heading, body }[]      // 問題文をセクションごとに紐解く
@@ -82,9 +82,11 @@ python -c "import fitz; d=fitz.open('q.pdf'); [d[i].get_pixmap(dpi=150).save(f'p
 
 各フィールドの役割と字数目安（answer-check の折りたたみ内に出る短文）:
 
+> **字数はあくまで目安。分かりやすさを最優先**し、初学者が一読で像を結べるなら目安を多少超えてもよい（特に overview）。逆に冗長・難解にならないこと。
+
 | フィールド | 役割 | 字数目安 |
 |---|---|---|
-| `overview` | 問題全体の趣旨・題材・問われるPM観点 | 100-200字 |
+| `overview` | 問題全体の趣旨・題材・問われるPM観点 | 目安100-200字（分かりやすさ優先で超過可。深い改訂版は概ね190-240字） |
 | `point` | この設問が**何を問うているか**（力点・解答の方向） | 30-60字 |
 | `basis` | **本文のどこが根拠か**（位置参照＋言い換え。逐語引用しない） | 40-90字 |
 | `reasoning` | **なぜその解答例になるか**（論理） | 60-120字 |
@@ -193,7 +195,7 @@ grep -c "＝" src/data/afternoonExplanations.ts   # 0
 ## 9. 1問あたりチェックリスト
 - [ ] PDF精読（PyMuPDF）→ 本文ページ特定 → 読了 → PNG/PDF削除
 - [ ] officialAnswers / scoringMap で解答・配点・難所を確認
-- [ ] `overview`（100-200字）
+- [ ] `overview`（目安100-200字。分かりやすさ優先で超過可）
 - [ ] `rows[]`: 全行に point/basis/reasoning、難所に pitfall。rowKey 完全一致
 - [ ] `detail.problemSections`: 本文セクションごと＋各ブロック末尾に「→ 設問X」対応明記
 - [ ] `detail.questionDetails`: 全設問に asked/thinkingProcess/modelAnswer/commentary
