@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { questions } from '../data/questions'
-import { getAllProgress, getAnswerRecords, getQuestionMastery } from '../lib/storage'
+import { getAllProgress, getQuestionMastery } from '../lib/storage'
 import CategoryCard from '../components/CategoryCard'
 import LevelWidget from '../components/gamification/LevelWidget'
 import { getRecentDaySummaries } from '../lib/activityLog'
 import { StudyHistoryList } from '../components/history/StudyHistoryList'
-import { getImportantIds } from '../lib/importantMarks'
 import { officialMorningQuestions } from '../data/officialMorningQuestions'
 import { loadMorningRecords } from '../lib/morningRecords'
 import { afternoonProblems } from '../data/afternoonProblems'
@@ -197,8 +196,44 @@ interface ProgressSegment {
   color: string
 }
 
+interface MasterySummary {
+  consecutive: number
+  correct: number
+  incorrect: number
+  total: number
+}
+
 function ratioWidth(count: number, total: number): string {
   return total > 0 ? `${(count / total) * 100}%` : '0%'
+}
+
+function MasteryProgressRow({ title, mastery }: { title: string; mastery: MasterySummary }) {
+  const { consecutive, correct, incorrect, total } = mastery
+  const unattempted = Math.max(0, total - consecutive - correct - incorrect)
+  const achieved = consecutive + correct
+  return (
+    <div>
+      <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+        <span className="text-[11px] font-bold text-slate-500">{title}</span>
+        <span className="text-[10px] font-bold tabular-nums text-slate-400">
+          {achieved}/{total}
+        </span>
+      </div>
+      <div
+        className="flex h-2 overflow-hidden rounded-full bg-slate-100"
+        role="progressbar"
+        aria-label={`${title} 達成度`}
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={achieved}
+      >
+        {consecutive > 0 && <div className="h-full bg-sky-500 flex-shrink-0 transition-all duration-500" style={{ width: ratioWidth(consecutive, total) }} />}
+        {correct > 0 && <div className="h-full bg-emerald-500 flex-shrink-0 transition-all duration-500" style={{ width: ratioWidth(correct, total) }} />}
+        {incorrect > 0 && <div className="h-full bg-orange-400 flex-shrink-0 transition-all duration-500" style={{ width: ratioWidth(incorrect, total) }} />}
+        {unattempted > 0 && <div className="h-full bg-slate-200 flex-shrink-0" style={{ width: ratioWidth(unattempted, total) }} />}
+      </div>
+    </div>
+  )
 }
 
 function ProgressStatusRow({
@@ -252,28 +287,6 @@ export default function Home() {
   // --- Data ---
   const allProgress = useMemo(() => getAllProgress(), [])
   const daySummaries = useMemo(() => getRecentDaySummaries(10), [])
-
-  const totalQuestions = questions.length
-  // ★F1-P2: 静的 isImportant フラグ廃止 → importantMarks LocalStorage 参照に変更
-  const importantCount = useMemo(
-    () => getImportantIds().filter((id) => id.startsWith('q-')).length,
-    [],
-  )
-
-  // 「達成」した問題ID集合：1回でも正解した問題の questionId（重複は1つに集約）
-  const achievedQuestionIds = useMemo(() => {
-    const set = new Set<string>()
-    for (const r of getAnswerRecords()) {
-      if (r.isCorrect) set.add(r.questionId)
-    }
-    return set
-  }, [])
-
-  // 全体達成数 = 達成済みのうち、現在も questions に存在する ID の数
-  const achievedCount = useMemo(
-    () => questions.filter((q) => achievedQuestionIds.has(q.id)).length,
-    [achievedQuestionIds],
-  )
 
   // 弱点克服モードの非活性化判定用：1問でも回答していれば学習済みとみなす
   const studiedCount = useMemo(() => {
@@ -480,55 +493,13 @@ export default function Home() {
             全体の学習進捗
           </h2>
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 px-4 py-3">
-            {/* Stats row */}
-            <div className="flex items-center gap-0 divide-x divide-slate-100 mb-3">
-              <div className="flex items-baseline gap-1 pr-4">
-                <span className="text-xl font-black tabular-nums leading-none" style={{ color: '#9d5b8b' }}>
-                  {achievedCount}
-                </span>
-                <span className="text-xs font-normal text-slate-400">/{totalQuestions}</span>
-                <span className="text-[11px] text-slate-400 ml-1">達成</span>
-              </div>
-              <div className="flex items-baseline gap-1 pl-4">
-                <span className="text-xl font-black tabular-nums text-amber-500 leading-none">{importantCount}</span>
-                <span className="text-[11px] text-slate-400 ml-1">重要問題</span>
-              </div>
-              <div className="flex items-baseline gap-1 pl-4">
-                <span className="text-xl font-black tabular-nums text-slate-700 leading-none">{totalQuestions}</span>
-                <span className="text-[11px] text-slate-400 ml-1">問題</span>
-              </div>
-            </div>
-            {/* Progress bars: 4択 + 記述 の達成度（4セグメント） */}
             <div className="space-y-2">
-              {(['mc', 'wr'] as const).map((mode) => {
-                const m = globalMastery[mode]
-                const unattempted = Math.max(0, m.total - m.consecutive - m.correct - m.incorrect)
-                const pct = (n: number) => m.total > 0 ? `${(n / m.total) * 100}%` : '0%'
-                return (
-                  <div key={mode}>
-                    <div className="text-[11px] mb-1 font-bold text-slate-500">
-                      {mode === 'mc' ? '4択 達成度' : '記述 達成度'}
-                    </div>
-                    <div
-                      className="h-2 bg-slate-100 rounded-full overflow-hidden flex"
-                      role="progressbar"
-                      aria-label={`${mode === 'mc' ? '4択' : '記述'} 達成度`}
-                      aria-valuemin={0}
-                      aria-valuemax={m.total}
-                      aria-valuenow={m.consecutive + m.correct}
-                    >
-                      {m.consecutive > 0 && <div className="h-full bg-brand flex-shrink-0 transition-all duration-500" style={{ width: pct(m.consecutive) }} />}
-                      {m.correct > 0 && <div className="h-full bg-emerald-500 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.correct) }} />}
-                      {m.incorrect > 0 && <div className="h-full bg-orange-400 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.incorrect) }} />}
-                      {unattempted > 0 && <div className="h-full bg-slate-200 flex-shrink-0" style={{ width: pct(unattempted) }} />}
-                    </div>
-                  </div>
-                )
-              })}
+              <MasteryProgressRow title="4択 達成度" mastery={globalMastery.mc} />
+              <MasteryProgressRow title="記述 達成度" mastery={globalMastery.wr} />
 
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 pt-0.5">
                 {[
-                  { color: 'bg-brand', label: '連続正解' },
+                  { color: 'bg-sky-500', label: '連続正解' },
                   { color: 'bg-emerald-500', label: '１回正解' },
                   { color: 'bg-orange-400', label: '不正解' },
                   { color: 'bg-slate-200', label: '未着手' },

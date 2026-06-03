@@ -42,7 +42,7 @@ function MasteryBar({ label, mastery }: { label: string; mastery: MasterySummary
         aria-valuenow={consecutive + correct}
       >
         {consecutive > 0 && (
-          <div className="h-full bg-brand flex-shrink-0" style={{ width: pct(consecutive) }} />
+          <div className="h-full bg-sky-500 flex-shrink-0" style={{ width: pct(consecutive) }} />
         )}
         {correct > 0 && (
           <div className="h-full bg-emerald-500 flex-shrink-0" style={{ width: pct(correct) }} />
