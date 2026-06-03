@@ -42,7 +42,7 @@ function MasteryBar({ label, mastery }: { label: string; mastery: MasterySummary
         aria-valuenow={consecutive + correct}
       >
         {consecutive > 0 && (
-          <div className="h-full bg-brand-light0 flex-shrink-0" style={{ width: pct(consecutive) }} />
+          <div className="h-full bg-brand flex-shrink-0" style={{ width: pct(consecutive) }} />
         )}
         {correct > 0 && (
           <div className="h-full bg-emerald-500 flex-shrink-0" style={{ width: pct(correct) }} />
@@ -65,7 +65,6 @@ export default function CategoryCard({
   wrRate,
   mcMastery,
   wrMastery,
-  lastStudiedAt: _lastStudiedAt,
 }: CategoryCardProps) {
   const isIot = category.id === 'iot'
   const isEmpty = questionCount === 0
@@ -114,7 +113,7 @@ export default function CategoryCard({
                 <span>
                   正答率：
                   {mcRate !== null && <>4択 <span className="font-medium text-slate-500">{mcRate}%</span></>}
-                  {mcRate !== null && wrRate !== null && <span className="mx-0.5">　</span>}
+                  {mcRate !== null && wrRate !== null && <span className="mx-0.5"> / </span>}
                   {wrRate !== null && <>記述 <span className="font-medium text-slate-500">{wrRate}%</span></>}
                 </span>
               </>

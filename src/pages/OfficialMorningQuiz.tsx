@@ -25,7 +25,13 @@ import type { MorningRecord, OfficialMorningQuestion } from '../types'
  */
 
 type QuestionCount = 10 | 25 | 50 | 'all'
-type MorningSessionScope = 'random' | 'year' | 'important' | 'single' | 'category'
+type MorningSessionScope =
+  | 'random'
+  | 'year'
+  | 'important'
+  | 'single'
+  | 'category'
+  | 'uncorrected'
 
 function shuffle<T>(arr: T[]): T[] {
   const result = [...arr]
@@ -56,6 +62,7 @@ export default function OfficialMorningQuiz() {
   const [selectedYears, setSelectedYears] = useState<string[]>([])
   const [importantOnly, setImportantOnly] = useState(false)
   const [wrongOnly, setWrongOnly] = useState(false)
+  const [uncorrectedOnly, setUncorrectedOnly] = useState(false)
 
   const allCount = officialMorningQuestions.length
   const importantIds = useMemo(
@@ -70,6 +77,14 @@ export default function OfficialMorningQuiz() {
   const wrongQuestions = useMemo(
     () => officialMorningQuestions.filter((q) => latestResults.get(q.id) === false),
     [latestResults],
+  )
+  const correctedQuestionIds = useMemo(
+    () => new Set(morningRecords.filter((r) => r.isCorrect).map((r) => r.questionId)),
+    [morningRecords],
+  )
+  const uncorrectedQuestions = useMemo(
+    () => officialMorningQuestions.filter((q) => !correctedQuestionIds.has(q.id)),
+    [correctedQuestionIds],
   )
 
   // カテゴリ別グルーピング（categoryId が設定されている問題のみ）
@@ -122,9 +137,21 @@ export default function OfficialMorningQuiz() {
         if (wrongOnly && latestResults.get(q.id) !== false) {
           return false
         }
+        if (uncorrectedOnly && correctedQuestionIds.has(q.id)) {
+          return false
+        }
         return true
       }),
-    [importantIds, importantOnly, latestResults, selectedCategorySet, selectedYearSet, wrongOnly],
+    [
+      correctedQuestionIds,
+      importantIds,
+      importantOnly,
+      latestResults,
+      selectedCategorySet,
+      selectedYearSet,
+      uncorrectedOnly,
+      wrongOnly,
+    ],
   )
 
   const plannedCount =
@@ -146,8 +173,9 @@ export default function OfficialMorningQuiz() {
     }
     if (importantOnly) labels.push('重要マークのみ')
     if (wrongOnly) labels.push('直近不正解のみ')
+    if (uncorrectedOnly) labels.push('未正解のみ')
     return labels
-  }, [importantOnly, selectedCategoryIds, selectedYears, wrongOnly])
+  }, [importantOnly, selectedCategoryIds, selectedYears, uncorrectedOnly, wrongOnly])
 
   // 出題リストを構築して Session 画面へ
   const startSession = (
@@ -187,6 +215,7 @@ export default function OfficialMorningQuiz() {
     setSelectedYears([])
     setImportantOnly(false)
     setWrongOnly(false)
+    setUncorrectedOnly(false)
   }
 
   const handleStartSelected = () => {
@@ -195,7 +224,8 @@ export default function OfficialMorningQuiz() {
       return
     }
     const scope: MorningSessionScope =
-      importantOnly ? 'important'
+      uncorrectedOnly ? 'uncorrected'
+      : importantOnly ? 'important'
       : selectedCategoryIds.length > 0 ? 'category'
       : selectedYears.length > 0 ? 'year'
       : 'random'
@@ -393,7 +423,7 @@ export default function OfficialMorningQuiz() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-4 sm:grid-cols-3">
             <label
               className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
                 importantOnly
@@ -434,6 +464,31 @@ export default function OfficialMorningQuiz() {
               <span className="min-w-0">
                 <span className="block font-bold">間違えた問題を復習</span>
                 <span className="block text-[11px] text-slate-400">直近不正解 {wrongQuestions.length}問</span>
+              </span>
+            </label>
+
+            <label
+              className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
+                uncorrectedOnly
+                  ? 'border-sky-300 bg-sky-50 text-slate-800'
+                  : 'border-slate-200 text-slate-600 hover:border-sky-300'
+              } ${!uncorrectedOnly && uncorrectedQuestions.length === 0 ? 'opacity-50' : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={uncorrectedOnly}
+                disabled={!uncorrectedOnly && uncorrectedQuestions.length === 0}
+                onChange={(event) => {
+                  setMorningRecords(loadMorningRecords())
+                  setUncorrectedOnly(event.target.checked)
+                }}
+                className="mt-0.5 h-4 w-4 accent-brand"
+              />
+              <span className="min-w-0">
+                <span className="block font-bold">未正解のみ</span>
+                <span className="block text-[11px] text-slate-400">
+                  一度も正解していない {uncorrectedQuestions.length}問
+                </span>
               </span>
             </label>
           </div>

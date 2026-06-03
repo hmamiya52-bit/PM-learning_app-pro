@@ -8,6 +8,16 @@ import LevelWidget from '../components/gamification/LevelWidget'
 import { getRecentDaySummaries } from '../lib/activityLog'
 import { StudyHistoryList } from '../components/history/StudyHistoryList'
 import { getImportantIds } from '../lib/importantMarks'
+import { officialMorningQuestions } from '../data/officialMorningQuestions'
+import { loadMorningRecords } from '../lib/morningRecords'
+import { afternoonProblems } from '../data/afternoonProblems'
+import { loadRecords } from '../lib/tracker'
+import { essayProblems } from '../data/essayProblems'
+import { loadAttempts } from '../lib/essay'
+import type { EssaySelfReview } from '../types'
+
+const AFTERNOON_PASS_SCORE = 30
+const ESSAY_PASS_AVERAGE = 4.5
 
 // ----------------------------------------------------------------
 // Menu card data
@@ -83,6 +93,14 @@ function IconPen({ className }: { className?: string }) {
   )
 }
 
+function IconServer({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2M7 8h.01M7 16h.01" />
+    </svg>
+  )
+}
+
 function IconSync({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" className={className ?? 'w-6 h-6'} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -97,7 +115,7 @@ function IconSync({ className }: { className?: string }) {
  *     - 重要問題モード:  ModeSelect の「重要のみ」トグルで実現
  *     - 弱点克服モード:  ModeSelect の「弱点のみ」トグルで実現（F1-P6 後改修）
  *     - カテゴリ別学習:  ノートモードの動線と重複のため削除
- *     - ランダム出題:    「全体の学習進捗」セクション右上のボタンから起動
+ *     - ランダム出題:    「カテゴリ一覧」セクション右上のボタンから起動
  *     - 検索:            ヘッダの検索アイコンから常時アクセス可
  *     - バッジ:          LevelWidget をクリックすると遷移
  *     - 学習履歴:        ページ下部の「学習履歴」セクションで直接表示
@@ -111,8 +129,8 @@ function IconSync({ className }: { className?: string }) {
 const MENU_CARDS: MenuCard[] = [
   // 1. アプリの使い方
   { to: '/how-to-use',          title: 'アプリの使い方',     description: '各学習モードの活用方法',     iconBg: 'bg-brand-light',    iconColor: 'text-brand',      icon: <IconHelp className="w-6 h-6 text-brand" /> },
-  // 2. 応用情報リフレッシュ
-  { to: '/applied-refresh',     title: '応用情報リフレッシュ', description: 'PM学習前の基礎復習',       iconBg: 'bg-emerald-50',     iconColor: 'text-emerald-600', icon: <IconSeed className="w-6 h-6 text-emerald-600" /> },
+  // 2. 応用情報マネジメント
+  { to: '/applied-refresh',     title: '応用情報マネジメント', description: 'Re: APから始めるPM対策',  iconBg: 'bg-emerald-50',     iconColor: 'text-emerald-600', icon: <IconSeed className="w-6 h-6 text-emerald-600" /> },
   // 3. ノートモード
   { to: '/notes',               title: 'ノートモード',       description: '分野別の重要知識まとめ',     iconBg: 'bg-teal-50',        iconColor: 'text-teal-600',   icon: <IconBook className="w-6 h-6 text-teal-600" /> },
   // 4. 午前Ⅱ問題演習
@@ -121,13 +139,15 @@ const MENU_CARDS: MenuCard[] = [
   { to: '/afternoon',           title: '午後Ⅰ問題演習',     description: '自己採点・記録',             iconBg: 'bg-purple-50',      iconColor: 'text-purple-600', icon: <IconClipboard className="w-6 h-6 text-purple-600" /> },
   // 6. 午後Ⅱ問題演習（論述）
   { to: '/essay',               title: '午後Ⅱ問題演習',     description: '論述・自己採点',             iconBg: 'bg-pink-50',        iconColor: 'text-pink-600',   icon: <IconPen className="w-6 h-6 text-pink-600" /> },
-  // 7. デバイス同期
+  // 7. ITサービスマネージャ
+  { to: '/it-service-manager',   title: 'ITサービスマネージャ', description: '50時間目安で合格へ',          iconBg: 'bg-cyan-50',        iconColor: 'text-cyan-600',   icon: <IconServer className="w-6 h-6 text-cyan-600" /> },
+  // 8. デバイス同期
   { to: '/sync',                title: 'デバイス同期',       description: 'QRコードで他端末へ',         iconBg: 'bg-sky-50',         iconColor: 'text-sky-600',    icon: <IconSync className="w-6 h-6 text-sky-600" /> },
 ]
 
 function MenuCardGrid({ cards, studiedCount }: { cards: MenuCard[]; studiedCount: number }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+    <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
       {cards.map((card) => {
         const disabled = card.disableWhenNoStudy && studiedCount === 0
         return disabled ? (
@@ -169,6 +189,59 @@ function MenuCardGrid({ cards, studiedCount }: { cards: MenuCard[]; studiedCount
       })}
     </div>
   )
+}
+
+interface ProgressSegment {
+  label: string
+  count: number
+  color: string
+}
+
+function ratioWidth(count: number, total: number): string {
+  return total > 0 ? `${(count / total) * 100}%` : '0%'
+}
+
+function ProgressStatusRow({
+  title,
+  total,
+  segments,
+}: {
+  title: string
+  total: number
+  segments: ProgressSegment[]
+}) {
+  const detail = segments.map((segment) => `${segment.label} ${segment.count}`).join(' / ')
+  const achieved = segments[0]?.count ?? 0
+  const rate = total > 0 ? Math.round((achieved / total) * 100) : 0
+  return (
+    <div>
+      <div className="mb-1 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+        <span className="text-[11px] font-bold text-slate-500">{title}</span>
+        <span className="text-[10px] font-bold tabular-nums text-slate-400">{rate}%</span>
+      </div>
+      <div
+        className="flex h-2 overflow-hidden rounded-full bg-slate-100"
+        role="img"
+        aria-label={`${title}: ${detail}`}
+      >
+        {segments.map((segment) => (
+          segment.count > 0 && (
+            <div
+              key={segment.label}
+              title={`${segment.label} ${segment.count}`}
+              className={`h-full flex-shrink-0 transition-all duration-500 ${segment.color}`}
+              style={{ width: ratioWidth(segment.count, total) }}
+            />
+          )
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function averageEssayReview(review: EssaySelfReview): number {
+  const { relevance, structure, concreteness, consistency, charCount } = review
+  return Math.round(((relevance + structure + concreteness + consistency + charCount) / 5) * 10) / 10
 }
 
 // ----------------------------------------------------------------
@@ -224,6 +297,85 @@ export default function Home() {
     if (total === 0) return null
     return Math.round((correct / total) * 100)
   }, [allProgress])
+
+  const morningAchievement = useMemo(() => {
+    const latestResults = new Map<string, boolean>()
+    for (const record of loadMorningRecords()) {
+      if (!latestResults.has(record.questionId)) {
+        latestResults.set(record.questionId, record.isCorrect)
+      }
+    }
+    let correct = 0
+    let incorrect = 0
+    for (const question of officialMorningQuestions) {
+      const latest = latestResults.get(question.id)
+      if (latest === true) correct++
+      else if (latest === false) incorrect++
+    }
+    const unstarted = Math.max(0, officialMorningQuestions.length - correct - incorrect)
+    return {
+      total: officialMorningQuestions.length,
+      segments: [
+        { label: '正解', count: correct, color: 'bg-emerald-500' },
+        { label: '不正解', count: incorrect, color: 'bg-orange-400' },
+        { label: '未着手', count: unstarted, color: 'bg-slate-200' },
+      ],
+    }
+  }, [])
+
+  const afternoonAchievement = useMemo(() => {
+    const scoresByProblem = new Map<string, number[]>()
+    for (const record of loadRecords()) {
+      const scores = scoresByProblem.get(record.problemId) ?? []
+      scores.push(record.score)
+      scoresByProblem.set(record.problemId, scores)
+    }
+
+    let passed = 0
+    let failed = 0
+    for (const problem of afternoonProblems) {
+      const scores = scoresByProblem.get(problem.id) ?? []
+      if (scores.length === 0) continue
+      if (scores.some((score) => score >= AFTERNOON_PASS_SCORE)) passed++
+      else failed++
+    }
+    const unstarted = Math.max(0, afternoonProblems.length - passed - failed)
+    return {
+      total: afternoonProblems.length,
+      segments: [
+        { label: '合格', count: passed, color: 'bg-emerald-500' },
+        { label: '不合格', count: failed, color: 'bg-red-400' },
+        { label: '未着手', count: unstarted, color: 'bg-slate-200' },
+      ],
+    }
+  }, [])
+
+  const essayAchievement = useMemo(() => {
+    const averagesByProblem = new Map<string, number[]>()
+    for (const attempt of loadAttempts()) {
+      const averages = averagesByProblem.get(attempt.problemId) ?? []
+      averages.push(averageEssayReview(attempt.selfReview))
+      averagesByProblem.set(attempt.problemId, averages)
+    }
+
+    let passed = 0
+    let failed = 0
+    for (const problem of essayProblems) {
+      const averages = averagesByProblem.get(problem.id) ?? []
+      if (averages.length === 0) continue
+      if (averages.some((average) => average >= ESSAY_PASS_AVERAGE)) passed++
+      else failed++
+    }
+    const unstarted = Math.max(0, essayProblems.length - passed - failed)
+    return {
+      total: essayProblems.length,
+      segments: [
+        { label: '合格', count: passed, color: 'bg-emerald-500' },
+        { label: '不合格', count: failed, color: 'bg-red-400' },
+        { label: '未着手', count: unstarted, color: 'bg-slate-200' },
+      ],
+    }
+  }, [])
 
   const categoryStats = useMemo(() => {
     const masteryMap = getQuestionMastery()
@@ -321,22 +473,12 @@ export default function Home() {
 
         {/* ===== 全体の学習進捗 ===== */}
         <section aria-labelledby="progress-heading">
-          <div className="flex items-center justify-between mb-3">
-            <h2
-              id="progress-heading"
-              className="text-xs font-bold text-slate-500 uppercase tracking-wider"
-            >
-              全体の学習進捗
-            </h2>
-            <Link
-              to="/quiz?mode=random"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 text-[11px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-              aria-label="ランダム出題で学習する"
-            >
-              <IconShuffle className="w-3.5 h-3.5" />
-              ランダム出題
-            </Link>
-          </div>
+          <h2
+            id="progress-heading"
+            className="mb-3 text-xs font-bold text-slate-500 uppercase tracking-wider"
+          >
+            全体の学習進捗
+          </h2>
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 px-4 py-3">
             {/* Stats row */}
             <div className="flex items-center gap-0 divide-x divide-slate-100 mb-3">
@@ -350,6 +492,10 @@ export default function Home() {
               <div className="flex items-baseline gap-1 pl-4">
                 <span className="text-xl font-black tabular-nums text-amber-500 leading-none">{importantCount}</span>
                 <span className="text-[11px] text-slate-400 ml-1">重要問題</span>
+              </div>
+              <div className="flex items-baseline gap-1 pl-4">
+                <span className="text-xl font-black tabular-nums text-slate-700 leading-none">{totalQuestions}</span>
+                <span className="text-[11px] text-slate-400 ml-1">問題</span>
               </div>
             </div>
             {/* Progress bars: 4択 + 記述 の達成度（4セグメント） */}
@@ -371,7 +517,7 @@ export default function Home() {
                       aria-valuemax={m.total}
                       aria-valuenow={m.consecutive + m.correct}
                     >
-                      {m.consecutive > 0 && <div className="h-full bg-brand-light0 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.consecutive) }} />}
+                      {m.consecutive > 0 && <div className="h-full bg-brand flex-shrink-0 transition-all duration-500" style={{ width: pct(m.consecutive) }} />}
                       {m.correct > 0 && <div className="h-full bg-emerald-500 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.correct) }} />}
                       {m.incorrect > 0 && <div className="h-full bg-orange-400 flex-shrink-0 transition-all duration-500" style={{ width: pct(m.incorrect) }} />}
                       {unattempted > 0 && <div className="h-full bg-slate-200 flex-shrink-0" style={{ width: pct(unattempted) }} />}
@@ -379,10 +525,10 @@ export default function Home() {
                   </div>
                 )
               })}
-              {/* 凡例 */}
+
               <div className="flex items-center flex-wrap gap-x-3 gap-y-1 pt-0.5">
                 {[
-                  { color: 'bg-brand-light0', label: '連続正解' },
+                  { color: 'bg-brand', label: '連続正解' },
                   { color: 'bg-emerald-500', label: '１回正解' },
                   { color: 'bg-orange-400', label: '不正解' },
                   { color: 'bg-slate-200', label: '未着手' },
@@ -393,28 +539,83 @@ export default function Home() {
                   </span>
                 ))}
               </div>
-              {/* ラベル付き数字 */}
-              <div className="text-[11px] text-slate-400 pt-0.5">
-                問題数：{totalQuestions}問
-                {globalMcRate !== null && (
-                  <> ｜ ４択正答率 <span className="font-medium text-slate-500">{globalMcRate}%</span></>
-                )}
-                {globalWrRate !== null && (
-                  <> ｜ 記述正答率 <span className="font-medium text-slate-500">{globalWrRate}%</span></>
-                )}
+
+              <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+                <ProgressStatusRow
+                  title="午前Ⅱ達成度"
+                  total={morningAchievement.total}
+                  segments={morningAchievement.segments}
+                />
+                <ProgressStatusRow
+                  title="午後Ⅰ達成度"
+                  total={afternoonAchievement.total}
+                  segments={afternoonAchievement.segments}
+                />
+                <ProgressStatusRow
+                  title="午後Ⅱ達成度"
+                  total={essayAchievement.total}
+                  segments={essayAchievement.segments}
+                />
               </div>
+
+              <div className="flex items-center flex-wrap gap-x-3 gap-y-1 pt-0.5">
+                <span className="text-[10px] font-bold text-slate-400">午前Ⅱ</span>
+                {[
+                  { color: 'bg-emerald-500', label: '正解' },
+                  { color: 'bg-orange-400', label: '不正解' },
+                  { color: 'bg-slate-200', label: '未着手' },
+                ].map(({ color, label }) => (
+                  <span key={`morning-${label}`} className="flex items-center gap-1 text-[10px] text-slate-400">
+                    <span className={`w-2.5 h-2.5 rounded-sm flex-shrink-0 ${color}`} />
+                    {label}
+                  </span>
+                ))}
+                <span className="text-[10px] font-bold text-slate-400">午後</span>
+                {[
+                  { color: 'bg-emerald-500', label: '合格' },
+                  { color: 'bg-red-400', label: '不合格' },
+                  { color: 'bg-slate-200', label: '未着手' },
+                ].map(({ color, label }) => (
+                  <span key={`afternoon-${label}`} className="flex items-center gap-1 text-[10px] text-slate-400">
+                    <span className={`w-2.5 h-2.5 rounded-sm flex-shrink-0 ${color}`} />
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              {(globalMcRate !== null || globalWrRate !== null) && (
+                <div className="text-[11px] text-slate-400 pt-0.5">
+                  {globalMcRate !== null && (
+                    <>４択正答率 <span className="font-medium text-slate-500">{globalMcRate}%</span></>
+                  )}
+                  {globalMcRate !== null && globalWrRate !== null && <span> ｜ </span>}
+                  {globalWrRate !== null && (
+                    <>記述正答率 <span className="font-medium text-slate-500">{globalWrRate}%</span></>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
 
         {/* ===== カテゴリ一覧（12分野） ===== */}
         <section aria-labelledby="categories-heading" id="categories">
-          <h2
-            id="categories-heading"
-            className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3"
-          >
-            カテゴリ一覧（{categories.length}分野）
-          </h2>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h2
+              id="categories-heading"
+              className="text-xs font-bold text-slate-500 uppercase tracking-wider"
+            >
+              カテゴリ一覧（{categories.length}分野）
+            </h2>
+            <Link
+              to="/quiz?mode=random"
+              className="inline-flex items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 transition-colors hover:bg-emerald-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              aria-label="ランダム出題で学習する"
+            >
+              <IconShuffle className="h-3.5 w-3.5" />
+              ランダム出題
+            </Link>
+          </div>
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {categoryStats.map(({ category, questionCount, mcRate, wrRate, mcMastery, wrMastery, lastStudiedAt }) => (
               <CategoryCard

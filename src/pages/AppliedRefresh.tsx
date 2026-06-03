@@ -373,9 +373,12 @@ export default function AppliedRefresh() {
                 <IconSeed />
                 PM学習の助走モード
               </div>
-              <h1 className="text-lg sm:text-xl font-black leading-snug">応用情報リフレッシュ</h1>
+              <h1 className="text-lg sm:text-xl font-black leading-snug">
+                <span className="block">応用情報マネジメント</span>
+                <span className="block text-sm sm:text-base font-extrabold text-emerald-100">Re: APから始めるPM対策</span>
+              </h1>
               <p className="text-xs text-emerald-50 mt-1 leading-relaxed">
-                PM本編に入る前に、応用情報レベルの前提知識だけを短く復習します。このモードの記録はここだけで完結します。
+                PM本編に入る前に、応用情報レベルの前提知識だけを短く復習します。
               </p>
             </div>
             <Link
@@ -405,7 +408,7 @@ export default function AppliedRefresh() {
           />
         </section>
 
-        <nav className="grid grid-cols-4 gap-2" aria-label="応用情報リフレッシュの画面切替">
+        <nav className="grid grid-cols-4 gap-2" aria-label="応用情報マネジメントの画面切替">
           {([
             ['diagnostic', '初回診断'],
             ['refresh', '弱点復習'],

@@ -41,7 +41,7 @@ export interface AfternoonPayload {
 export interface MorningSessionPayload {
   sessionId: string
   /** 出題範囲スコープ。設計書 §3.8 line 2443 */
-  scope: 'random' | 'year' | 'important' | 'single' | 'category'
+  scope: 'random' | 'year' | 'important' | 'single' | 'category' | 'uncorrected'
   yearLabel?: string             // scope='year' で年度ラベル / scope='category' でカテゴリ名（流用）
   questionCount: number
   correctCount: number

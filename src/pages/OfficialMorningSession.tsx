@@ -36,7 +36,7 @@ interface SessionLog {
 
 interface LocationState {
   questionIds?: string[]
-  scope?: 'random' | 'year' | 'important' | 'single' | 'category'
+  scope?: 'random' | 'year' | 'important' | 'single' | 'category' | 'uncorrected'
   yearLabel?: string
   shuffleChoices?: boolean
 }

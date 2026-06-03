@@ -23,6 +23,16 @@ import HowToUse from './pages/HowToUse'
 import ActivityHistory from './pages/ActivityHistory'
 import DeviceSync from './pages/DeviceSync'
 import NotFound from './pages/NotFound'
+import ItServiceManager from './pages/ItServiceManager'
+import SmStrategy from './pages/sm/SmStrategy'
+import SmThemes from './pages/sm/SmThemes'
+import SmKnowledge from './pages/sm/SmKnowledge'
+import SmMorning from './pages/sm/SmMorning'
+import SmAfternoon from './pages/sm/SmAfternoon'
+import SmEssay from './pages/sm/SmEssay'
+import SmHistory from './pages/sm/SmHistory'
+import SmReport from './pages/sm/SmReport'
+import SmPlan from './pages/sm/SmPlan'
 
 /**
  * 開発版 App.tsx（フェーズ1）
@@ -67,6 +77,18 @@ export default function App() {
           <Route path="/essay" element={<EssayList />} />
           <Route path="/essay/:id" element={<EssayTraining />} />
           <Route path="/essay/:id/attempts/:attemptId" element={<EssayAttemptDetail />} />
+
+          {/* ITサービスマネージャ寄り道モード（PM本編の検索・履歴・バッジ・進捗とは分離） */}
+          <Route path="/it-service-manager" element={<ItServiceManager />} />
+          <Route path="/it-service-manager/strategy" element={<SmStrategy />} />
+          <Route path="/it-service-manager/plan" element={<SmPlan />} />
+          <Route path="/it-service-manager/themes" element={<SmThemes />} />
+          <Route path="/it-service-manager/knowledge" element={<SmKnowledge />} />
+          <Route path="/it-service-manager/morning" element={<SmMorning />} />
+          <Route path="/it-service-manager/afternoon" element={<SmAfternoon />} />
+          <Route path="/it-service-manager/essay" element={<SmEssay />} />
+          <Route path="/it-service-manager/history" element={<SmHistory />} />
+          <Route path="/it-service-manager/report" element={<SmReport />} />
 
           {/* 共通機能 */}
           <Route path="/search" element={<Search />} />
