@@ -1,10 +1,11 @@
 import { Link, NavLink } from 'react-router-dom'
-import { ArrowLeft, BarChart3, BookOpen, ClipboardCheck, Clock, FilePenLine, FileText, History, Home, ListChecks, Map } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, ClipboardCheck, Clock, FilePenLine, FileText, History, Home, Layers, ListChecks, Map } from 'lucide-react'
 import type { SmSourceLinks } from '../../data/sm/types'
 
 const links = [
   { to: '/it-service-manager', label: '概要', icon: Home },
   { to: '/it-service-manager/strategy', label: '攻略', icon: Map },
+  { to: '/it-service-manager/cases', label: 'ケース', icon: Layers },
   { to: '/it-service-manager/plan', label: 'プラン', icon: Clock },
   { to: '/it-service-manager/themes', label: 'テーマ', icon: BarChart3 },
   { to: '/it-service-manager/knowledge', label: 'ノート', icon: BookOpen },
@@ -42,7 +43,7 @@ export function SmPageChrome({
           </div>
         </header>
 
-        <nav className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-10 gap-1.5" aria-label="ITサービスマネージャ内メニュー">
+        <nav className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-11 gap-1.5" aria-label="ITサービスマネージャ内メニュー">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}

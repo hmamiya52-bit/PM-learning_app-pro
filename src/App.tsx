@@ -25,6 +25,7 @@ import DeviceSync from './pages/DeviceSync'
 import NotFound from './pages/NotFound'
 import ItServiceManager from './pages/ItServiceManager'
 import SmStrategy from './pages/sm/SmStrategy'
+import SmCases from './pages/sm/SmCases'
 import SmThemes from './pages/sm/SmThemes'
 import SmKnowledge from './pages/sm/SmKnowledge'
 import SmMorning from './pages/sm/SmMorning'
@@ -81,6 +82,7 @@ export default function App() {
           {/* ITサービスマネージャ寄り道モード（PM本編の検索・履歴・バッジ・進捗とは分離） */}
           <Route path="/it-service-manager" element={<ItServiceManager />} />
           <Route path="/it-service-manager/strategy" element={<SmStrategy />} />
+          <Route path="/it-service-manager/cases" element={<SmCases />} />
           <Route path="/it-service-manager/plan" element={<SmPlan />} />
           <Route path="/it-service-manager/themes" element={<SmThemes />} />
           <Route path="/it-service-manager/knowledge" element={<SmKnowledge />} />

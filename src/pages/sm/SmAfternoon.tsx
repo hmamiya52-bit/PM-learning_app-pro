@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Calculator, ClipboardCheck } from 'lucide-react'
+import { Calculator, ClipboardCheck, Layers } from 'lucide-react'
 import { smAfternoonProblems, smFrequentThemes } from '../../data/sm/content'
 import { addSmAfternoonRecord, deleteSmAfternoonRecord, loadSmAfternoonRecords } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome, SourceLinks } from './SmPageChrome'
@@ -154,6 +154,10 @@ export default function SmAfternoon() {
             <Link to="/it-service-manager/report" className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:underline mt-3">
               <ClipboardCheck className="w-3.5 h-3.5" />
               記録後に仕上げレポートで確認
+            </Link>
+            <Link to="/it-service-manager/cases" className="ml-3 inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:underline mt-3">
+              <Layers className="w-3.5 h-3.5" />
+              根拠ドリルを見る
             </Link>
           </section>
 

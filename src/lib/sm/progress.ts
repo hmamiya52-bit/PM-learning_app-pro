@@ -1,4 +1,4 @@
-import { smAfternoonProblems, smEssayProblems, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
+import { smAfternoonProblems, smEssayCases, smEssayProblems, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
 import type { SmFrequentTheme } from '../../data/sm/types'
 import type { SmChoice, SmEssayLabel } from '../../data/sm/types'
 
@@ -7,6 +7,7 @@ const KEYS = {
   AFTERNOON_RECORDS: 'pmap:sm:afternoon:records',
   ESSAY_ATTEMPTS: 'pmap:sm:essay:attempts',
   ESSAY_DRAFTS: 'pmap:sm:essay:drafts',
+  SELECTED_ESSAY_CASE: 'pmap:sm:essay:selected-case',
   STUDY_PLAN_CHECKS: 'pmap:sm:study-plan:checks',
   EVENTS: 'pmap:sm:events',
 } as const
@@ -52,11 +53,17 @@ export interface SmEssayDraft {
   updatedAt: string
 }
 
+export interface SmSelectedEssayCase {
+  caseId: string
+  selectedAt: string
+}
+
 export type SmEventType =
   | 'morning-answer'
   | 'afternoon-record'
   | 'essay-attempt'
   | 'essay-sample-view'
+  | 'essay-case-select'
   | 'study-plan-check'
 
 export interface SmHistoryEvent {
@@ -203,6 +210,27 @@ export function saveSmEssayDraft(draft: Omit<SmEssayDraft, 'updatedAt'>): void {
     updatedAt: new Date().toISOString(),
   }
   saveJson(KEYS.ESSAY_DRAFTS, drafts)
+}
+
+export function loadSmSelectedEssayCase(): SmSelectedEssayCase | null {
+  const selected = loadJson<SmSelectedEssayCase | null>(KEYS.SELECTED_ESSAY_CASE, null)
+  if (!selected || !smEssayCases.some((item) => item.id === selected.caseId)) return null
+  return selected
+}
+
+export function setSmSelectedEssayCase(caseId: string): SmSelectedEssayCase {
+  const selected: SmSelectedEssayCase = {
+    caseId,
+    selectedAt: new Date().toISOString(),
+  }
+  saveJson(KEYS.SELECTED_ESSAY_CASE, selected)
+  const caseItem = smEssayCases.find((item) => item.id === caseId)
+  addEvent({
+    type: 'essay-case-select',
+    label: '午後Ⅱ 題材選択',
+    detail: caseItem?.title ?? '題材を選択',
+  })
+  return selected
 }
 
 export function markSmEssaySampleViewed(problemId: string, sampleTitle: string): void {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Clock, FilePenLine, FileText, ListChecks, Map, Target, TrendingUp } from 'lucide-react'
-import { smAfternoonProblems, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smStudyPlanPhases } from '../data/sm/content'
+import { ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target, TrendingUp } from 'lucide-react'
+import { smAfternoonProblems, smEssayCases, smEvidenceDrills, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smStudyPlanPhases } from '../data/sm/content'
 import { getSmSummary } from '../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './sm/SmPageChrome'
 
@@ -211,11 +211,16 @@ export default function ItServiceManager() {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
         <Link to="/it-service-manager/strategy" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Map className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">攻略マップ</p>
           <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">50時間の使い方、テーマ別の時間配分、仕上げ判定をまとめて確認します。</p>
+        </Link>
+        <Link to="/it-service-manager/cases" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <Layers className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">ケース</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰの根拠回答と午後Ⅱのインフラ事例を、{smEvidenceDrills.length}ドリル・{smEssayCases.length}ケースで練習します。</p>
         </Link>
         <Link to="/it-service-manager/knowledge" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <BookOpen className="w-5 h-5 text-cyan-700 mb-2" />

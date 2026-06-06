@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, CircleAlert, Clock, FilePenLine, FileText, ListChecks, Map, Target } from 'lucide-react'
+import { ArrowRight, CheckCircle2, CircleAlert, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target } from 'lucide-react'
 import {
+  smEssayCases,
   smExamTactics,
+  smEvidenceDrills,
   smFinalCheckpoints,
   smFrequentThemes,
   smStudyPlanPhases,
@@ -113,6 +115,27 @@ export default function SmStrategy() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           )}
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Layers className="w-5 h-5 text-cyan-700" />
+              <h2 className="text-sm font-black text-slate-900">答案素材を先に持つ</h2>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例へ展開します。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース。
+            </p>
+          </div>
+          <Link
+            to="/it-service-manager/cases"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
+          >
+            ケースを見る
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

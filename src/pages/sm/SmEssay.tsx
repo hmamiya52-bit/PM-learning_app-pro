@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ClipboardCheck, Wand2 } from 'lucide-react'
-import { smEssayProblems, smFrequentThemes } from '../../data/sm/content'
-import type { SmEssayLabel } from '../../data/sm/types'
+import { CheckCircle2, ClipboardCheck, Layers, Wand2 } from 'lucide-react'
+import { smEssayCases, smEssayProblems, smFrequentThemes } from '../../data/sm/content'
+import type { SmEssayCase, SmEssayLabel } from '../../data/sm/types'
 import {
   addSmEssayAttempt,
   loadSmEssayAttempts,
   loadSmEssayDrafts,
+  loadSmSelectedEssayCase,
   markSmEssaySampleViewed,
   saveSmEssayDraft,
 } from '../../lib/sm/progress'
@@ -35,9 +36,46 @@ function charCount(value: string): number {
   return Array.from(value.replace(/\s/g, '')).length
 }
 
+function findAngle(caseItem: SmEssayCase, label: SmEssayLabel): string {
+  return caseItem.essayAngles.find((item) => item.label === label)?.text ?? ''
+}
+
+function buildCaseOutline(caseItem: SmEssayCase): string {
+  return [
+    `ア: ${caseItem.service}。${caseItem.situation}`,
+    `イ: ${caseItem.actions.join(' / ')}`,
+    `ウ: ${caseItem.metrics.join(' / ')}。${findAngle(caseItem, 'ウ')}`,
+  ].join('\n')
+}
+
+function buildCaseBody(caseItem: SmEssayCase): Partial<Record<SmEssayLabel, string>> {
+  return {
+    ア: [
+      `対象サービス: ${caseItem.service}`,
+      `自分の立場: ${caseItem.role}`,
+      `状況: ${caseItem.situation}`,
+      `問題: ${caseItem.problem}`,
+      `設問アで強調する点: ${findAngle(caseItem, 'ア')}`,
+    ].join('\n'),
+    イ: [
+      '実施した対応・工夫:',
+      ...caseItem.actions.map((item) => `・${item}`),
+      `設問イで強調する点: ${findAngle(caseItem, 'イ')}`,
+      `使える表現: ${caseItem.reusablePhrases.slice(0, 2).join(' / ')}`,
+    ].join('\n'),
+    ウ: [
+      '評価に使う数字:',
+      ...caseItem.metrics.map((item) => `・${item}`),
+      `設問ウで強調する点: ${findAngle(caseItem, 'ウ')}`,
+      `避けること: ${caseItem.traps[0] ?? '技術作業だけで終わらせない'}`,
+    ].join('\n'),
+  }
+}
+
 export default function SmEssay() {
   const [selectedId, setSelectedId] = useState(smEssayProblems[0]?.id ?? '')
   const selected = smEssayProblems.find((problem) => problem.id === selectedId) ?? smEssayProblems[0]
+  const selectedCase = smEssayCases.find((item) => item.id === loadSmSelectedEssayCase()?.caseId)
   const drafts = loadSmEssayDrafts()
   const initialDraft = drafts[selected.id]
   const [outline, setOutline] = useState(initialDraft?.outline ?? '')
@@ -91,8 +129,19 @@ export default function SmEssay() {
     })
   }
 
+  const applySelectedCaseTemplate = () => {
+    if (!selectedCase) return
+    const hasDraft = outline.trim() || labels.some((label) => (bodyByLabel[label] ?? '').trim())
+    if (hasDraft && !confirm('現在の骨子・本文メモを選んだ題材で置き換えますか？')) return
+    setOutline(buildCaseOutline(selectedCase))
+    setBodyByLabel(buildCaseBody(selectedCase))
+  }
+
   const totalChars = labels.reduce((sum, label) => sum + charCount(bodyByLabel[label] ?? ''), 0)
   const problemAttempts = attempts.filter((attempt) => attempt.problemId === selected.id)
+  const selectedCaseFitsProblem = selectedCase
+    ? selectedCase.themeIds.some((themeId) => selected.themeIds.includes(themeId))
+    : false
 
   return (
     <SmPageChrome
@@ -159,6 +208,67 @@ export default function SmEssay() {
                 <ClipboardCheck className="w-3.5 h-3.5" />
                 仕上げを見る
               </Link>
+              <Link
+                to="/it-service-manager/cases"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:border-cyan-300"
+              >
+                <Layers className="w-3.5 h-3.5" />
+                事例バンクを見る
+              </Link>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-cyan-100 bg-cyan-50/70 px-3 py-3">
+              {selectedCase ? (
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-cyan-700" />
+                      <p className="text-xs font-black text-cyan-900">午後Ⅱで使う題材</p>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${
+                        selectedCaseFitsProblem ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                      }`}>
+                        {selectedCaseFitsProblem ? 'このテーマに合う' : '題意に合わせて調整'}
+                      </span>
+                    </div>
+                    <p className="text-sm font-black text-slate-900 leading-snug mt-1">{selectedCase.title}</p>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                      {selectedCase.service} / {selectedCase.problem}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 lg:justify-end">
+                    <button
+                      type="button"
+                      onClick={applySelectedCaseTemplate}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700"
+                    >
+                      <Wand2 className="w-3.5 h-3.5" />
+                      題材から骨子を作る
+                    </button>
+                    <Link
+                      to="/it-service-manager/cases"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-3 py-2 text-xs font-black text-cyan-700 hover:bg-cyan-50"
+                    >
+                      別の題材を選ぶ
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black text-cyan-900">午後Ⅱの題材を先に決める</p>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                      インフラ案件の題材を選ぶと、骨子と本文メモに展開できます。
+                    </p>
+                  </div>
+                  <Link
+                    to="/it-service-manager/cases"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700"
+                  >
+                    題材を選ぶ
+                    <Layers className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 

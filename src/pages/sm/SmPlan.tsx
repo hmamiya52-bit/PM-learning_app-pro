@@ -27,11 +27,13 @@ export default function SmPlan() {
         id: actionId(phase.id, index),
         label: action,
         phase,
+        route: phase.actionRoutes?.[index] ?? phase.route,
       })),
       {
         id: deliverableId(phase.id),
         label: phase.deliverable,
         phase,
+        route: phase.route,
       },
     ])
   }, [])
@@ -100,7 +102,7 @@ export default function SmPlan() {
               </p>
             </div>
             <Link
-              to={nextItem.phase.route}
+              to={nextItem.route}
               className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
             >
               開く

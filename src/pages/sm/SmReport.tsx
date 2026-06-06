@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, ClipboardCheck, ListChecks, Target, TrendingUp } from 'lucide-react'
-import { smFinalCheckpoints } from '../../data/sm/content'
+import { ArrowRight, CheckCircle2, ClipboardCheck, Layers, ListChecks, Target, TrendingUp } from 'lucide-react'
+import { smEssayCases, smFinalCheckpoints } from '../../data/sm/content'
 import type { SmFrequency } from '../../data/sm/types'
-import { getSmSummary, getSmThemeReadiness } from '../../lib/sm/progress'
+import { getSmSummary, getSmThemeReadiness, loadSmSelectedEssayCase } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
 type ReportFilter = 'priority' | 'all' | SmFrequency
@@ -38,12 +38,13 @@ export default function SmReport() {
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
   const passedCheckpointCount = smFinalCheckpoints.filter((item) => checkpointPassed[item.id]).length
+  const selectedCase = smEssayCases.find((item) => item.id === loadSmSelectedEssayCase()?.caseId)
 
-  const visibleItems = useMemo(() => {
-    if (filter === 'priority') return readiness.filter((item) => item.status !== 'ready').slice(0, 6)
-    if (filter === 'all') return readiness
-    return readiness.filter((item) => item.theme.frequency === filter)
-  }, [filter, readiness])
+  const visibleItems = filter === 'priority'
+    ? readiness.filter((item) => item.status !== 'ready').slice(0, 6)
+    : filter === 'all'
+      ? readiness
+      : readiness.filter((item) => item.theme.frequency === filter)
 
   return (
     <SmPageChrome
@@ -153,6 +154,9 @@ export default function SmReport() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
+            <Link to="/it-service-manager/cases" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
+              ケースを見る
+            </Link>
             <Link to="/it-service-manager/plan" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
               50時間プランへ
             </Link>
@@ -180,6 +184,47 @@ export default function SmReport() {
               </span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Layers className="w-5 h-5 text-cyan-700" />
+              <h2 className="text-sm font-black text-slate-900">午後Ⅱで使う題材</h2>
+            </div>
+            {selectedCase ? (
+              <>
+                <p className="text-sm font-black text-slate-900 leading-snug mt-2">{selectedCase.title}</p>
+                <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                  {selectedCase.service} / {selectedCase.metrics[0]}
+                </p>
+              </>
+            ) : (
+              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+                インフラ案件の題材を1つ決めると、午後Ⅱの骨子が作りやすくなります。
+              </p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2 lg:justify-end">
+            <Link
+              to="/it-service-manager/cases"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 hover:border-cyan-300"
+            >
+              題材を選ぶ
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            {selectedCase && (
+              <Link
+                to="/it-service-manager/essay"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700"
+              >
+                骨子へ進む
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
+          </div>
         </div>
       </section>
 

@@ -56,6 +56,7 @@ export interface SmStudyPlanPhase {
   hours: string
   goal: string
   actions: string[]
+  actionRoutes?: string[]
   deliverable: string
   route: string
   themeIds: string[]
@@ -121,4 +122,34 @@ export interface SmEssayProblem {
   evaluationCriteria: string[]
   sampleAnswers: SmEssaySampleAnswer[]
   evidenceNote: string
+}
+
+export interface SmEssayCase {
+  id: string
+  title: string
+  themeIds: string[]
+  service: string
+  role: string
+  situation: string
+  problem: string
+  actions: string[]
+  metrics: string[]
+  essayAngles: {
+    label: SmEssayLabel
+    text: string
+  }[]
+  reusablePhrases: string[]
+  traps: string[]
+}
+
+export interface SmEvidenceDrill {
+  id: string
+  title: string
+  themeId: string
+  scene: string
+  question: string
+  requirements: string[]
+  evidence: string[]
+  answerSkeleton: string
+  avoid: string
 }
