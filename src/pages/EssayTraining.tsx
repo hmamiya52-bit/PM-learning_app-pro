@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { essayProblems, getEssayProblemById } from '../data/essayProblems'
+import { getEssaySampleAnswer } from '../data/essaySampleAnswers'
 import EssayTimer from '../components/essay/EssayTimer'
 import EssayCharCounter from '../components/essay/EssayCharCounter'
 import EssaySelfReview from '../components/essay/EssaySelfReview'
@@ -336,7 +337,7 @@ export default function EssayTraining() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
-      <div className="max-w-3xl mx-auto px-4 pb-16 pt-4 space-y-4">
+      <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 pb-16 pt-4 space-y-4">
 
         {/* Breadcrumb + ヘッダ */}
         <nav className="flex items-center gap-2 text-xs text-slate-400">
@@ -387,6 +388,17 @@ export default function EssayTraining() {
           </div>
         )}
 
+        {/* 参考答案へ（論述例の一つ。書く前でも閲覧可） */}
+        {getEssaySampleAnswer(problem.id) && (
+          <Link
+            to={`/essay/${problem.id}/sample`}
+            className="flex items-center justify-center gap-1.5 rounded-xl border-2 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-slate-50"
+            style={{ borderColor: '#9d5b8b', color: '#9d5b8b' }}
+          >
+            📝 この問題の参考答案（論述例）を見る
+          </Link>
+        )}
+
         {/* ステップインジケータ */}
         <div className="flex items-center gap-2 text-[11px]">
           {(['writing', 'reviewing', 'reflecting'] as const).map((s, idx, arr) => {
@@ -424,30 +436,35 @@ export default function EssayTraining() {
               const value = q.label === 'ア' ? bodyA : q.label === 'イ' ? bodyI : bodyU
               const setter = q.label === 'ア' ? setBodyA : q.label === 'イ' ? setBodyI : setBodyU
               return (
+                // PC版（lg以上）は左右2分割: 左＝問題, 右＝解答欄。モバイルは縦積み（従来どおり）
                 <section key={q.label} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-                  <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/80">
-                    <p className="text-xs font-bold text-brand-dark">
-                      設問{q.label}（推奨 {formatRecommendedChars(q.recommendedChars)}）
-                    </p>
-                    <p className="text-sm text-slate-700 leading-relaxed mt-1">{q.text}</p>
-                  </div>
-                  <div className="px-4 py-3">
-                    <textarea
-                      value={value}
-                      onChange={(e) => {
-                        setter(e.target.value)
-                        // 入力時に session が未作成なら作成
-                        if (!session) ensureSession()
-                      }}
-                      placeholder="ここに解答を入力…（入力停止3秒後に自動保存）"
-                      className="w-full min-h-[180px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
-                    />
-                    <div className="mt-1.5">
-                      <EssayCharCounter
-                        value={countChars(value)}
-                        min={q.recommendedChars.min}
-                        max={q.recommendedChars.max}
+                  <div className="grid grid-cols-1 lg:grid-cols-2">
+                    {/* 左: 問題（設問文） */}
+                    <div className="px-4 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 bg-slate-50/80">
+                      <p className="text-xs font-bold text-brand-dark">
+                        設問{q.label}（推奨 {formatRecommendedChars(q.recommendedChars)}）
+                      </p>
+                      <p className="text-sm text-slate-700 leading-relaxed mt-1">{q.text}</p>
+                    </div>
+                    {/* 右: 解答欄 */}
+                    <div className="px-4 py-3">
+                      <textarea
+                        value={value}
+                        onChange={(e) => {
+                          setter(e.target.value)
+                          // 入力時に session が未作成なら作成
+                          if (!session) ensureSession()
+                        }}
+                        placeholder="ここに解答を入力…（入力停止3秒後に自動保存）"
+                        className="w-full min-h-[180px] lg:min-h-[260px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
                       />
+                      <div className="mt-1.5">
+                        <EssayCharCounter
+                          value={countChars(value)}
+                          min={q.recommendedChars.min}
+                          max={q.recommendedChars.max}
+                        />
+                      </div>
                     </div>
                   </div>
                 </section>

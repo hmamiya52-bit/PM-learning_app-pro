@@ -13,6 +13,7 @@ import AfternoonExplanationDetail from './pages/AfternoonExplanationDetail'   //
 import EssayList from './pages/EssayList'                                 // F1-P5 で追加
 import EssayTraining from './pages/EssayTraining'                         // F1-P5 で追加
 import EssayAttemptDetail from './pages/EssayAttemptDetail'               // F1-P5 で追加
+import EssaySampleAnswerView from './pages/EssaySampleAnswerView'         // F2-P9 参考答案
 import Notes from './pages/Notes'
 import NoteDetail from './pages/NoteDetail'
 import Search from './pages/Search'
@@ -77,6 +78,7 @@ export default function App() {
           {/* 論述（午後II、F1-P5） */}
           <Route path="/essay" element={<EssayList />} />
           <Route path="/essay/:id" element={<EssayTraining />} />
+          <Route path="/essay/:id/sample" element={<EssaySampleAnswerView />} />
           <Route path="/essay/:id/attempts/:attemptId" element={<EssayAttemptDetail />} />
 
           {/* ITサービスマネージャ寄り道モード（PM本編の検索・履歴・バッジ・進捗とは分離） */}

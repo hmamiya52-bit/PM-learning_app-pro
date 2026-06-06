@@ -124,49 +124,61 @@ export default function EssayList() {
           <ul className="space-y-2">
             {filteredRows.map(({ problem, attemptCount, latestEndedAt, plannedDate, hasSample }) => (
               <li key={problem.id}>
-                <Link
-                  to={`/essay/${problem.id}`}
-                  className="block bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-brand hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <p className="text-[11px] text-slate-400">
-                          {problem.yearLabel} 問{problem.number}
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-brand hover:shadow-md transition-all">
+                  <Link
+                    to={`/essay/${problem.id}`}
+                    className="block px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-[11px] text-slate-400">
+                            {problem.yearLabel} 問{problem.number}
+                          </p>
+                          {hasSample && (
+                            <span
+                              className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                              style={{ backgroundColor: '#f3e6ef', color: '#9d5b8b' }}
+                            >
+                              参考答案あり
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm font-bold text-slate-800 leading-snug mt-0.5">
+                          {problem.theme}
                         </p>
-                        {hasSample && (
-                          <span
-                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                            style={{ backgroundColor: '#f3e6ef', color: '#9d5b8b' }}
-                          >
-                            参考答案あり
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm font-bold text-slate-800 leading-snug mt-0.5">
-                        {problem.theme}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-[11px]">
-                        <span className="text-slate-400">
-                          練習 <span className="font-bold text-brand-dark tabular-nums">{attemptCount}</span>回
-                        </span>
-                        {latestEndedAt && (
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-[11px]">
                           <span className="text-slate-400">
-                            最新 <span className="text-slate-700">{fmtDate(latestEndedAt)}</span>
+                            練習 <span className="font-bold text-brand-dark tabular-nums">{attemptCount}</span>回
                           </span>
-                        )}
-                        {plannedDate && (
-                          <span className="text-slate-400">
-                            計画 <span className="text-brand">{plannedDate}</span>
-                          </span>
-                        )}
+                          {latestEndedAt && (
+                            <span className="text-slate-400">
+                              最新 <span className="text-slate-700">{fmtDate(latestEndedAt)}</span>
+                            </span>
+                          )}
+                          {plannedDate && (
+                            <span className="text-slate-400">
+                              計画 <span className="text-brand">{plannedDate}</span>
+                            </span>
+                          )}
+                        </div>
                       </div>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-300 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                      </svg>
                     </div>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-300 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </Link>
+                  </Link>
+                  {hasSample && (
+                    <Link
+                      to={`/essay/${problem.id}/sample`}
+                      className="flex items-center justify-between px-4 py-2 border-t border-slate-100 text-[11px] font-bold hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                      style={{ color: '#9d5b8b' }}
+                    >
+                      <span>📝 参考答案を見る</span>
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
