@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getEssayProblemById } from '../data/essayProblems'
+import { getEssaySampleAnswer } from '../data/essaySampleAnswers'
 import { getAttempt } from '../lib/essay'
 import { formatRecommendedChars } from '../lib/essayReview'
+import { MarkupText } from '../components/MarkupText'
 
 /**
  * 論述 履歴詳細画面（/essay/:id/attempts/:attemptId）
@@ -57,6 +59,8 @@ export default function EssayAttemptDetail() {
       </div>
     )
   }
+
+  const sample = getEssaySampleAnswer(problem.id)
 
   const totalChars =
     (attempt.bodyByLabel['ア']?.length ?? 0) +
@@ -134,6 +138,80 @@ export default function EssayAttemptDetail() {
             </section>
           )
         })}
+
+        {/* 参考答案リビール（提出後の振り返り画面でのみ表示・デフォルト折りたたみ） */}
+        <section className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+          {sample ? (
+            <details className="group">
+              <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between hover:bg-slate-50 transition-colors">
+                <span className="text-sm font-bold text-brand-dark">📝 参考答案を見る（論述例の一つ）</span>
+                <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div className="px-4 pb-4 pt-1 space-y-4 border-t border-slate-100">
+                {/* 固定注記（唯一の正解ではない旨） */}
+                <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 leading-relaxed">
+                  これは論述例の一つです。唯一の正解ではありません。自分の答案と読み比べ、構成や具体化の仕方を学ぶ材料として活用してください。
+                </p>
+
+                {/* 設問ごとに 自分の答案／参考答案 を並置（モバイルでは縦積み） */}
+                {problem.setsumons.map((q) => {
+                  const mine = attempt.bodyByLabel[q.label] ?? ''
+                  const ref = sample.byLabel[q.label] ?? ''
+                  return (
+                    <div key={q.label} className="space-y-1.5">
+                      <p className="text-xs font-bold text-brand-dark">設問{q.label}</p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-[10px] text-slate-400 mb-1 tabular-nums">あなたの答案（{mine.length}字）</p>
+                          <div className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap bg-slate-50 rounded-md p-3">
+                            {mine || <span className="text-slate-300 italic">（未入力）</span>}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-[10px] mb-1 tabular-nums" style={{ color: '#9d5b8b' }}>参考答案（{ref.length}字）</p>
+                          <div
+                            className="text-[13px] text-slate-800 leading-relaxed whitespace-pre-wrap rounded-md p-3 border"
+                            style={{ backgroundColor: '#faf5f9', borderColor: '#e8d7e3' }}
+                          >
+                            {ref || <span className="text-slate-300 italic">（準備中）</span>}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {/* 設計の意図 */}
+                <div className="rounded-lg p-3" style={{ backgroundColor: '#faf5f9' }}>
+                  <p className="text-xs font-bold mb-1" style={{ color: '#9d5b8b' }}>設計の意図</p>
+                  <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">
+                    <MarkupText text={sample.designNote} />
+                  </p>
+                </div>
+
+                {/* ありがちな失点 */}
+                {sample.pitfalls.length > 0 && (
+                  <div className="rounded-lg p-3 bg-rose-50 border border-rose-100">
+                    <p className="text-xs font-bold text-rose-700 mb-1.5">ありがちな失点</p>
+                    <ul className="space-y-1.5">
+                      {sample.pitfalls.map((pf, i) => (
+                        <li key={i} className="text-[13px] text-slate-700 leading-relaxed flex gap-1.5">
+                          <span className="text-rose-400 flex-shrink-0" aria-hidden="true">•</span>
+                          <span><MarkupText text={pf} /></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </details>
+          ) : (
+            <div className="px-4 py-3">
+              <p className="text-sm font-bold text-slate-500">📝 参考答案</p>
+              <p className="text-xs text-slate-400 mt-1">この問題の参考答案は準備中です。順次追加しています。</p>
+            </div>
+          )}
+        </section>
 
         {/* 自己評価 */}
         <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">

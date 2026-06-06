@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { essayProblems } from '../data/essayProblems'
+import { essaySampleAnswers } from '../data/essaySampleAnswers'
 import { loadAttempts, loadEssayPlans, loadActive } from '../lib/essay'
 
 /**
@@ -45,6 +46,7 @@ export default function EssayList() {
         attemptCount: myAttempts.length,
         latestEndedAt: myAttempts[0]?.endedAt,
         plannedDate: plans[p.id],
+        hasSample: Boolean(essaySampleAnswers[p.id]),
       }
     })
   }, [attempts, plans])
@@ -120,7 +122,7 @@ export default function EssayList() {
           </p>
         ) : (
           <ul className="space-y-2">
-            {filteredRows.map(({ problem, attemptCount, latestEndedAt, plannedDate }) => (
+            {filteredRows.map(({ problem, attemptCount, latestEndedAt, plannedDate, hasSample }) => (
               <li key={problem.id}>
                 <Link
                   to={`/essay/${problem.id}`}
@@ -128,9 +130,19 @@ export default function EssayList() {
                 >
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-slate-400">
-                        {problem.yearLabel} 問{problem.number}
-                      </p>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <p className="text-[11px] text-slate-400">
+                          {problem.yearLabel} 問{problem.number}
+                        </p>
+                        {hasSample && (
+                          <span
+                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                            style={{ backgroundColor: '#f3e6ef', color: '#9d5b8b' }}
+                          >
+                            参考答案あり
+                          </span>
+                        )}
+                      </div>
                       <p className="text-sm font-bold text-slate-800 leading-snug mt-0.5">
                         {problem.theme}
                       </p>
