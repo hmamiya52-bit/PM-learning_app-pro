@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BarChart3, ExternalLink, RotateCcw } from 'lucide-react'
-import { smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
+import { BarChart3, ExternalLink, Lightbulb, RotateCcw } from 'lucide-react'
+import { smFrequentThemes, smMorningFocusCards, smMorningQuestions } from '../../data/sm/content'
 import type { SmChoice } from '../../data/sm/types'
 import { addSmMorningRecord, clearSmMorningRecords, getSmThemeReadiness, loadSmMorningRecords } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome, SourceLinks } from './SmPageChrome'
@@ -44,6 +44,9 @@ export default function SmMorning() {
   const attempted = latest.size
   const correct = Array.from(latest.values()).filter((record) => record.isCorrect).length
   const rate = attempted > 0 ? Math.round((correct / attempted) * 100) : 0
+  const focusCards = selectedThemeId
+    ? smMorningFocusCards.filter((card) => card.themeId === selectedThemeId)
+    : smMorningFocusCards.filter((card) => card.priority === 'S').slice(0, 4)
 
   const answer = (questionId: string, selected: SmChoice) => {
     addSmMorningRecord(questionId, selected)
@@ -105,6 +108,66 @@ export default function SmMorning() {
             {label}
           </button>
         ))}
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-amber-600" />
+              <h2 className="text-sm font-black text-slate-900">午前Ⅱで見分けること</h2>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              正答番号だけでなく、午後Ⅰ・午後Ⅱで使う言葉の違いまで固めます。
+            </p>
+          </div>
+          <Link to="/it-service-manager/knowledge" className="text-[11px] font-bold text-cyan-700 hover:underline flex-shrink-0">
+            知識ノートへ
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 mt-3">
+          {focusCards.map((card) => {
+            const theme = smFrequentThemes.find((item) => item.id === card.themeId)
+            return (
+              <article key={card.id} className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-3">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <p className="text-sm font-black text-slate-900">{card.title}</p>
+                  {theme && <FrequencyBadge value={theme.frequency} />}
+                </div>
+                <p className="text-xs font-bold text-cyan-800 leading-relaxed mt-2">{card.oneLine}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                  <div>
+                    <p className="text-[11px] font-black text-slate-500">用語</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {card.terms.map((term) => (
+                        <span key={term} className="rounded-md bg-white border border-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">
+                          {term}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-black text-slate-500">公式問</p>
+                    <p className="text-xs text-slate-700 leading-relaxed mt-1">問{card.questionNumbers.join('・')}</p>
+                  </div>
+                </div>
+                <ul className="space-y-1 mt-2">
+                  {card.distinguish.map((item) => (
+                    <li key={item} className="text-xs text-slate-700 leading-relaxed">・{item}</li>
+                  ))}
+                </ul>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    午後Ⅰ: {card.afternoonUse}
+                  </p>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    午後Ⅱ: {card.essayUse}
+                  </p>
+                </div>
+              </article>
+            )
+          })}
+        </div>
       </section>
 
       <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, ClipboardCheck } from 'lucide-react'
-import { smAfternoonProblems, smEssayProblems, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
+import { smAfternoonProblems, smEssayProblems, smEvidenceDrills, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
 import { averageReview, getSmSummary, loadSmAfternoonRecords, loadSmEssayAttempts, loadSmEvents, loadSmMorningRecords } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
@@ -66,7 +66,7 @@ export default function SmHistory() {
       title="学習履歴"
       description="午前Ⅱの正答率、午後Ⅰの自己採点、午後Ⅱの論述練習を振り返り、次に補強するテーマを見つけます。"
     >
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">午前Ⅱ</p>
           <p className="text-xl font-black text-slate-900 mt-1">{summary.morning.rate}%</p>
@@ -76,6 +76,11 @@ export default function SmHistory() {
           <p className="text-[11px] font-bold text-slate-400">午後Ⅰ</p>
           <p className="text-xl font-black text-slate-900 mt-1">{summary.afternoon.recordCount}回</p>
           <p className="text-[11px] text-slate-500 mt-1">{summary.afternoon.attemptedProblems}/{smAfternoonProblems.length}問</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+          <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
+          <p className="text-xl font-black text-slate-900 mt-1">{summary.evidenceDrills.completed}本</p>
+          <p className="text-[11px] text-slate-500 mt-1">{smEvidenceDrills.length}本中、8本以上が目安</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">午後Ⅱ</p>

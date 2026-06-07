@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, ClipboardCheck, Layers, ListChecks, Target, TrendingUp } from 'lucide-react'
-import { smEssayCases, smFinalCheckpoints } from '../../data/sm/content'
+import { smEssayAdaptationTemplates, smEssayCases, smFinalCheckpoints } from '../../data/sm/content'
 import type { SmFrequency } from '../../data/sm/types'
 import { getSmSummary, getSmThemeReadiness, loadSmSelectedEssayCase } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
@@ -33,12 +33,17 @@ export default function SmReport() {
   const sThemeReadiness = readiness.filter((item) => item.theme.frequency === 'S')
   const checkpointPassed: Record<string, boolean> = {
     'morning-finish': summary.morning.attempted >= summary.morning.total && summary.morning.rate >= 80,
-    'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems && (summary.afternoon.bestScore ?? 0) >= 30,
+    'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems
+      && (summary.afternoon.bestScore ?? 0) >= 30
+      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total),
     'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
   const passedCheckpointCount = smFinalCheckpoints.filter((item) => checkpointPassed[item.id]).length
   const selectedCase = smEssayCases.find((item) => item.id === loadSmSelectedEssayCase()?.caseId)
+  const selectedCaseTemplateCount = selectedCase
+    ? smEssayAdaptationTemplates.filter((template) => template.themeIds.some((themeId) => selectedCase.themeIds.includes(themeId))).length
+    : 0
 
   const visibleItems = filter === 'priority'
     ? readiness.filter((item) => item.status !== 'ready').slice(0, 6)
@@ -89,7 +94,7 @@ export default function SmReport() {
               不正解、低得点、未着手が残るテーマを上に出します。記録を追加すると順位が変わります。
             </p>
           </div>
-          <div className="grid grid-cols-3 gap-1.5 text-center min-w-[220px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center min-w-[260px]">
             <div className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-2">
               <p className="text-[10px] font-black text-slate-400">午前Ⅱ</p>
               <p className="text-sm font-black text-slate-900">{summary.morning.attempted}/{summary.morning.total}</p>
@@ -97,6 +102,10 @@ export default function SmReport() {
             <div className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-2">
               <p className="text-[10px] font-black text-slate-400">午後Ⅰ</p>
               <p className="text-sm font-black text-slate-900">{summary.afternoon.attemptedProblems}/{summary.afternoon.totalProblems}</p>
+            </div>
+            <div className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-2">
+              <p className="text-[10px] font-black text-slate-400">根拠ドリル</p>
+              <p className="text-sm font-black text-slate-900">{summary.evidenceDrills.completed}/{summary.evidenceDrills.total}</p>
             </div>
             <div className="rounded-lg bg-slate-50 border border-slate-100 px-2 py-2">
               <p className="text-[10px] font-black text-slate-400">午後Ⅱ</p>
@@ -200,6 +209,9 @@ export default function SmReport() {
                 <p className="text-xs text-slate-600 leading-relaxed mt-1">
                   {selectedCase.service} / {selectedCase.metrics[0]}
                 </p>
+                <p className="text-[11px] text-emerald-700 font-bold mt-1">
+                  この題材で使いやすい題意テンプレ {selectedCaseTemplateCount} 本
+                </p>
               </>
             ) : (
               <p className="text-xs text-slate-500 leading-relaxed mt-1">
@@ -220,7 +232,7 @@ export default function SmReport() {
                 to="/it-service-manager/essay"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700"
               >
-                骨子へ進む
+                題意で組み替える
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
@@ -282,7 +294,7 @@ export default function SmReport() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-2 mt-4">
               <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
                 <div className="flex items-center gap-1.5">
                   <ListChecks className="w-4 h-4 text-cyan-700" />
@@ -302,6 +314,15 @@ export default function SmReport() {
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
                   着手 {item.afternoon.attempted}/{item.afternoon.total}問 / 30点未満 {item.afternoon.lowScoreCount}回
+                </p>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                <p className="text-[11px] font-black text-slate-500">根拠ドリル</p>
+                <p className="text-sm font-black text-slate-900 mt-1">
+                  {item.afternoon.evidenceTotal === 0 ? '対象なし' : `${item.afternoon.evidenceCompleted}/${item.afternoon.evidenceTotal}本`}
+                </p>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  頻出テーマの短答練習
                 </p>
               </div>
               <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">

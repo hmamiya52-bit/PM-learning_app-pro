@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, Clock, RotateCcw, Target } from 'lucide-react'
-import { smFrequentThemes, smStudyPlanPhases } from '../../data/sm/content'
+import { ArrowRight, CheckCircle2, Clock, FileText, RotateCcw, Target } from 'lucide-react'
+import { smEvidenceDrills, smFrequentThemes, smStudyPlanPhases } from '../../data/sm/content'
 import {
   clearSmStudyPlanChecks,
   getSmSummary,
@@ -64,7 +64,7 @@ export default function SmPlan() {
       title="50時間プラン"
       description="頻出テーマ、午前Ⅱ、知識ノート、午後Ⅰ、午後Ⅱ、仕上げを、合格に近づく順で潰していきます。"
     >
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -88,6 +88,14 @@ export default function SmPlan() {
           </div>
           <p className="text-xl font-black text-slate-900 mt-1">{summary.morning.rate}%</p>
           <p className="text-[11px] text-slate-500 mt-1">午前Ⅱ {summary.morning.attempted}/{summary.morning.total}問</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-cyan-700" />
+            <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
+          </div>
+          <p className="text-xl font-black text-slate-900 mt-1">{summary.evidenceDrills.completed}/{smEvidenceDrills.length}</p>
+          <p className="text-[11px] text-slate-500 mt-1">午後Ⅰ対策の短答練習</p>
         </div>
       </section>
 

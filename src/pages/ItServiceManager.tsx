@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target, TrendingUp } from 'lucide-react'
-import { smAfternoonProblems, smEssayCases, smEvidenceDrills, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smStudyPlanPhases } from '../data/sm/content'
+import { smAfternoonProblems, smEssayAdaptationTemplates, smEssayCases, smEvidenceDrills, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smStudyPlanPhases } from '../data/sm/content'
 import { getSmSummary } from '../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './sm/SmPageChrome'
 
@@ -54,6 +54,12 @@ export default function ItServiceManager() {
             to: '/it-service-manager/afternoon',
             label: '午後Ⅰを解く',
           }
+        : summary.evidenceDrills.completed < Math.min(8, summary.evidenceDrills.total)
+          ? {
+              text: `根拠ドリルを8本目安で解き、午後Ⅰで設問条件と本文根拠を結びつける癖を作る。現在 ${summary.evidenceDrills.completed}/${summary.evidenceDrills.total}本。`,
+              to: '/it-service-manager/cases',
+              label: '根拠ドリルへ',
+            }
         : summary.essay.attemptCount < 2
           ? {
               text: '午後Ⅱの骨子を1本作り、参考答案と評価観点で見直す。',
@@ -71,7 +77,7 @@ export default function ItServiceManager() {
       title="ITサービスマネージャ"
       description="直近10回の頻出テーマから、午前Ⅱ・午後Ⅰ・午後Ⅱを50時間目安で一気に仕上げる対策モードです。"
     >
-      <section className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <StatCard
           title="午前Ⅱ"
           value={`${summary.morning.rate}%`}
@@ -85,6 +91,13 @@ export default function ItServiceManager() {
           helper={`${summary.afternoon.attemptedProblems}/${summary.afternoon.totalProblems}問に着手。1問50点で自己採点。`}
           to="/it-service-manager/afternoon"
           icon={FileText}
+        />
+        <StatCard
+          title="根拠ドリル"
+          value={`${summary.evidenceDrills.completed}/${smEvidenceDrills.length}`}
+          helper="午後Ⅰの根拠回答を短答で練習。8本以上を仕上げ目安。"
+          to="/it-service-manager/cases"
+          icon={Layers}
         />
         <StatCard
           title="午後Ⅱ"
@@ -220,7 +233,7 @@ export default function ItServiceManager() {
         <Link to="/it-service-manager/cases" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Layers className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">ケース</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰの根拠回答と午後Ⅱのインフラ事例を、{smEvidenceDrills.length}ドリル・{smEssayCases.length}ケースで練習します。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰの根拠回答と午後Ⅱのインフラ事例を、{smEvidenceDrills.length}ドリル・{smEssayCases.length}ケース・{smEssayAdaptationTemplates.length}テンプレで練習します。</p>
         </Link>
         <Link to="/it-service-manager/knowledge" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <BookOpen className="w-5 h-5 text-cyan-700 mb-2" />

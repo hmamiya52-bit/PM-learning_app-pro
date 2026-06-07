@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Calculator, ClipboardCheck, Layers } from 'lucide-react'
-import { smAfternoonProblems, smFrequentThemes } from '../../data/sm/content'
+import { smAfternoonProblems, smEvidenceDrills, smFrequentThemes } from '../../data/sm/content'
 import { addSmAfternoonRecord, deleteSmAfternoonRecord, loadSmAfternoonRecords } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome, SourceLinks } from './SmPageChrome'
 
@@ -157,7 +157,7 @@ export default function SmAfternoon() {
             </Link>
             <Link to="/it-service-manager/cases" className="ml-3 inline-flex items-center gap-1 text-[11px] font-bold text-cyan-700 hover:underline mt-3">
               <Layers className="w-3.5 h-3.5" />
-              根拠ドリルを見る
+              根拠ドリルを見る（{smEvidenceDrills.length}本）
             </Link>
           </section>
 

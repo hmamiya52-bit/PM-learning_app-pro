@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, CircleAlert, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target } from 'lucide-react'
 import {
+  smEssayAdaptationTemplates,
   smEssayCases,
   smExamTactics,
   smEvidenceDrills,
@@ -26,7 +27,9 @@ export default function SmStrategy() {
   const sThemeReadiness = readiness.filter((item) => sThemeIds.includes(item.theme.id))
   const checkpointPassed: Record<string, boolean> = {
     'morning-finish': summary.morning.attempted >= summary.morning.total && summary.morning.rate >= 80,
-    'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems && (summary.afternoon.bestScore ?? 0) >= 30,
+    'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems
+      && (summary.afternoon.bestScore ?? 0) >= 30
+      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total),
     'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
@@ -126,7 +129,7 @@ export default function SmStrategy() {
               <h2 className="text-sm font-black text-slate-900">答案素材を先に持つ</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例へ展開します。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース。
+              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例を題意に合わせて組み替えます。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース・{smEssayAdaptationTemplates.length} テンプレ。
             </p>
           </div>
           <Link

@@ -62,6 +62,19 @@ export interface SmStudyPlanPhase {
   themeIds: string[]
 }
 
+export interface SmMorningFocusCard {
+  id: string
+  themeId: string
+  title: string
+  priority: SmFrequency
+  questionNumbers: number[]
+  terms: string[]
+  distinguish: string[]
+  afternoonUse: string
+  essayUse: string
+  oneLine: string
+}
+
 export interface SmMorningQuestion {
   id: string
   yearLabel: string
@@ -142,14 +155,55 @@ export interface SmEssayCase {
   traps: string[]
 }
 
+export interface SmEssayAdaptationTemplate {
+  id: string
+  title: string
+  themeIds: string[]
+  problemIds?: string[]
+  useWhen: string
+  fitNote: string
+  conversionSteps: string[]
+  sectionGuides: {
+    label: SmEssayLabel
+    focus: string
+    mustInclude: string[]
+    phraseStarters: string[]
+    avoid: string
+  }[]
+  fitChecks: string[]
+}
+
+export interface SmEssayQualityRubric {
+  id: string
+  title: string
+  scoreTarget: string
+  passImage: string
+  weakSignals: string[]
+  fixActions: string[]
+}
+
+export interface SmEssayRewritePattern {
+  id: string
+  title: string
+  appliesTo: SmEssayLabel[]
+  weak: string
+  strong: string
+  why: string
+}
+
 export interface SmEvidenceDrill {
   id: string
   title: string
   themeId: string
+  timeBox: string
   scene: string
   question: string
   requirements: string[]
   evidence: string[]
   answerSkeleton: string
+  modelAnswer: string
+  scoringPoints: string[]
+  practiceSteps: string[]
+  relatedKnowledge: string[]
   avoid: string
 }

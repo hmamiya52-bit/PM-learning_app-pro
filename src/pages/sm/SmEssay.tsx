@@ -1,8 +1,15 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CheckCircle2, ClipboardCheck, Layers, Wand2 } from 'lucide-react'
-import { smEssayCases, smEssayProblems, smFrequentThemes } from '../../data/sm/content'
-import type { SmEssayCase, SmEssayLabel } from '../../data/sm/types'
+import { CheckCircle2, ClipboardCheck, GitBranch, Layers, Wand2 } from 'lucide-react'
+import {
+  smEssayAdaptationTemplates,
+  smEssayCases,
+  smEssayProblems,
+  smEssayQualityRubrics,
+  smEssayRewritePatterns,
+  smFrequentThemes,
+} from '../../data/sm/content'
+import type { SmEssayAdaptationTemplate, SmEssayCase, SmEssayLabel } from '../../data/sm/types'
 import {
   addSmEssayAttempt,
   loadSmEssayAttempts,
@@ -72,10 +79,67 @@ function buildCaseBody(caseItem: SmEssayCase): Partial<Record<SmEssayLabel, stri
   }
 }
 
+function bestTemplateId(problemId: string, themeIds: string[], caseItem?: SmEssayCase): string {
+  const caseThemeIds = caseItem?.themeIds ?? []
+  return smEssayAdaptationTemplates.find((template) => template.problemIds?.includes(problemId))?.id
+    ?? smEssayAdaptationTemplates.find((template) => template.themeIds.some((themeId) => themeIds.includes(themeId)))?.id
+    ?? smEssayAdaptationTemplates.find((template) => template.themeIds.some((themeId) => caseThemeIds.includes(themeId)))?.id
+    ?? smEssayAdaptationTemplates[0]?.id
+    ?? ''
+}
+
+function templateSection(template: SmEssayAdaptationTemplate, label: SmEssayLabel) {
+  return template.sectionGuides.find((item) => item.label === label)
+}
+
+function buildAdaptedOutline(template: SmEssayAdaptationTemplate, caseItem?: SmEssayCase): string {
+  const caseLine = caseItem
+    ? `題材: ${caseItem.title} / ${caseItem.service}`
+    : '題材: 自分の経験に近いインフラ運用事例'
+  return [
+    caseLine,
+    `題意: ${template.title}`,
+    `ア: ${templateSection(template, 'ア')?.focus ?? ''}`,
+    `イ: ${template.conversionSteps.join(' / ')}`,
+    `ウ: ${templateSection(template, 'ウ')?.focus ?? ''}`,
+  ].join('\n')
+}
+
+function buildAdaptedBody(template: SmEssayAdaptationTemplate, caseItem?: SmEssayCase): Partial<Record<SmEssayLabel, string>> {
+  const base = caseItem ? buildCaseBody(caseItem) : {}
+  const sectionA = templateSection(template, 'ア')
+  const sectionB = templateSection(template, 'イ')
+  const sectionC = templateSection(template, 'ウ')
+  return {
+    ア: [
+      base.ア,
+      `題意への寄せ方: ${sectionA?.focus ?? ''}`,
+      '必ず入れる要素:',
+      ...(sectionA?.mustInclude.map((item) => `・${item}`) ?? []),
+      `書き出し例: ${sectionA?.phraseStarters[0] ?? ''}`,
+    ].filter(Boolean).join('\n'),
+    イ: [
+      base.イ,
+      `題意への寄せ方: ${sectionB?.focus ?? ''}`,
+      '組み替え手順:',
+      ...template.conversionSteps.map((item) => `・${item}`),
+      `書き出し例: ${sectionB?.phraseStarters[0] ?? ''}`,
+    ].filter(Boolean).join('\n'),
+    ウ: [
+      base.ウ,
+      `題意への寄せ方: ${sectionC?.focus ?? ''}`,
+      '合格答案チェック:',
+      ...template.fitChecks.map((item) => `・${item}`),
+      `書き出し例: ${sectionC?.phraseStarters[0] ?? ''}`,
+    ].filter(Boolean).join('\n'),
+  }
+}
+
 export default function SmEssay() {
   const [selectedId, setSelectedId] = useState(smEssayProblems[0]?.id ?? '')
   const selected = smEssayProblems.find((problem) => problem.id === selectedId) ?? smEssayProblems[0]
   const selectedCase = smEssayCases.find((item) => item.id === loadSmSelectedEssayCase()?.caseId)
+  const [selectedTemplateId, setSelectedTemplateId] = useState(() => bestTemplateId(selected.id, selected.themeIds, selectedCase))
   const drafts = loadSmEssayDrafts()
   const initialDraft = drafts[selected.id]
   const [outline, setOutline] = useState(initialDraft?.outline ?? '')
@@ -92,7 +156,9 @@ export default function SmEssay() {
   const selectProblem = (id: string) => {
     saveSmEssayDraft({ problemId: selected.id, outline, bodyByLabel })
     const nextDraft = loadSmEssayDrafts()[id]
+    const nextProblem = smEssayProblems.find((problem) => problem.id === id) ?? selected
     setSelectedId(id)
+    setSelectedTemplateId(bestTemplateId(nextProblem.id, nextProblem.themeIds, selectedCase))
     setOutline(nextDraft?.outline ?? '')
     setBodyByLabel(nextDraft?.bodyByLabel ?? {})
   }
@@ -137,16 +203,31 @@ export default function SmEssay() {
     setBodyByLabel(buildCaseBody(selectedCase))
   }
 
+  const applyAdaptationTemplate = () => {
+    if (!selectedAdaptation) return
+    const hasDraft = outline.trim() || labels.some((label) => (bodyByLabel[label] ?? '').trim())
+    if (hasDraft && !confirm('現在の骨子・本文メモを題意テンプレで置き換えますか？')) return
+    setOutline(buildAdaptedOutline(selectedAdaptation, selectedCase))
+    setBodyByLabel(buildAdaptedBody(selectedAdaptation, selectedCase))
+  }
+
   const totalChars = labels.reduce((sum, label) => sum + charCount(bodyByLabel[label] ?? ''), 0)
   const problemAttempts = attempts.filter((attempt) => attempt.problemId === selected.id)
   const selectedCaseFitsProblem = selectedCase
     ? selectedCase.themeIds.some((themeId) => selected.themeIds.includes(themeId))
     : false
+  const matchingTemplates = smEssayAdaptationTemplates.filter((template) => {
+    if (template.problemIds?.includes(selected.id)) return true
+    if (template.themeIds.some((themeId) => selected.themeIds.includes(themeId))) return true
+    return selectedCase ? template.themeIds.some((themeId) => selectedCase.themeIds.includes(themeId)) : false
+  })
+  const templateOptions = matchingTemplates.length > 0 ? matchingTemplates : smEssayAdaptationTemplates
+  const selectedAdaptation = templateOptions.find((template) => template.id === selectedTemplateId) ?? templateOptions[0]
 
   return (
     <SmPageChrome
       title="午後Ⅱ論述"
-      description="令和7年度春期SMの2テーマに、骨子・評価観点・インフラ案件の参考答案2本ずつを用意しています。"
+      description={`令和7年度春期SMの2テーマに、骨子・評価観点・参考答案・題意別変換テンプレ${smEssayAdaptationTemplates.length}本、採点ルーブリック${smEssayQualityRubrics.length}観点を用意しています。`}
     >
       <section className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-3">
         <aside className="space-y-2">
@@ -270,6 +351,82 @@ export default function SmEssay() {
                 </div>
               )}
             </div>
+
+            {selectedAdaptation && (
+              <div className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50/70 px-3 py-3">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <GitBranch className="w-4 h-4 text-emerald-700" />
+                      <p className="text-xs font-black text-emerald-900">題意別変換テンプレ</p>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">
+                      選んだ題材を、問われ方に合わせて強調し直します。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={applyAdaptationTemplate}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-black text-white hover:bg-emerald-700 flex-shrink-0"
+                  >
+                    <Wand2 className="w-3.5 h-3.5" />
+                    題意で組み替える
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-3 mt-3">
+                  <div className="space-y-1">
+                    {templateOptions.map((template) => (
+                      <button
+                        key={template.id}
+                        type="button"
+                        onClick={() => setSelectedTemplateId(template.id)}
+                        className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
+                          selectedAdaptation.id === template.id ? 'bg-white border border-emerald-300 text-emerald-900' : 'bg-white/70 border border-transparent text-slate-700 hover:border-emerald-200'
+                        }`}
+                      >
+                        <p className="text-xs font-black leading-snug">{template.title}</p>
+                        <p className="text-[10px] text-slate-500 leading-relaxed mt-1">{template.useWhen}</p>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="rounded-lg bg-white border border-emerald-100 px-3 py-3">
+                    <p className="text-sm font-black text-slate-900">{selectedAdaptation.title}</p>
+                    <p className="text-xs text-slate-600 leading-relaxed mt-1">{selectedAdaptation.fitNote}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-3">
+                      {selectedAdaptation.sectionGuides.map((guide) => (
+                        <div key={guide.label} className="rounded-md bg-slate-50 border border-slate-100 px-3 py-2">
+                          <p className="text-[11px] font-black text-emerald-800">設問{guide.label}</p>
+                          <p className="text-xs text-slate-700 leading-relaxed mt-1">{guide.focus}</p>
+                          <p className="text-[10px] text-slate-500 leading-relaxed mt-1">
+                            避ける: {guide.avoid}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                      <div>
+                        <p className="text-[11px] font-black text-slate-500">組み替え手順</p>
+                        <ul className="space-y-1 mt-1">
+                          {selectedAdaptation.conversionSteps.map((item) => (
+                            <li key={item} className="text-xs text-slate-700 leading-relaxed">・{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-black text-slate-500">合格答案チェック</p>
+                        <ul className="space-y-1 mt-1">
+                          {selectedAdaptation.fitChecks.map((item) => (
+                            <li key={item} className="text-xs text-slate-700 leading-relaxed">・{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <section className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -345,6 +502,66 @@ export default function SmEssay() {
                   <span className="text-xs text-slate-700 leading-relaxed">{item}</span>
                 </label>
               ))}
+            </div>
+          </section>
+
+          <section className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+            <div className="rounded-xl border border-slate-200 bg-white px-3 py-3">
+              <h3 className="text-xs font-black text-slate-500 mb-2">採点ルーブリック</h3>
+              <div className="space-y-2">
+                {smEssayQualityRubrics.map((rubric, index) => (
+                  <details key={rubric.id} open={index === 0} className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                    <summary className="cursor-pointer text-xs font-black text-slate-900">
+                      {rubric.title}
+                      <span className="ml-2 text-[10px] font-black text-cyan-700">{rubric.scoreTarget}</span>
+                    </summary>
+                    <p className="text-xs text-slate-700 leading-relaxed mt-2">{rubric.passImage}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                      <div className="rounded-md bg-white border border-rose-100 px-2 py-2">
+                        <p className="text-[10px] font-black text-rose-700">弱いサイン</p>
+                        <ul className="space-y-1 mt-1">
+                          {rubric.weakSignals.map((item) => (
+                            <li key={item} className="text-[11px] text-slate-600 leading-relaxed">・{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="rounded-md bg-white border border-emerald-100 px-2 py-2">
+                        <p className="text-[10px] font-black text-emerald-700">直し方</p>
+                        <ul className="space-y-1 mt-1">
+                          {rubric.fixActions.map((item) => (
+                            <li key={item} className="text-[11px] text-slate-600 leading-relaxed">・{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-white px-3 py-3">
+              <h3 className="text-xs font-black text-slate-500 mb-2">弱い表現を直す</h3>
+              <div className="space-y-2">
+                {smEssayRewritePatterns.map((pattern, index) => (
+                  <details key={pattern.id} open={index === 0} className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                    <summary className="cursor-pointer text-xs font-black text-slate-900">
+                      {pattern.title}
+                      <span className="ml-2 text-[10px] font-black text-cyan-700">設問{pattern.appliesTo.join('・')}</span>
+                    </summary>
+                    <div className="grid gap-2 mt-2">
+                      <div className="rounded-md bg-rose-50 border border-rose-100 px-2 py-2">
+                        <p className="text-[10px] font-black text-rose-700">弱い例</p>
+                        <p className="text-xs text-slate-700 leading-relaxed mt-1">{pattern.weak}</p>
+                      </div>
+                      <div className="rounded-md bg-emerald-50 border border-emerald-100 px-2 py-2">
+                        <p className="text-[10px] font-black text-emerald-700">強い例</p>
+                        <p className="text-xs text-slate-700 leading-relaxed mt-1">{pattern.strong}</p>
+                      </div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">{pattern.why}</p>
+                    </div>
+                  </details>
+                ))}
+              </div>
             </div>
           </section>
 

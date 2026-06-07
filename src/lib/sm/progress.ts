@@ -1,4 +1,4 @@
-import { smAfternoonProblems, smEssayCases, smEssayProblems, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
+import { smAfternoonProblems, smEssayCases, smEssayProblems, smEvidenceDrills, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
 import type { SmFrequentTheme } from '../../data/sm/types'
 import type { SmChoice, SmEssayLabel } from '../../data/sm/types'
 
@@ -8,6 +8,7 @@ const KEYS = {
   ESSAY_ATTEMPTS: 'pmap:sm:essay:attempts',
   ESSAY_DRAFTS: 'pmap:sm:essay:drafts',
   SELECTED_ESSAY_CASE: 'pmap:sm:essay:selected-case',
+  EVIDENCE_DRILL_CHECKS: 'pmap:sm:evidence-drills:checks',
   STUDY_PLAN_CHECKS: 'pmap:sm:study-plan:checks',
   EVENTS: 'pmap:sm:events',
 } as const
@@ -64,6 +65,7 @@ export type SmEventType =
   | 'essay-attempt'
   | 'essay-sample-view'
   | 'essay-case-select'
+  | 'evidence-drill-check'
   | 'study-plan-check'
 
 export interface SmHistoryEvent {
@@ -89,6 +91,8 @@ export interface SmThemeReadiness {
     attempted: number
     bestScore: number | null
     lowScoreCount: number
+    evidenceTotal: number
+    evidenceCompleted: number
   }
   essay: {
     total: number
@@ -102,6 +106,7 @@ export interface SmThemeReadiness {
 }
 
 export type SmStudyPlanChecks = Record<string, boolean>
+export type SmEvidenceDrillChecks = Record<string, boolean>
 
 function genId(): string {
   return crypto.randomUUID()
@@ -218,6 +223,25 @@ export function loadSmSelectedEssayCase(): SmSelectedEssayCase | null {
   return selected
 }
 
+export function loadSmEvidenceDrillChecks(): SmEvidenceDrillChecks {
+  return loadJson<SmEvidenceDrillChecks>(KEYS.EVIDENCE_DRILL_CHECKS, {})
+}
+
+export function setSmEvidenceDrillCheck(drillId: string, checked: boolean): void {
+  const checks = loadSmEvidenceDrillChecks()
+  const next = {
+    ...checks,
+    [drillId]: checked,
+  }
+  saveJson(KEYS.EVIDENCE_DRILL_CHECKS, next)
+  const drill = smEvidenceDrills.find((item) => item.id === drillId)
+  addEvent({
+    type: 'evidence-drill-check',
+    label: checked ? '根拠ドリル完了' : '根拠ドリル再開',
+    detail: drill?.title ?? '根拠ドリル',
+  })
+}
+
 export function setSmSelectedEssayCase(caseId: string): SmSelectedEssayCase {
   const selected: SmSelectedEssayCase = {
     caseId,
@@ -283,6 +307,8 @@ export function getSmSummary() {
   const correctMorning = Array.from(latestByQuestion.values()).filter((r) => r.isCorrect).length
   const afternoonRecords = loadSmAfternoonRecords()
   const essayAttempts = loadSmEssayAttempts()
+  const evidenceChecks = loadSmEvidenceDrillChecks()
+  const completedEvidenceDrills = smEvidenceDrills.filter((drill) => evidenceChecks[drill.id]).length
   return {
     morning: {
       attempted: attemptedMorning,
@@ -296,6 +322,11 @@ export function getSmSummary() {
       totalProblems: smAfternoonProblems.length,
       recordCount: afternoonRecords.length,
       bestScore: afternoonRecords.length > 0 ? Math.max(...afternoonRecords.map((r) => r.score)) : null,
+    },
+    evidenceDrills: {
+      completed: completedEvidenceDrills,
+      total: smEvidenceDrills.length,
+      rate: smEvidenceDrills.length > 0 ? Math.round((completedEvidenceDrills / smEvidenceDrills.length) * 100) : 0,
     },
     essay: {
       attemptedProblems: new Set(essayAttempts.map((a) => a.problemId)).size,
@@ -317,6 +348,7 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
 
   const afternoonRecords = loadSmAfternoonRecords()
   const essayAttempts = loadSmEssayAttempts()
+  const evidenceChecks = loadSmEvidenceDrillChecks()
 
   return smFrequentThemes
     .map((theme) => {
@@ -334,6 +366,8 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
         ? Math.max(...themeAfternoonRecords.map((record) => record.score))
         : null
       const afternoonLowScoreCount = themeAfternoonRecords.filter((record) => record.score < 30).length
+      const themeEvidenceDrills = smEvidenceDrills.filter((drill) => drill.themeId === theme.id)
+      const themeEvidenceCompleted = themeEvidenceDrills.filter((drill) => evidenceChecks[drill.id]).length
 
       const themeEssayProblems = smEssayProblems.filter((problem) => problem.themeIds.includes(theme.id))
       const themeEssayProblemIds = new Set(themeEssayProblems.map((problem) => problem.id))
@@ -348,9 +382,12 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
         ? ((themeQuestionRecords.length / themeQuestions.length) * 0.4 + (morningCorrect / themeQuestions.length) * 0.6) * 100
         : 50
       const afternoonScore = themeAfternoonProblems.length > 0
-        ? ((new Set(themeAfternoonRecords.map((record) => record.problemId)).size / themeAfternoonProblems.length) * 0.5
-            + ((afternoonBestScore ?? 0) / 50) * 0.5) * 100
-        : 50
+        ? (((new Set(themeAfternoonRecords.map((record) => record.problemId)).size / themeAfternoonProblems.length) * 0.5
+            + ((afternoonBestScore ?? 0) / 50) * 0.5) * 75)
+            + (themeEvidenceDrills.length > 0 ? (themeEvidenceCompleted / themeEvidenceDrills.length) * 25 : 25)
+        : themeEvidenceDrills.length > 0
+          ? (themeEvidenceCompleted / themeEvidenceDrills.length) * 100
+          : 50
       const essayScore = themeEssayProblems.length > 0
         ? (Math.min(themeEssayAttempts.length / themeEssayProblems.length, 1) * 0.45
             + ((essayAverageReview ?? 0) / 5) * 0.55) * 100
@@ -362,6 +399,7 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
       if (themeQuestions.length > themeQuestionRecords.length) reasons.push(`午前Ⅱの未演習 ${themeQuestions.length - themeQuestionRecords.length}問`)
       if (themeAfternoonProblems.length > 0 && themeAfternoonRecords.length === 0) reasons.push('午後Ⅰが未記録')
       if (afternoonLowScoreCount > 0) reasons.push(`午後Ⅰの30点未満 ${afternoonLowScoreCount}回`)
+      if (themeEvidenceDrills.length > themeEvidenceCompleted) reasons.push(`根拠ドリル未完了 ${themeEvidenceDrills.length - themeEvidenceCompleted}本`)
       if (themeEssayProblems.length > 0 && themeEssayAttempts.length === 0) reasons.push('午後Ⅱの骨子・論述が未記録')
       if (essayLowReviewCount > 0) reasons.push(`午後Ⅱの自己評価3.5未満 ${essayLowReviewCount}回`)
 
@@ -373,6 +411,9 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
       } else if (themeAfternoonProblems.length > 0 && (themeAfternoonRecords.length === 0 || afternoonLowScoreCount > 0)) {
         nextAction = '午後Ⅰで本文から根拠を拾う'
         nextRoute = '/it-service-manager/afternoon'
+      } else if (themeEvidenceDrills.length > themeEvidenceCompleted) {
+        nextAction = 'ケースで午後Ⅰの根拠ドリルを潰す'
+        nextRoute = '/it-service-manager/cases'
       } else if (themeEssayProblems.length > 0 && (themeEssayAttempts.length === 0 || essayLowReviewCount > 0)) {
         nextAction = '午後Ⅱで骨子と評価観点を見直す'
         nextRoute = '/it-service-manager/essay'
@@ -395,6 +436,8 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
           attempted: new Set(themeAfternoonRecords.map((record) => record.problemId)).size,
           bestScore: afternoonBestScore,
           lowScoreCount: afternoonLowScoreCount,
+          evidenceTotal: themeEvidenceDrills.length,
+          evidenceCompleted: themeEvidenceCompleted,
         },
         essay: {
           total: themeEssayProblems.length,
