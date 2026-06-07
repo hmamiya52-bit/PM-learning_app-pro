@@ -153,6 +153,7 @@ export interface EssayProblem {
   yearLabel: string                   // '令和6（2024）'
   number: 1 | 2
   theme: string                       // 問題のテーマ（短文タイトル）
+  preamble?: string                   // 問題冒頭の背景文（IPA問題文の前置き。段落は \n 区切り・各段落1字下げ）
   setsumons: EssaySetsumon[]
   categoryIds: string[]               // 関連 PM カテゴリ ID（複数可）
   questionPdfUrl?: string

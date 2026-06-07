@@ -54,10 +54,21 @@ export default function EssaySampleAnswerView() {
           <>
             {/* 固定注記（唯一の正解ではない旨） */}
             <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 leading-relaxed">
-              これは論述例の一つです。唯一の正解ではありません。構成や具体化の仕方を学ぶ材料として活用してください。実際に書く練習は
-              <Link to={`/essay/${problem.id}`} className="font-bold underline mx-0.5">解答画面</Link>
-              から行えます。
+              これは論述例の一つです。唯一の正解ではありません。構成や具体化の仕方を学ぶ材料として活用してください。
             </p>
+
+            {/* 問題文（冒頭）— 折りたたみ */}
+            {problem.preamble && (
+              <details className="bg-white border border-slate-200 rounded-xl group">
+                <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-600">問題文（冒頭）を読む</span>
+                  <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <div className="px-4 pb-4 border-t border-slate-100">
+                  <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap pt-2">{problem.preamble}</p>
+                </div>
+              </details>
+            )}
 
             {/* 設問ごとに 設問文 ＋ 参考答案 */}
             {problem.setsumons.map((q) => {

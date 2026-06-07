@@ -337,7 +337,7 @@ export default function EssayTraining() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#f8fafc' }}>
-      <div className="max-w-3xl lg:max-w-5xl mx-auto px-4 pb-16 pt-4 space-y-4">
+      <div className="max-w-3xl lg:max-w-6xl xl:max-w-[92rem] mx-auto px-4 lg:px-6 pb-16 pt-4 space-y-4">
 
         {/* Breadcrumb + ヘッダ */}
         <nav className="flex items-center gap-2 text-xs text-slate-400">
@@ -417,6 +417,19 @@ export default function EssayTraining() {
           })}
         </div>
 
+        {/* 問題文（冒頭）— 折りたたみ。解答画面でいつでも参照できる */}
+        {problem.preamble && (
+          <details className="bg-white border border-slate-200 rounded-xl group">
+            <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-600">問題文（冒頭）を読む</span>
+              <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="px-4 pb-4 border-t border-slate-100">
+              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap pt-2">{problem.preamble}</p>
+            </div>
+          </details>
+        )}
+
         {/* ============================================
             STEP: writing
             ============================================ */}
@@ -438,7 +451,7 @@ export default function EssayTraining() {
               return (
                 // PC版（lg以上）は左右2分割: 左＝問題, 右＝解答欄。モバイルは縦積み（従来どおり）
                 <section key={q.label} className="bg-white border border-slate-200 rounded-xl overflow-hidden">
-                  <div className="grid grid-cols-1 lg:grid-cols-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr]">
                     {/* 左: 問題（設問文） */}
                     <div className="px-4 py-3 border-b lg:border-b-0 lg:border-r border-slate-100 bg-slate-50/80">
                       <p className="text-xs font-bold text-brand-dark">
@@ -456,7 +469,7 @@ export default function EssayTraining() {
                           if (!session) ensureSession()
                         }}
                         placeholder="ここに解答を入力…（入力停止3秒後に自動保存）"
-                        className="w-full min-h-[180px] lg:min-h-[260px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
+                        className="w-full min-h-[180px] lg:min-h-[420px] text-sm text-slate-800 border border-slate-200 rounded-lg p-3 outline-none focus:border-brand resize-y leading-relaxed"
                       />
                       <div className="mt-1.5">
                         <EssayCharCounter
