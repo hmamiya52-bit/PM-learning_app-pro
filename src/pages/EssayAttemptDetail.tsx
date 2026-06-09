@@ -203,6 +203,22 @@ export default function EssayAttemptDetail() {
                     </ul>
                   </div>
                 )}
+
+                {/* さらに高評価を得るためのポイント（IPA採点者視点） */}
+                {sample.scoringTips && sample.scoringTips.length > 0 && (
+                  <div className="rounded-lg p-3 bg-emerald-50 border border-emerald-100">
+                    <p className="text-xs font-bold text-emerald-800 mb-0.5">さらに高評価を得るためのポイント</p>
+                    <p className="text-[10px] text-emerald-600 mb-1.5">IPA採点者の視点で、より上位の評価へ近づける着眼点です。</p>
+                    <ul className="space-y-1.5">
+                      {sample.scoringTips.map((tip, i) => (
+                        <li key={i} className="text-[13px] text-slate-700 leading-relaxed flex gap-1.5">
+                          <span className="text-emerald-500 flex-shrink-0" aria-hidden="true">▲</span>
+                          <span><MarkupText text={tip} /></span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </details>
           ) : (
