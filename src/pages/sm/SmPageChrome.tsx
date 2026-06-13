@@ -1,10 +1,14 @@
 import { Link, NavLink } from 'react-router-dom'
-import { ArrowLeft, BarChart3, BookOpen, ClipboardCheck, Clock, FilePenLine, FileText, History, Home, Layers, ListChecks, Map } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, ClipboardCheck, Clock, FilePenLine, FileText, History, Home, Layers, ListChecks, Map, RotateCcw, Sparkles, Target, TimerReset, Wrench } from 'lucide-react'
 import type { SmSourceLinks } from '../../data/sm/types'
 
 const links = [
   { to: '/it-service-manager', label: '概要', icon: Home },
   { to: '/it-service-manager/strategy', label: '攻略', icon: Map },
+  { to: '/it-service-manager/review', label: '復習', icon: RotateCcw },
+  { to: '/it-service-manager/prescriptions', label: '処方', icon: Wrench },
+  { to: '/it-service-manager/answer-parts', label: '答案', icon: Sparkles },
+  { to: '/it-service-manager/simulation', label: '模試', icon: TimerReset },
   { to: '/it-service-manager/cases', label: 'ケース', icon: Layers },
   { to: '/it-service-manager/plan', label: 'プラン', icon: Clock },
   { to: '/it-service-manager/themes', label: 'テーマ', icon: BarChart3 },
@@ -12,6 +16,7 @@ const links = [
   { to: '/it-service-manager/morning', label: '午前Ⅱ', icon: ListChecks },
   { to: '/it-service-manager/afternoon', label: '午後Ⅰ', icon: FileText },
   { to: '/it-service-manager/essay', label: '午後Ⅱ', icon: FilePenLine },
+  { to: '/it-service-manager/final', label: '直前', icon: Target },
   { to: '/it-service-manager/report', label: 'レポート', icon: ClipboardCheck },
   { to: '/it-service-manager/history', label: '履歴', icon: History },
 ]
@@ -43,7 +48,7 @@ export function SmPageChrome({
           </div>
         </header>
 
-        <nav className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-11 gap-1.5" aria-label="ITサービスマネージャ内メニュー">
+        <nav className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-[repeat(16,minmax(0,1fr))] gap-1.5" aria-label="ITサービスマネージャ内メニュー">
           {links.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}

@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, FilePenLine, FileText, GitBranch, Layers, Target } from 'lucide-react'
+import { ArrowRight, CheckCircle2, FilePenLine, FileText, GitBranch, Layers, Save, Target } from 'lucide-react'
 import { smEssayAdaptationTemplates, smEssayCases, smEvidenceDrills, smFrequentThemes } from '../../data/sm/content'
 import {
+  addSmEvidenceDrillAttempt,
   loadSmEvidenceDrillChecks,
+  loadSmEvidenceDrillAttempts,
   loadSmSelectedEssayCase,
   setSmEvidenceDrillCheck,
   setSmSelectedEssayCase,
@@ -19,6 +21,8 @@ export default function SmCases() {
   const [openDrillId, setOpenDrillId] = useState(smEvidenceDrills[0]?.id ?? '')
   const [savedCaseId, setSavedCaseId] = useState(() => loadSmSelectedEssayCase()?.caseId ?? '')
   const [drillChecks, setDrillChecks] = useState(() => loadSmEvidenceDrillChecks())
+  const [drillAttempts, setDrillAttempts] = useState(() => loadSmEvidenceDrillAttempts())
+  const [drillDrafts, setDrillDrafts] = useState<Record<string, { answer: string; selfScore: number; reflection: string }>>({})
 
   const visibleCases = smEssayCases.filter((item) => themeFilter === 'all' || item.themeIds.includes(themeFilter))
   const selectedCase = visibleCases.find((item) => item.id === selectedCaseId) ?? visibleCases[0] ?? smEssayCases[0]
@@ -52,7 +56,48 @@ export default function SmCases() {
     setDrillChecks(loadSmEvidenceDrillChecks())
   }
 
+  const updateDrillDraft = (drillId: string, patch: Partial<{ answer: string; selfScore: number; reflection: string }>) => {
+    setDrillDrafts((current) => {
+      const currentDraft = current[drillId] ?? { answer: '', selfScore: 3, reflection: '' }
+      return {
+        ...current,
+        [drillId]: {
+          ...currentDraft,
+          ...patch,
+        },
+      }
+    })
+  }
+
+  const recordDrillAttempt = (drillId: string) => {
+    const draft = drillDrafts[drillId] ?? { answer: '', selfScore: 3, reflection: '' }
+    if (!draft.answer.trim()) {
+      alert('答案メモを書いてから記録します。')
+      return
+    }
+    addSmEvidenceDrillAttempt({
+      drillId,
+      answer: draft.answer,
+      selfScore: draft.selfScore,
+      reflection: draft.reflection,
+    })
+    setSmEvidenceDrillCheck(drillId, true)
+    setDrillChecks(loadSmEvidenceDrillChecks())
+    setDrillAttempts(loadSmEvidenceDrillAttempts())
+    setDrillDrafts((current) => ({
+      ...current,
+      [drillId]: {
+        answer: '',
+        selfScore: 3,
+        reflection: '',
+      },
+    }))
+  }
+
   const completedDrillCount = smEvidenceDrills.filter((drill) => drillChecks[drill.id]).length
+  const averageDrillScore = drillAttempts.length > 0
+    ? Math.round((drillAttempts.reduce((sum, attempt) => sum + attempt.selfScore, 0) / drillAttempts.length) * 10) / 10
+    : null
 
   return (
     <SmPageChrome
@@ -71,10 +116,10 @@ export default function SmCases() {
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
             <FileText className="w-4 h-4 text-violet-700" />
-            <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
+          <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
           </div>
           <p className="text-xl font-black text-slate-900 mt-1">{smEvidenceDrills.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">完了 {completedDrillCount}/{smEvidenceDrills.length} 本</p>
+          <p className="text-[11px] text-slate-500 mt-1">完了 {completedDrillCount}/{smEvidenceDrills.length} 本 / 回答 {drillAttempts.length}回</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
@@ -90,7 +135,7 @@ export default function SmCases() {
             <p className="text-[11px] font-bold text-slate-400">狙い</p>
           </div>
           <p className="text-sm font-black text-slate-900 mt-2 leading-snug">知識を答案の部品にする</p>
-          <p className="text-[11px] text-slate-500 mt-1">午後Ⅰの根拠と午後Ⅱの骨子を接続</p>
+          <p className="text-[11px] text-slate-500 mt-1">根拠ドリル平均 {averageDrillScore ?? '-'} / 5</p>
         </div>
       </section>
 
@@ -367,6 +412,13 @@ export default function SmCases() {
 
           {openDrill && (
             <article className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-3">
+              {(() => {
+                const draft = drillDrafts[openDrill.id] ?? { answer: '', selfScore: 3, reflection: '' }
+                const openDrillAttempts = drillAttempts
+                  .filter((attempt) => attempt.drillId === openDrill.id)
+                  .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))
+                return (
+                  <>
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-black text-slate-900">{openDrill.title}</h3>
@@ -422,6 +474,54 @@ export default function SmCases() {
                 <p className="text-sm text-slate-800 leading-relaxed mt-1">{openDrill.modelAnswer}</p>
               </div>
 
+              <div className="rounded-lg bg-white border border-cyan-100 px-3 py-3 mt-3">
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2">
+                  <div>
+                    <p className="text-[11px] font-black text-cyan-800">自分の回答を記録</p>
+                    <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
+                      本文根拠を2つ以上入れて、30〜60字程度の答案にします。
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => recordDrillAttempt(openDrill.id)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700 flex-shrink-0"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    回答を記録
+                  </button>
+                </div>
+                <textarea
+                  value={draft.answer}
+                  onChange={(event) => updateDrillDraft(openDrill.id, { answer: event.target.value })}
+                  rows={3}
+                  className="mt-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  placeholder="例: 月末ピーク時の応答時間、問い合わせ件数、業務影響を確認し、月次報告にピーク時指標と改善予定を追加する。"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-2 mt-2">
+                  <label className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2 text-xs font-bold text-slate-700">
+                    <span className="flex items-center justify-between">
+                      自己採点
+                      <span>{draft.selfScore}/5</span>
+                    </span>
+                    <input
+                      type="range"
+                      min={1}
+                      max={5}
+                      value={draft.selfScore}
+                      onChange={(event) => updateDrillDraft(openDrill.id, { selfScore: Number(event.target.value) })}
+                      className="w-full"
+                    />
+                  </label>
+                  <input
+                    value={draft.reflection}
+                    onChange={(event) => updateDrillDraft(openDrill.id, { reflection: event.target.value })}
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    placeholder="振り返り（例: 根拠は拾えたが、改善計画へのつなぎが弱い）"
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-3">
                 <div className="rounded-lg bg-white border border-slate-200 px-3 py-2">
                   <p className="text-[11px] font-black text-cyan-800">採点で拾われる点</p>
@@ -450,6 +550,28 @@ export default function SmCases() {
                   </div>
                 </div>
               </div>
+              {openDrillAttempts.length > 0 && (
+                <div className="rounded-lg bg-white border border-slate-200 px-3 py-3 mt-3">
+                  <p className="text-[11px] font-black text-slate-500">このドリルの回答履歴</p>
+                  <div className="space-y-2 mt-2">
+                    {openDrillAttempts.slice(0, 3).map((attempt) => (
+                      <div key={attempt.id} className="rounded-md bg-slate-50 border border-slate-100 px-3 py-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-xs font-black text-slate-800">{attempt.selfScore}/5</p>
+                          <p className="text-[10px] text-slate-400">{attempt.recordedAt.slice(0, 10)}</p>
+                        </div>
+                        <p className="text-xs text-slate-700 leading-relaxed mt-1">{attempt.answer}</p>
+                        {attempt.reflection && (
+                          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">{attempt.reflection}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+                  </>
+                )
+              })()}
             </article>
           )}
         </div>

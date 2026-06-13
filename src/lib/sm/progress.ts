@@ -1,6 +1,6 @@
-import { smAfternoonProblems, smEssayCases, smEssayProblems, smEvidenceDrills, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
+import { smAfternoonProblems, smAnswerPartPacks, smEssayCases, smEssayProblems, smEvidenceDrills, smFrequentThemes, smMorningQuestions, smSimulationSets, smWeaknessPrescriptions } from '../../data/sm/content'
 import type { SmFrequentTheme } from '../../data/sm/types'
-import type { SmChoice, SmEssayLabel } from '../../data/sm/types'
+import type { SmChoice, SmEssayLabel, SmFrequency } from '../../data/sm/types'
 
 const KEYS = {
   MORNING_RECORDS: 'pmap:sm:morning:records',
@@ -9,7 +9,13 @@ const KEYS = {
   ESSAY_DRAFTS: 'pmap:sm:essay:drafts',
   SELECTED_ESSAY_CASE: 'pmap:sm:essay:selected-case',
   EVIDENCE_DRILL_CHECKS: 'pmap:sm:evidence-drills:checks',
+  EVIDENCE_DRILL_ATTEMPTS: 'pmap:sm:evidence-drills:attempts',
   STUDY_PLAN_CHECKS: 'pmap:sm:study-plan:checks',
+  FINAL_SPRINT_CHECKS: 'pmap:sm:final-sprint:checks',
+  REVIEW_CHECKS: 'pmap:sm:review:checks',
+  ANSWER_PART_CHECKS: 'pmap:sm:answer-parts:checks',
+  SIMULATION_ATTEMPTS: 'pmap:sm:simulation:attempts',
+  PRESCRIPTION_CHECKS: 'pmap:sm:prescriptions:checks',
   EVENTS: 'pmap:sm:events',
 } as const
 
@@ -59,6 +65,25 @@ export interface SmSelectedEssayCase {
   selectedAt: string
 }
 
+export interface SmEvidenceDrillAttempt {
+  id: string
+  drillId: string
+  answer: string
+  selfScore: number
+  reflection: string
+  recordedAt: string
+}
+
+export interface SmSimulationAttempt {
+  id: string
+  setId: string
+  selfScore: number
+  withinTime: boolean
+  reflection: string
+  nextFix: string
+  recordedAt: string
+}
+
 export type SmEventType =
   | 'morning-answer'
   | 'afternoon-record'
@@ -66,7 +91,13 @@ export type SmEventType =
   | 'essay-sample-view'
   | 'essay-case-select'
   | 'evidence-drill-check'
+  | 'evidence-drill-attempt'
   | 'study-plan-check'
+  | 'final-sprint-check'
+  | 'review-check'
+  | 'answer-part-check'
+  | 'simulation-attempt'
+  | 'prescription-check'
 
 export interface SmHistoryEvent {
   id: string
@@ -105,8 +136,27 @@ export interface SmThemeReadiness {
   nextRoute: string
 }
 
+export type SmReviewPart = 'morning' | 'afternoon' | 'essay' | 'case' | 'knowledge' | 'answer' | 'simulation' | 'prescription'
+
+export interface SmReviewQueueItem {
+  id: string
+  part: SmReviewPart
+  priority: SmFrequency
+  themeId: string
+  themeRank: number
+  title: string
+  reason: string
+  action: string
+  route: string
+  minutes: number
+}
+
 export type SmStudyPlanChecks = Record<string, boolean>
 export type SmEvidenceDrillChecks = Record<string, boolean>
+export type SmFinalSprintChecks = Record<string, boolean>
+export type SmReviewChecks = Record<string, boolean>
+export type SmAnswerPartChecks = Record<string, boolean>
+export type SmPrescriptionChecks = Record<string, boolean>
 
 function genId(): string {
   return crypto.randomUUID()
@@ -242,6 +292,26 @@ export function setSmEvidenceDrillCheck(drillId: string, checked: boolean): void
   })
 }
 
+export function loadSmEvidenceDrillAttempts(): SmEvidenceDrillAttempt[] {
+  return loadJson<SmEvidenceDrillAttempt[]>(KEYS.EVIDENCE_DRILL_ATTEMPTS, [])
+}
+
+export function addSmEvidenceDrillAttempt(data: Omit<SmEvidenceDrillAttempt, 'id' | 'recordedAt'>): SmEvidenceDrillAttempt {
+  const attempt: SmEvidenceDrillAttempt = {
+    id: genId(),
+    recordedAt: new Date().toISOString(),
+    ...data,
+  }
+  saveJson(KEYS.EVIDENCE_DRILL_ATTEMPTS, [...loadSmEvidenceDrillAttempts(), attempt])
+  const drill = smEvidenceDrills.find((item) => item.id === data.drillId)
+  addEvent({
+    type: 'evidence-drill-attempt',
+    label: '根拠ドリル回答',
+    detail: `${drill?.title ?? '根拠ドリル'} / ${data.selfScore}/5`,
+  })
+  return attempt
+}
+
 export function setSmSelectedEssayCase(caseId: string): SmSelectedEssayCase {
   const selected: SmSelectedEssayCase = {
     caseId,
@@ -292,6 +362,118 @@ export function clearSmStudyPlanChecks(): void {
   saveJson(KEYS.STUDY_PLAN_CHECKS, {})
 }
 
+export function loadSmFinalSprintChecks(): SmFinalSprintChecks {
+  return loadJson<SmFinalSprintChecks>(KEYS.FINAL_SPRINT_CHECKS, {})
+}
+
+export function setSmFinalSprintCheck(id: string, checked: boolean, label: string): void {
+  const checks = loadSmFinalSprintChecks()
+  const next = {
+    ...checks,
+    [id]: checked,
+  }
+  saveJson(KEYS.FINAL_SPRINT_CHECKS, next)
+  addEvent({
+    type: 'final-sprint-check',
+    label: checked ? '直前仕上げ完了' : '直前仕上げ再開',
+    detail: label,
+  })
+}
+
+export function clearSmFinalSprintChecks(): void {
+  saveJson(KEYS.FINAL_SPRINT_CHECKS, {})
+}
+
+export function loadSmReviewChecks(): SmReviewChecks {
+  return loadJson<SmReviewChecks>(KEYS.REVIEW_CHECKS, {})
+}
+
+export function setSmReviewCheck(id: string, checked: boolean, label: string): void {
+  const checks = loadSmReviewChecks()
+  const next = {
+    ...checks,
+    [id]: checked,
+  }
+  saveJson(KEYS.REVIEW_CHECKS, next)
+  addEvent({
+    type: 'review-check',
+    label: checked ? '弱点復習完了' : '弱点復習再開',
+    detail: label,
+  })
+}
+
+export function clearSmReviewChecks(): void {
+  saveJson(KEYS.REVIEW_CHECKS, {})
+}
+
+export function loadSmAnswerPartChecks(): SmAnswerPartChecks {
+  return loadJson<SmAnswerPartChecks>(KEYS.ANSWER_PART_CHECKS, {})
+}
+
+export function setSmAnswerPartCheck(id: string, checked: boolean, label: string): void {
+  const checks = loadSmAnswerPartChecks()
+  const next = {
+    ...checks,
+    [id]: checked,
+  }
+  saveJson(KEYS.ANSWER_PART_CHECKS, next)
+  addEvent({
+    type: 'answer-part-check',
+    label: checked ? '答案パーツ完了' : '答案パーツ再開',
+    detail: label,
+  })
+}
+
+export function clearSmAnswerPartChecks(): void {
+  saveJson(KEYS.ANSWER_PART_CHECKS, {})
+}
+
+export function loadSmSimulationAttempts(): SmSimulationAttempt[] {
+  return loadJson<SmSimulationAttempt[]>(KEYS.SIMULATION_ATTEMPTS, [])
+}
+
+export function addSmSimulationAttempt(data: Omit<SmSimulationAttempt, 'id' | 'recordedAt'>): SmSimulationAttempt {
+  const attempt: SmSimulationAttempt = {
+    id: genId(),
+    recordedAt: new Date().toISOString(),
+    ...data,
+  }
+  saveJson(KEYS.SIMULATION_ATTEMPTS, [...loadSmSimulationAttempts(), attempt])
+  const set = smSimulationSets.find((item) => item.id === data.setId)
+  addEvent({
+    type: 'simulation-attempt',
+    label: '本番リハーサル',
+    detail: `${set?.title ?? 'リハーサル'} / ${data.selfScore}/5${data.withinTime ? ' / 時間内' : ' / 時間超過'}`,
+  })
+  return attempt
+}
+
+export function clearSmSimulationAttempts(): void {
+  saveJson(KEYS.SIMULATION_ATTEMPTS, [])
+}
+
+export function loadSmPrescriptionChecks(): SmPrescriptionChecks {
+  return loadJson<SmPrescriptionChecks>(KEYS.PRESCRIPTION_CHECKS, {})
+}
+
+export function setSmPrescriptionCheck(id: string, checked: boolean, label: string): void {
+  const checks = loadSmPrescriptionChecks()
+  const next = {
+    ...checks,
+    [id]: checked,
+  }
+  saveJson(KEYS.PRESCRIPTION_CHECKS, next)
+  addEvent({
+    type: 'prescription-check',
+    label: checked ? '弱点処方完了' : '弱点処方再開',
+    detail: label,
+  })
+}
+
+export function clearSmPrescriptionChecks(): void {
+  saveJson(KEYS.PRESCRIPTION_CHECKS, {})
+}
+
 export function averageReview(review: SmEssayReview): number {
   const values = [review.relevance, review.specificity, review.serviceManagement, review.structure]
   return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
@@ -308,7 +490,11 @@ export function getSmSummary() {
   const afternoonRecords = loadSmAfternoonRecords()
   const essayAttempts = loadSmEssayAttempts()
   const evidenceChecks = loadSmEvidenceDrillChecks()
+  const evidenceAttempts = loadSmEvidenceDrillAttempts()
   const completedEvidenceDrills = smEvidenceDrills.filter((drill) => evidenceChecks[drill.id]).length
+  const evidenceAverageScore = evidenceAttempts.length > 0
+    ? Math.round((evidenceAttempts.reduce((sum, attempt) => sum + attempt.selfScore, 0) / evidenceAttempts.length) * 10) / 10
+    : null
   return {
     morning: {
       attempted: attemptedMorning,
@@ -326,6 +512,8 @@ export function getSmSummary() {
     evidenceDrills: {
       completed: completedEvidenceDrills,
       total: smEvidenceDrills.length,
+      attemptCount: evidenceAttempts.length,
+      averageScore: evidenceAverageScore,
       rate: smEvidenceDrills.length > 0 ? Math.round((completedEvidenceDrills / smEvidenceDrills.length) * 100) : 0,
     },
     essay: {
@@ -451,4 +639,205 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
       }
     })
     .sort((a, b) => a.score - b.score || a.theme.rank - b.theme.rank)
+}
+
+function themeOf(themeId: string): SmFrequentTheme {
+  return smFrequentThemes.find((theme) => theme.id === themeId) ?? smFrequentThemes[0]
+}
+
+function priorityValue(value: SmFrequency): number {
+  return value === 'S' ? 0 : value === 'A' ? 1 : 2
+}
+
+function latestEvidenceAttempt(drillId: string, attempts: SmEvidenceDrillAttempt[]): SmEvidenceDrillAttempt | undefined {
+  return attempts
+    .filter((attempt) => attempt.drillId === drillId)
+    .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0]
+}
+
+function latestSimulationAttempt(setId: string, attempts: SmSimulationAttempt[]): SmSimulationAttempt | undefined {
+  return attempts
+    .filter((attempt) => attempt.setId === setId)
+    .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0]
+}
+
+export function getSmReviewQueue(): SmReviewQueueItem[] {
+  const morningRecords = loadSmMorningRecords()
+  const latestByQuestion = new Map<string, SmMorningRecord>()
+  for (const record of [...morningRecords].sort((a, b) => b.answeredAt.localeCompare(a.answeredAt))) {
+    if (!latestByQuestion.has(record.questionId)) latestByQuestion.set(record.questionId, record)
+  }
+  const afternoonRecords = loadSmAfternoonRecords()
+  const essayAttempts = loadSmEssayAttempts()
+  const evidenceChecks = loadSmEvidenceDrillChecks()
+  const evidenceAttempts = loadSmEvidenceDrillAttempts()
+  const answerPartChecks = loadSmAnswerPartChecks()
+  const simulationAttempts = loadSmSimulationAttempts()
+  const prescriptionChecks = loadSmPrescriptionChecks()
+  const queue: SmReviewQueueItem[] = []
+
+  smMorningQuestions.forEach((question) => {
+    const record = latestByQuestion.get(question.id)
+    if (record?.isCorrect) return
+    const theme = themeOf(question.themeId)
+    queue.push({
+      id: `morning:${question.id}`,
+      part: 'morning',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `午前Ⅱ 問${question.number}: ${question.topic}`,
+      reason: record ? `直近不正解（${record.selected}を選択）` : '未演習',
+      action: question.reviewNote,
+      route: '/it-service-manager/morning',
+      minutes: 4,
+    })
+  })
+
+  smEvidenceDrills.forEach((drill) => {
+    const attempt = latestEvidenceAttempt(drill.id, evidenceAttempts)
+    const checked = !!evidenceChecks[drill.id]
+    if (checked && attempt && attempt.selfScore >= 4) return
+    const theme = themeOf(drill.themeId)
+    queue.push({
+      id: `evidence:${drill.id}`,
+      part: 'case',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `根拠ドリル: ${drill.title}`,
+      reason: !attempt ? '回答未記録' : attempt.selfScore < 4 ? `直近自己採点 ${attempt.selfScore}/5` : '完了チェック未完了',
+      action: drill.practiceSteps[0] ?? '設問要求、本文根拠、答案骨子を分けて書く',
+      route: '/it-service-manager/cases',
+      minutes: Number.parseInt(drill.timeBox, 10) || 8,
+    })
+  })
+
+  smAfternoonProblems.forEach((problem) => {
+    const records = afternoonRecords.filter((record) => record.problemId === problem.id)
+    const bestScore = records.length > 0 ? Math.max(...records.map((record) => record.score)) : null
+    if (bestScore !== null && bestScore >= 30) return
+    const theme = problem.themeIds.map(themeOf).sort((a, b) => priorityValue(a.frequency) - priorityValue(b.frequency) || a.rank - b.rank)[0]
+    queue.push({
+      id: `afternoon:${problem.id}`,
+      part: 'afternoon',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `午後Ⅰ 問${problem.number}: ${problem.title}`,
+      reason: bestScore === null ? '未記録' : `最高 ${bestScore}/50点`,
+      action: problem.traps[0] ?? '公式解答例と採点講評で、根拠不足を確認する',
+      route: '/it-service-manager/afternoon',
+      minutes: 35,
+    })
+  })
+
+  smEssayProblems.forEach((problem) => {
+    const attempts = essayAttempts.filter((attempt) => attempt.problemId === problem.id)
+    const average = attempts.length > 0
+      ? Math.round((attempts.reduce((sum, attempt) => sum + averageReview(attempt.review), 0) / attempts.length) * 10) / 10
+      : null
+    if (average !== null && average >= 3.5) return
+    const theme = problem.themeIds.map(themeOf).sort((a, b) => priorityValue(a.frequency) - priorityValue(b.frequency) || a.rank - b.rank)[0]
+    queue.push({
+      id: `essay:${problem.id}`,
+      part: 'essay',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `午後Ⅱ 問${problem.number}: ${problem.title}`,
+      reason: average === null ? '骨子・論述未記録' : `自己評価平均 ${average}/5`,
+      action: problem.evaluationCriteria[0] ?? '題意、具体性、SM活動、構成を見直す',
+      route: '/it-service-manager/essay',
+      minutes: 45,
+    })
+  })
+
+  smAnswerPartPacks.forEach((pack) => {
+    if (answerPartChecks[pack.id]) return
+    const theme = themeOf(pack.themeId)
+    queue.push({
+      id: `answer:${pack.id}`,
+      part: 'answer',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `答案パーツ: ${pack.title}`,
+      reason: '未チェック',
+      action: pack.reusablePhrases[0] ?? pack.strongAnswer,
+      route: '/it-service-manager/answer-parts',
+      minutes: Number.parseInt(pack.timeBox, 10) || 8,
+    })
+  })
+
+  smSimulationSets.forEach((set) => {
+    const attempt = latestSimulationAttempt(set.id, simulationAttempts)
+    if (attempt && attempt.selfScore >= 4 && attempt.withinTime) return
+    const theme = set.themeIds.map(themeOf).sort((a, b) => priorityValue(a.frequency) - priorityValue(b.frequency) || a.rank - b.rank)[0]
+    queue.push({
+      id: `simulation:${set.id}`,
+      part: 'simulation',
+      priority: theme.frequency,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `本番リハ: ${set.title}`,
+      reason: !attempt ? '未実施' : attempt.selfScore < 4 ? `自己評価 ${attempt.selfScore}/5` : '時間内完了が未達',
+      action: set.retryPlan,
+      route: '/it-service-manager/simulation',
+      minutes: set.minutes,
+    })
+  })
+
+  smWeaknessPrescriptions.forEach((prescription) => {
+    if (prescriptionChecks[prescription.id]) return
+    const theme = prescription.themeIds.map(themeOf).sort((a, b) => priorityValue(a.frequency) - priorityValue(b.frequency) || a.rank - b.rank)[0]
+    queue.push({
+      id: `prescription:${prescription.id}`,
+      part: 'prescription',
+      priority: prescription.priority,
+      themeId: theme.id,
+      themeRank: theme.rank,
+      title: `処方箋: ${prescription.title}`,
+      reason: prescription.symptom,
+      action: prescription.quickFix,
+      route: '/it-service-manager/prescriptions',
+      minutes: prescription.minutes,
+    })
+  })
+
+  getSmThemeReadiness()
+    .filter((item) => item.status !== 'ready')
+    .slice(0, 8)
+    .forEach((item) => {
+      queue.push({
+        id: `knowledge:${item.theme.id}`,
+        part: 'knowledge',
+        priority: item.theme.frequency,
+        themeId: item.theme.id,
+        themeRank: item.theme.rank,
+        title: `知識確認: ${item.theme.title}`,
+        reason: item.reasons[0] ?? `仕上がり ${item.score}%`,
+        action: item.nextAction,
+        route: '/it-service-manager/knowledge',
+        minutes: 10,
+      })
+    })
+
+  const partOrder: Record<SmReviewPart, number> = {
+    morning: 0,
+    case: 1,
+    answer: 2,
+    simulation: 3,
+    prescription: 4,
+    afternoon: 5,
+    essay: 6,
+    knowledge: 7,
+  }
+
+  return queue.sort((a, b) =>
+    priorityValue(a.priority) - priorityValue(b.priority)
+    || a.themeRank - b.themeRank
+    || partOrder[a.part] - partOrder[b.part]
+    || a.title.localeCompare(b.title)
+  )
 }

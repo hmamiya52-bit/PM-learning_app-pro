@@ -1,14 +1,17 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, CircleAlert, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target } from 'lucide-react'
+import { ArrowRight, CheckCircle2, CircleAlert, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Sparkles, Target, Wrench } from 'lucide-react'
 import {
+  smAnswerPartPacks,
   smEssayAdaptationTemplates,
   smEssayCases,
   smExamTactics,
   smEvidenceDrills,
   smFinalCheckpoints,
   smFrequentThemes,
+  smSimulationSets,
   smStudyPlanPhases,
   smThemeStudyRecipes,
+  smWeaknessPrescriptions,
 } from '../../data/sm/content'
 import { getSmSummary, getSmThemeReadiness } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
@@ -29,7 +32,8 @@ export default function SmStrategy() {
     'morning-finish': summary.morning.attempted >= summary.morning.total && summary.morning.rate >= 80,
     'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems
       && (summary.afternoon.bestScore ?? 0) >= 30
-      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total),
+      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total)
+      && summary.evidenceDrills.attemptCount >= Math.min(8, summary.evidenceDrills.total),
     'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
@@ -129,16 +133,39 @@ export default function SmStrategy() {
               <h2 className="text-sm font-black text-slate-900">答案素材を先に持つ</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例を題意に合わせて組み替えます。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース・{smEssayAdaptationTemplates.length} テンプレ。
+              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例を題意に合わせて組み替えます。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース・{smEssayAdaptationTemplates.length} テンプレ・{smAnswerPartPacks.length} パーツ・{smWeaknessPrescriptions.length} 処方・{smSimulationSets.length} リハ。
             </p>
           </div>
-          <Link
-            to="/it-service-manager/cases"
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
-          >
-            ケースを見る
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex flex-wrap gap-2 lg:justify-end">
+            <Link
+              to="/it-service-manager/answer-parts"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
+            >
+              <Sparkles className="w-4 h-4" />
+              答案パーツ
+            </Link>
+            <Link
+              to="/it-service-manager/cases"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50"
+            >
+              ケースを見る
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/it-service-manager/prescriptions"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50"
+            >
+              <Wrench className="w-4 h-4" />
+              弱点処方
+            </Link>
+            <Link
+              to="/it-service-manager/simulation"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50"
+            >
+              本番リハ
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </section>
 

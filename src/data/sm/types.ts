@@ -2,6 +2,9 @@ export type SmExamPart = 'morning' | 'afternoon' | 'essay'
 export type SmFrequency = 'S' | 'A' | 'B'
 export type SmChoice = 'ア' | 'イ' | 'ウ' | 'エ'
 export type SmEssayLabel = 'ア' | 'イ' | 'ウ'
+export type SmAnswerPartUse = 'afternoon' | 'essay' | 'both'
+export type SmSimulationPart = SmExamPart | 'mixed'
+export type SmPrescriptionPart = SmExamPart | 'foundation' | 'cross'
 
 export interface SmSourceLinks {
   question: string
@@ -60,6 +63,26 @@ export interface SmStudyPlanPhase {
   deliverable: string
   route: string
   themeIds: string[]
+}
+
+export interface SmFinalSprintTask {
+  id: string
+  title: string
+  part: SmExamPart | 'all'
+  minutes: number
+  goal: string
+  actions: string[]
+  successLine: string
+  route: string
+  themeIds: string[]
+}
+
+export interface SmExamDayStep {
+  id: string
+  title: string
+  timeBox: string
+  actions: string[]
+  avoid: string
 }
 
 export interface SmMorningFocusCard {
@@ -206,4 +229,58 @@ export interface SmEvidenceDrill {
   practiceSteps: string[]
   relatedKnowledge: string[]
   avoid: string
+}
+
+export interface SmAnswerPartPack {
+  id: string
+  title: string
+  themeId: string
+  use: SmAnswerPartUse
+  timeBox: string
+  trigger: string
+  weakAnswer: string
+  strongAnswer: string
+  reusablePhrases: string[]
+  scoringKeys: string[]
+  afternoonUse: string
+  essayUse: string
+  avoid: string
+}
+
+export interface SmSimulationSet {
+  id: string
+  title: string
+  part: SmSimulationPart
+  minutes: number
+  purpose: string
+  steps: {
+    label: string
+    detail: string
+    route: string
+  }[]
+  output: string
+  passLine: string
+  failureSignals: string[]
+  retryPlan: string
+  retryRoute: string
+  themeIds: string[]
+}
+
+export interface SmWeaknessPrescription {
+  id: string
+  title: string
+  part: SmPrescriptionPart
+  priority: SmFrequency
+  minutes: number
+  symptom: string
+  likelyCause: string
+  quickFix: string
+  drillSteps: string[]
+  passLine: string
+  badPatterns: string[]
+  routes: {
+    label: string
+    to: string
+  }[]
+  themeIds: string[]
 }

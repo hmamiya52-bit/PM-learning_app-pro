@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, ClipboardCheck } from 'lucide-react'
 import { smAfternoonProblems, smEssayProblems, smEvidenceDrills, smFrequentThemes, smMorningQuestions } from '../../data/sm/content'
-import { averageReview, getSmSummary, loadSmAfternoonRecords, loadSmEssayAttempts, loadSmEvents, loadSmMorningRecords } from '../../lib/sm/progress'
+import { averageReview, getSmSummary, loadSmAfternoonRecords, loadSmEssayAttempts, loadSmEvents, loadSmEvidenceDrillAttempts, loadSmMorningRecords } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
 function fmt(iso: string): string {
@@ -23,6 +23,7 @@ export default function SmHistory() {
   const morningRecords = loadSmMorningRecords()
   const afternoonRecords = loadSmAfternoonRecords()
   const essayAttempts = loadSmEssayAttempts()
+  const evidenceAttempts = loadSmEvidenceDrillAttempts()
   const weaknessMap = new Map<string, { count: number; reasons: string[] }>()
 
   const addWeakness = (themeId: string, reason: string) => {
@@ -50,6 +51,13 @@ export default function SmHistory() {
     .forEach((attempt) => {
       const problem = smEssayProblems.find((item) => item.id === attempt.problemId)
       problem?.themeIds.forEach((themeId) => addWeakness(themeId, `午後Ⅱ 問${problem.number} 自己評価${averageReview(attempt.review)}/5`))
+    })
+
+  evidenceAttempts
+    .filter((attempt) => attempt.selfScore < 4)
+    .forEach((attempt) => {
+      const drill = smEvidenceDrills.find((item) => item.id === attempt.drillId)
+      if (drill) addWeakness(drill.themeId, `根拠ドリル ${attempt.selfScore}/5`)
     })
 
   const weakThemes = Array.from(weaknessMap.entries())
@@ -80,7 +88,7 @@ export default function SmHistory() {
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
           <p className="text-xl font-black text-slate-900 mt-1">{summary.evidenceDrills.completed}本</p>
-          <p className="text-[11px] text-slate-500 mt-1">{smEvidenceDrills.length}本中、8本以上が目安</p>
+          <p className="text-[11px] text-slate-500 mt-1">回答 {summary.evidenceDrills.attemptCount}回 / 平均 {summary.evidenceDrills.averageScore ?? '-'} </p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">午後Ⅱ</p>
@@ -197,6 +205,25 @@ export default function SmHistory() {
                     <p key={attempt.id} className="text-xs text-slate-700">
                       問{problem?.number ?? ''}: {attempt.recordedAt.slice(0, 10)}
                       <span className="text-slate-400 ml-1">{attempt.review.reflection}</span>
+                    </p>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+            <h2 className="text-sm font-black text-slate-900 mb-2">根拠ドリル回答</h2>
+            {evidenceAttempts.length === 0 ? (
+              <p className="text-xs text-slate-400">未記録</p>
+            ) : (
+              <div className="space-y-1">
+                {evidenceAttempts.slice().reverse().slice(0, 8).map((attempt) => {
+                  const drill = smEvidenceDrills.find((item) => item.id === attempt.drillId)
+                  return (
+                    <p key={attempt.id} className="text-xs text-slate-700 leading-relaxed">
+                      {drill?.title ?? '根拠ドリル'}: {attempt.selfScore}/5
+                      <span className="text-slate-400 ml-1">{attempt.recordedAt.slice(0, 10)}</span>
                     </p>
                   )
                 })}

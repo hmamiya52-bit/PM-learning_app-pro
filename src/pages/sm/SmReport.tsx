@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, ClipboardCheck, Layers, ListChecks, Target, TrendingUp } from 'lucide-react'
-import { smEssayAdaptationTemplates, smEssayCases, smFinalCheckpoints } from '../../data/sm/content'
+import { ArrowRight, CheckCircle2, ClipboardCheck, Clock, Layers, ListChecks, Sparkles, Target, TrendingUp, Wrench } from 'lucide-react'
+import { smAnswerPartPacks, smEssayAdaptationTemplates, smEssayCases, smFinalCheckpoints, smFrequentThemes, smSimulationSets, smWeaknessPrescriptions } from '../../data/sm/content'
 import type { SmFrequency } from '../../data/sm/types'
-import { getSmSummary, getSmThemeReadiness, loadSmSelectedEssayCase } from '../../lib/sm/progress'
+import { getSmSummary, getSmThemeReadiness, loadSmAnswerPartChecks, loadSmPrescriptionChecks, loadSmSelectedEssayCase, loadSmSimulationAttempts } from '../../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
 type ReportFilter = 'priority' | 'all' | SmFrequency
@@ -35,7 +35,8 @@ export default function SmReport() {
     'morning-finish': summary.morning.attempted >= summary.morning.total && summary.morning.rate >= 80,
     'afternoon-finish': summary.afternoon.attemptedProblems >= summary.afternoon.totalProblems
       && (summary.afternoon.bestScore ?? 0) >= 30
-      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total),
+      && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total)
+      && summary.evidenceDrills.attemptCount >= Math.min(8, summary.evidenceDrills.total),
     'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
@@ -44,6 +45,32 @@ export default function SmReport() {
   const selectedCaseTemplateCount = selectedCase
     ? smEssayAdaptationTemplates.filter((template) => template.themeIds.some((themeId) => selectedCase.themeIds.includes(themeId))).length
     : 0
+  const answerPartChecks = loadSmAnswerPartChecks()
+  const answerPartCompleted = smAnswerPartPacks.filter((pack) => answerPartChecks[pack.id]).length
+  const answerPartSCompleted = smAnswerPartPacks.filter((pack) => {
+    const theme = smFrequentThemes.find((item) => item.id === pack.themeId)
+    return theme?.frequency === 'S' && answerPartChecks[pack.id]
+  }).length
+  const answerPartSTotal = smAnswerPartPacks.filter((pack) => smFrequentThemes.find((item) => item.id === pack.themeId)?.frequency === 'S').length
+  const simulationAttempts = loadSmSimulationAttempts()
+  const simulationCompleted = new Set(simulationAttempts.map((attempt) => attempt.setId)).size
+  const simulationPassed = smSimulationSets.filter((set) => {
+    const latest = simulationAttempts
+      .filter((attempt) => attempt.setId === set.id)
+      .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0]
+    return latest ? latest.selfScore >= 4 && latest.withinTime : false
+  }).length
+  const nextSimulation = smSimulationSets.find((set) => {
+    const latest = simulationAttempts
+      .filter((attempt) => attempt.setId === set.id)
+      .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))[0]
+    return !latest || latest.selfScore < 4 || !latest.withinTime
+  })
+  const prescriptionChecks = loadSmPrescriptionChecks()
+  const prescriptionCompleted = smWeaknessPrescriptions.filter((item) => prescriptionChecks[item.id]).length
+  const prescriptionSItems = smWeaknessPrescriptions.filter((item) => item.priority === 'S')
+  const prescriptionSCompleted = prescriptionSItems.filter((item) => prescriptionChecks[item.id]).length
+  const nextPrescription = smWeaknessPrescriptions.find((item) => !prescriptionChecks[item.id])
 
   const visibleItems = filter === 'priority'
     ? readiness.filter((item) => item.status !== 'ready').slice(0, 6)
@@ -163,6 +190,18 @@ export default function SmReport() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
+            <Link to="/it-service-manager/review" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
+              弱点集中へ
+            </Link>
+            <Link to="/it-service-manager/answer-parts" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
+              答案パーツへ
+            </Link>
+            <Link to="/it-service-manager/prescriptions" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
+              処方箋へ
+            </Link>
+            <Link to="/it-service-manager/simulation" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
+              本番リハへ
+            </Link>
             <Link to="/it-service-manager/cases" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
               ケースを見る
             </Link>
@@ -193,6 +232,113 @@ export default function SmReport() {
               </span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div className="flex items-start gap-2">
+            <Clock className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
+            <div>
+              <h2 className="text-sm font-black text-slate-900">本番リハーサル</h2>
+              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+                制限時間に近い形で、午前Ⅱ・午後Ⅰ・午後Ⅱの成果物を作れるかを確認します。
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/it-service-manager/simulation"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700 flex-shrink-0"
+          >
+            本番リハへ
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">記録済み</p>
+            <p className="text-lg font-black text-slate-900">{simulationCompleted}/{smSimulationSets.length}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">合格ライン到達</p>
+            <p className="text-lg font-black text-slate-900">{simulationPassed}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">次に通す</p>
+            <p className="text-sm font-black text-slate-900 leading-snug">{nextSimulation?.title ?? '直前仕上げで確認'}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div className="flex items-start gap-2">
+            <Wrench className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
+            <div>
+              <h2 className="text-sm font-black text-slate-900">弱点処方箋</h2>
+              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+                演習で出た失点の症状を、短時間で直すドリルへ変換します。
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/it-service-manager/prescriptions"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700 flex-shrink-0"
+          >
+            処方箋へ
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">完了</p>
+            <p className="text-lg font-black text-slate-900">{prescriptionCompleted}/{smWeaknessPrescriptions.length}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">頻出S</p>
+            <p className="text-lg font-black text-slate-900">{prescriptionSCompleted}/{prescriptionSItems.length}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">次に直す</p>
+            <p className="text-sm font-black text-slate-900 leading-snug">{nextPrescription?.title ?? '本番リハで確認'}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div className="flex items-start gap-2">
+            <Sparkles className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
+            <div>
+              <h2 className="text-sm font-black text-slate-900">答案パーツの仕上がり</h2>
+              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+                午後Ⅰの短答と午後Ⅱの論述で使い回す表現を、頻出Sから先に固めます。
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/it-service-manager/answer-parts"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700 flex-shrink-0"
+          >
+            答案パーツへ
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">完了</p>
+            <p className="text-lg font-black text-slate-900">{answerPartCompleted}/{smAnswerPartPacks.length}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">頻出S</p>
+            <p className="text-lg font-black text-slate-900">{answerPartSCompleted}/{answerPartSTotal}</p>
+          </div>
+          <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+            <p className="text-[10px] font-black text-slate-400">次に効く</p>
+            <p className="text-sm font-black text-slate-900 leading-snug">
+              {answerPartCompleted < smAnswerPartPacks.length ? '未完了の頻出表現を暗唱する' : '午後Ⅰ・午後Ⅱで使って定着させる'}
+            </p>
+          </div>
         </div>
       </section>
 

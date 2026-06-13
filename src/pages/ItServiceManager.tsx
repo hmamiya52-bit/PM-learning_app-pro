@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Clock, FilePenLine, FileText, Layers, ListChecks, Map, Target, TrendingUp } from 'lucide-react'
-import { smAfternoonProblems, smEssayAdaptationTemplates, smEssayCases, smEvidenceDrills, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smStudyPlanPhases } from '../data/sm/content'
+import { ArrowRight, BookOpen, CheckCircle2, ClipboardCheck, Clock, FilePenLine, FileText, Layers, ListChecks, Map, RotateCcw, Sparkles, Target, TimerReset, TrendingUp, Wrench } from 'lucide-react'
+import { smAfternoonProblems, smAnswerPartPacks, smEssayAdaptationTemplates, smEssayCases, smEvidenceDrills, smFrequentThemes, smKnowledgeSections, smMorningQuestions, smQuickDrills, smSimulationSets, smStudyPlanPhases, smWeaknessPrescriptions } from '../data/sm/content'
 import { getSmSummary } from '../lib/sm/progress'
 import { FrequencyBadge, SmPageChrome } from './sm/SmPageChrome'
 
@@ -55,8 +55,9 @@ export default function ItServiceManager() {
             label: '午後Ⅰを解く',
           }
         : summary.evidenceDrills.completed < Math.min(8, summary.evidenceDrills.total)
+          || summary.evidenceDrills.attemptCount < Math.min(8, summary.evidenceDrills.total)
           ? {
-              text: `根拠ドリルを8本目安で解き、午後Ⅰで設問条件と本文根拠を結びつける癖を作る。現在 ${summary.evidenceDrills.completed}/${summary.evidenceDrills.total}本。`,
+              text: `根拠ドリルを8本目安で書き、午後Ⅰで設問条件と本文根拠を結びつける癖を作る。完了 ${summary.evidenceDrills.completed}/${summary.evidenceDrills.total}本、回答 ${summary.evidenceDrills.attemptCount}回。`,
               to: '/it-service-manager/cases',
               label: '根拠ドリルへ',
             }
@@ -67,9 +68,9 @@ export default function ItServiceManager() {
               label: '午後Ⅱを書く',
             }
           : {
-              text: '不正解・低得点・未完了テーマを仕上げレポートで確認する。',
-              to: '/it-service-manager/report',
-              label: 'レポートを見る',
+              text: '直前仕上げで、午前Ⅱ・午後Ⅰ・午後Ⅱの本番前チェックを順番に潰す。',
+              to: '/it-service-manager/final',
+              label: '直前仕上げへ',
             }
 
   return (
@@ -95,7 +96,7 @@ export default function ItServiceManager() {
         <StatCard
           title="根拠ドリル"
           value={`${summary.evidenceDrills.completed}/${smEvidenceDrills.length}`}
-          helper="午後Ⅰの根拠回答を短答で練習。8本以上を仕上げ目安。"
+          helper={`回答 ${summary.evidenceDrills.attemptCount}回。平均 ${summary.evidenceDrills.averageScore ?? '-'} / 5。`}
           to="/it-service-manager/cases"
           icon={Layers}
         />
@@ -224,11 +225,31 @@ export default function ItServiceManager() {
         </div>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         <Link to="/it-service-manager/strategy" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Map className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">攻略マップ</p>
           <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">50時間の使い方、テーマ別の時間配分、仕上げ判定をまとめて確認します。</p>
+        </Link>
+        <Link to="/it-service-manager/review" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <RotateCcw className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">弱点集中</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録から、今日戻るべき午前Ⅱ・根拠ドリル・午後Ⅰ・午後Ⅱを自動で並べます。</p>
+        </Link>
+        <Link to="/it-service-manager/prescriptions" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <Wrench className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">弱点処方箋</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">失点の症状から、短時間で直す順番と戻るページを決めます。現在 {smWeaknessPrescriptions.length} 件。</p>
+        </Link>
+        <Link to="/it-service-manager/answer-parts" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <Sparkles className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">答案パーツ</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰ・午後Ⅱでそのまま使える表現を、弱い答案から強い答案へ変換して覚えます。現在 {smAnswerPartPacks.length} 本。</p>
+        </Link>
+        <Link to="/it-service-manager/simulation" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <TimerReset className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">本番リハーサル</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午前Ⅱ・午後Ⅰ・午後Ⅱを、制限時間と成果物を決めて通します。現在 {smSimulationSets.length} セット。</p>
         </Link>
         <Link to="/it-service-manager/cases" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Layers className="w-5 h-5 text-cyan-700 mb-2" />
@@ -244,6 +265,11 @@ export default function ItServiceManager() {
           <ClipboardCheck className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">仕上げレポート</p>
           <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録からテーマ別の仕上がりを見て、次に戻るべき午前Ⅱ・午後Ⅰ・午後Ⅱを決めます。</p>
+        </Link>
+        <Link to="/it-service-manager/final" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
+          <Target className="w-5 h-5 text-cyan-700 mb-2" />
+          <p className="text-sm font-black text-slate-900">直前仕上げ</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">本番前に潰すタスク、答案の最終確認、当日の動きを一画面で確認します。</p>
         </Link>
         <Link to="/it-service-manager/history" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <TrendingUp className="w-5 h-5 text-cyan-700 mb-2" />

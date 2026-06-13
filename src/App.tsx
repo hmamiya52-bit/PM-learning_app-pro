@@ -35,6 +35,11 @@ import SmEssay from './pages/sm/SmEssay'
 import SmHistory from './pages/sm/SmHistory'
 import SmReport from './pages/sm/SmReport'
 import SmPlan from './pages/sm/SmPlan'
+import SmFinalSprint from './pages/sm/SmFinalSprint'
+import SmReview from './pages/sm/SmReview'
+import SmAnswerParts from './pages/sm/SmAnswerParts'
+import SmSimulation from './pages/sm/SmSimulation'
+import SmPrescriptions from './pages/sm/SmPrescriptions'
 
 /**
  * 開発版 App.tsx（フェーズ1）
@@ -81,7 +86,7 @@ export default function App() {
           <Route path="/essay/:id/sample" element={<EssaySampleAnswerView />} />
           <Route path="/essay/:id/attempts/:attemptId" element={<EssayAttemptDetail />} />
 
-          {/* ITサービスマネージャ寄り道モード（PM本編の検索・履歴・バッジ・進捗とは分離） */}
+          {/* ITサービスマネージャ */}
           <Route path="/it-service-manager" element={<ItServiceManager />} />
           <Route path="/it-service-manager/strategy" element={<SmStrategy />} />
           <Route path="/it-service-manager/cases" element={<SmCases />} />
@@ -93,6 +98,11 @@ export default function App() {
           <Route path="/it-service-manager/essay" element={<SmEssay />} />
           <Route path="/it-service-manager/history" element={<SmHistory />} />
           <Route path="/it-service-manager/report" element={<SmReport />} />
+          <Route path="/it-service-manager/final" element={<SmFinalSprint />} />
+          <Route path="/it-service-manager/review" element={<SmReview />} />
+          <Route path="/it-service-manager/answer-parts" element={<SmAnswerParts />} />
+          <Route path="/it-service-manager/simulation" element={<SmSimulation />} />
+          <Route path="/it-service-manager/prescriptions" element={<SmPrescriptions />} />
 
           {/* 共通機能 */}
           <Route path="/search" element={<Search />} />

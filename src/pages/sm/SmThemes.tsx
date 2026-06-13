@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BarChart3 } from 'lucide-react'
+import { ArrowRight, BarChart3, CheckCircle2, Clock, Target } from 'lucide-react'
 import { smFrequentThemes, smStudyPlanPhases, smThemeStudyRecipes } from '../../data/sm/content'
 import type { SmFrequency } from '../../data/sm/types'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
@@ -13,6 +13,16 @@ const partLabels = {
 
 type ThemeFilter = 'all' | SmFrequency
 
+function examOrder(label: string): number {
+  const match = label.match(/^(R|H)(\d+)/)
+  if (!match) return 0
+  const era = match[1]
+  const yearNumber = Number.parseInt(match[2], 10)
+  const westernYear = era === 'R' ? 2018 + yearNumber : 1988 + yearNumber
+  const seasonWeight = label.includes('春') ? 0.2 : label.includes('秋') ? 0.1 : 0
+  return westernYear + seasonWeight
+}
+
 export default function SmThemes() {
   const sortedThemes = useMemo(() => [...smFrequentThemes].sort((a, b) => a.rank - b.rank), [])
   const [filter, setFilter] = useState<ThemeFilter>('all')
@@ -20,6 +30,13 @@ export default function SmThemes() {
     () => sortedThemes.filter((theme) => filter === 'all' || theme.frequency === filter),
     [filter, sortedThemes],
   )
+  const yearLabels = useMemo(
+    () => Array.from(new Set(sortedThemes.flatMap((theme) => theme.years))).sort((a, b) => examOrder(b) - examOrder(a)),
+    [sortedThemes],
+  )
+  const sThemes = sortedThemes.filter((theme) => theme.frequency === 'S')
+  const crossPartThemes = sortedThemes.filter((theme) => theme.appearsIn.length >= 3)
+  const mostFrequent = sortedThemes[0]
   const counts = {
     S: smFrequentThemes.filter((theme) => theme.frequency === 'S').length,
     A: smFrequentThemes.filter((theme) => theme.frequency === 'A').length,
@@ -50,6 +67,102 @@ export default function SmThemes() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-2">
+        <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Target className="w-4 h-4 text-rose-600" />
+            <p className="text-[11px] font-bold text-slate-400">最優先</p>
+          </div>
+          <p className="text-lg font-black text-slate-900 mt-1">頻出S {sThemes.length}テーマ</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱ・午後Ⅰ・午後Ⅱをまたいで点に変わりやすいテーマです。</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <p className="text-[11px] font-bold text-slate-400">横断</p>
+          </div>
+          <p className="text-lg font-black text-slate-900 mt-1">{crossPartThemes.length}テーマ</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱの用語を午後Ⅰの根拠、午後Ⅱの題材へ転用できます。</p>
+        </div>
+        <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-cyan-700" />
+            <p className="text-[11px] font-bold text-slate-400">最初に読む</p>
+          </div>
+          <p className="text-sm font-black text-slate-900 leading-snug mt-2">#{mostFrequent.rank} {mostFrequent.title}</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">{mostFrequent.summary}</p>
+        </div>
+      </section>
+
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-cyan-700" />
+              <h2 className="text-sm font-black text-slate-900">出題のまとまり</h2>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              丸が多いテーマほど繰り返し出ています。まずSテーマの横並びを見て、午後Ⅰ・午後Ⅱへ使う順番を決めます。
+            </p>
+          </div>
+          <Link
+            to="/it-service-manager/prescriptions"
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50 flex-shrink-0"
+          >
+            弱点処方へ
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="overflow-x-auto mt-3">
+          <table className="min-w-[760px] w-full border-separate border-spacing-0 text-left">
+            <thead>
+              <tr>
+                <th className="sticky left-0 z-10 bg-white border-b border-slate-200 py-2 pr-3 text-[11px] font-black text-slate-500">テーマ</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-center text-[11px] font-black text-slate-500">頻出</th>
+                {yearLabels.map((year) => (
+                  <th key={year} className="border-b border-slate-200 px-2 py-2 text-center text-[10px] font-black text-slate-400">
+                    {year}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {sortedThemes.map((theme) => (
+                <tr key={theme.id}>
+                  <td className="sticky left-0 z-10 bg-white border-b border-slate-100 py-2 pr-3">
+                    <Link to={`#${theme.id}`} className="text-xs font-black text-slate-900 hover:text-cyan-700">
+                      #{theme.rank} {theme.title}
+                    </Link>
+                  </td>
+                  <td className="border-b border-slate-100 px-2 py-2 text-center">
+                    <FrequencyBadge value={theme.frequency} />
+                  </td>
+                  {yearLabels.map((year) => {
+                    const appears = theme.years.includes(year)
+                    return (
+                      <td key={`${theme.id}:${year}`} className="border-b border-slate-100 px-2 py-2 text-center">
+                        <span
+                          className={`inline-flex h-3 w-3 rounded-full ${
+                            appears
+                              ? theme.frequency === 'S'
+                                ? 'bg-rose-500'
+                                : theme.frequency === 'A'
+                                  ? 'bg-amber-500'
+                                  : 'bg-slate-400'
+                              : 'bg-slate-100'
+                          }`}
+                          aria-label={appears ? `${theme.title}は${year}に出題` : `${theme.title}は${year}に記録なし`}
+                        />
+                      </td>
+                    )
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 

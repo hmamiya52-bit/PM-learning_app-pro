@@ -95,7 +95,7 @@ export default function SmPlan() {
             <p className="text-[11px] font-bold text-slate-400">根拠ドリル</p>
           </div>
           <p className="text-xl font-black text-slate-900 mt-1">{summary.evidenceDrills.completed}/{smEvidenceDrills.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">午後Ⅰ対策の短答練習</p>
+          <p className="text-[11px] text-slate-500 mt-1">回答 {summary.evidenceDrills.attemptCount}回 / 平均 {summary.evidenceDrills.averageScore ?? '-'} </p>
         </div>
       </section>
 
