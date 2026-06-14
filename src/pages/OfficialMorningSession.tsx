@@ -69,13 +69,14 @@ export default function OfficialMorningSession() {
   const [showExplanation, setShowExplanation] = useState(false)
   const [lastXpGained, setLastXpGained] = useState(0)
   const [pendingBadges, setPendingBadges] = useState<BadgeDefinition[]>([])
-  // ★デバッグモード（正式版 v1.0.0 では削除予定 / detailed_design §2.7e.x 参照）
+  // ★デバッグモード（開発時のみ有効 / 本番ビルドでは import.meta.env.DEV=false で完全に無効）
   //   - 解説を常時表示（選択肢クリック不要）
   //   - 問題の前後ナビゲーションを表示
   //   - 解答記録（addMorningRecord / applyAnswer / addActivityEvent）に書き込まない
-  //   - URL クエリ ?debug=1 で起動時 ON も可能
+  //   - URL クエリ ?debug=1 で起動時 ON も可能（dev のみ）
+  const debugAvailable = import.meta.env.DEV
   const [debugMode, setDebugMode] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false
+    if (!debugAvailable || typeof window === 'undefined') return false
     const params = new URLSearchParams(window.location.search)
     return params.get('debug') === '1'
   })
@@ -311,19 +312,21 @@ export default function OfficialMorningSession() {
             </p>
             <p className="text-white/80 text-xs">{questionList.length} 問</p>
           </div>
-          {/* ★デバッグモードトグル（正式版 v1.0.0 で削除） */}
-          <button
-            onClick={toggleDebugMode}
-            className={`flex-shrink-0 px-2 py-1 rounded text-[11px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
-              debugMode
-                ? 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'
-                : 'bg-brand-dark text-white/80 hover:bg-brand-dark/80'
-            }`}
-            title="デバッグモード（解説常時表示・記録なし）"
-            aria-pressed={debugMode}
-          >
-            🐛 DEBUG
-          </button>
+          {/* ★デバッグモードトグル（開発時のみ表示 / 本番ビルドでは非表示） */}
+          {debugAvailable && (
+            <button
+              onClick={toggleDebugMode}
+              className={`flex-shrink-0 px-2 py-1 rounded text-[11px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                debugMode
+                  ? 'bg-yellow-400 text-yellow-900 hover:bg-yellow-300'
+                  : 'bg-brand-dark text-white/80 hover:bg-brand-dark/80'
+              }`}
+              title="デバッグモード（解説常時表示・記録なし）"
+              aria-pressed={debugMode}
+            >
+              🐛 DEBUG
+            </button>
+          )}
           <span className="flex-shrink-0 text-xs bg-brand-dark text-white/90 rounded-full px-2.5 py-1">
             {currentIndex + 1} / {questionList.length}
           </span>
