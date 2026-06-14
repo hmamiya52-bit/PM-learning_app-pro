@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import { getEssayProblemById } from '../data/essayProblems'
 import { getEssaySampleAnswer } from '../data/essaySampleAnswers'
 import { getAttempt } from '../lib/essay'
-import { formatRecommendedChars } from '../lib/essayReview'
-import { MarkupText } from '../components/MarkupText'
+import { formatRecommendedChars, countEssayChars } from '../lib/essayReview'
+import { SampleAnswerMeta } from '../components/essay/SampleAnswerMeta'
 
 /**
  * 論述 履歴詳細画面（/essay/:id/attempts/:attemptId）
@@ -63,9 +63,9 @@ export default function EssayAttemptDetail() {
   const sample = getEssaySampleAnswer(problem.id)
 
   const totalChars =
-    (attempt.bodyByLabel['ア']?.length ?? 0) +
-    (attempt.bodyByLabel['イ']?.length ?? 0) +
-    (attempt.bodyByLabel['ウ']?.length ?? 0)
+    countEssayChars(attempt.bodyByLabel['ア']) +
+    countEssayChars(attempt.bodyByLabel['イ']) +
+    countEssayChars(attempt.bodyByLabel['ウ'])
 
   const avgReview = Math.round(
     ((attempt.selfReview.relevance +
@@ -128,7 +128,7 @@ export default function EssayAttemptDetail() {
               <div className="flex items-baseline justify-between mb-1">
                 <p className="text-xs font-bold text-brand-dark">設問{q.label}</p>
                 <p className="text-[10px] text-slate-400 tabular-nums">
-                  {body.length}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
+                  {countEssayChars(body)}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
                 </p>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed mb-2">{q.text}</p>
@@ -162,13 +162,13 @@ export default function EssayAttemptDetail() {
                       <p className="text-xs font-bold text-brand-dark">設問{q.label}</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
-                          <p className="text-[10px] text-slate-400 mb-1 tabular-nums">あなたの答案（{mine.length}字）</p>
+                          <p className="text-[10px] text-slate-400 mb-1 tabular-nums">あなたの答案（{countEssayChars(mine)}字）</p>
                           <div className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap bg-slate-50 rounded-md p-3">
                             {mine || <span className="text-slate-300 italic">（未入力）</span>}
                           </div>
                         </div>
                         <div>
-                          <p className="text-[10px] mb-1 tabular-nums" style={{ color: '#9d5b8b' }}>参考答案（{ref.length}字）</p>
+                          <p className="text-[10px] mb-1 tabular-nums" style={{ color: '#9d5b8b' }}>参考答案（{countEssayChars(ref)}字）</p>
                           <div
                             className="text-[13px] text-slate-800 leading-relaxed whitespace-pre-wrap rounded-md p-3 border"
                             style={{ backgroundColor: '#faf5f9', borderColor: '#e8d7e3' }}
@@ -181,44 +181,8 @@ export default function EssayAttemptDetail() {
                   )
                 })}
 
-                {/* 設計の意図 */}
-                <div className="rounded-lg p-3" style={{ backgroundColor: '#faf5f9' }}>
-                  <p className="text-xs font-bold mb-1" style={{ color: '#9d5b8b' }}>設計の意図</p>
-                  <p className="text-[13px] text-slate-700 leading-relaxed whitespace-pre-wrap">
-                    <MarkupText text={sample.designNote} />
-                  </p>
-                </div>
-
-                {/* ありがちな失点 */}
-                {sample.pitfalls.length > 0 && (
-                  <div className="rounded-lg p-3 bg-rose-50 border border-rose-100">
-                    <p className="text-xs font-bold text-rose-700 mb-1.5">ありがちな失点</p>
-                    <ul className="space-y-1.5">
-                      {sample.pitfalls.map((pf, i) => (
-                        <li key={i} className="text-[13px] text-slate-700 leading-relaxed flex gap-1.5">
-                          <span className="text-rose-400 flex-shrink-0" aria-hidden="true">•</span>
-                          <span><MarkupText text={pf} /></span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* さらに高評価を得るためのポイント（IPA採点者視点） */}
-                {sample.scoringTips && sample.scoringTips.length > 0 && (
-                  <div className="rounded-lg p-3 bg-emerald-50 border border-emerald-100">
-                    <p className="text-xs font-bold text-emerald-800 mb-0.5">さらに高評価を得るためのポイント</p>
-                    <p className="text-[10px] text-emerald-600 mb-1.5">IPA採点者の視点で、より上位の評価へ近づける着眼点です。</p>
-                    <ul className="space-y-1.5">
-                      {sample.scoringTips.map((tip, i) => (
-                        <li key={i} className="text-[13px] text-slate-700 leading-relaxed flex gap-1.5">
-                          <span className="text-emerald-500 flex-shrink-0" aria-hidden="true">▲</span>
-                          <span><MarkupText text={tip} /></span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {/* 解説3ブロック（設計の意図／ありがちな失点／さらに高評価を…） */}
+                <SampleAnswerMeta sample={sample} compact />
               </div>
             </details>
           ) : (

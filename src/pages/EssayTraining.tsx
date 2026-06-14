@@ -6,6 +6,7 @@ import EssayTimer from '../components/essay/EssayTimer'
 import EssayCharCounter from '../components/essay/EssayCharCounter'
 import EssaySelfReview from '../components/essay/EssaySelfReview'
 import EssayAttemptHistory from '../components/essay/EssayAttemptHistory'
+import PreambleDetails from '../components/essay/PreambleDetails'
 import {
   loadActive,
   saveActive,
@@ -19,7 +20,7 @@ import {
 } from '../lib/essay'
 import { applyEssayComplete } from '../lib/gamification'
 import { addActivityEvent } from '../lib/activityLog'
-import { defaultSelfReview, formatRecommendedChars } from '../lib/essayReview'
+import { defaultSelfReview, formatRecommendedChars, countEssayChars } from '../lib/essayReview'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
 import type {
@@ -40,8 +41,9 @@ import type {
  * step 遷移: writing → reviewing → reflecting
  */
 
+// 字数は改行を除外して数える（IPA の原稿用紙の数え方に合わせ、参考答案表示と統一）
 function countChars(s: string | undefined): number {
-  return (s ?? '').length
+  return countEssayChars(s)
 }
 
 export default function EssayTraining() {
@@ -320,7 +322,7 @@ export default function EssayTraining() {
             <p className="text-xs font-bold text-brand-dark">
               設問{q.label}
               <span className="ml-2 text-[10px] text-slate-400 font-normal tabular-nums">
-                {body.length}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
+                {countChars(body)}字 / 推奨 {formatRecommendedChars(q.recommendedChars)}
               </span>
             </p>
             <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
@@ -418,17 +420,7 @@ export default function EssayTraining() {
         </div>
 
         {/* 問題文（冒頭）— 折りたたみ。解答画面でいつでも参照できる */}
-        {problem.preamble && (
-          <details className="bg-white border border-slate-200 rounded-xl group">
-            <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-600">問題文（冒頭）を読む</span>
-              <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-            </summary>
-            <div className="px-4 pb-4 border-t border-slate-100">
-              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap pt-2">{problem.preamble}</p>
-            </div>
-          </details>
-        )}
+        {problem.preamble && <PreambleDetails preamble={problem.preamble} />}
 
         {/* ============================================
             STEP: writing

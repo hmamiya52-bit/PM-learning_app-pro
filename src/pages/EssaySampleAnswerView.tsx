@@ -1,8 +1,9 @@
 import { Link, useParams } from 'react-router-dom'
 import { getEssayProblemById } from '../data/essayProblems'
 import { getEssaySampleAnswer } from '../data/essaySampleAnswers'
-import { formatRecommendedChars } from '../lib/essayReview'
-import { MarkupText } from '../components/MarkupText'
+import { formatRecommendedChars, countEssayChars } from '../lib/essayReview'
+import { PreambleDetails } from '../components/essay/PreambleDetails'
+import { SampleAnswerMeta } from '../components/essay/SampleAnswerMeta'
 
 /**
  * 午後II 参考答案 閲覧画面（/essay/:id/sample）
@@ -58,17 +59,7 @@ export default function EssaySampleAnswerView() {
             </p>
 
             {/* 問題文（冒頭）— 折りたたみ */}
-            {problem.preamble && (
-              <details className="bg-white border border-slate-200 rounded-xl group">
-                <summary className="px-4 py-3 cursor-pointer list-none flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-600">問題文（冒頭）を読む</span>
-                  <span className="text-xs text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-                </summary>
-                <div className="px-4 pb-4 border-t border-slate-100">
-                  <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap pt-2">{problem.preamble}</p>
-                </div>
-              </details>
-            )}
+            {problem.preamble && <PreambleDetails preamble={problem.preamble} />}
 
             {/* 設問ごとに 設問文 ＋ 参考答案 */}
             {problem.setsumons.map((q) => {
@@ -83,7 +74,7 @@ export default function EssaySampleAnswerView() {
                   </div>
                   <div className="px-4 py-3">
                     <p className="text-[10px] mb-1 tabular-nums" style={{ color: '#9d5b8b' }}>
-                      参考答案（{ref.length}字）
+                      参考答案（{countEssayChars(ref)}字）
                     </p>
                     <div
                       className="text-sm text-slate-800 leading-relaxed whitespace-pre-wrap rounded-md p-3 border"
@@ -96,44 +87,8 @@ export default function EssaySampleAnswerView() {
               )
             })}
 
-            {/* 設計の意図 */}
-            <section className="rounded-xl p-4" style={{ backgroundColor: '#faf5f9' }}>
-              <p className="text-xs font-bold mb-1.5" style={{ color: '#9d5b8b' }}>設計の意図</p>
-              <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                <MarkupText text={sample.designNote} />
-              </p>
-            </section>
-
-            {/* ありがちな失点 */}
-            {sample.pitfalls.length > 0 && (
-              <section className="rounded-xl p-4 bg-rose-50 border border-rose-100">
-                <p className="text-xs font-bold text-rose-700 mb-2">ありがちな失点</p>
-                <ul className="space-y-2">
-                  {sample.pitfalls.map((pf, i) => (
-                    <li key={i} className="text-sm text-slate-700 leading-relaxed flex gap-1.5">
-                      <span className="text-rose-400 flex-shrink-0" aria-hidden="true">•</span>
-                      <span><MarkupText text={pf} /></span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* さらに高評価を得るためのポイント（IPA採点者視点） */}
-            {sample.scoringTips && sample.scoringTips.length > 0 && (
-              <section className="rounded-xl p-4 bg-emerald-50 border border-emerald-100">
-                <p className="text-xs font-bold text-emerald-800 mb-0.5">さらに高評価を得るためのポイント</p>
-                <p className="text-[10px] text-emerald-600 mb-2">IPA採点者の視点で、この答案をより上位の評価へ近づける着眼点です。</p>
-                <ul className="space-y-2">
-                  {sample.scoringTips.map((tip, i) => (
-                    <li key={i} className="text-sm text-slate-700 leading-relaxed flex gap-1.5">
-                      <span className="text-emerald-500 flex-shrink-0" aria-hidden="true">▲</span>
-                      <span><MarkupText text={tip} /></span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            {/* 解説3ブロック（設計の意図／ありがちな失点／さらに高評価を…） */}
+            <SampleAnswerMeta sample={sample} />
 
             {/* アクション */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

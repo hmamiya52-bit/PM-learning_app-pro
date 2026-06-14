@@ -185,7 +185,7 @@ export default function EssayList() {
         )}
 
         <p className="text-[11px] text-slate-400 leading-relaxed">
-          ※ 午後IIの公式設問を新しい年度から順次投入中です。練習画面から公式問題冊子・出題趣旨・採点講評を確認できます。
+          ※ 午後IIの公式設問を収録し、各問に参考答案（論述例）を用意しています。練習画面から公式問題冊子・出題趣旨・採点講評を確認できます。
         </p>
 
       </div>
