@@ -358,6 +358,7 @@ export default function AppliedRefresh() {
   }
 
   function resetMode() {
+    if (!window.confirm('応用情報マネジメントの診断・弱点復習・確認テストの進捗をすべて消去します。よろしいですか？')) return
     persistState(EMPTY_STATE)
     setState(EMPTY_STATE)
     setActiveTopicId(appliedRefreshTopics[0]?.id ?? '')
@@ -738,11 +739,29 @@ export default function AppliedRefresh() {
                 </div>
               </div>
               {finalAnswered === appliedRefreshFinalQuestions.length && (
-                <p className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mt-3">
-                  {finalScore >= 8
-                    ? 'かなり良いです。午前Ⅱ・午後Ⅰへ進む準備は整っています。'
-                    : '間違えたテーマだけ、弱点復習でもう一周すると滑らかに本編へ入れます。'}
-                </p>
+                <div className="text-xs bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mt-3">
+                  <p className="text-emerald-700">
+                    {finalScore >= 8
+                      ? 'かなり良いです。午前Ⅱ・午後Ⅰへ進む準備は整っています。'
+                      : '間違えたテーマだけ、弱点復習でもう一周すると滑らかに本編へ入れます。'}
+                  </p>
+                  {finalScore >= 8 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <Link
+                        to="/morning"
+                        className="inline-flex items-center rounded-lg bg-emerald-700 text-white font-bold px-3 py-1.5 hover:bg-emerald-800"
+                      >
+                        午前Ⅱ演習へ進む →
+                      </Link>
+                      <Link
+                        to="/afternoon"
+                        className="inline-flex items-center rounded-lg border border-emerald-300 text-emerald-800 font-bold px-3 py-1.5 hover:bg-emerald-100"
+                      >
+                        午後Ⅰ演習へ進む →
+                      </Link>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
             {appliedRefreshFinalQuestions.map((question) => (
