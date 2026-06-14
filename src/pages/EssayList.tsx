@@ -121,61 +121,43 @@ export default function EssayList() {
             条件に一致する問題がありません
           </p>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-1.5">
             {filteredRows.map(({ problem, attemptCount, latestEndedAt, plannedDate, hasSample }) => (
               <li key={problem.id}>
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-brand hover:shadow-md transition-all">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-brand hover:shadow-sm transition-all flex items-stretch">
+                  {/* 本体: タップで解答画面へ（大きいタップ領域） */}
                   <Link
                     to={`/essay/${problem.id}`}
-                    className="block px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                    className="flex-1 min-w-0 px-3.5 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 flex-wrap">
-                          <p className="text-[11px] text-slate-400">
-                            {problem.yearLabel} 問{problem.number}
-                          </p>
-                          {hasSample && (
-                            <span
-                              className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                              style={{ backgroundColor: '#f3e6ef', color: '#9d5b8b' }}
-                            >
-                              参考答案あり
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm font-bold text-slate-800 leading-snug mt-0.5">
-                          {problem.theme}
-                        </p>
-                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5 text-[11px]">
-                          <span className="text-slate-400">
-                            練習 <span className="font-bold text-brand-dark tabular-nums">{attemptCount}</span>回
-                          </span>
-                          {latestEndedAt && (
-                            <span className="text-slate-400">
-                              最新 <span className="text-slate-700">{fmtDate(latestEndedAt)}</span>
-                            </span>
-                          )}
-                          {plannedDate && (
-                            <span className="text-slate-400">
-                              計画 <span className="text-brand">{plannedDate}</span>
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-300 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                      </svg>
+                    <div className="flex items-center gap-2 flex-wrap text-[10px] leading-none">
+                      <span className="font-bold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 whitespace-nowrap">
+                        {problem.yearLabel} 問{problem.number}
+                      </span>
+                      {attemptCount > 0 ? (
+                        <span className="text-slate-400">
+                          練習<span className="font-bold text-brand-dark tabular-nums">{attemptCount}</span>回
+                          {latestEndedAt && <> ・ {fmtDate(latestEndedAt)}</>}
+                        </span>
+                      ) : (
+                        <span className="text-slate-300">未着手</span>
+                      )}
+                      {plannedDate && <span className="text-brand">・ 計画 {plannedDate}</span>}
                     </div>
+                    <p className="text-sm font-bold text-slate-800 leading-snug mt-1">
+                      {problem.theme}
+                    </p>
                   </Link>
+                  {/* 右レール: 参考答案へのショートカット（全幅フッタ行を廃し縦幅を圧縮） */}
                   {hasSample && (
                     <Link
                       to={`/essay/${problem.id}/sample`}
-                      className="flex items-center justify-between px-4 py-2 border-t border-slate-100 text-[11px] font-bold hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                      aria-label={`${problem.yearLabel} 問${problem.number} の参考答案を見る`}
+                      className="flex flex-col items-center justify-center gap-0.5 w-14 flex-shrink-0 border-l border-slate-100 text-[10px] font-bold hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
                       style={{ color: '#9d5b8b' }}
                     >
-                      <span>📝 参考答案を見る</span>
-                      <span aria-hidden="true">→</span>
+                      <span aria-hidden="true" className="text-sm leading-none">📝</span>
+                      <span className="leading-none">参考答案</span>
                     </Link>
                   )}
                 </div>
