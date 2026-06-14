@@ -92,4 +92,4 @@ F2-P5 essayProblem の self-review fix commit。本タスク対象外。
 
 ### F2-P7 仕上げで対応すべき既知 TODO
 1. ~~M2: `🐛 DEBUG` トグルボタン削除~~ → ✅ 2026-06-14 F2-P7 QA で **dev 限定 gate 化**（`import.meta.env.DEV` で `?debug=1` 起動・トグル表示を dev のみに限定。本番ビルドでは dead-code 化し dist から🐛DEBUG消失を確認）=commit 2abf254。完全削除でなく dev ツールを温存する方針を採用。
-2. M1: 達成度レポートのモバイル幅 sticky 列重なり（横スクロール時に年度ヘッダ左へ数字断片「3 年度」）は cosmetic で残＝提案レベル（z-index + padding 調整、最優先ではない）
+2. ~~M1: 達成度レポートのモバイル幅 sticky 列重なり（横スクロール時に年度ヘッダ左へ数字断片「3 年度」）~~ → ✅ 2026-06-14 修正済（commit f3e2ae0）。原因＝スクロール表の `px-4` で sticky 年度列が padding 端に止まり、左 16px の隙間へ問番号セルが滲んでいた。`px` を非スクロール外枠へ移し、内側スクローラの clip 境界＝padding 端に sticky 列を密着させて解消。実機(mobile375/PC1280)で確認
