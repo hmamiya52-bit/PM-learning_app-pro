@@ -212,7 +212,10 @@ export default function MorningAchievementReport({
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-auto px-4 py-3">
+        {/* px は外側の非スクロール枠に持たせ、内側スクローラの clip 境界を padding 端に一致させる
+            （sticky 年度列を clip 境界に密着させ、横スクロール時に問番号が左 padding へ滲むのを防ぐ） */}
+        <div className="min-h-0 flex-1 flex flex-col px-4 py-3">
+          <div className="min-h-0 flex-1 overflow-auto">
           <table className="w-full min-w-[920px] border-collapse text-xs">
             <thead>
               <tr>
@@ -267,6 +270,7 @@ export default function MorningAchievementReport({
               ))}
             </tbody>
           </table>
+          </div>
         </div>
 
         <footer className="border-t border-slate-200 px-4 py-3">

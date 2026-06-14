@@ -83,10 +83,16 @@ export function saveSavedAnswerSnapshot(
   recordId: string,
   snapshot: Omit<AfternoonSavedAnswerSnapshot, 'version'>,
 ): void {
-  localStorage.setItem(savedAnswersKey(recordId), JSON.stringify({
-    version: 1,
-    ...snapshot,
-  }))
+  try {
+    localStorage.setItem(savedAnswersKey(recordId), JSON.stringify({
+      version: 1,
+      ...snapshot,
+    }))
+  } catch {
+    // localStorage access can fail in private modes or on quota overflow.
+    // The tracker record itself is stored separately and still proceeds,
+    // so swallow here to avoid breaking the save / sync flow.
+  }
 }
 
 export function savedAnswerSnapshotExists(recordId: string): boolean {
