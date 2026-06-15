@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { BADGES, BADGE_CATEGORY_LABELS, BADGE_CATEGORY_ORDER, type BadgeDefinition } from '../data/badges'
 import BadgeMedal from '../components/badges/BadgeMedal'
 import { loadGamification } from '../lib/gamification'
+import { getDevMode } from '../lib/preferences'
 
 const TIER_LABEL: Record<string, string> = {
   bronze: 'ブロンズ',
@@ -17,12 +18,14 @@ const TIER_COLOR: Record<string, string> = {
   legendary: 'text-orange-700 bg-orange-100',
 }
 
-function BadgeDetailModal({ badge, unlocked, onClose }: {
+function BadgeDetailModal({ badge, unlocked, devMode, onClose }: {
   badge: BadgeDefinition
   unlocked: boolean
+  devMode: boolean
   onClose: () => void
 }) {
-  const shouldHide = badge.hideConditionUntilUnlock && !unlocked
+  // F2-P7: 通常は「ブロンズ」か「獲得済み」のみ完全表示。開発者モードで全表示。
+  const shouldHide = !devMode && badge.tier !== 'bronze' && !unlocked
   const displayName = shouldHide ? '？？？' : (badge.displayName ?? badge.name)
   const description = shouldHide ? '？？？' : badge.description
   const condition = shouldHide ? '？？？' : badge.condition
@@ -78,6 +81,7 @@ export default function Badges() {
     const state = loadGamification()
     return new Set(state.unlockedBadgeIds)
   }, [])
+  const devMode = getDevMode()
 
   const unlockedCount = BADGES.filter((b) => unlockedSet.has(b.id)).length
   const totalXp = BADGES.filter((b) => unlockedSet.has(b.id))
@@ -120,7 +124,7 @@ export default function Badges() {
             <div className="grid grid-cols-5 gap-3">
               {categoryBadges.map((badge) => {
                 const unlocked = unlockedSet.has(badge.id)
-                const shouldHide = badge.hideConditionUntilUnlock && !unlocked
+                const shouldHide = !devMode && badge.tier !== 'bronze' && !unlocked
                 const displayName = shouldHide ? '？？？' : (badge.displayName ?? badge.name)
                 return (
                   <div key={badge.id} className="flex flex-col items-center gap-1.5">
@@ -149,6 +153,7 @@ export default function Badges() {
         <BadgeDetailModal
           badge={selected}
           unlocked={unlockedSet.has(selected.id)}
+          devMode={devMode}
           onClose={() => setSelected(null)}
         />
       )}

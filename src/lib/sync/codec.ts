@@ -22,7 +22,7 @@ type Ref = number | string
 type CompactAnswerRecord = [Ref, 0 | 1, 0 | 1, number, string?]
 type CompactBookmark = [Ref, number]
 type CompactQuestionMastery = [Ref, 1 | 2 | 3] | [Ref, 0 | 1, 1 | 2 | 3]
-type CompactTrackerRecord = [string, Ref, number, number, string?]
+type CompactTrackerRecord = [string, Ref, number, number, string?, number?]
 type CompactSavedAnswerSnapshot = [
   string,
   Record<string, string>,
@@ -208,7 +208,10 @@ function encodeTrackerRecord(record: PracticeRecord): CompactTrackerRecord {
     encodeDate(record.date),
     record.score,
   ]
-  if (record.memo) base.push(record.memo)
+  // F2-P7: elapsedSec を [5] に。memo[4] が無くても位置を保つため '' を置く
+  const hasElapsed = typeof record.elapsedSec === 'number' && record.elapsedSec > 0
+  if (record.memo || hasElapsed) base.push(record.memo ?? '')
+  if (hasElapsed) base.push(record.elapsedSec)
   return base
 }
 
@@ -218,7 +221,8 @@ function decodeTrackerRecord(record: CompactTrackerRecord): PracticeRecord {
     problemId: decodeProblemRef(record[1]),
     date: decodeDate(record[2]),
     score: record[3],
-    memo: record[4],
+    memo: record[4] ? record[4] : undefined,
+    elapsedSec: typeof record[5] === 'number' ? record[5] : undefined,
   }
 }
 

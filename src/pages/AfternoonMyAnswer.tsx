@@ -429,7 +429,7 @@ function AfternoonMyAnswerContent({
   const handleRecordToTracker = () => {
     if (!allRowsMarked || recorded) return
 
-    const record = addRecord({ problemId: id, date: today(), score: calculatedScore })
+    const record = addRecord({ problemId: id, date: today(), score: calculatedScore, elapsedSec: timer.elapsed })
     saveSavedAnswerSnapshot(record.id, {
       answers: myAnswers,
       scorings,

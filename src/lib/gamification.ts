@@ -5,6 +5,11 @@ import { categories } from '../data/categories'
 import { questions as allQuestions } from '../data/questions'
 import { afternoonProblems } from '../data/afternoonProblems'
 import { loadRecords } from './tracker'
+import { loadAttempts } from './essay'
+import { loadMorningRecords } from './morningRecords'
+import { essayProblems } from '../data/essayProblems'
+import { officialMorningQuestions } from '../data/officialMorningQuestions'
+import type { EssayAttempt } from '../types'
 
 const STORAGE_KEY = 'pmap:gamification'
 const COMPLETE_BADGE_ID = 'complete-1'
@@ -180,11 +185,13 @@ function computeAfternoonStats() {
   const total = records.length
   let g1Over40 = 0   // PM1 で 40点以上
   let g2Over80 = 0   // PM1 で 45点以上（旧ID互換の変数名）
-  // 各 problemId について最高得点を集計（万里一空判定用）
+  let timeSec = 0    // F2-P7: 午後Ⅰ 累計学習時間（PracticeRecord.elapsedSec 総和）
+  // 各 problemId について最高得点を集計（全問6割判定用）
   const bestScoreByProblem = new Map<string, number>()
   for (const r of records) {
     if (r.score >= 40) g1Over40++
     if (r.score >= 45) g2Over80++
+    timeSec += r.elapsedSec ?? 0
     const prev = bestScoreByProblem.get(r.problemId) ?? -1
     if (r.score > prev) bestScoreByProblem.set(r.problemId, r.score)
   }
@@ -197,7 +204,55 @@ function computeAfternoonStats() {
       break
     }
   }
-  return { total, g1Over40, g2Over80, allClearedSixty }
+  return { total, g1Over40, g2Over80, allClearedSixty, timeHours: timeSec / 3600 }
+}
+
+/** 論述答案が自己評価Aか（5項目合計20点以上=80%） */
+function isEssayAttemptA(attempt: EssayAttempt): boolean {
+  const r = attempt.selfReview
+  if (!r) return false
+  const sum = r.relevance + r.structure + r.concreteness + r.consistency + r.charCount
+  return sum >= 20
+}
+
+/** 午後Ⅱ 論述バッジの判定材料を集約（量・質・時間） */
+function computeEssayStats() {
+  const attempts = loadAttempts()
+  const total = attempts.length
+  let aCount = 0
+  let timeSec = 0
+  const writtenProblemIds = new Set<string>()
+  for (const a of attempts) {
+    writtenProblemIds.add(a.problemId)
+    timeSec += a.elapsedSec ?? 0
+    if (isEssayAttemptA(a)) aCount++
+  }
+  const allWritten = essayProblems.length > 0 && writtenProblemIds.size >= essayProblems.length
+  return { total, aCount, allWritten, timeHours: timeSec / 3600 }
+}
+
+/** 公式午前Ⅱバッジの判定材料を集約（正解問題数・年度制覇・全問正解） */
+function computeMorningStats() {
+  const records = loadMorningRecords()
+  const correctIds = new Set<string>()
+  for (const r of records) {
+    if (r.isCorrect) correctIds.add(r.questionId)
+  }
+  const correctCount = correctIds.size
+  // 年度ごとに「全問正解済み」かを判定
+  const byYear = new Map<string, { total: number; correct: number }>()
+  for (const q of officialMorningQuestions) {
+    const e = byYear.get(q.year) ?? { total: 0, correct: 0 }
+    e.total += 1
+    if (correctIds.has(q.id)) e.correct += 1
+    byYear.set(q.year, e)
+  }
+  let yearComplete = 0
+  for (const e of byYear.values()) {
+    if (e.total > 0 && e.correct >= e.total) yearComplete += 1
+  }
+  const allCorrect = officialMorningQuestions.length > 0 && correctCount >= officialMorningQuestions.length
+  return { correctCount, yearComplete, allCorrect }
 }
 
 /** バッジ解放チェック */
@@ -218,8 +273,10 @@ function checkBadges(
   const masterCategoryCount = countMasteredCategories(0.8)
   const totalCategories = categories.length
 
-  // 午後問題演習統計
+  // 午後Ⅰ・午後Ⅱ・午前Ⅱ 統計（F2-P7 再設計）
   const afternoonStats = computeAfternoonStats()
+  const essayStats = computeEssayStats()
+  const morningStats = computeMorningStats()
 
   for (const badge of BADGES) {
     if (alreadyUnlocked.has(badge.id)) continue
@@ -228,40 +285,41 @@ function checkBadges(
     switch (badge.id) {
       // 学習継続
       case 'study-1': unlocked = state.totalAnswered >= 1; break
-      case 'study-2': unlocked = state.totalAnswered >= 50; break
-      case 'study-3': unlocked = state.totalAnswered >= 200; break
-      case 'study-4': unlocked = state.totalAnswered >= 500; break
-      case 'study-5': unlocked = state.totalAnswered >= 1000; break
+      case 'study-2': unlocked = state.totalAnswered >= 500; break
+      case 'study-3': unlocked = state.totalAnswered >= 2000; break
       // 連続正答
-      case 'streak-2': unlocked = state.maxStreak >= 5; break
-      case 'streak-3': unlocked = state.maxStreak >= 10; break
-      case 'streak-5': unlocked = state.maxStreak >= 30; break
-      case 'streak-6': unlocked = state.maxStreak >= 75; break
-      // 記述モード
-      case 'written-1': unlocked = state.writtenCorrect >= 1; break
-      case 'written-2': unlocked = state.writtenCorrect >= 20; break
-      case 'written-3': unlocked = state.writtenCorrect >= 100; break
-      case 'written-4': unlocked = state.writtenCorrectQuestionIds.length >= totalQuestions && totalQuestions > 0; break
+      case 'streak-1': unlocked = state.maxStreak >= 5; break
+      case 'streak-2': unlocked = state.maxStreak >= 30; break
+      case 'streak-3': unlocked = state.maxStreak >= 75; break
       // 踏破率
-      case 'coverage-1': unlocked = coveragePct >= 10; break
-      case 'coverage-2': unlocked = coveragePct >= 25; break
-      case 'coverage-3': unlocked = coveragePct >= 50; break
-      case 'coverage-4': unlocked = coveragePct >= 75; break
-      case 'coverage-6': unlocked = coveragePct >= 100; break
-      // 習熟（記述モード対象）
-      case 'mastery-1': unlocked = recentWrAccPct >= 50; break
-      case 'mastery-2': unlocked = recentWrAccPct >= 70; break
-      case 'mastery-4': unlocked = recentWrAccPct >= 100; break
+      case 'coverage-1': unlocked = coveragePct >= 25; break
+      case 'coverage-2': unlocked = coveragePct >= 50; break
+      case 'coverage-3': unlocked = coveragePct >= 100; break
+      // 記述・習熟
+      case 'written-1': unlocked = state.writtenCorrect >= 1; break
+      case 'written-2': unlocked = recentWrAccPct >= 80; break
       // カテゴリ制覇
       case 'category-1': unlocked = masterCategoryCount >= 1; break
       case 'category-2': unlocked = masterCategoryCount >= 7; break
-      case 'category-4': unlocked = masterCategoryCount >= totalCategories; break
-      // 午後問題演習
+      case 'category-3': unlocked = masterCategoryCount >= totalCategories; break
+      // 午前Ⅱ 公式
+      case 'morning-1': unlocked = morningStats.correctCount >= 50; break
+      case 'morning-2': unlocked = morningStats.correctCount >= 150; break
+      case 'morning-3': unlocked = morningStats.yearComplete >= 1; break
+      case 'morning-4': unlocked = morningStats.allCorrect; break
+      // 午後Ⅰ
       case 'afternoon-1': unlocked = afternoonStats.total >= 3; break
-      case 'afternoon-2': unlocked = afternoonStats.total >= 30; break
-      case 'afternoon-3': unlocked = afternoonStats.g1Over40 >= 10; break
-      case 'afternoon-4': unlocked = afternoonStats.g2Over80 >= 5; break
-      case 'afternoon-5': unlocked = afternoonStats.allClearedSixty; break
+      case 'afternoon-2': unlocked = afternoonStats.g1Over40 >= 10; break
+      case 'afternoon-3': unlocked = afternoonStats.g2Over80 >= 5; break
+      case 'afternoon-4': unlocked = afternoonStats.allClearedSixty; break
+      case 'afternoon-time': unlocked = afternoonStats.timeHours >= 20; break
+      // 午後Ⅱ 論述
+      case 'essay-1': unlocked = essayStats.total >= 1; break
+      case 'essay-2': unlocked = essayStats.aCount >= 1; break
+      case 'essay-3': unlocked = essayStats.aCount >= 5; break
+      case 'essay-4': unlocked = essayStats.aCount >= 15; break
+      case 'essay-time': unlocked = essayStats.timeHours >= 30; break
+      case 'essay-5': unlocked = essayStats.allWritten; break
       // コンプリート（自分以外の全バッジ）
       case COMPLETE_BADGE_ID: unlocked = hasUnlockedAllNonCompleteBadges(state.unlockedBadgeIds); break
     }

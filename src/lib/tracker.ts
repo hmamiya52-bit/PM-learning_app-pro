@@ -7,6 +7,8 @@ export interface PracticeRecord {
   date: string      // YYYY-MM-DD
   score: number
   memo?: string
+  /** F2-P7: 午後Ⅰ演習の経過秒（累計学習時間バッジ用）。旧記録は undefined */
+  elapsedSec?: number
 }
 
 type PlanMap = Record<string, string>  // problemId → YYYY-MM-DD

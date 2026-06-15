@@ -6,6 +6,7 @@ import {
   BarChart2, Star, Gem,
   FolderCheck, Folders, LayoutGrid, Network,
   Award, Lock,
+  Feather, PenTool, ScrollText, Clock,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { BadgeDefinition, BadgeTier } from '../../data/badges'
@@ -19,6 +20,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   BarChart2, Star, Gem,
   FolderCheck, Folders, LayoutGrid, Network,
   Award, Lock,
+  Feather, PenTool, ScrollText, Clock,
 }
 
 /** ティア別のリング（枠）スタイル */

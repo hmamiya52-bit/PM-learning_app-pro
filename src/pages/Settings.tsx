@@ -8,6 +8,7 @@ import { useAuth } from '../auth/useAuth'
 import { loadRecords } from '../lib/tracker'
 import { loadSyncMeta } from '../lib/sync/device'
 import { getImportantIds } from '../lib/importantMarks'
+import { getDevMode, setDevMode } from '../lib/preferences'
 
 function formatLastSyncAt(value: string | undefined): string {
   if (!value) return '----/--/-- --:--'
@@ -30,6 +31,7 @@ export default function Settings() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [resetDone, setResetDone] = useState(false)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+  const [devMode, setDevModeState] = useState(() => getDevMode())
 
   const handleLogout = () => {
     logout()
@@ -229,6 +231,31 @@ export default function Settings() {
             <HintRow icon="📶" title="オフライン対応" desc="一度アクセスすればWi-Fiなしでも学習できます（PWA）。" />
           </div>
         </section>
+
+        {/* 開発者モード（開発ビルドのみ表示／F2-P7） */}
+        {import.meta.env.DEV && (
+          <section>
+            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">開発者</h2>
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-800">開発者モード</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">勲章画面で全バッジを表示（本番ビルドでは非表示）</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { const next = !devMode; setDevMode(next); setDevModeState(next) }}
+                  role="switch"
+                  aria-checked={devMode}
+                  aria-label="開発者モード"
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${devMode ? 'bg-brand' : 'bg-slate-300'}`}
+                >
+                  <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${devMode ? 'translate-x-5' : 'translate-x-0.5'}`} />
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
 
       </main>
     </div>

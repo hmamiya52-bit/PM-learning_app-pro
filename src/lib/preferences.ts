@@ -5,6 +5,7 @@
 
 const MORNING_FONT_SIZE_KEY = 'pmap:morning_font_size'
 const MORNING_CHOICE_SHUFFLE_KEY = 'pmap:morning_choice_shuffle'
+const DEV_MODE_KEY = 'pmap:dev'
 
 export type FontSize = 'compact' | 'comfortable'
 
@@ -40,6 +41,27 @@ export function getMorningChoiceShuffle(): boolean {
 export function setMorningChoiceShuffle(enabled: boolean): void {
   try {
     localStorage.setItem(MORNING_CHOICE_SHUFFLE_KEY, String(enabled))
+  } catch {
+    // localStorage 不可な環境（プライベートブラウジング等）は無視
+  }
+}
+
+/**
+ * 開発者モード（F2-P7 バッジ再設計）。
+ * ON の間、勲章画面で全バッジを完全表示する（通常はブロンズ＋獲得済のみ表示）。
+ * トグル UI は開発ビルド（import.meta.env.DEV）でのみ表示する想定。端末ローカル・同期対象外。
+ */
+export function getDevMode(): boolean {
+  try {
+    return localStorage.getItem(DEV_MODE_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function setDevMode(enabled: boolean): void {
+  try {
+    localStorage.setItem(DEV_MODE_KEY, String(enabled))
   } catch {
     // localStorage 不可な環境（プライベートブラウジング等）は無視
   }
