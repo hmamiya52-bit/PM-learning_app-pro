@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { BADGES, BADGE_CATEGORY_LABELS, BADGE_CATEGORY_ORDER, type BadgeDefinition } from '../data/badges'
 import BadgeMedal from '../components/badges/BadgeMedal'
-import { loadGamification } from '../lib/gamification'
+import { loadGamification, getBadgeProgress, type BadgeProgress } from '../lib/gamification'
 import { getDevMode } from '../lib/preferences'
 
 const TIER_LABEL: Record<string, string> = {
@@ -18,10 +18,11 @@ const TIER_COLOR: Record<string, string> = {
   legendary: 'text-orange-700 bg-orange-100',
 }
 
-function BadgeDetailModal({ badge, unlocked, devMode, onClose }: {
+function BadgeDetailModal({ badge, unlocked, devMode, progress, onClose }: {
   badge: BadgeDefinition
   unlocked: boolean
   devMode: boolean
+  progress?: BadgeProgress
   onClose: () => void
 }) {
   // F2-P7: 通常は「ブロンズ」か「獲得済み」のみ完全表示。開発者モードで全表示。
@@ -56,6 +57,22 @@ function BadgeDetailModal({ badge, unlocked, devMode, onClose }: {
           <p className="font-medium text-slate-700 mb-1">解放条件</p>
           <p>{condition}</p>
         </div>
+        {devMode && progress && (
+          <div className="w-full">
+            <div className="flex items-center justify-between text-xs mb-1">
+              <span className="text-slate-500">取得進捗（開発者モード）</span>
+              <span className="font-bold tabular-nums text-slate-700">
+                {progress.current}/{progress.target}{progress.unit ?? ''}
+              </span>
+            </div>
+            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${unlocked ? 'bg-emerald-500' : 'bg-brand'}`}
+                style={{ width: `${progress.target > 0 ? Math.min(100, Math.round((progress.current / progress.target) * 100)) : 0}%` }}
+              />
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-1.5">
           <span className="text-amber-500 font-bold text-base">{xpBonus}</span>
           <span className="text-slate-400 text-sm">ボーナス</span>
@@ -82,6 +99,10 @@ export default function Badges() {
     return new Set(state.unlockedBadgeIds)
   }, [])
   const devMode = getDevMode()
+  const progress = useMemo<Record<string, BadgeProgress> | null>(
+    () => (devMode ? getBadgeProgress() : null),
+    [devMode],
+  )
 
   const unlockedCount = BADGES.filter((b) => unlockedSet.has(b.id)).length
   const totalXp = BADGES.filter((b) => unlockedSet.has(b.id))
@@ -140,6 +161,11 @@ export default function Badges() {
                     }`}>
                       {displayName}
                     </p>
+                    {devMode && progress?.[badge.id] && (
+                      <p className={`text-[9px] tabular-nums leading-none ${unlocked ? 'text-emerald-600' : 'text-slate-400'}`}>
+                        {progress[badge.id].current}/{progress[badge.id].target}{progress[badge.id].unit ?? ''}
+                      </p>
+                    )}
                   </div>
                 )
               })}
@@ -154,6 +180,7 @@ export default function Badges() {
           badge={selected}
           unlocked={unlockedSet.has(selected.id)}
           devMode={devMode}
+          progress={progress?.[selected.id]}
           onClose={() => setSelected(null)}
         />
       )}

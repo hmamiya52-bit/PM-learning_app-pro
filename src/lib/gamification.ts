@@ -13,6 +13,8 @@ import type { EssayAttempt } from '../types'
 
 const STORAGE_KEY = 'pmap:gamification'
 const COMPLETE_BADGE_ID = 'complete-1'
+/** F2-P7 でバッジID/条件を刷新。旧解放を再検証するための版数（loadGamification で移行） */
+const BADGE_SCHEMA_VERSION = 2
 
 export interface GamificationState {
   xp: number
@@ -31,6 +33,8 @@ export interface GamificationState {
   recentWrittenResults: boolean[]
   /** 解放済みバッジ ID の配列 */
   unlockedBadgeIds: string[]
+  /** バッジ定義スキーマ版数（F2-P7 移行用。未設定=旧スキーマ） */
+  badgeSchemaVersion?: number
 }
 
 export interface AnswerEvent {
@@ -71,6 +75,7 @@ const DEFAULT_STATE: GamificationState = {
   recentResults: [],
   recentWrittenResults: [],
   unlockedBadgeIds: [],
+  badgeSchemaVersion: BADGE_SCHEMA_VERSION,
 }
 
 function countUnlockedValidBadges(unlockedIds: string[]): number {
@@ -96,10 +101,30 @@ export function loadGamification(): GamificationState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return { ...DEFAULT_STATE }
-    return { ...DEFAULT_STATE, ...JSON.parse(raw) } as GamificationState
+    const parsed = JSON.parse(raw) as Partial<GamificationState>
+    const state = { ...DEFAULT_STATE, ...parsed } as GamificationState
+    // 移行判定は「生データ」の版数で行う（DEFAULT_STATE の既定値にマスクされないように）
+    if (parsed.badgeSchemaVersion === BADGE_SCHEMA_VERSION) return state
+    return migrateBadgeSchema(state)
   } catch {
     return { ...DEFAULT_STATE }
   }
+}
+
+/**
+ * F2-P7 バッジ再設計に伴う移行。
+ * 旧スキーマでは別条件だった同一ID（例: 旧 coverage-3=50% → 新 coverage-3=全問制覇）の
+ * 解放が新バッジに誤って引き継がれるため、現在の条件を満たすバッジのみへ再検証する（XP は据え置き）。
+ */
+function migrateBadgeSchema(state: GamificationState): GamificationState {
+  const satisfied = computeSatisfiedBadgeIds(state)
+  const migrated: GamificationState = {
+    ...state,
+    unlockedBadgeIds: BADGES.map((b) => b.id).filter((id) => satisfied.has(id)),
+    badgeSchemaVersion: BADGE_SCHEMA_VERSION,
+  }
+  saveGamification(migrated)
+  return migrated
 }
 
 function saveGamification(state: GamificationState): void {
@@ -196,15 +221,17 @@ function computeAfternoonStats() {
     if (r.score > prev) bestScoreByProblem.set(r.problemId, r.score)
   }
   // 万里一空: 全 afternoonProblems で 30点以上の記録が存在（PM1 50点満点で60% = 30点）
-  let allClearedSixty = afternoonProblems.length > 0
+  let clearedSixty = 0
   for (const p of afternoonProblems) {
     const best = bestScoreByProblem.get(p.id) ?? -1
-    if (best < 30) {
-      allClearedSixty = false
-      break
-    }
+    if (best >= 30) clearedSixty += 1
   }
-  return { total, g1Over40, g2Over80, allClearedSixty, timeHours: timeSec / 3600 }
+  const allClearedSixty = afternoonProblems.length > 0 && clearedSixty >= afternoonProblems.length
+  return {
+    total, g1Over40, g2Over80, allClearedSixty,
+    clearedSixty, afternoonTotal: afternoonProblems.length,
+    timeHours: timeSec / 3600,
+  }
 }
 
 /** 論述答案が自己評価Aか（5項目合計20点以上=80%） */
@@ -228,7 +255,11 @@ function computeEssayStats() {
     if (isEssayAttemptA(a)) aCount++
   }
   const allWritten = essayProblems.length > 0 && writtenProblemIds.size >= essayProblems.length
-  return { total, aCount, allWritten, timeHours: timeSec / 3600 }
+  return {
+    total, aCount, allWritten,
+    distinctCount: writtenProblemIds.size, essayTotal: essayProblems.length,
+    timeHours: timeSec / 3600,
+  }
 }
 
 /** 公式午前Ⅱバッジの判定材料を集約（正解問題数・年度制覇・全問正解） */
@@ -255,79 +286,154 @@ function computeMorningStats() {
   return { correctCount, yearComplete, allCorrect }
 }
 
-/** バッジ解放チェック */
-function checkBadges(
-  state: GamificationState,
-  alreadyUnlocked: Set<string>
-): BadgeDefinition[] {
-  const newBadges: BadgeDefinition[] = []
+/** バッジ判定用に集約した指標（checkBadges / 再検証 / 進捗表示で共用） */
+interface BadgeContext {
+  totalAnswered: number
+  maxStreak: number
+  writtenCorrect: number
+  coverageCount: number
+  totalQuestions: number
+  coveragePct: number
+  recentWrAccPct: number   // 直近20問が揃わない場合 -1
+  masterCategoryCount: number
+  totalCategories: number
+  afternoon: ReturnType<typeof computeAfternoonStats>
+  essay: ReturnType<typeof computeEssayStats>
+  morning: ReturnType<typeof computeMorningStats>
+}
+
+function buildBadgeContext(state: GamificationState): BadgeContext {
   const totalQuestions = allQuestions.length
-  const coveragePct = totalQuestions > 0
-    ? (state.correctQuestionIds.length / totalQuestions) * 100
-    : 0
+  const coverageCount = state.correctQuestionIds.length
   const recentWrLen = state.recentWrittenResults.length
   const recentWrCorrect = state.recentWrittenResults.filter(Boolean).length
-  const recentWrAccPct = recentWrLen >= 20 ? (recentWrCorrect / 20) * 100 : -1
+  return {
+    totalAnswered: state.totalAnswered,
+    maxStreak: state.maxStreak,
+    writtenCorrect: state.writtenCorrect,
+    coverageCount,
+    totalQuestions,
+    coveragePct: totalQuestions > 0 ? (coverageCount / totalQuestions) * 100 : 0,
+    recentWrAccPct: recentWrLen >= 20 ? (recentWrCorrect / 20) * 100 : -1,
+    masterCategoryCount: countMasteredCategories(0.8),
+    totalCategories: categories.length,
+    afternoon: computeAfternoonStats(),
+    essay: computeEssayStats(),
+    morning: computeMorningStats(),
+  }
+}
 
-  // カテゴリ制覇: 達成率（連続正解状態の問題比率）が 80% を超えるカテゴリ数
-  const masterCategoryCount = countMasteredCategories(0.8)
-  const totalCategories = categories.length
+/** 非コンプリート系バッジの解放条件を満たすか（純関数） */
+function badgeConditionMet(id: string, ctx: BadgeContext): boolean {
+  switch (id) {
+    case 'study-1': return ctx.totalAnswered >= 1
+    case 'study-2': return ctx.totalAnswered >= 500
+    case 'study-3': return ctx.totalAnswered >= 2000
+    case 'streak-1': return ctx.maxStreak >= 5
+    case 'streak-2': return ctx.maxStreak >= 30
+    case 'streak-3': return ctx.maxStreak >= 75
+    case 'coverage-1': return ctx.coveragePct >= 25
+    case 'coverage-2': return ctx.coveragePct >= 50
+    case 'coverage-3': return ctx.coveragePct >= 100
+    case 'written-1': return ctx.writtenCorrect >= 1
+    case 'written-2': return ctx.recentWrAccPct >= 80
+    case 'category-1': return ctx.masterCategoryCount >= 1
+    case 'category-2': return ctx.masterCategoryCount >= 7
+    case 'category-3': return ctx.masterCategoryCount >= ctx.totalCategories
+    case 'morning-1': return ctx.morning.correctCount >= 50
+    case 'morning-2': return ctx.morning.correctCount >= 150
+    case 'morning-3': return ctx.morning.yearComplete >= 1
+    case 'morning-4': return ctx.morning.allCorrect
+    case 'afternoon-1': return ctx.afternoon.total >= 3
+    case 'afternoon-2': return ctx.afternoon.g1Over40 >= 10
+    case 'afternoon-3': return ctx.afternoon.g2Over80 >= 5
+    case 'afternoon-4': return ctx.afternoon.allClearedSixty
+    case 'afternoon-time': return ctx.afternoon.timeHours >= 20
+    case 'essay-1': return ctx.essay.total >= 1
+    case 'essay-2': return ctx.essay.aCount >= 1
+    case 'essay-3': return ctx.essay.aCount >= 5
+    case 'essay-4': return ctx.essay.aCount >= 15
+    case 'essay-time': return ctx.essay.timeHours >= 30
+    case 'essay-5': return ctx.essay.allWritten
+    default: return false
+  }
+}
 
-  // 午後Ⅰ・午後Ⅱ・午前Ⅱ 統計（F2-P7 再設計）
-  const afternoonStats = computeAfternoonStats()
-  const essayStats = computeEssayStats()
-  const morningStats = computeMorningStats()
-
+/** バッジ解放チェック（新規解放分を返す） */
+function checkBadges(
+  state: GamificationState,
+  alreadyUnlocked: Set<string>,
+): BadgeDefinition[] {
+  const ctx = buildBadgeContext(state)
+  const newBadges: BadgeDefinition[] = []
   for (const badge of BADGES) {
     if (alreadyUnlocked.has(badge.id)) continue
-
-    let unlocked = false
-    switch (badge.id) {
-      // 学習継続
-      case 'study-1': unlocked = state.totalAnswered >= 1; break
-      case 'study-2': unlocked = state.totalAnswered >= 500; break
-      case 'study-3': unlocked = state.totalAnswered >= 2000; break
-      // 連続正答
-      case 'streak-1': unlocked = state.maxStreak >= 5; break
-      case 'streak-2': unlocked = state.maxStreak >= 30; break
-      case 'streak-3': unlocked = state.maxStreak >= 75; break
-      // 踏破率
-      case 'coverage-1': unlocked = coveragePct >= 25; break
-      case 'coverage-2': unlocked = coveragePct >= 50; break
-      case 'coverage-3': unlocked = coveragePct >= 100; break
-      // 記述・習熟
-      case 'written-1': unlocked = state.writtenCorrect >= 1; break
-      case 'written-2': unlocked = recentWrAccPct >= 80; break
-      // カテゴリ制覇
-      case 'category-1': unlocked = masterCategoryCount >= 1; break
-      case 'category-2': unlocked = masterCategoryCount >= 7; break
-      case 'category-3': unlocked = masterCategoryCount >= totalCategories; break
-      // 午前Ⅱ 公式
-      case 'morning-1': unlocked = morningStats.correctCount >= 50; break
-      case 'morning-2': unlocked = morningStats.correctCount >= 150; break
-      case 'morning-3': unlocked = morningStats.yearComplete >= 1; break
-      case 'morning-4': unlocked = morningStats.allCorrect; break
-      // 午後Ⅰ
-      case 'afternoon-1': unlocked = afternoonStats.total >= 3; break
-      case 'afternoon-2': unlocked = afternoonStats.g1Over40 >= 10; break
-      case 'afternoon-3': unlocked = afternoonStats.g2Over80 >= 5; break
-      case 'afternoon-4': unlocked = afternoonStats.allClearedSixty; break
-      case 'afternoon-time': unlocked = afternoonStats.timeHours >= 20; break
-      // 午後Ⅱ 論述
-      case 'essay-1': unlocked = essayStats.total >= 1; break
-      case 'essay-2': unlocked = essayStats.aCount >= 1; break
-      case 'essay-3': unlocked = essayStats.aCount >= 5; break
-      case 'essay-4': unlocked = essayStats.aCount >= 15; break
-      case 'essay-time': unlocked = essayStats.timeHours >= 30; break
-      case 'essay-5': unlocked = essayStats.allWritten; break
-      // コンプリート（自分以外の全バッジ）
-      case COMPLETE_BADGE_ID: unlocked = hasUnlockedAllNonCompleteBadges(state.unlockedBadgeIds); break
-    }
-
+    const unlocked = badge.id === COMPLETE_BADGE_ID
+      ? hasUnlockedAllNonCompleteBadges(state.unlockedBadgeIds)
+      : badgeConditionMet(badge.id, ctx)
     if (unlocked) newBadges.push(badge)
   }
-
   return newBadges
+}
+
+/** 現在の条件を満たすバッジID集合（移行時の再検証用） */
+function computeSatisfiedBadgeIds(state: GamificationState): Set<string> {
+  const ctx = buildBadgeContext(state)
+  const satisfied = new Set<string>()
+  let nonCompleteCount = 0
+  for (const badge of BADGES) {
+    if (badge.id === COMPLETE_BADGE_ID) continue
+    nonCompleteCount += 1
+    if (badgeConditionMet(badge.id, ctx)) satisfied.add(badge.id)
+  }
+  if (satisfied.size >= nonCompleteCount) satisfied.add(COMPLETE_BADGE_ID)
+  return satisfied
+}
+
+/** 開発者モード用: 各バッジの取得進捗（current / target） */
+export interface BadgeProgress {
+  current: number
+  target: number
+  unit?: string
+}
+
+export function getBadgeProgress(): Record<string, BadgeProgress> {
+  const state = loadGamification()
+  const ctx = buildBadgeContext(state)
+  const accNow = ctx.recentWrAccPct >= 0 ? Math.round(ctx.recentWrAccPct) : 0
+  const nonCompleteTotal = BADGES.filter((b) => b.id !== COMPLETE_BADGE_ID).length
+  return {
+    'study-1': { current: Math.min(ctx.totalAnswered, 1), target: 1, unit: '問' },
+    'study-2': { current: Math.min(ctx.totalAnswered, 500), target: 500, unit: '問' },
+    'study-3': { current: Math.min(ctx.totalAnswered, 2000), target: 2000, unit: '問' },
+    'streak-1': { current: Math.min(ctx.maxStreak, 5), target: 5, unit: '連続' },
+    'streak-2': { current: Math.min(ctx.maxStreak, 30), target: 30, unit: '連続' },
+    'streak-3': { current: Math.min(ctx.maxStreak, 75), target: 75, unit: '連続' },
+    'coverage-1': { current: ctx.coverageCount, target: Math.ceil(ctx.totalQuestions * 0.25), unit: '問' },
+    'coverage-2': { current: ctx.coverageCount, target: Math.ceil(ctx.totalQuestions * 0.5), unit: '問' },
+    'coverage-3': { current: ctx.coverageCount, target: ctx.totalQuestions, unit: '問' },
+    'written-1': { current: Math.min(ctx.writtenCorrect, 1), target: 1, unit: '問' },
+    'written-2': { current: accNow, target: 80, unit: '%' },
+    'category-1': { current: Math.min(ctx.masterCategoryCount, 1), target: 1, unit: 'カテゴリ' },
+    'category-2': { current: Math.min(ctx.masterCategoryCount, 7), target: 7, unit: 'カテゴリ' },
+    'category-3': { current: ctx.masterCategoryCount, target: ctx.totalCategories, unit: 'カテゴリ' },
+    'morning-1': { current: Math.min(ctx.morning.correctCount, 50), target: 50, unit: '問' },
+    'morning-2': { current: Math.min(ctx.morning.correctCount, 150), target: 150, unit: '問' },
+    'morning-3': { current: ctx.morning.yearComplete, target: 1, unit: '年度' },
+    'morning-4': { current: ctx.morning.correctCount, target: 300, unit: '問' },
+    'afternoon-1': { current: Math.min(ctx.afternoon.total, 3), target: 3, unit: '回' },
+    'afternoon-2': { current: Math.min(ctx.afternoon.g1Over40, 10), target: 10, unit: '回' },
+    'afternoon-3': { current: Math.min(ctx.afternoon.g2Over80, 5), target: 5, unit: '回' },
+    'afternoon-4': { current: ctx.afternoon.clearedSixty, target: ctx.afternoon.afternoonTotal, unit: '問' },
+    'afternoon-time': { current: Math.min(Math.floor(ctx.afternoon.timeHours), 20), target: 20, unit: 'h' },
+    'essay-1': { current: Math.min(ctx.essay.total, 1), target: 1, unit: '本' },
+    'essay-2': { current: Math.min(ctx.essay.aCount, 1), target: 1, unit: '回' },
+    'essay-3': { current: Math.min(ctx.essay.aCount, 5), target: 5, unit: '回' },
+    'essay-4': { current: Math.min(ctx.essay.aCount, 15), target: 15, unit: '回' },
+    'essay-time': { current: Math.min(Math.floor(ctx.essay.timeHours), 30), target: 30, unit: 'h' },
+    'essay-5': { current: ctx.essay.distinctCount, target: ctx.essay.essayTotal, unit: '本' },
+    'complete-1': { current: countUnlockedNonCompleteBadges(state.unlockedBadgeIds), target: nonCompleteTotal, unit: '枚' },
+  }
 }
 
 /** 全勲章コンプ判定 */
