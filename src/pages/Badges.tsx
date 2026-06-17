@@ -41,7 +41,7 @@ function BadgeDetailModal({ badge, unlocked, devMode, progress, onClose }: {
         className="bg-white rounded-3xl shadow-2xl p-6 max-w-xs w-full flex flex-col items-center gap-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <BadgeMedal badge={badge} unlocked={unlocked} size="lg" />
+        <BadgeMedal badge={badge} unlocked={unlocked || devMode} size="lg" />
         <div className="text-center">
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${TIER_COLOR[badge.tier]}`}>
             {TIER_LABEL[badge.tier]}
@@ -151,13 +151,13 @@ export default function Badges() {
                   <div key={badge.id} className="flex flex-col items-center gap-1.5">
                     <BadgeMedal
                       badge={badge}
-                      unlocked={unlocked}
+                      unlocked={unlocked || devMode}
                       size="md"
                       onClick={() => setSelected(badge)}
                       ariaLabel={displayName}
                     />
                     <p className={`text-[10px] font-medium text-center leading-tight line-clamp-2 whitespace-pre-line ${
-                      unlocked ? 'text-slate-700' : 'text-slate-400'
+                      unlocked || devMode ? 'text-slate-700' : 'text-slate-400'
                     }`}>
                       {displayName}
                     </p>

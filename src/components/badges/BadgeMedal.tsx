@@ -56,9 +56,9 @@ const SIZE_CLASS: Record<'sm' | 'md' | 'lg', string> = {
 }
 
 const SIZE_ICON: Record<'sm' | 'md' | 'lg', number> = {
-  sm: 18,
-  md: 24,
-  lg: 30,
+  sm: 22,
+  md: 30,
+  lg: 38,
 }
 
 /** 4 点星のきらめき */
@@ -138,13 +138,25 @@ export default function BadgeMedal({ badge, unlocked = false, size = 'md', onCli
         aria-label={ariaLabel ?? badge.name}
         disabled={!onClick}
       >
-        {/* 金属光沢（解放時の上部ハイライト） */}
+        {/* メダルの打刻感（内縁）＋上部の金属光沢 */}
         {unlocked && (
-          <span className="absolute left-[22%] top-[10%] h-1/3 w-1/3 rounded-full bg-white/40 blur-[3px] pointer-events-none" aria-hidden="true" />
+          <>
+            <span
+              className={`absolute rounded-full pointer-events-none ${isRich ? 'inset-[11%] ring-1 ring-white/45' : 'inset-[13%] ring-1 ring-white/20'}`}
+              aria-hidden="true"
+            />
+            <span className="absolute left-[18%] top-[12%] h-[32%] w-[36%] rounded-full bg-white/45 blur-[3px] pointer-events-none" aria-hidden="true" />
+          </>
         )}
 
         {unlocked ? (
-          <IconComponent size={iconSize} color="white" strokeWidth={1.8} className="relative z-10" />
+          <IconComponent
+            size={iconSize}
+            color="white"
+            strokeWidth={2.25}
+            className="relative z-10"
+            style={{ filter: 'drop-shadow(0 1.5px 2px rgba(0,0,0,0.4))' }}
+          />
         ) : (
           <>
             {/* ロック時: アイコンをうっすら + 錠前オーバーレイ */}
