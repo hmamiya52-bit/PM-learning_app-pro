@@ -109,13 +109,13 @@ export const BADGES: BadgeDefinition[] = [
   {
     id: 'written-1', name: '己を信じて', description: '記述モードで初めて正解',
     category: 'written', iconName: 'PenLine',
-    gradient: 'from-sky-400 to-brand-dark', shadowColor: 'shadow-blue-500/50',
+    gradient: 'from-blue-400 to-blue-600', shadowColor: 'shadow-blue-500/50',
     tier: 'bronze', xpBonus: 50, condition: '記述モードで1問正解', conditionValue: 1,
   },
   {
     id: 'written-2', name: '明鏡止水', description: '記述モード直近20問の正答率が80%以上',
     category: 'written', iconName: 'BarChart2',
-    gradient: 'from-violet-400 to-purple-600', shadowColor: 'shadow-purple-500/50',
+    gradient: 'from-blue-500 to-blue-700', shadowColor: 'shadow-blue-600/50',
     tier: 'gold', xpBonus: 600, condition: '記述モード直近20問の正答率80%以上', conditionValue: 80,
   },
 
@@ -169,31 +169,31 @@ export const BADGES: BadgeDefinition[] = [
   {
     id: 'afternoon-1', name: '勇気凛々', description: '午後Ⅰ演習を3回実施',
     category: 'afternoon', iconName: 'FileEdit',
-    gradient: 'from-teal-400 to-cyan-600', shadowColor: 'shadow-teal-500/50',
+    gradient: 'from-red-400 to-red-600', shadowColor: 'shadow-red-500/50',
     tier: 'bronze', xpBonus: 300, condition: '午後Ⅰ演習を3回実施', conditionValue: 3,
   },
   {
     id: 'afternoon-2', name: '実力定着', description: '午後Ⅰで40点以上を10回取得',
     category: 'afternoon', iconName: 'Star',
-    gradient: 'from-brand to-indigo-600', shadowColor: 'shadow-blue-500/60',
+    gradient: 'from-red-400 to-red-600', shadowColor: 'shadow-red-500/50',
     tier: 'gold', xpBonus: 1500, condition: '午後Ⅰで40点以上を10回取得', conditionValue: 10,
   },
   {
     id: 'afternoon-3', name: '地力十分', description: '午後Ⅰで45点以上を5回取得',
     category: 'afternoon', iconName: 'Trophy',
-    gradient: 'from-purple-400 to-fuchsia-600', shadowColor: 'shadow-purple-500/60',
+    gradient: 'from-red-500 to-red-700', shadowColor: 'shadow-red-600/50',
     tier: 'gold', xpBonus: 1500, condition: '午後Ⅰで45点以上を5回取得', conditionValue: 5,
   },
   {
     id: 'afternoon-4', name: '威風堂々', description: '全午後Ⅰ問題で6割以上を取得（午後Ⅰ30点）',
     category: 'afternoon', iconName: 'Crown',
-    gradient: 'from-amber-300 via-orange-400 to-rose-500', shadowColor: 'shadow-orange-500/70',
+    gradient: 'from-orange-400 via-red-500 to-rose-700', shadowColor: 'shadow-red-600/60',
     tier: 'legendary', xpBonus: 3000, condition: '全午後Ⅰ問題で6割以上を取得（午後Ⅰ30点）', conditionValue: 0,
   },
   {
     id: 'afternoon-time', name: '常在戦場', description: '午後Ⅰの累計学習時間が20時間',
     category: 'afternoon', iconName: 'Clock',
-    gradient: 'from-teal-400 to-cyan-600', shadowColor: 'shadow-teal-500/50',
+    gradient: 'from-red-400 to-red-600', shadowColor: 'shadow-red-500/50',
     tier: 'gold', xpBonus: 1500, condition: '午後Ⅰの累計学習時間20時間', conditionValue: 20,
   },
 
