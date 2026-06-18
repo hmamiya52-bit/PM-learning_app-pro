@@ -46,7 +46,7 @@ function BadgeDetailModal({ badge, unlocked, devMode, progress, onClose }: {
           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${TIER_COLOR[badge.tier]}`}>
             {TIER_LABEL[badge.tier]}
           </span>
-          <h2 className="text-lg font-bold text-slate-800 mt-2 whitespace-pre-line leading-tight">
+          <h2 className={`text-lg mt-2 whitespace-pre-line leading-tight ${badge.nameClass ?? 'font-bold text-slate-800'}`}>
             {displayName}
           </h2>
           <p className="text-slate-500 text-sm mt-1">
@@ -156,8 +156,8 @@ export default function Badges() {
                       onClick={() => setSelected(badge)}
                       ariaLabel={displayName}
                     />
-                    <p className={`text-[10px] font-medium text-center leading-tight line-clamp-2 whitespace-pre-line ${
-                      unlocked || devMode ? 'text-slate-700' : 'text-slate-400'
+                    <p className={`text-[10px] text-center leading-tight line-clamp-2 whitespace-pre-line ${
+                      badge.nameClass ? badge.nameClass : (unlocked || devMode ? 'font-medium text-slate-700' : 'font-medium text-slate-400')
                     }`}>
                       {displayName}
                     </p>

@@ -9,6 +9,7 @@ import {
   Feather, PenTool, ScrollText, Clock,
   Footprints, Layers, Tornado, Hammer, Hand, Castle, Droplets, Flower2, Telescope,
   Pencil, Milestone, Mountain, Swords, BadgeCheck, Dumbbell, Tent, Heart, Rocket, Focus, Anchor,
+  Briefcase,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { BadgeDefinition, BadgeTier } from '../../data/badges'
@@ -25,6 +26,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Feather, PenTool, ScrollText, Clock,
   Footprints, Layers, Tornado, Hammer, Hand, Castle, Droplets, Flower2, Telescope,
   Pencil, Milestone, Mountain, Swords, BadgeCheck, Dumbbell, Tent, Heart, Rocket, Focus, Anchor,
+  Briefcase,
 }
 
 /** ティア別のリング（枠）スタイル */
@@ -116,7 +118,7 @@ export default function BadgeMedal({ badge, unlocked = false, size = 'md', onCli
     unlocked
       ? `bg-gradient-to-br ${badge.gradient} ${badge.shadowColor} ${isLegendary ? 'shadow-xl' : 'shadow-lg'}`
       : 'bg-gradient-to-br from-slate-300 to-slate-500',
-    unlocked ? TIER_RING[badge.tier] : 'ring-2 ring-slate-400/30',
+    unlocked ? (badge.ringClass ?? TIER_RING[badge.tier]) : 'ring-2 ring-slate-400/30',
     onClick ? 'transition-transform active:scale-95 hover:scale-105' : '',
   ].filter(Boolean).join(' ')
 
@@ -126,7 +128,7 @@ export default function BadgeMedal({ badge, unlocked = false, size = 'md', onCli
     <div className="relative inline-flex items-center justify-center">
       {/* 後光（legendary 解放時のグロー） */}
       {isLegendary && unlocked && (
-        <div className="absolute -inset-1 rounded-full bg-amber-300/40 blur-md pointer-events-none animate-pulse" aria-hidden="true" />
+        <div className={`absolute -inset-1 rounded-full ${badge.glowClass ?? 'bg-amber-300/40'} blur-md pointer-events-none animate-pulse`} aria-hidden="true" />
       )}
       {/* 放射状の光芒（gold / legendary） */}
       {isRich && (
@@ -156,7 +158,7 @@ export default function BadgeMedal({ badge, unlocked = false, size = 'md', onCli
         {unlocked ? (
           <IconComponent
             size={iconSize}
-            color="white"
+            color={badge.iconColor ?? 'white'}
             strokeWidth={2.25}
             className="relative z-10"
             style={{ filter: 'drop-shadow(0 1.5px 2px rgba(0,0,0,0.4))' }}

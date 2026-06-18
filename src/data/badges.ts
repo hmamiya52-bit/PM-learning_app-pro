@@ -41,6 +41,15 @@ export interface BadgeDefinition {
   condition: string
   /** 解放条件の数値（比較用） */
   conditionValue: number
+  // ── 特別意匠の上書き（未指定なら既定。complete など一部バッジ用） ──
+  /** アイコン色（hex）。既定は白 */
+  iconColor?: string
+  /** 枠（リング）クラスの上書き。既定は tier 既定 */
+  ringClass?: string
+  /** 後光グロークラスの上書き。既定は amber */
+  glowClass?: string
+  /** 名称テキストのクラス上書き（色・太さ）。Badges 側で適用 */
+  nameClass?: string
 }
 
 export const BADGES: BadgeDefinition[] = [
@@ -238,9 +247,10 @@ export const BADGES: BadgeDefinition[] = [
   {
     id: 'complete-1', name: 'プロジェクトマネージャ', displayName: 'プロジェクト\nマネージャ',
     description: '他の全ての勲章を獲得',
-    category: 'complete', iconName: 'Award',
-    gradient: 'from-yellow-300 via-amber-400 to-orange-500', shadowColor: 'shadow-amber-400/80',
+    category: 'complete', iconName: 'Briefcase',
+    gradient: 'from-yellow-200 via-amber-400 to-yellow-600', shadowColor: 'shadow-brand/70',
     tier: 'legendary', xpBonus: 10000, condition: '他の全ての勲章を獲得', conditionValue: 29,
+    iconColor: '#e5e7eb', ringClass: 'ring-4 ring-slate-200/90', glowClass: 'bg-brand/45', nameClass: 'text-brand font-bold',
   },
 ]
 
