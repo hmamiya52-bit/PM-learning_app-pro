@@ -7,6 +7,8 @@ import {
   FolderCheck, Folders, LayoutGrid, Network,
   Award, Lock,
   Feather, PenTool, ScrollText, Clock,
+  Footprints, Layers, Tornado, Hammer, Hand, Castle, Droplets, Flower2, Telescope,
+  Pencil, Milestone, Mountain, Swords, BadgeCheck, Dumbbell, Tent, Heart, Rocket, Focus, Anchor,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import type { BadgeDefinition, BadgeTier } from '../../data/badges'
@@ -21,6 +23,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   FolderCheck, Folders, LayoutGrid, Network,
   Award, Lock,
   Feather, PenTool, ScrollText, Clock,
+  Footprints, Layers, Tornado, Hammer, Hand, Castle, Droplets, Flower2, Telescope,
+  Pencil, Milestone, Mountain, Swords, BadgeCheck, Dumbbell, Tent, Heart, Rocket, Focus, Anchor,
 }
 
 /** ティア別のリング（枠）スタイル */
