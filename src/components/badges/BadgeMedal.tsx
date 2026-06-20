@@ -199,20 +199,23 @@ function GearGanttEmblem({ color }: { color: string }): ReactElement {
   )
 }
 
-/** 不退転＝峰に突き立て、はためく軍旗（一歩も退かぬ）。旗＝ゴールド、岩峰/竿＝color */
-function SummitFlagEmblem({ color }: { color: string }): ReactElement {
+/** 不退転＝背水の陣（断崖の縁に旗を突き立て、崖下に水面）。旗＝ゴールド、崖/水/竿＝color */
+function CliffFlagEmblem({ color }: { color: string }): ReactElement {
   const gold = '#fde68a'
   return (
     <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.4))' }}>
-      {/* 岩峰（退かぬ拠点） */}
-      <path d="M11 56 L23 39 L30 49 L40 34 L53 56 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
-      <path d="M23 39 L26.5 44 M40 34 L36.5 40" fill="none" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
-      {/* 旗竿（突き立てる） */}
-      <path d="M31 50 V9" stroke={color} strokeWidth="2.8" strokeLinecap="round" />
-      <circle cx="31" cy="7.6" r="2.4" fill={gold} stroke={color} strokeWidth="1" />
-      {/* はためく軍旗 */}
-      <path d="M33 10.5 L54 13 Q49 17.5 54 22 L33 23.7 Z" fill={gold} stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M42.5 13.5 l1.1 2.7 2.9 .2 -2.2 1.9 .7 2.8 -2.5-1.5 -2.5 1.5 .7-2.8 -2.2-1.9 2.9-.2 Z" fill={color} />
+      {/* 背水（崖下の水面） */}
+      <path d="M7 53 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.9" />
+      <path d="M7 57 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+      {/* 断崖（退路なし） */}
+      <path d="M12 57 L12 31 L32 27 L34 57 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M18 52 V35 M25 53 V32" fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+      {/* 崖の縁に突き立てた旗竿 */}
+      <path d="M33 28 V7" stroke={color} strokeWidth="2.8" strokeLinecap="round" />
+      <circle cx="33" cy="5.6" r="2.3" fill={gold} stroke={color} strokeWidth="1" />
+      {/* 崖下へ翻る軍旗 */}
+      <path d="M35 8.5 L54 11 Q49 15.5 54 20 L35 21.7 Z" fill={gold} stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M44 11.5 l1 2.6 2.8 .2 -2.1 1.8 .7 2.7 -2.4-1.5 -2.4 1.5 .7-2.7 -2.1-1.8 2.8-.2 Z" fill={color} />
     </svg>
   )
 }
@@ -223,7 +226,7 @@ const CUSTOM_EMBLEMS: Record<string, (props: { color: string }) => ReactElement>
   CrownShield: CrownShieldEmblem,
   TrophyLaurel: TrophyLaurelEmblem,
   GearGantt: GearGanttEmblem,
-  SummitFlag: SummitFlagEmblem,
+  CliffFlag: CliffFlagEmblem,
 }
 
 export default function BadgeMedal({ badge, unlocked = false, size = 'md', onClick, ariaLabel }: Props) {
