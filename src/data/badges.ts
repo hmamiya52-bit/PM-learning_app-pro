@@ -108,7 +108,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'coverage-3', name: '全問制覇', description: '全問題を正解',
-    category: 'coverage', iconName: 'Castle',
+    category: 'coverage', iconName: 'GearGantt',
     gradient: 'from-teal-300 to-cyan-600', shadowColor: 'shadow-cyan-500/70',
     tier: 'legendary', xpBonus: 2000, condition: '全問題を正解', conditionValue: 100,
   },
@@ -142,7 +142,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'category-3', name: '君臨', description: '全カテゴリで達成率80%超',
-    category: 'category', iconName: 'Crown',
+    category: 'category', iconName: 'CrownShield',
     gradient: 'from-rose-400 via-pink-500 to-fuchsia-600', shadowColor: 'shadow-pink-600/70',
     tier: 'legendary', xpBonus: 2100, condition: '全カテゴリ達成（達成率80%超）', conditionValue: 999,
   },
@@ -194,7 +194,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'afternoon-4', name: '威風堂々', description: '全午後Ⅰ問題で6割以上を取得（午後Ⅰ30点）',
-    category: 'afternoon', iconName: 'Trophy',
+    category: 'afternoon', iconName: 'TrophyLaurel',
     gradient: 'from-orange-400 via-red-500 to-rose-700', shadowColor: 'shadow-red-600/60',
     tier: 'legendary', xpBonus: 3000, condition: '全午後Ⅰ問題で6割以上を取得（午後Ⅰ30点）', conditionValue: 0,
   },

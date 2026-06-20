@@ -142,9 +142,69 @@ function PmCrestEmblem({ color }: { color: string }): ReactElement {
   )
 }
 
+/** 王冠＋盾＋チェック（統率の紋章）。main＝color、差し色＝ゴールド */
+function CrownShieldEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  const edge = '#a8631f'
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.35))' }}>
+      <path d="M19 19 L16 9 L23 13 L32 6 L41 13 L48 9 L45 19 Z" fill={gold} stroke={edge} strokeWidth="1" strokeLinejoin="round" />
+      <circle cx="16" cy="7.5" r="1.7" fill={gold} stroke={edge} strokeWidth="0.6" />
+      <circle cx="32" cy="4" r="1.9" fill={gold} stroke={edge} strokeWidth="0.6" />
+      <circle cx="48" cy="7.5" r="1.7" fill={gold} stroke={edge} strokeWidth="0.6" />
+      <path d="M18 22 L32 18 L46 22 V37 C46 47 39 53 32 56.5 C25 53 18 47 18 37 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M25 36 l5 5 l10 -12" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/** トロフィー＋星＋月桂（覇者の紋章）。main＝color、差し色＝ゴールド */
+function TrophyLaurelEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.35))' }}>
+      <path d="M32 4 L34 11 L41.5 11.2 L35.6 15.7 L37.7 22.8 L32 18.5 L26.3 22.8 L28.4 15.7 L22.5 11.2 L30 11 Z" fill={gold} stroke={color} strokeWidth="1" strokeLinejoin="round" />
+      <path d="M21 19 H43 V26 C43 34 38 38 32 38 C26 38 21 34 21 26 Z" fill="none" stroke={color} strokeWidth="2.4" />
+      <path d="M21 21 H15 V26 C15 30 18 32 21 32" fill="none" stroke={color} strokeWidth="2" />
+      <path d="M43 21 H49 V26 C49 30 46 32 43 32" fill="none" stroke={color} strokeWidth="2" />
+      <path d="M32 38 V45 M23 50 H41 M27 45 H37" fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" />
+      <g fill={color}>
+        <ellipse cx="22.5" cy="53" rx="2" ry="3.6" transform="rotate(42 22.5 53)" />
+        <ellipse cx="27" cy="55.5" rx="2" ry="3.6" transform="rotate(20 27 55.5)" />
+        <ellipse cx="41.5" cy="53" rx="2" ry="3.6" transform="rotate(-42 41.5 53)" />
+        <ellipse cx="37" cy="55.5" rx="2" ry="3.6" transform="rotate(-20 37 55.5)" />
+      </g>
+    </svg>
+  )
+}
+
+/** 歯車フレーム＋ガント（PM工程の制覇）。歯車＝ゴールド、ガント＝color */
+function GearGanttEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  const edge = '#a8631f'
+  const teeth = [0, 45, 90, 135, 180, 225, 270, 315]
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.4))' }}>
+      <g fill={gold} stroke={edge} strokeWidth="0.4">
+        {teeth.map((a) => <rect key={a} x="29.5" y="3" width="5" height="8" rx="1.4" transform={`rotate(${a} 32 32)`} />)}
+      </g>
+      <circle cx="32" cy="32" r="23" fill="none" stroke={gold} strokeWidth="3.4" />
+      <path d="M20 21 V44 H45" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+      <g fill={color}>
+        <rect x="24" y="24" width="13" height="4" rx="2" />
+        <rect x="24" y="31" width="18" height="4" rx="2" />
+        <rect x="24" y="38" width="9" height="4" rx="2" />
+      </g>
+    </svg>
+  )
+}
+
 /** カスタム紋章（lucide 非依存）。iconName で参照 */
 const CUSTOM_EMBLEMS: Record<string, (props: { color: string }) => ReactElement> = {
   PmCrest: PmCrestEmblem,
+  CrownShield: CrownShieldEmblem,
+  TrophyLaurel: TrophyLaurelEmblem,
+  GearGantt: GearGanttEmblem,
 }
 
 export default function BadgeMedal({ badge, unlocked = false, size = 'md', onClick, ariaLabel }: Props) {
