@@ -238,7 +238,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'essay-5', name: '不退転', description: '全論述問題を書き上げた',
-    category: 'essay', iconName: 'Flag',
+    category: 'essay', iconName: 'SummitFlag',
     gradient: 'from-violet-400 via-fuchsia-500 to-purple-700', shadowColor: 'shadow-fuchsia-500/60',
     tier: 'legendary', xpBonus: 3000, condition: '全論述問題を書き上げる', conditionValue: 0,
   },

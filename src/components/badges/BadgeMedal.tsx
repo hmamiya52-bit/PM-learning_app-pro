@@ -199,12 +199,31 @@ function GearGanttEmblem({ color }: { color: string }): ReactElement {
   )
 }
 
+/** 不退転＝峰に突き立て、はためく軍旗（一歩も退かぬ）。旗＝ゴールド、岩峰/竿＝color */
+function SummitFlagEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.4))' }}>
+      {/* 岩峰（退かぬ拠点） */}
+      <path d="M11 56 L23 39 L30 49 L40 34 L53 56 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M23 39 L26.5 44 M40 34 L36.5 40" fill="none" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
+      {/* 旗竿（突き立てる） */}
+      <path d="M31 50 V9" stroke={color} strokeWidth="2.8" strokeLinecap="round" />
+      <circle cx="31" cy="7.6" r="2.4" fill={gold} stroke={color} strokeWidth="1" />
+      {/* はためく軍旗 */}
+      <path d="M33 10.5 L54 13 Q49 17.5 54 22 L33 23.7 Z" fill={gold} stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M42.5 13.5 l1.1 2.7 2.9 .2 -2.2 1.9 .7 2.8 -2.5-1.5 -2.5 1.5 .7-2.8 -2.2-1.9 2.9-.2 Z" fill={color} />
+    </svg>
+  )
+}
+
 /** カスタム紋章（lucide 非依存）。iconName で参照 */
 const CUSTOM_EMBLEMS: Record<string, (props: { color: string }) => ReactElement> = {
   PmCrest: PmCrestEmblem,
   CrownShield: CrownShieldEmblem,
   TrophyLaurel: TrophyLaurelEmblem,
   GearGantt: GearGanttEmblem,
+  SummitFlag: SummitFlagEmblem,
 }
 
 export default function BadgeMedal({ badge, unlocked = false, size = 'md', onClick, ariaLabel }: Props) {
