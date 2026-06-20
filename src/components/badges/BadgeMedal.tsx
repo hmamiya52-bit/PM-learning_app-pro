@@ -207,15 +207,44 @@ function CliffFlagEmblem({ color }: { color: string }): ReactElement {
       {/* 背水（崖下の水面） */}
       <path d="M7 53 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.9" />
       <path d="M7 57 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
-      {/* 断崖（退路なし） */}
-      <path d="M12 57 L12 31 L32 27 L34 57 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
-      <path d="M18 52 V35 M25 53 V32" fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+      {/* 断崖（左は斜面、右は切り立った崖＝退路なし） */}
+      <path d="M11 57 C11 49 13 43 17 40 L21 36 L23 31 L31 28 L33 28 L34.5 37 L32 45 L34 57 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M16 50 L25 48 M15 44 L22 42" fill="none" stroke={color} strokeWidth="1.1" strokeLinecap="round" />
+      <path d="M33 33 L31 41" fill="none" stroke={color} strokeWidth="1.1" strokeLinecap="round" />
       {/* 崖の縁に突き立てた旗竿 */}
       <path d="M33 28 V7" stroke={color} strokeWidth="2.8" strokeLinecap="round" />
       <circle cx="33" cy="5.6" r="2.3" fill={gold} stroke={color} strokeWidth="1" />
       {/* 崖下へ翻る軍旗 */}
       <path d="M35 8.5 L54 11 Q49 15.5 54 20 L35 21.7 Z" fill={gold} stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M44 11.5 l1 2.6 2.8 .2 -2.1 1.8 .7 2.7 -2.4-1.5 -2.4 1.5 .7-2.7 -2.1-1.8 2.8-.2 Z" fill={color} />
+    </svg>
+  )
+}
+
+/** 一気呵成＝一息に駆け抜ける彗星（流星）。核＝ゴールド、尾＝color */
+function CometEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.4))' }}>
+      <path d="M40 24 C31 30 22 38 12 48" fill="none" stroke={color} strokeWidth="3" strokeLinecap="round" opacity="0.95" />
+      <path d="M39 20 C31 25 24 32 15 42" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" opacity="0.65" />
+      <path d="M42 30 C34 36 27 42 19 51" fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" opacity="0.55" />
+      <path d="M42 11.5 L44.47 18.6 L51.98 18.76 L45.99 23.3 L48.17 30.49 L42 26.2 L35.83 30.49 L38.01 23.3 L32.02 18.76 L39.53 18.6 Z" fill={gold} stroke={color} strokeWidth="1.4" strokeLinejoin="round" />
+      <circle cx="13" cy="49" r="1.5" fill={color} />
+    </svg>
+  )
+}
+
+/** 比類なき＝多面カットの大宝玉（唯一無二）。宝玉＝color、きらめき＝ゴールド */
+function DiamondEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(0,0,0,0.4))' }}>
+      <path d="M23 19 L41 19 L48 28 L32 47 L16 28 Z" fill="none" stroke={color} strokeWidth="2.4" strokeLinejoin="round" />
+      <path d="M16 28 L48 28" fill="none" stroke={color} strokeWidth="1.3" />
+      <path d="M23 19 L28 28 L32 47 M41 19 L36 28 L32 47 M28 28 L36 28" fill="none" stroke={color} strokeWidth="1.3" strokeLinejoin="round" />
+      <path d="M45 12 l1.1 2.8 3 .3 -2.2 2 .7 2.9 -2.6-1.6 -2.6 1.6 .7-2.9 -2.2-2 3-.3 Z" fill={gold} />
+      <circle cx="18" cy="15" r="1.3" fill={gold} />
     </svg>
   )
 }
@@ -227,6 +256,8 @@ const CUSTOM_EMBLEMS: Record<string, (props: { color: string }) => ReactElement>
   TrophyLaurel: TrophyLaurelEmblem,
   GearGantt: GearGanttEmblem,
   CliffFlag: CliffFlagEmblem,
+  Comet: CometEmblem,
+  Diamond: DiamondEmblem,
 }
 
 export default function BadgeMedal({ badge, unlocked = false, size = 'md', onClick, ariaLabel }: Props) {

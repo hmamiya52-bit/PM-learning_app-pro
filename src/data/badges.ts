@@ -88,7 +88,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'streak-3', name: '一気呵成', description: '75問連続正解',
-    category: 'streak', iconName: 'Tornado',
+    category: 'streak', iconName: 'Comet',
     gradient: 'from-yellow-300 via-amber-400 to-orange-500', shadowColor: 'shadow-amber-500/60',
     tier: 'legendary', xpBonus: 3000, condition: '75問連続正解', conditionValue: 75,
   },
@@ -168,7 +168,7 @@ export const BADGES: BadgeDefinition[] = [
   },
   {
     id: 'morning-4', name: '比類なき', description: '公式午前Ⅱ全300問を正解',
-    category: 'morning', iconName: 'Gem',
+    category: 'morning', iconName: 'Diamond',
     gradient: 'from-sky-300 via-cyan-400 to-blue-600', shadowColor: 'shadow-blue-500/60',
     tier: 'legendary', xpBonus: 3000, condition: '公式午前Ⅱ全300問を正解', conditionValue: 300,
   },
