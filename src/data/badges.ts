@@ -247,7 +247,7 @@ export const BADGES: BadgeDefinition[] = [
   {
     id: 'complete-1', name: 'プロジェクトマネージャ', displayName: 'プロジェクト\nマネージャ',
     description: '他の全ての勲章を獲得',
-    category: 'complete', iconName: 'Briefcase',
+    category: 'complete', iconName: 'PmCrest',
     gradient: 'from-yellow-200 via-amber-400 to-yellow-600', shadowColor: 'shadow-brand/70',
     tier: 'legendary', xpBonus: 10000, condition: '他の全ての勲章を獲得', conditionValue: 29,
     iconColor: '#e5e7eb', ringClass: 'ring-4 ring-slate-200/90', glowClass: 'bg-brand/45', nameClass: 'text-brand font-bold',

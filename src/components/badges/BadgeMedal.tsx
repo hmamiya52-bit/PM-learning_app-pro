@@ -12,6 +12,7 @@ import {
   Briefcase,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import type { ReactElement } from 'react'
 import type { BadgeDefinition, BadgeTier } from '../../data/badges'
 
 /** lucide-react アイコン名 → コンポーネントのマップ */
@@ -106,8 +107,49 @@ function Sunburst({ tier, unlocked }: { tier: BadgeTier; unlocked: boolean }) {
   )
 }
 
+/** プロジェクトマネージャ専用の豪華紋章（月桂冠＋PM＋星＋リボン／プラチナ×ゴールド） */
+function PmCrestEmblem({ color }: { color: string }): ReactElement {
+  const gold = '#fde68a'
+  const edge = '#a8631f'
+  const leaves: Array<[number, number, number]> = [
+    [24, 52, 60], [18, 47, 50], [14.5, 41, 38], [13, 34, 25], [13.5, 27, 12], [15.5, 21, 0], [18.5, 16, -12], [22.5, 12.5, -24],
+    [40, 52, -60], [46, 47, -50], [49.5, 41, -38], [51, 34, -25], [50.5, 27, -12], [48.5, 21, 0], [45.5, 16, 12], [41.5, 12.5, 24],
+  ]
+  const berries: Array<[number, number]> = [[16.5, 44.5], [14.5, 30.5], [17, 18.5], [47.5, 44.5], [49.5, 30.5], [47, 18.5]]
+  return (
+    <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true" style={{ filter: 'drop-shadow(0 1px 0.6px rgba(120,53,15,0.55))' }}>
+      <path d="M32 55 C20 53 13 44 13.5 30 C13.8 22 17 17 22 13" fill="none" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
+      <path d="M32 55 C44 53 51 44 50.5 30 C50.2 22 47 17 42 13" fill="none" stroke={color} strokeWidth="1.3" strokeLinecap="round" />
+      <g fill={color}>
+        {leaves.map(([cx, cy, r], i) => (
+          <ellipse key={i} cx={cx} cy={cy} rx="2.7" ry="4.6" transform={`rotate(${r} ${cx} ${cy})`} />
+        ))}
+      </g>
+      <g fill={gold} stroke={edge} strokeWidth="0.5">
+        {berries.map(([cx, cy], i) => <circle key={i} cx={cx} cy={cy} r="1.4" />)}
+      </g>
+      <g fill={gold} stroke={edge} strokeWidth="0.8" strokeLinejoin="round">
+        <path d="M32 53 L26.5 50.5 L26.5 55.7 Z" />
+        <path d="M32 53 L37.5 50.5 L37.5 55.7 Z" />
+        <circle cx="32" cy="53" r="1.9" />
+      </g>
+      <path
+        d="M32 3.5 L33.76 8.57 L39.13 8.68 L34.85 11.93 L36.41 17.07 L32 14 L27.59 17.07 L29.15 11.93 L24.87 8.68 L30.24 8.57 Z"
+        fill={gold} stroke={color} strokeWidth="1.2" strokeLinejoin="round"
+      />
+      <text x="32" y="41" textAnchor="middle" fontSize="17" fontWeight="700" fill={color} fontFamily="inherit" letterSpacing="0.5">PM</text>
+    </svg>
+  )
+}
+
+/** カスタム紋章（lucide 非依存）。iconName で参照 */
+const CUSTOM_EMBLEMS: Record<string, (props: { color: string }) => ReactElement> = {
+  PmCrest: PmCrestEmblem,
+}
+
 export default function BadgeMedal({ badge, unlocked = false, size = 'md', onClick, ariaLabel }: Props) {
   const IconComponent = ICON_MAP[badge.iconName] ?? Award
+  const CustomEmblem = CUSTOM_EMBLEMS[badge.iconName]
   const iconSize = SIZE_ICON[size] ?? TIER_ICON_SIZE[badge.tier]
   const isRich = badge.tier === 'gold' || badge.tier === 'legendary'
   const isLegendary = badge.tier === 'legendary'
@@ -156,13 +198,19 @@ export default function BadgeMedal({ badge, unlocked = false, size = 'md', onCli
         )}
 
         {unlocked ? (
-          <IconComponent
-            size={iconSize}
-            color={badge.iconColor ?? 'white'}
-            strokeWidth={2.25}
-            className="relative z-10"
-            style={{ filter: 'drop-shadow(0 1.5px 2px rgba(0,0,0,0.4))' }}
-          />
+          CustomEmblem ? (
+            <span className="relative z-10 flex items-center justify-center" style={{ width: '88%', height: '88%' }}>
+              <CustomEmblem color={badge.iconColor ?? 'white'} />
+            </span>
+          ) : (
+            <IconComponent
+              size={iconSize}
+              color={badge.iconColor ?? 'white'}
+              strokeWidth={2.25}
+              className="relative z-10"
+              style={{ filter: 'drop-shadow(0 1.5px 2px rgba(0,0,0,0.4))' }}
+            />
+          )
         ) : (
           <>
             {/* ロック時: アイコンをうっすら + 錠前オーバーレイ */}
