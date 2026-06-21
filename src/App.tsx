@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
+import AuthGuard from './auth/AuthGuard'
+import Login from './pages/Login'
 import Home from './pages/Home'
 import AppliedRefresh from './pages/AppliedRefresh'
 import Quiz from './pages/Quiz'
@@ -42,23 +44,24 @@ import SmSimulation from './pages/sm/SmSimulation'
 import SmPrescriptions from './pages/sm/SmPrescriptions'
 
 /**
- * 開発版 App.tsx（フェーズ1）
+ * App.tsx（正式版 v1.0.0）
  *
- * 設計書 §4.1 に準拠。開発期間中は AuthGuard / Login を使用しない。
- * 未実装画面（公式午前Ⅱ / 論述 / 重要マーク管理）は import/Route ともコメントアウト。
- * F1-P2 → F1-P5 で順次有効化する。
- *
- * 正式版（v1.0.0）では §4.2 に従って AuthGuard を復活させる（F2-P6 実施）。
+ * 設計書 §7.2 に従い AuthGuard を復活：
+ *   - /login は AuthGuard の外側に配置（フルスクリーン・Layout 非適用）
+ *   - Layout 配下の全画面を <AuthGuard> でラップ（未認証は /login へリダイレクト）
  */
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 全画面 Layout 適用（演習・クイズも含む）
+        {/* ログイン（AuthGuard の外側・正式版 v1.0.0 で復活。設計§7.2） */}
+        <Route path="/login" element={<Login />} />
+
+        {/* 全画面 Layout 適用（演習・クイズも含む）。正式版は AuthGuard で保護。
             F2-UX 改善: 演習中・クイズ中もサイドバーを開けるよう Layout 配下に統合。
             Layout 側で /quiz, /morning/session, /morning/summary はデフォルト最小化される。
             没入型ローカルヘッダーは sticky top-12 で Layout ヘッダーの下に配置。 */}
-        <Route element={<Layout />}>
+        <Route element={<AuthGuard><Layout /></AuthGuard>}>
           <Route path="/" element={<Home />} />
           <Route path="/applied-refresh" element={<AppliedRefresh />} />
           <Route path="/how-to-use" element={<HowToUse />} />

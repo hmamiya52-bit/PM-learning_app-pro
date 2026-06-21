@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { APP_VERSION } from '../version'
+import { VERSION_LABEL } from '../version'
 
 // ─────────────────────────────────────────────
 // 装飾用 SVG アイコン（絵文字を使わず洗練された印象に）
@@ -92,7 +92,7 @@ function IconAfternoon({ className }: { className?: string }) {
 
 // ─────────────────────────────────────────────
 
-const LOGIN_VERSION_LABEL = `v${APP_VERSION}(Update: 2026/05/01)`
+const LOGIN_VERSION_LABEL = VERSION_LABEL
 
 export default function Login() {
   const { isAuthenticated, login } = useAuth()
@@ -221,7 +221,7 @@ export default function Login() {
               <span>このアプリについて</span>
             </h2>
             <p className="text-[12px] text-slate-600 leading-relaxed">
-              一言でいうと、アプリ作成者がネスペ挑戦時に、WordとExcelで作成していた勉強用のノートと進捗管理を一元化し、「こんなアプリがあったら良かったな」を実現したアプリです。
+              一言でいうと、プロジェクトマネージャ試験（PM）対策のために、分野別ノート・過去問演習・午後問題の記録／計画を1つにまとめた学習アプリです。アプリ作成者の「こんなアプリがあったら良かった」を形にしました。
             </p>
           </section>
 
@@ -232,9 +232,9 @@ export default function Login() {
               <span>こんな方におすすめ</span>
             </h2>
             <ul className="text-[12px] text-slate-600 leading-relaxed space-y-1 list-disc ml-5">
-              <li>ネスペ午後対策の基礎固めをしたい方</li>
-              <li>スキマ時間でネットワークの重要キーワードを反復したい方</li>
-              <li>午後問題の学習進捗管理を一元化したい方</li>
+              <li>PM試験（午前Ⅱ・午後Ⅰ・午後Ⅱ論述）対策を一元化したい方</li>
+              <li>スキマ時間でPMの重要キーワードを反復したい方</li>
+              <li>午後問題の演習記録・学習計画を管理したい方</li>
             </ul>
           </section>
 
@@ -251,7 +251,7 @@ export default function Login() {
                 </span>
                 <span className="flex-1 min-w-0">
                   <strong className="text-slate-800">ノートモード</strong>：
-                  22 分野の重要知識を 1 ページで確認。赤字を隠した暗記テストにも対応。
+                  12 分野の重要知識を 1 ページで確認。赤字を隠した暗記テストにも対応。
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
@@ -260,7 +260,7 @@ export default function Login() {
                 </span>
                 <span className="flex-1 min-w-0">
                   <strong className="text-slate-800">問題演習</strong>：
-                  4 択／記述の 2 モード。午後問題を解くための基礎知識を固めることが可能。
+                  午前Ⅱ過去問（4択）と分野別クイズ。午後を解くための基礎知識を固める。
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
@@ -269,7 +269,7 @@ export default function Login() {
                 </span>
                 <span className="flex-1 min-w-0">
                   <strong className="text-slate-800">午後問題演習補助</strong>：
-                  午後問演習の学習計画、採点、記録を効率的に行えるようにサポート。
+                  午後Ⅰの自己採点・記録、午後Ⅱ論述の練習・参考答案までサポート。
                 </span>
               </li>
             </ul>

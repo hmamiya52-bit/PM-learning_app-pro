@@ -463,7 +463,7 @@ function IntroSection({ lastSyncAt }: { lastSyncAt: string | undefined }) {
         </p>
         {!lastSyncAt && (
           <p className="text-xs font-bold text-red-500 mb-2">
-            初回のQRコードは非常に読み取りづらいので、文字列コピペを推奨。二回目から多少読み取りやすくなります。
+            初回はQRコードが読み取りにくい場合があります。うまくいかないときは「同期文字列」のコピー＆ペーストをご利用ください。
           </p>
         )}
         <h1 className="text-xl font-bold text-slate-900">PC＆スマホの学習記録連携</h1>
