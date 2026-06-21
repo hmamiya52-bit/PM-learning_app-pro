@@ -42,23 +42,33 @@ const SCREENSHOT_GUIDES: ScreenshotGuide[] = [
     ],
   },
   {
-    title: '午後問題演習補助',
+    title: '午後Ⅰ（記述式）問題演習',
     image: '/how-to-use/afternoon-desktop.png',
-    alt: '午後問題演習補助の問題一覧',
+    alt: '午後Ⅰの問題一覧',
     points: [
-      '年度、問、テーマ、最高点、実施日を一覧で確認します。',
+      '午後Ⅰは記述式。年度・問・テーマ・最高点・実施日を一覧で確認します。',
       '行を選ぶと、点数記録や解答欄モードへ進めます。',
-      '午後問題は点数の推移を見ながら周回します。',
+      '点数の推移を見ながら周回します。',
     ],
   },
   {
-    title: '午後問題の解答欄モード',
+    title: '午後Ⅰ 解答欄モード',
     image: '/how-to-use/afternoon-answer-mode.png',
-    alt: '午後問題の解答欄モードで答え合わせしている画面',
+    alt: '午後Ⅰの解答欄モードで答え合わせしている画面',
     points: [
       '解答欄に自分の答えを入力し、すぐに答え合わせできます。',
       '○、△、×で自己採点すると、推定スコアが表示されます。',
       'トラッカーに記録すると、点数と保存した解答を後から確認できます。',
+    ],
+  },
+  {
+    title: '午後Ⅱ 論述トレーニング',
+    image: '/how-to-use/essay-training-desktop.png',
+    alt: '午後Ⅱ 論述トレーニングの解答画面',
+    points: [
+      '午後Ⅱは論述式。設問を確認し、時間を計測しながら解答を記述します。',
+      '文字数カウントで規定字数の感覚をつかめます。',
+      '解答を保存し、参考答案と見比べて自己採点・振り返りができます。',
     ],
   },
   {
@@ -158,7 +168,7 @@ export default function HowToUse() {
             </div>
             <div>
               <p className="text-sm font-bold text-slate-900">午後問題を伸ばしたい</p>
-              <p className="mt-1 text-sm leading-relaxed text-slate-600">解答欄モードで書き、点数記録で周回状況を残します。</p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">午後Ⅰは解答欄モードで書いて自己採点、午後Ⅱは論述トレーニングで字数と時間を計りながら練習します。</p>
             </div>
           </div>
         </section>
