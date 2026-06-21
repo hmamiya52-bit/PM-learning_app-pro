@@ -128,6 +128,18 @@ export default function ItServiceManager() {
         </div>
       </section>
 
+      <section className="bg-cyan-50 border border-cyan-100 rounded-xl px-4 py-3">
+        <div className="flex items-start gap-2">
+          <CheckCircle2 className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
+          <div>
+            <h2 className="text-sm font-black text-slate-900">2026年度からのCBTにも対応</h2>
+            <p className="text-xs text-slate-600 leading-relaxed mt-1">
+              方式はCBTへ移行予定ですが、問われる知識・技能の範囲、出題形式、出題数、試験時間は変わらない前提です。ここでは午前Ⅱ・午後Ⅰ・午後Ⅱの対策を同じ軸で進めます。
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-slate-900 text-white rounded-xl px-4 py-3">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>

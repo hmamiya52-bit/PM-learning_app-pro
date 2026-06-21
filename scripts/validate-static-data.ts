@@ -16,6 +16,21 @@ import { officialAnswers } from '../src/data/officialAnswers'
 import { scoringMap } from '../src/data/scoringMap'
 import { essayProblems } from '../src/data/essayProblems'
 import { afternoonExplanations, makeRowKey } from '../src/data/afternoonExplanations'
+import {
+  smAfternoonProblems,
+  smAnswerPartPacks,
+  smEssayCases,
+  smEssayProblems,
+  smEvidenceDrills,
+  smFinalSprintTasks,
+  smFrequentThemes,
+  smKnowledgeSections,
+  smMorningQuestions,
+  smSimulationSets,
+  smStudyPlanPhases,
+  smTrendEvidenceEntries,
+  smWeaknessPrescriptions,
+} from '../src/data/sm/content'
 
 type EmphasisStyle = 'red' | 'navy' | 'plain'
 const VALID_STYLES: ReadonlySet<EmphasisStyle> = new Set(['red', 'navy', 'plain'])
@@ -517,6 +532,215 @@ const runMarkupValidation = () => {
   console.log(`[AFTERNOON-DETAIL-MARKUP] NG: ${detailMarkupNg} / WARN: ${detailMarkupWarn}`)
 }
 
+const findDuplicateIds = (name: string, items: { id: string }[]): void => {
+  const seen = new Set<string>()
+  for (const item of items) {
+    if (seen.has(item.id)) error(`${name} の id "${item.id}" が重複`)
+    seen.add(item.id)
+  }
+}
+
+const validateNonEmptyString = (path: string, value: string): void => {
+  if (!value.trim()) error(`${path} が空`)
+}
+
+const runSmDataValidation = () => {
+  const smThemeIds = new Set(smFrequentThemes.map((theme) => theme.id))
+  const smProblemThemeMap = new Map<string, string[]>()
+  smAfternoonProblems.forEach((problem) => smProblemThemeMap.set(problem.id, problem.themeIds))
+  smEssayProblems.forEach((problem) => smProblemThemeMap.set(problem.id, problem.themeIds))
+  const officialTrendYears = new Set([
+    'R7春',
+    'R6春',
+    'R5春',
+    'R4春',
+    'R3春',
+    'R1秋',
+    'H30秋',
+    'H29秋',
+    'H28秋',
+    'H27秋',
+  ])
+
+  findDuplicateIds('smFrequentThemes', smFrequentThemes)
+  findDuplicateIds('smKnowledgeSections', smKnowledgeSections)
+  findDuplicateIds('smMorningQuestions', smMorningQuestions)
+  findDuplicateIds('smAfternoonProblems', smAfternoonProblems)
+  findDuplicateIds('smEssayProblems', smEssayProblems)
+  findDuplicateIds('smEssayCases', smEssayCases)
+  findDuplicateIds('smEvidenceDrills', smEvidenceDrills)
+  findDuplicateIds('smAnswerPartPacks', smAnswerPartPacks)
+  findDuplicateIds('smSimulationSets', smSimulationSets)
+  findDuplicateIds('smWeaknessPrescriptions', smWeaknessPrescriptions)
+  findDuplicateIds('smStudyPlanPhases', smStudyPlanPhases)
+  findDuplicateIds('smFinalSprintTasks', smFinalSprintTasks)
+  findDuplicateIds('smTrendEvidenceEntries', smTrendEvidenceEntries)
+
+  const themeReferences = [
+    ['smKnowledgeSections', smKnowledgeSections.map((item) => item.themeId)],
+    ['smMorningQuestions', smMorningQuestions.map((item) => item.themeId)],
+    ['smAfternoonProblems', smAfternoonProblems.flatMap((item) => item.themeIds)],
+    ['smEssayProblems', smEssayProblems.flatMap((item) => item.themeIds)],
+    ['smEssayCases', smEssayCases.flatMap((item) => item.themeIds)],
+    ['smEvidenceDrills', smEvidenceDrills.map((item) => item.themeId)],
+    ['smAnswerPartPacks', smAnswerPartPacks.map((item) => item.themeId)],
+    ['smSimulationSets', smSimulationSets.flatMap((item) => item.themeIds)],
+    ['smWeaknessPrescriptions', smWeaknessPrescriptions.flatMap((item) => item.themeIds)],
+    ['smStudyPlanPhases', smStudyPlanPhases.flatMap((item) => item.themeIds)],
+    ['smFinalSprintTasks', smFinalSprintTasks.flatMap((item) => item.themeIds)],
+    ['smTrendEvidenceEntries', smTrendEvidenceEntries.flatMap((item) => item.themeIds)],
+  ] as const
+
+  themeReferences.forEach(([name, ids]) => {
+    ids.forEach((id) => {
+      if (!smThemeIds.has(id)) error(`${name} が未定義のSMテーマ "${id}" を参照`)
+    })
+  })
+
+  smFrequentThemes.forEach((theme) => {
+    if (theme.mustKnow.length < 4) error(`smFrequentThemes[${theme.id}].mustKnow が薄い`)
+    if (theme.infraExamples.length < 3) error(`smFrequentThemes[${theme.id}].infraExamples が3件未満`)
+    validateNonEmptyString(`smFrequentThemes[${theme.id}].evidenceNote`, theme.evidenceNote)
+    theme.years.forEach((year) => {
+      if (!officialTrendYears.has(year)) error(`smFrequentThemes[${theme.id}].years に想定外の年度 "${year}"`)
+    })
+    if (new Set(theme.years).size !== theme.years.length) {
+      error(`smFrequentThemes[${theme.id}].years に重複`)
+    }
+    theme.relatedProblemIds.forEach((problemId) => {
+      const problemThemeIds = smProblemThemeMap.get(problemId)
+      if (!problemThemeIds) {
+        error(`smFrequentThemes[${theme.id}].relatedProblemIds が未定義の問題 "${problemId}" を参照`)
+        return
+      }
+      if (!problemThemeIds.includes(theme.id)) {
+        error(
+          `smFrequentThemes[${theme.id}].relatedProblemIds の "${problemId}" は同テーマを持たない`
+        )
+      }
+    })
+  })
+
+  smAfternoonProblems.forEach((problem) => {
+    if (problem.answerItems.length < 3) error(`smAfternoonProblems[${problem.id}].answerItems が3件未満`)
+    if (problem.commentary.length < 2) error(`smAfternoonProblems[${problem.id}].commentary が2件未満`)
+    validateNonEmptyString(`smAfternoonProblems[${problem.id}].evidenceNote`, problem.evidenceNote)
+    problem.answerItems.forEach((item, index) => {
+      validateNonEmptyString(`smAfternoonProblems[${problem.id}].answerItems[${index}].answer`, item.answer)
+      validateNonEmptyString(`smAfternoonProblems[${problem.id}].answerItems[${index}].point`, item.point)
+    })
+  })
+
+  smEssayProblems.forEach((problem) => {
+    if (problem.expectedViewpoints.length < 3) {
+      error(`smEssayProblems[${problem.id}].expectedViewpoints が3件未満`)
+    }
+    if (problem.outlineSamples.length < 1) error(`smEssayProblems[${problem.id}].outlineSamples が空`)
+    if (problem.evaluationCriteria.length < 4) {
+      error(`smEssayProblems[${problem.id}].evaluationCriteria が4件未満`)
+    }
+    if (problem.sampleAnswers.length < 2) error(`smEssayProblems[${problem.id}].sampleAnswers が2本未満`)
+    validateNonEmptyString(`smEssayProblems[${problem.id}].evidenceNote`, problem.evidenceNote)
+    problem.outlineSamples.forEach((outline, index) => {
+      validateNonEmptyString(`smEssayProblems[${problem.id}].outlineSamples[${index}].title`, outline.title)
+      if (outline.bullets.length < 3) {
+        error(`smEssayProblems[${problem.id}].outlineSamples[${index}].bullets が3件未満`)
+      }
+    })
+    problem.sampleAnswers.forEach((sample, index) => {
+      validateNonEmptyString(`smEssayProblems[${problem.id}].sampleAnswers[${index}].scenario`, sample.scenario)
+      const labels = sample.sections.map((section) => section.label).join('')
+      if (labels !== 'アイウ') {
+        error(`smEssayProblems[${problem.id}].sampleAnswers[${index}].sections がア・イ・ウ順でない`)
+      }
+      sample.sections.forEach((section, sectionIndex) => {
+        validateNonEmptyString(
+          `smEssayProblems[${problem.id}].sampleAnswers[${index}].sections[${sectionIndex}].text`,
+          section.text
+        )
+      })
+    })
+  })
+
+  if (smTrendEvidenceEntries.length !== 50) {
+    error(`smTrendEvidenceEntries は直近10回×5問の50件であるべき（実際=${smTrendEvidenceEntries.length}）`)
+  }
+
+  officialTrendYears.forEach((year) => {
+    const yearEntries = smTrendEvidenceEntries.filter((entry) => entry.yearLabel === year)
+    const afternoonNumbers = yearEntries
+      .filter((entry) => entry.part === 'afternoon')
+      .map((entry) => entry.questionNumber)
+      .sort((a, b) => a - b)
+      .join(',')
+    const essayNumbers = yearEntries
+      .filter((entry) => entry.part === 'essay')
+      .map((entry) => entry.questionNumber)
+      .sort((a, b) => a - b)
+      .join(',')
+    if (afternoonNumbers !== '1,2,3') {
+      error(`smTrendEvidenceEntries[${year}] の午後Ⅰ問番号が1,2,3でない（${afternoonNumbers || 'なし'}）`)
+    }
+    if (essayNumbers !== '1,2') {
+      error(`smTrendEvidenceEntries[${year}] の午後Ⅱ問番号が1,2でない（${essayNumbers || 'なし'}）`)
+    }
+  })
+
+  smTrendEvidenceEntries.forEach((entry) => {
+    if (!officialTrendYears.has(entry.yearLabel)) {
+      error(`smTrendEvidenceEntries[${entry.id}].yearLabel が直近10回の想定外（${entry.yearLabel}）`)
+    }
+    if (entry.themeIds.length === 0) error(`smTrendEvidenceEntries[${entry.id}].themeIds が空`)
+    validateNonEmptyString(`smTrendEvidenceEntries[${entry.id}].title`, entry.title)
+    validateNonEmptyString(`smTrendEvidenceEntries[${entry.id}].officialFocus`, entry.officialFocus)
+    validateNonEmptyString(`smTrendEvidenceEntries[${entry.id}].studyUse`, entry.studyUse)
+    if (!entry.sourcePageUrl.startsWith('https://www.ipa.go.jp/shiken/mondai-kaiotu/')) {
+      error(`smTrendEvidenceEntries[${entry.id}].sourcePageUrl がIPA過去問題ページでない`)
+    }
+    if (!entry.sourcePdfUrl.startsWith('https://www.ipa.go.jp/') || !entry.sourcePdfUrl.endsWith('.pdf')) {
+      error(`smTrendEvidenceEntries[${entry.id}].sourcePdfUrl がIPA PDFでない`)
+    }
+  })
+
+  const evidenceYearsByTheme = new Map<string, Set<string>>()
+  smTrendEvidenceEntries.forEach((entry) => {
+    entry.themeIds.forEach((themeId) => {
+      const years = evidenceYearsByTheme.get(themeId) ?? new Set<string>()
+      years.add(entry.yearLabel)
+      evidenceYearsByTheme.set(themeId, years)
+    })
+  })
+  smFrequentThemes.forEach((theme) => {
+    const evidenceYears = Array.from(evidenceYearsByTheme.get(theme.id) ?? new Set<string>()).sort()
+    const themeYears = [...theme.years].sort()
+    if (evidenceYears.join('|') !== themeYears.join('|')) {
+      error(
+        `smFrequentThemes[${theme.id}].years が証跡マトリクスと不一致（theme=${themeYears.join(',')} evidence=${evidenceYears.join(',')}）`
+      )
+    }
+  })
+
+  const studyPlanHours = smStudyPlanPhases.reduce((sum, phase) => {
+    const hours = Number.parseInt(phase.hours, 10)
+    return Number.isFinite(hours) ? sum + hours : sum
+  }, 0)
+  if (studyPlanHours !== 50) {
+    error(`smStudyPlanPhases の合計時間が50hでない（${studyPlanHours}h）`)
+  }
+
+  if (smMorningQuestions.length !== 25) {
+    error(`smMorningQuestions はR7午前Ⅱ25問であるべき（実際=${smMorningQuestions.length}）`)
+  }
+  const morningNumbers = smMorningQuestions.map((question) => question.number).sort((a, b) => a - b)
+  if (!morningNumbers.every((number, index) => number === index + 1)) {
+    error(`smMorningQuestions の問番号が1〜25で連続していない（${morningNumbers.join(', ')})`)
+  }
+
+  console.log(
+    `[SM-DATA] themes=${smFrequentThemes.length} morning=${smMorningQuestions.length} pm1=${smAfternoonProblems.length} pm2=${smEssayProblems.length} trend=${smTrendEvidenceEntries.length} plan=${studyPlanHours}h`
+  )
+}
+
 // ─────────────────────────────────────────────
 // 1. カテゴリID整合性（Question.topicId が categories に存在するか）
 //    F1.5 段階では NW 22カテゴリの問題データが残置されているため
@@ -748,6 +972,7 @@ for (const p of essayProblems) {
 // ─────────────────────────────────────────────
 runMarkupValidation()
 runAfternoonExplanationStructureAudit()
+runSmDataValidation()
 
 if (errorCount === 0) {
   console.log('[OK] 全データの整合性確認完了')

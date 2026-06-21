@@ -35,6 +35,19 @@ export interface SmFrequentTheme {
   evidenceNote: string
 }
 
+export interface SmTrendEvidenceEntry {
+  id: string
+  yearLabel: string
+  part: Extract<SmExamPart, 'afternoon' | 'essay'>
+  questionNumber: number
+  title: string
+  themeIds: string[]
+  officialFocus: string
+  studyUse: string
+  sourcePageUrl: string
+  sourcePdfUrl: string
+}
+
 export interface SmKnowledgeSection {
   id: string
   title: string

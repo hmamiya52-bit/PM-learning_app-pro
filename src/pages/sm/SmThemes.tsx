@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, BarChart3, CheckCircle2, Clock, Target } from 'lucide-react'
-import { smFrequentThemes, smStudyPlanPhases, smThemeStudyRecipes } from '../../data/sm/content'
+import { ArrowRight, BarChart3, CheckCircle2, Clock, ExternalLink, FileSearch, Target } from 'lucide-react'
+import { smFrequentThemes, smStudyPlanPhases, smThemeStudyRecipes, smTrendEvidenceEntries } from '../../data/sm/content'
 import type { SmFrequency } from '../../data/sm/types'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
@@ -31,12 +31,27 @@ export default function SmThemes() {
     [filter, sortedThemes],
   )
   const yearLabels = useMemo(
-    () => Array.from(new Set(sortedThemes.flatMap((theme) => theme.years))).sort((a, b) => examOrder(b) - examOrder(a)),
-    [sortedThemes],
+    () => Array.from(new Set(smTrendEvidenceEntries.map((entry) => entry.yearLabel))).sort((a, b) => examOrder(b) - examOrder(a)),
+    [],
   )
+  const evidenceByTheme = useMemo(() => {
+    const map = new Map<string, typeof smTrendEvidenceEntries>()
+    smTrendEvidenceEntries.forEach((entry) => {
+      entry.themeIds.forEach((themeId) => {
+        const list = map.get(themeId) ?? []
+        map.set(themeId, [...list, entry])
+      })
+    })
+    return map
+  }, [])
+  const themeById = useMemo(() => new Map(sortedThemes.map((theme) => [theme.id, theme])), [sortedThemes])
   const sThemes = sortedThemes.filter((theme) => theme.frequency === 'S')
   const crossPartThemes = sortedThemes.filter((theme) => theme.appearsIn.length >= 3)
-  const mostFrequent = sortedThemes[0]
+  const evidenceCounts = {
+    total: smTrendEvidenceEntries.length,
+    afternoon: smTrendEvidenceEntries.filter((entry) => entry.part === 'afternoon').length,
+    essay: smTrendEvidenceEntries.filter((entry) => entry.part === 'essay').length,
+  }
   const counts = {
     S: smFrequentThemes.filter((theme) => theme.frequency === 'S').length,
     A: smFrequentThemes.filter((theme) => theme.frequency === 'A').length,
@@ -90,10 +105,10 @@ export default function SmThemes() {
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-cyan-700" />
-            <p className="text-[11px] font-bold text-slate-400">最初に読む</p>
+            <p className="text-[11px] font-bold text-slate-400">公式証跡</p>
           </div>
-          <p className="text-sm font-black text-slate-900 leading-snug mt-2">#{mostFrequent.rank} {mostFrequent.title}</p>
-          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">{mostFrequent.summary}</p>
+          <p className="text-lg font-black text-slate-900 mt-1">{evidenceCounts.total}件</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午後Ⅰ {evidenceCounts.afternoon}件、午後Ⅱ {evidenceCounts.essay}件をテーマへ対応付けています。</p>
         </div>
       </section>
 
@@ -166,6 +181,81 @@ export default function SmThemes() {
         </div>
       </section>
 
+      <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <FileSearch className="w-5 h-5 text-cyan-700" />
+              <h2 className="text-sm font-black text-slate-900">公式証跡マトリクス</h2>
+            </div>
+            <p className="text-xs text-slate-500 leading-relaxed mt-1">
+              直近10回の午後Ⅰ3問・午後Ⅱ2問を、公式解答例の出題趣旨からテーマへ対応付けています。
+            </p>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed lg:text-right">
+            低頻度テーマは最後に確認し、S/Aテーマの答案化を先に固めます。
+          </p>
+        </div>
+        <div className="overflow-x-auto mt-3">
+          <table className="min-w-[1080px] w-full border-separate border-spacing-0 text-left">
+            <thead>
+              <tr>
+                <th className="border-b border-slate-200 py-2 pr-3 text-[11px] font-black text-slate-500">年度</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">試験</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">問</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">公式趣旨から見た狙い</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">テーマ</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">学習での使い方</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-center text-[11px] font-black text-slate-500">出典</th>
+              </tr>
+            </thead>
+            <tbody>
+              {smTrendEvidenceEntries.map((entry) => (
+                <tr key={entry.id}>
+                  <td className="border-b border-slate-100 py-2 pr-3 align-top text-xs font-black text-slate-700">{entry.yearLabel}</td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top text-xs font-bold text-slate-600">{partLabels[entry.part]}</td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top text-xs font-bold text-slate-600">問{entry.questionNumber}</td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top">
+                    <p className="text-xs font-black text-slate-900">{entry.title}</p>
+                    <p className="text-[11px] text-slate-500 leading-relaxed mt-1">{entry.officialFocus}</p>
+                  </td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top">
+                    <div className="flex flex-wrap gap-1">
+                      {entry.themeIds.map((themeId) => {
+                        const theme = themeById.get(themeId)
+                        return (
+                          <Link
+                            key={themeId}
+                            to={`#${themeId}`}
+                            className="rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-slate-600 hover:border-cyan-300 hover:text-cyan-700"
+                          >
+                            {theme ? `#${theme.rank} ${theme.title}` : themeId}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  </td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top text-[11px] text-slate-600 leading-relaxed">
+                    {entry.studyUse}
+                  </td>
+                  <td className="border-b border-slate-100 px-2 py-2 align-top text-center">
+                    <a
+                      href={entry.sourcePdfUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-1 rounded-md border border-cyan-200 bg-white px-2 py-1 text-[11px] font-black text-cyan-700 hover:bg-cyan-50"
+                    >
+                      PDF
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="flex flex-wrap gap-1.5">
         {([
           ['all', 'すべて'],
@@ -190,6 +280,7 @@ export default function SmThemes() {
         {visibleThemes.map((theme) => {
           const relatedPhases = smStudyPlanPhases.filter((phase) => phase.themeIds.includes(theme.id))
           const recipe = smThemeStudyRecipes.find((item) => item.themeId === theme.id)
+          const themeEvidence = evidenceByTheme.get(theme.id) ?? []
           return (
           <article key={theme.id} id={theme.id} className="scroll-mt-4 bg-white border border-slate-200 rounded-xl px-4 py-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -202,6 +293,35 @@ export default function SmThemes() {
             </div>
             <p className="text-sm text-slate-700 leading-relaxed mt-3">{theme.summary}</p>
             <p className="text-[11px] text-slate-500 leading-relaxed mt-2">根拠: {theme.evidenceNote}</p>
+            {themeEvidence.length > 0 && (
+              <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <p className="text-[11px] font-black text-slate-500">公式証跡 {themeEvidence.length}件</p>
+                  <a
+                    href={themeEvidence[0].sourcePageUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-black text-cyan-700 hover:text-cyan-800"
+                  >
+                    IPA過去問題
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                  {themeEvidence.slice(0, 4).map((entry) => (
+                    <div key={`${theme.id}:${entry.id}`} className="rounded-md bg-white border border-slate-200 px-3 py-2">
+                      <p className="text-[11px] font-black text-slate-800">
+                        {entry.yearLabel} {partLabels[entry.part]}問{entry.questionNumber}
+                      </p>
+                      <p className="text-[11px] text-slate-500 leading-relaxed mt-1">{entry.title}</p>
+                    </div>
+                  ))}
+                </div>
+                {themeEvidence.length > 4 && (
+                  <p className="text-[10px] text-slate-400 mt-2">ほか {themeEvidence.length - 4} 件は上の証跡マトリクスで確認できます。</p>
+                )}
+              </div>
+            )}
             <div className="flex flex-wrap gap-1.5 mt-3">
               {theme.appearsIn.map((part) => (
                 <span key={part} className="rounded-full bg-cyan-50 text-cyan-700 px-2 py-0.5 text-[10px] font-bold">
