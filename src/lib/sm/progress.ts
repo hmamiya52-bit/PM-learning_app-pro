@@ -37,10 +37,15 @@ export interface SmAfternoonRecord {
 }
 
 export interface SmEssayReview {
-  relevance: number
+  relevance?: number
+  promptFit?: number
   specificity: number
-  serviceManagement: number
-  structure: number
+  serviceManagement?: number
+  validity?: number
+  structure?: number
+  consistency?: number
+  insight?: number
+  expression?: number
   reflection: string
 }
 
@@ -465,7 +470,7 @@ export function setSmPrescriptionCheck(id: string, checked: boolean, label: stri
   saveJson(KEYS.PRESCRIPTION_CHECKS, next)
   addEvent({
     type: 'prescription-check',
-    label: checked ? '弱点処方完了' : '弱点処方再開',
+    label: checked ? '弱点対策完了' : '弱点対策再開',
     detail: label,
   })
 }
@@ -475,7 +480,15 @@ export function clearSmPrescriptionChecks(): void {
 }
 
 export function averageReview(review: SmEssayReview): number {
-  const values = [review.relevance, review.specificity, review.serviceManagement, review.structure]
+  const values = [
+    review.promptFit ?? review.relevance,
+    review.specificity,
+    review.validity ?? review.serviceManagement,
+    review.consistency ?? review.structure,
+    review.insight ?? review.serviceManagement,
+    review.expression ?? review.structure,
+  ].filter((value): value is number => typeof value === 'number')
+  if (values.length === 0) return 0
   return Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
 }
 
@@ -550,21 +563,34 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
       const themeAfternoonProblems = smAfternoonProblems.filter((problem) => problem.themeIds.includes(theme.id))
       const themeAfternoonProblemIds = new Set(themeAfternoonProblems.map((problem) => problem.id))
       const themeAfternoonRecords = afternoonRecords.filter((record) => themeAfternoonProblemIds.has(record.problemId))
-      const afternoonBestScore = themeAfternoonRecords.length > 0
-        ? Math.max(...themeAfternoonRecords.map((record) => record.score))
+      const afternoonBestScores = themeAfternoonProblems
+        .map((problem) => {
+          const records = themeAfternoonRecords.filter((record) => record.problemId === problem.id)
+          return records.length > 0 ? Math.max(...records.map((record) => record.score)) : null
+        })
+      const attemptedAfternoonBestScores = afternoonBestScores.filter((score): score is number => score !== null)
+      const afternoonBestScore = attemptedAfternoonBestScores.length > 0
+        ? Math.max(...attemptedAfternoonBestScores)
         : null
-      const afternoonLowScoreCount = themeAfternoonRecords.filter((record) => record.score < 30).length
+      const afternoonLowScoreCount = attemptedAfternoonBestScores.filter((score) => score < 30).length
       const themeEvidenceDrills = smEvidenceDrills.filter((drill) => drill.themeId === theme.id)
       const themeEvidenceCompleted = themeEvidenceDrills.filter((drill) => evidenceChecks[drill.id]).length
 
       const themeEssayProblems = smEssayProblems.filter((problem) => problem.themeIds.includes(theme.id))
       const themeEssayProblemIds = new Set(themeEssayProblems.map((problem) => problem.id))
       const themeEssayAttempts = essayAttempts.filter((attempt) => themeEssayProblemIds.has(attempt.problemId))
-      const essayReviewValues = themeEssayAttempts.map((attempt) => averageReview(attempt.review))
+      const essayReviewValues = themeEssayProblems
+        .map((problem) => {
+          const values = themeEssayAttempts
+            .filter((attempt) => attempt.problemId === problem.id)
+            .map((attempt) => averageReview(attempt.review))
+          return values.length > 0 ? Math.max(...values) : null
+        })
+        .filter((value): value is number => value !== null)
       const essayAverageReview = essayReviewValues.length > 0
         ? Math.round((essayReviewValues.reduce((sum, value) => sum + value, 0) / essayReviewValues.length) * 10) / 10
         : null
-      const essayLowReviewCount = essayReviewValues.filter((value) => value < 3.5).length
+      const essayLowReviewCount = essayReviewValues.filter((value) => value < 4).length
 
       const morningScore = themeQuestions.length > 0
         ? ((themeQuestionRecords.length / themeQuestions.length) * 0.4 + (morningCorrect / themeQuestions.length) * 0.6) * 100
@@ -586,25 +612,25 @@ export function getSmThemeReadiness(): SmThemeReadiness[] {
       if (morningWrong > 0) reasons.push(`午前Ⅱの直近不正解 ${morningWrong}問`)
       if (themeQuestions.length > themeQuestionRecords.length) reasons.push(`午前Ⅱの未演習 ${themeQuestions.length - themeQuestionRecords.length}問`)
       if (themeAfternoonProblems.length > 0 && themeAfternoonRecords.length === 0) reasons.push('午後Ⅰが未記録')
-      if (afternoonLowScoreCount > 0) reasons.push(`午後Ⅰの30点未満 ${afternoonLowScoreCount}回`)
+      if (afternoonLowScoreCount > 0) reasons.push(`午後Ⅰの30点未満 ${afternoonLowScoreCount}問`)
       if (themeEvidenceDrills.length > themeEvidenceCompleted) reasons.push(`根拠ドリル未完了 ${themeEvidenceDrills.length - themeEvidenceCompleted}本`)
       if (themeEssayProblems.length > 0 && themeEssayAttempts.length === 0) reasons.push('午後Ⅱの骨子・論述が未記録')
-      if (essayLowReviewCount > 0) reasons.push(`午後Ⅱの自己評価3.5未満 ${essayLowReviewCount}回`)
+      if (essayLowReviewCount > 0) reasons.push(`午後Ⅱの自己評価4.0未満 ${essayLowReviewCount}問`)
 
-      let nextAction = '知識ノートで午後問題への使い方を確認する'
+      let nextAction = '知識ノートで午後問題へのつなげ方を確認する'
       let nextRoute = '/it-service-manager/knowledge'
       if (morningWrong > 0 || themeQuestions.length > themeQuestionRecords.length) {
-        nextAction = '午前Ⅱで用語と違いを固める'
-        nextRoute = '/it-service-manager/morning'
+        nextAction = '午前Ⅱで用語と違いを整理する'
+        nextRoute = `/it-service-manager/morning?theme=${encodeURIComponent(theme.id)}`
       } else if (themeAfternoonProblems.length > 0 && (themeAfternoonRecords.length === 0 || afternoonLowScoreCount > 0)) {
-        nextAction = '午後Ⅰで本文から根拠を拾う'
-        nextRoute = '/it-service-manager/afternoon'
+        nextAction = '午後Ⅰで本文から根拠を見つける'
+        nextRoute = `/it-service-manager/afternoon?problem=${encodeURIComponent(themeAfternoonProblems[0]?.id ?? '')}`
       } else if (themeEvidenceDrills.length > themeEvidenceCompleted) {
-        nextAction = 'ケースで午後Ⅰの根拠ドリルを潰す'
-        nextRoute = '/it-service-manager/cases'
+        nextAction = 'ケースで午後Ⅰの根拠ドリルを進める'
+        nextRoute = `/it-service-manager/cases?drill=${encodeURIComponent(themeEvidenceDrills.find((drill) => !evidenceChecks[drill.id])?.id ?? themeEvidenceDrills[0]?.id ?? '')}`
       } else if (themeEssayProblems.length > 0 && (themeEssayAttempts.length === 0 || essayLowReviewCount > 0)) {
         nextAction = '午後Ⅱで骨子と評価観点を見直す'
-        nextRoute = '/it-service-manager/essay'
+        nextRoute = `/it-service-manager/essay?problem=${encodeURIComponent(themeEssayProblems[0]?.id ?? '')}`
       }
 
       const status: SmThemeReadiness['status'] = score >= 75 && reasons.length === 0 ? 'ready' : score >= 45 ? 'review' : 'start'
@@ -689,7 +715,7 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       title: `午前Ⅱ 問${question.number}: ${question.topic}`,
       reason: record ? `直近不正解（${record.selected}を選択）` : '未演習',
       action: question.reviewNote,
-      route: '/it-service-manager/morning',
+      route: `/it-service-manager/morning?theme=${encodeURIComponent(question.themeId)}`,
       minutes: 4,
     })
   })
@@ -708,7 +734,7 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       title: `根拠ドリル: ${drill.title}`,
       reason: !attempt ? '回答未記録' : attempt.selfScore < 4 ? `直近自己採点 ${attempt.selfScore}/5` : '完了チェック未完了',
       action: drill.practiceSteps[0] ?? '設問要求、本文根拠、答案骨子を分けて書く',
-      route: '/it-service-manager/cases',
+      route: `/it-service-manager/cases?drill=${encodeURIComponent(drill.id)}`,
       minutes: Number.parseInt(drill.timeBox, 10) || 8,
     })
   })
@@ -727,17 +753,17 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       title: `午後Ⅰ 問${problem.number}: ${problem.title}`,
       reason: bestScore === null ? '未記録' : `最高 ${bestScore}/50点`,
       action: problem.traps[0] ?? '公式解答例と採点講評で、根拠不足を確認する',
-      route: '/it-service-manager/afternoon',
+      route: `/it-service-manager/afternoon?problem=${encodeURIComponent(problem.id)}`,
       minutes: 35,
     })
   })
 
   smEssayProblems.forEach((problem) => {
     const attempts = essayAttempts.filter((attempt) => attempt.problemId === problem.id)
-    const average = attempts.length > 0
-      ? Math.round((attempts.reduce((sum, attempt) => sum + averageReview(attempt.review), 0) / attempts.length) * 10) / 10
+    const bestReview = attempts.length > 0
+      ? Math.max(...attempts.map((attempt) => averageReview(attempt.review)))
       : null
-    if (average !== null && average >= 3.5) return
+    if (bestReview !== null && bestReview >= 4) return
     const theme = problem.themeIds.map(themeOf).sort((a, b) => priorityValue(a.frequency) - priorityValue(b.frequency) || a.rank - b.rank)[0]
     queue.push({
       id: `essay:${problem.id}`,
@@ -746,9 +772,9 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       themeId: theme.id,
       themeRank: theme.rank,
       title: `午後Ⅱ 問${problem.number}: ${problem.title}`,
-      reason: average === null ? '骨子・論述未記録' : `自己評価平均 ${average}/5`,
-      action: problem.evaluationCriteria[0] ?? '題意、具体性、SM活動、構成を見直す',
-      route: '/it-service-manager/essay',
+      reason: bestReview === null ? '骨子・論述未記録' : `最高自己評価 ${bestReview}/5`,
+      action: problem.evaluationCriteria[0] ?? '問いへの適合、具体性、SM活動、構成を見直す',
+      route: `/it-service-manager/essay?problem=${encodeURIComponent(problem.id)}`,
       minutes: 45,
     })
   })
@@ -765,7 +791,7 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       title: `答案パーツ: ${pack.title}`,
       reason: '未チェック',
       action: pack.reusablePhrases[0] ?? pack.strongAnswer,
-      route: '/it-service-manager/answer-parts',
+      route: `/it-service-manager/answer-parts?pack=${encodeURIComponent(pack.id)}#${encodeURIComponent(pack.id)}`,
       minutes: Number.parseInt(pack.timeBox, 10) || 8,
     })
   })
@@ -783,7 +809,7 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       title: `本番リハ: ${set.title}`,
       reason: !attempt ? '未実施' : attempt.selfScore < 4 ? `自己評価 ${attempt.selfScore}/5` : '時間内完了が未達',
       action: set.retryPlan,
-      route: '/it-service-manager/simulation',
+      route: `/it-service-manager/simulation#${encodeURIComponent(set.id)}`,
       minutes: set.minutes,
     })
   })
@@ -797,10 +823,10 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
       priority: prescription.priority,
       themeId: theme.id,
       themeRank: theme.rank,
-      title: `処方箋: ${prescription.title}`,
+      title: `弱点対策: ${prescription.title}`,
       reason: prescription.symptom,
       action: prescription.quickFix,
-      route: '/it-service-manager/prescriptions',
+      route: `/it-service-manager/prescriptions#${encodeURIComponent(prescription.id)}`,
       minutes: prescription.minutes,
     })
   })
@@ -818,7 +844,7 @@ export function getSmReviewQueue(): SmReviewQueueItem[] {
         title: `知識確認: ${item.theme.title}`,
         reason: item.reasons[0] ?? `仕上がり ${item.score}%`,
         action: item.nextAction,
-        route: '/it-service-manager/knowledge',
+        route: `/it-service-manager/knowledge?theme=${encodeURIComponent(item.theme.id)}#${encodeURIComponent(item.theme.id)}`,
         minutes: 10,
       })
     })

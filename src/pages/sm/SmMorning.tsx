@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { BarChart3, ExternalLink, Lightbulb, RotateCcw } from 'lucide-react'
 import { smFrequentThemes, smMorningFocusCards, smMorningQuestions } from '../../data/sm/content'
 import type { SmChoice } from '../../data/sm/types'
@@ -10,10 +10,13 @@ type Filter = 'all' | 'unattempted' | 'wrong' | 's'
 const choices: SmChoice[] = ['ア', 'イ', 'ウ', 'エ']
 
 export default function SmMorning() {
+  const [searchParams] = useSearchParams()
+  const requestedThemeId = searchParams.get('theme')
+  const initialThemeId = smFrequentThemes.some((theme) => theme.id === requestedThemeId) ? requestedThemeId ?? '' : ''
   const [records, setRecords] = useState(() => loadSmMorningRecords())
   const [filter, setFilter] = useState<Filter>('all')
-  const [selectedThemeId, setSelectedThemeId] = useState('')
-  const [visibleCount, setVisibleCount] = useState(5)
+  const [selectedThemeId, setSelectedThemeId] = useState(initialThemeId)
+  const [visibleCount, setVisibleCount] = useState(initialThemeId ? 25 : 5)
   const themeReadiness = getSmThemeReadiness()
   const priorityThemes = themeReadiness
     .filter((item) => item.morning.total > 0)
@@ -118,7 +121,7 @@ export default function SmMorning() {
               <h2 className="text-sm font-black text-slate-900">午前Ⅱで見分けること</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              正答番号だけでなく、午後Ⅰ・午後Ⅱで使う言葉の違いまで固めます。
+              正答番号だけでなく、午後Ⅰ・午後Ⅱで使う用語の違いまで確認します。
             </p>
           </div>
           <Link to="/it-service-manager/knowledge" className="text-[11px] font-bold text-cyan-700 hover:underline flex-shrink-0">
@@ -178,7 +181,7 @@ export default function SmMorning() {
               <h2 className="text-sm font-black text-slate-900">テーマ別に解き直す</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              仕上げレポートで弱い順に並ぶテーマです。押すと午前Ⅱの該当問題だけに絞れます。
+              仕上げレポートで優先度が高く出やすいテーマです。押すと午前Ⅱの該当問題だけに絞れます。
             </p>
           </div>
           <Link to="/it-service-manager/report" className="text-[11px] font-bold text-cyan-700 hover:underline flex-shrink-0">

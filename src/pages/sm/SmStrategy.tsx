@@ -34,7 +34,7 @@ export default function SmStrategy() {
       && (summary.afternoon.bestScore ?? 0) >= 30
       && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total)
       && summary.evidenceDrills.attemptCount >= Math.min(8, summary.evidenceDrills.total),
-    'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
+    'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 4,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
   const passedCount = smFinalCheckpoints.filter((item) => checkpointPassed[item.id]).length
@@ -43,7 +43,7 @@ export default function SmStrategy() {
   return (
     <SmPageChrome
       title="攻略マップ"
-      description="50時間を点に変えるために、午前Ⅱ・午後Ⅰ・午後Ⅱで何を優先するかをまとめます。"
+      description="50時間を得点につなげるために、午前Ⅱ・午後Ⅰ・午後Ⅱで何を優先するかをまとめます。"
     >
       <section className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-3">
         <div className="bg-slate-900 text-white rounded-xl px-4 py-4">
@@ -130,10 +130,10 @@ export default function SmStrategy() {
           <div>
             <div className="flex items-center gap-2">
               <Layers className="w-5 h-5 text-cyan-700" />
-              <h2 className="text-sm font-black text-slate-900">答案素材を先に持つ</h2>
+              <h2 className="text-sm font-black text-slate-900">答案の材料を先に用意する</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              午後Ⅰは根拠を短く拾い、午後Ⅱは使い回せるインフラ事例を題意に合わせて組み替えます。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース・{smEssayAdaptationTemplates.length} テンプレ・{smAnswerPartPacks.length} パーツ・{smWeaknessPrescriptions.length} 処方・{smSimulationSets.length} リハ。
+              午後Ⅰは根拠を短くまとめ、午後Ⅱは再利用できるインフラ事例を問われ方に合わせて組み替えます。現在 {smEvidenceDrills.length} ドリル・{smEssayCases.length} ケース・{smEssayAdaptationTemplates.length} テンプレート・{smAnswerPartPacks.length} パーツ・{smWeaknessPrescriptions.length} 対策・{smSimulationSets.length} リハーサル。
             </p>
           </div>
           <div className="flex flex-wrap gap-2 lg:justify-end">
@@ -156,13 +156,13 @@ export default function SmStrategy() {
               className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50"
             >
               <Wrench className="w-4 h-4" />
-              弱点処方
+              弱点対策
             </Link>
             <Link
               to="/it-service-manager/simulation"
               className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50"
             >
-              本番リハ
+              本番リハーサル
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

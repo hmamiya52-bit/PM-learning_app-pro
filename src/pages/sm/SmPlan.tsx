@@ -62,7 +62,7 @@ export default function SmPlan() {
   return (
     <SmPageChrome
       title="50時間プラン"
-      description="頻出テーマ、午前Ⅱ、知識ノート、午後Ⅰ、午後Ⅱ、仕上げを、合格に近づく順で潰していきます。"
+      description="頻出テーマ、午前Ⅱ、知識ノート、午後Ⅰ、午後Ⅱ、仕上げを、合格に近づく順で進めます。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
@@ -103,7 +103,7 @@ export default function SmPlan() {
         <section className="bg-slate-900 text-white rounded-xl px-4 py-3">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p className="text-[11px] font-black text-cyan-200">次に潰す項目</p>
+              <p className="text-[11px] font-black text-cyan-200">次に進める項目</p>
               <h2 className="text-base font-black leading-snug mt-1">{nextItem.label}</h2>
               <p className="text-xs text-slate-300 leading-relaxed mt-1">
                 {nextItem.phase.title} / {nextItem.phase.hours}

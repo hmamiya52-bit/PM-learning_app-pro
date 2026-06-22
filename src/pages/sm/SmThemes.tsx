@@ -61,17 +61,17 @@ export default function SmThemes() {
   return (
     <SmPageChrome
       title="頻出テーマ"
-      description="直近10回分の出題傾向を、少ない勉強時間で効く順に並べた重点テーマです。"
+      description="午後Ⅰ・午後Ⅱの直近10回分を、出現回数、最新性、午後Ⅱへの転用しやすさで整理しています。"
     >
       <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-cyan-700" />
-              <h2 className="text-sm font-black text-slate-900">頻出を先に固める</h2>
+              <h2 className="text-sm font-black text-slate-900">頻出テーマから始める</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              Sランクは午前Ⅱ・午後Ⅰ・午後Ⅱを横断して使うテーマです。Aランクは午後問題の補助観点として押さえます。
+              Sランクは午前Ⅱ・午後Ⅰ・午後Ⅱをまたいで使うテーマです。Aランクも、構成管理、セキュリティ、供給者管理のように答案の説得力を支えるため、直前まで最低限確認します。
             </p>
           </div>
           <div className="grid grid-cols-3 gap-1.5 min-w-[180px]">
@@ -92,7 +92,7 @@ export default function SmThemes() {
             <p className="text-[11px] font-bold text-slate-400">最優先</p>
           </div>
           <p className="text-lg font-black text-slate-900 mt-1">頻出S {sThemes.length}テーマ</p>
-          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱ・午後Ⅰ・午後Ⅱをまたいで点に変わりやすいテーマです。</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱ・午後Ⅰ・午後Ⅱをまたいで得点につながりやすいテーマです。</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
@@ -100,15 +100,15 @@ export default function SmThemes() {
             <p className="text-[11px] font-bold text-slate-400">横断</p>
           </div>
           <p className="text-lg font-black text-slate-900 mt-1">{crossPartThemes.length}テーマ</p>
-          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱの用語を午後Ⅰの根拠、午後Ⅱの題材へ転用できます。</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午前Ⅱの用語を、午後Ⅰの根拠や午後Ⅱの題材へつなげられます。</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-cyan-700" />
-            <p className="text-[11px] font-bold text-slate-400">公式証跡</p>
+            <p className="text-[11px] font-bold text-slate-400">公式根拠</p>
           </div>
           <p className="text-lg font-black text-slate-900 mt-1">{evidenceCounts.total}件</p>
-          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午後Ⅰ {evidenceCounts.afternoon}件、午後Ⅱ {evidenceCounts.essay}件をテーマへ対応付けています。</p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1">午後Ⅰ {evidenceCounts.afternoon}件、午後Ⅱ {evidenceCounts.essay}件をテーマと結び付けています。</p>
         </div>
       </section>
 
@@ -120,14 +120,14 @@ export default function SmThemes() {
               <h2 className="text-sm font-black text-slate-900">出題のまとまり</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              丸が多いテーマほど繰り返し出ています。まずSテーマの横並びを見て、午後Ⅰ・午後Ⅱへ使う順番を決めます。
+              丸は出題年度の記録です。順位は丸の数だけでなく、直近年度での出方、午後Ⅱへ転用しやすいか、午前Ⅱの用語とつながるかを合わせて決めています。
             </p>
           </div>
           <Link
             to="/it-service-manager/prescriptions"
             className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-200 bg-white px-4 py-2 text-sm font-black text-cyan-700 hover:bg-cyan-50 flex-shrink-0"
           >
-            弱点処方へ
+            弱点対策へ
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -186,14 +186,14 @@ export default function SmThemes() {
           <div>
             <div className="flex items-center gap-2">
               <FileSearch className="w-5 h-5 text-cyan-700" />
-              <h2 className="text-sm font-black text-slate-900">公式証跡マトリクス</h2>
+              <h2 className="text-sm font-black text-slate-900">出題根拠マトリクス</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              直近10回の午後Ⅰ3問・午後Ⅱ2問を、公式解答例の出題趣旨からテーマへ対応付けています。
+              直近10回の午後Ⅰ3問・午後Ⅱ2問を、公式解答例の出題趣旨からテーマと結び付けています。午前ⅡはR7最新年25問を別に演習データとして扱います。
             </p>
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed lg:text-right">
-            低頻度テーマは最後に確認し、S/Aテーマの答案化を先に固めます。
+            低頻度テーマは最後に確認し、S/Aテーマを答案に使える形へ先に整えます。
           </p>
         </div>
         <div className="overflow-x-auto mt-3">
@@ -203,9 +203,9 @@ export default function SmThemes() {
                 <th className="border-b border-slate-200 py-2 pr-3 text-[11px] font-black text-slate-500">年度</th>
                 <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">試験</th>
                 <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">問</th>
-                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">公式趣旨から見た狙い</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">公式の出題趣旨</th>
                 <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">テーマ</th>
-                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">学習での使い方</th>
+                <th className="border-b border-slate-200 px-2 py-2 text-[11px] font-black text-slate-500">学習で見るポイント</th>
                 <th className="border-b border-slate-200 px-2 py-2 text-center text-[11px] font-black text-slate-500">出典</th>
               </tr>
             </thead>
@@ -281,6 +281,8 @@ export default function SmThemes() {
           const relatedPhases = smStudyPlanPhases.filter((phase) => phase.themeIds.includes(theme.id))
           const recipe = smThemeStudyRecipes.find((item) => item.themeId === theme.id)
           const themeEvidence = evidenceByTheme.get(theme.id) ?? []
+          const essayTransfer = theme.appearsIn.includes('essay') ? '高' : theme.appearsIn.includes('afternoon') ? '中' : '低'
+          const latestYear = theme.years[0] ?? '-'
           return (
           <article key={theme.id} id={theme.id} className="scroll-mt-4 bg-white border border-slate-200 rounded-xl px-4 py-4">
             <div className="flex flex-wrap items-center gap-2">
@@ -292,11 +294,29 @@ export default function SmThemes() {
               <span className="text-[11px] text-slate-400">出題: {theme.years.join(' / ')}</span>
             </div>
             <p className="text-sm text-slate-700 leading-relaxed mt-3">{theme.summary}</p>
-            <p className="text-[11px] text-slate-500 leading-relaxed mt-2">根拠: {theme.evidenceNote}</p>
+            <p className="text-[11px] text-slate-500 leading-relaxed mt-2">出題根拠: {theme.evidenceNote}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
+              <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                <p className="text-[10px] font-black text-slate-400">出現年度</p>
+                <p className="text-sm font-black text-slate-900">{theme.years.length}年分</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                <p className="text-[10px] font-black text-slate-400">公式根拠</p>
+                <p className="text-sm font-black text-slate-900">{themeEvidence.length}件</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                <p className="text-[10px] font-black text-slate-400">最新出題</p>
+                <p className="text-sm font-black text-slate-900">{latestYear}</p>
+              </div>
+              <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
+                <p className="text-[10px] font-black text-slate-400">午後Ⅱ転用</p>
+                <p className="text-sm font-black text-slate-900">{essayTransfer}</p>
+              </div>
+            </div>
             {themeEvidence.length > 0 && (
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <p className="text-[11px] font-black text-slate-500">公式証跡 {themeEvidence.length}件</p>
+                  <p className="text-[11px] font-black text-slate-500">公式根拠 {themeEvidence.length}件</p>
                   <a
                     href={themeEvidence[0].sourcePageUrl}
                     target="_blank"
@@ -318,7 +338,7 @@ export default function SmThemes() {
                   ))}
                 </div>
                 {themeEvidence.length > 4 && (
-                  <p className="text-[10px] text-slate-400 mt-2">ほか {themeEvidence.length - 4} 件は上の証跡マトリクスで確認できます。</p>
+                  <p className="text-[10px] text-slate-400 mt-2">ほか {themeEvidence.length - 4} 件は上の出題根拠マトリクスで確認できます。</p>
                 )}
               </div>
             )}
@@ -349,7 +369,7 @@ export default function SmThemes() {
                 </div>
               </div>
               <div className="rounded-lg bg-slate-50 border border-slate-100 p-3">
-                <p className="text-[11px] font-black text-slate-500">午後Ⅱ・インフラ案件化</p>
+                <p className="text-[11px] font-black text-slate-500">午後Ⅱ・インフラ事例</p>
                 <p className="text-xs text-slate-700 leading-relaxed">{theme.essayPattern}</p>
                 <div className="flex flex-wrap gap-1 mt-2">
                   {theme.infraExamples.map((example) => (
@@ -365,7 +385,7 @@ export default function SmThemes() {
               <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
                   <div>
-                    <p className="text-[11px] font-black text-slate-500">得点化レシピ / {recipe.timeBox}</p>
+                    <p className="text-[11px] font-black text-slate-500">得点につなげる確認 / {recipe.timeBox}</p>
                     <p className="text-sm font-bold text-slate-800 leading-relaxed mt-1">{recipe.whyHighYield}</p>
                   </div>
                   <Link

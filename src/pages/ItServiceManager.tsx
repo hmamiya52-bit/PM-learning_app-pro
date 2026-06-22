@@ -41,42 +41,40 @@ export default function ItServiceManager() {
   const summary = getSmSummary()
   const sortedThemes = [...smFrequentThemes].sort((a, b) => a.rank - b.rank)
   const topThemes = sortedThemes.slice(0, 5)
-  const nextAction =
-    summary.morning.attempted < smMorningQuestions.length
-      ? {
-          text: '午前Ⅱの未演習を5問だけ解いて、頻出テーマの穴を見つける。',
-          to: '/it-service-manager/morning',
-          label: '午前Ⅱを解く',
-        }
-      : summary.afternoon.attemptedProblems < smAfternoonProblems.length
-        ? {
-            text: '午後Ⅰを1問選び、公式解答例と採点講評まで確認する。',
-            to: '/it-service-manager/afternoon',
-            label: '午後Ⅰを解く',
-          }
-        : summary.evidenceDrills.completed < Math.min(8, summary.evidenceDrills.total)
-          || summary.evidenceDrills.attemptCount < Math.min(8, summary.evidenceDrills.total)
-          ? {
-              text: `根拠ドリルを8本目安で書き、午後Ⅰで設問条件と本文根拠を結びつける癖を作る。完了 ${summary.evidenceDrills.completed}/${summary.evidenceDrills.total}本、回答 ${summary.evidenceDrills.attemptCount}回。`,
-              to: '/it-service-manager/cases',
-              label: '根拠ドリルへ',
-            }
-        : summary.essay.attemptCount < 2
-          ? {
-              text: '午後Ⅱの骨子を1本作り、参考答案と評価観点で見直す。',
-              to: '/it-service-manager/essay',
-              label: '午後Ⅱを書く',
-            }
-          : {
-              text: '直前仕上げで、午前Ⅱ・午後Ⅰ・午後Ⅱの本番前チェックを順番に潰す。',
-              to: '/it-service-manager/final',
-              label: '直前仕上げへ',
-            }
+  const todayActions = [
+    {
+      title: '午前Ⅱ 5問',
+      text: summary.morning.attempted < smMorningQuestions.length
+        ? 'R7最新年の未演習から5問解き、用語の取り違えを減らす。'
+        : '直近不正解だけを解き直し、正解以外の選択肢を切る理由まで確認する。',
+      to: '/it-service-manager/morning',
+      label: '午前Ⅱへ',
+      icon: ListChecks,
+    },
+    {
+      title: '午後Ⅰ 1設問',
+      text: summary.afternoon.attemptedProblems < smAfternoonProblems.length
+        ? 'R7午後Ⅰから1問選び、本文根拠と公式解答例を照合する。'
+        : '90分で3問から2問を選ぶ前提で、捨て問判断と時間配分を確認する。',
+      to: '/it-service-manager/afternoon',
+      label: '午後Ⅰへ',
+      icon: FileText,
+    },
+    {
+      title: '午後Ⅱ 10分',
+      text: summary.essay.attemptCount < 2
+        ? 'インフラ案件の題材を1つ選び、設問ア・イ・ウの骨子だけ先に作る。'
+        : '既存の骨子を、設問要求・具体性・評価観点で1段落だけ直す。',
+      to: '/it-service-manager/essay',
+      label: '午後Ⅱへ',
+      icon: FilePenLine,
+    },
+  ]
 
   return (
-    <SmPageChrome
-      title="ITサービスマネージャ"
-      description="直近10回の頻出テーマから、午前Ⅱ・午後Ⅰ・午後Ⅱを50時間目安で一気に仕上げる対策モードです。"
+      <SmPageChrome
+        title="ITサービスマネージャ"
+      description="午後Ⅰ・午後Ⅱの直近10回分析とR7午前Ⅱ演習を使い、50時間目安で合格に必要なテーマへ集中します。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <StatCard
@@ -110,21 +108,33 @@ export default function ItServiceManager() {
       </section>
 
       <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-2 mb-3">
+          <CheckCircle2 className="w-5 h-5 text-cyan-700" />
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="w-5 h-5 text-cyan-700" />
-              <h2 className="text-sm font-black text-slate-900">次にやること</h2>
-            </div>
-            <p className="text-sm text-slate-700 leading-relaxed">{nextAction.text}</p>
+            <h2 className="text-sm font-black text-slate-900">今日の30〜60分セット</h2>
+            <p className="text-[11px] text-slate-500 leading-relaxed">午前Ⅱだけを終えてから午後へ進むのではなく、毎回3科目を少しずつ動かします。</p>
           </div>
-          <Link
-            to={nextAction.to}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
-          >
-            {nextAction.label}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {todayActions.map(({ title, text, to, label, icon: Icon }) => (
+            <Link
+              key={title}
+              to={to}
+              className="group rounded-lg border border-slate-100 bg-slate-50 px-3 py-3 hover:border-cyan-200 hover:bg-cyan-50/50 transition-colors"
+            >
+              <div className="flex items-start gap-2">
+                <Icon className="w-4 h-4 text-cyan-700 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <p className="text-sm font-black text-slate-900">{title}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed mt-1">{text}</p>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-black text-cyan-700 mt-2">
+                    {label}
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -132,9 +142,9 @@ export default function ItServiceManager() {
         <div className="flex items-start gap-2">
           <CheckCircle2 className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
           <div>
-            <h2 className="text-sm font-black text-slate-900">2026年度からのCBTにも対応</h2>
+            <h2 className="text-sm font-black text-slate-900">2026年度時点のCBT前提で学習</h2>
             <p className="text-xs text-slate-600 leading-relaxed mt-1">
-              方式はCBTへ移行予定ですが、問われる知識・技能の範囲、出題形式、出題数、試験時間は変わらない前提です。ここでは午前Ⅱ・午後Ⅰ・午後Ⅱの対策を同じ軸で進めます。
+              2026年度の案内では、知識・技能の範囲、出題形式、出題数、試験時間は変わらない前提です。現行試験制度は2026年度の試験実施をもって終了予定のため、このモードでは2026年度時点の午前Ⅱ・午後Ⅰ・午後Ⅱ対策として扱います。
             </p>
           </div>
         </div>
@@ -148,7 +158,7 @@ export default function ItServiceManager() {
               <h2 className="text-sm font-black">攻略マップ</h2>
             </div>
             <p className="text-sm text-slate-300 leading-relaxed">
-              午前Ⅱで言葉を固め、午後Ⅰで根拠を拾い、午後Ⅱでインフラ案件を改善活動として書く順番で進めます。
+              午前Ⅱで用語を整理し、午後Ⅰで本文根拠を拾い、午後Ⅱでインフラ案件をサービスマネジメント活動として書けるように進めます。
             </p>
           </div>
           <Link
@@ -209,7 +219,7 @@ export default function ItServiceManager() {
               <TrendingUp className="w-5 h-5 text-rose-600" />
               <h2 className="text-sm font-black text-slate-900">まず押さえる頻出テーマ Top 5</h2>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">直近10回分の出題傾向を学習順序に変換したものです。</p>
+            <p className="text-[11px] text-slate-500 mt-1">午後Ⅰ・午後Ⅱの直近10回分析をもとに、午前Ⅱの用語学習にも転用しやすいテーマから並べています。</p>
           </div>
           <Link to="/it-service-manager/themes" className="text-[11px] font-bold text-cyan-700 hover:underline flex-shrink-0">
             すべて見る
@@ -241,22 +251,22 @@ export default function ItServiceManager() {
         <Link to="/it-service-manager/strategy" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Map className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">攻略マップ</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">50時間の使い方、テーマ別の時間配分、仕上げ判定をまとめて確認します。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">50時間の配分、テーマ別の学習時間、仕上がりの目安をまとめて確認します。</p>
         </Link>
         <Link to="/it-service-manager/review" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <RotateCcw className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">弱点集中</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録から、今日戻るべき午前Ⅱ・根拠ドリル・午後Ⅰ・午後Ⅱを自動で並べます。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録から、今日見直すべき午前Ⅱ・根拠ドリル・午後Ⅰ・午後Ⅱを自動で並べます。</p>
         </Link>
         <Link to="/it-service-manager/prescriptions" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Wrench className="w-5 h-5 text-cyan-700 mb-2" />
-          <p className="text-sm font-black text-slate-900">弱点処方箋</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">失点の症状から、短時間で直す順番と戻るページを決めます。現在 {smWeaknessPrescriptions.length} 件。</p>
+          <p className="text-sm font-black text-slate-900">弱点対策</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">失点パターンから、短時間で見直す順番と戻るページを決めます。現在 {smWeaknessPrescriptions.length} 件。</p>
         </Link>
         <Link to="/it-service-manager/answer-parts" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Sparkles className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">答案パーツ</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰ・午後Ⅱでそのまま使える表現を、弱い答案から強い答案へ変換して覚えます。現在 {smAnswerPartPacks.length} 本。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰ・午後Ⅱですぐ使える表現を、改善前と改善後の答案で比べながら覚えます。現在 {smAnswerPartPacks.length} 本。</p>
         </Link>
         <Link to="/it-service-manager/simulation" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <TimerReset className="w-5 h-5 text-cyan-700 mb-2" />
@@ -266,7 +276,7 @@ export default function ItServiceManager() {
         <Link to="/it-service-manager/cases" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Layers className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">ケース</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰの根拠回答と午後Ⅱのインフラ事例を、{smEvidenceDrills.length}ドリル・{smEssayCases.length}ケース・{smEssayAdaptationTemplates.length}テンプレで練習します。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">午後Ⅰの根拠回答と午後Ⅱのインフラ事例を、{smEvidenceDrills.length}ドリル・{smEssayCases.length}ケース・{smEssayAdaptationTemplates.length}テンプレートで練習します。</p>
         </Link>
         <Link to="/it-service-manager/knowledge" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <BookOpen className="w-5 h-5 text-cyan-700 mb-2" />
@@ -276,12 +286,12 @@ export default function ItServiceManager() {
         <Link to="/it-service-manager/report" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <ClipboardCheck className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">仕上げレポート</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録からテーマ別の仕上がりを見て、次に戻るべき午前Ⅱ・午後Ⅰ・午後Ⅱを決めます。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">演習記録からテーマ別の仕上がりを見て、次に見直す午前Ⅱ・午後Ⅰ・午後Ⅱを決めます。</p>
         </Link>
         <Link to="/it-service-manager/final" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <Target className="w-5 h-5 text-cyan-700 mb-2" />
           <p className="text-sm font-black text-slate-900">直前仕上げ</p>
-          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">本番前に潰すタスク、答案の最終確認、当日の動きを一画面で確認します。</p>
+          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">本番前に確認するタスク、答案の最終チェック、当日の動きを一画面で確認します。</p>
         </Link>
         <Link to="/it-service-manager/history" className="bg-white border border-slate-200 rounded-xl px-4 py-3 hover:border-cyan-300 hover:shadow-md transition-all">
           <TrendingUp className="w-5 h-5 text-cyan-700 mb-2" />

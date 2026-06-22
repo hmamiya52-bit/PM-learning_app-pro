@@ -6,7 +6,7 @@ const links = [
   { to: '/it-service-manager', label: '概要', icon: Home },
   { to: '/it-service-manager/strategy', label: '攻略', icon: Map },
   { to: '/it-service-manager/review', label: '復習', icon: RotateCcw },
-  { to: '/it-service-manager/prescriptions', label: '処方', icon: Wrench },
+  { to: '/it-service-manager/prescriptions', label: '対策', icon: Wrench },
   { to: '/it-service-manager/answer-parts', label: '答案', icon: Sparkles },
   { to: '/it-service-manager/simulation', label: '模試', icon: TimerReset },
   { to: '/it-service-manager/cases', label: 'ケース', icon: Layers },

@@ -99,6 +99,14 @@ export default function SmSimulation() {
 
   const recordAttempt = (setId: string) => {
     const draft = drafts[setId] ?? defaultDraft
+    if (!draft.reflection.trim()) {
+      alert('振り返りを書いてから記録します。')
+      return
+    }
+    if (!draft.nextFix.trim()) {
+      alert('次に直すことを書いてから記録します。')
+      return
+    }
     addSmSimulationAttempt({
       setId,
       selfScore: draft.selfScore,
@@ -143,7 +151,7 @@ export default function SmSimulation() {
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">次に通す</p>
           <p className="text-sm font-black text-slate-900 leading-snug mt-2">{nextSet?.title ?? '直前仕上げへ'}</p>
-          <p className="text-[11px] text-slate-500 mt-1">{nextSet ? `${nextSet.minutes}分` : '大きな穴なし'}</p>
+          <p className="text-[11px] text-slate-500 mt-1">{nextSet ? `${nextSet.minutes}分` : '大きな抜けなし'}</p>
         </div>
       </section>
 
@@ -205,6 +213,7 @@ export default function SmSimulation() {
           const passed = latest ? latest.selfScore >= 4 && latest.withinTime : false
           return (
             <article
+              id={set.id}
               key={set.id}
               className={`rounded-xl border px-4 py-4 ${passed ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200'}`}
             >
@@ -337,7 +346,7 @@ export default function SmSimulation() {
                     value={draft.reflection}
                     onChange={(event) => updateDraft(set.id, { reflection: event.target.value })}
                     className="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    placeholder="振り返り（例: 根拠は拾えたが、設問ウの効果測定が弱い）"
+                    placeholder="振り返り（例: 根拠は見つけたが、設問ウの効果測定が不足している）"
                   />
                 </div>
                 <input

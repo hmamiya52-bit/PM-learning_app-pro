@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, FilePenLine, FileText, RotateCcw, Sparkles, Target } from 'lucide-react'
 import { smAnswerPartPacks, smFrequentThemes } from '../../data/sm/content'
 import type { SmAnswerPartUse, SmFrequency } from '../../data/sm/types'
@@ -32,7 +32,11 @@ function themeOf(themeId: string) {
 }
 
 export default function SmAnswerParts() {
-  const [filter, setFilter] = useState<PartFilter>('all')
+  const [searchParams] = useSearchParams()
+  const requestedPackId = searchParams.get('pack')
+  const requestedPack = smAnswerPartPacks.find((pack) => pack.id === requestedPackId)
+  const initialFilter: PartFilter = requestedPack ? (requestedPack.use === 'both' ? 'both' : requestedPack.use) : 'all'
+  const [filter, setFilter] = useState<PartFilter>(initialFilter)
   const [checks, setChecks] = useState(() => loadSmAnswerPartChecks())
   const sortedPacks = useMemo(
     () => [...smAnswerPartPacks].sort((a, b) => themeOf(a.themeId).rank - themeOf(b.themeId).rank || a.title.localeCompare(b.title)),
@@ -62,13 +66,13 @@ export default function SmAnswerParts() {
   return (
     <SmPageChrome
       title="答案パーツ"
-      description="頻出テーマを、午後Ⅰの短答と午後Ⅱの論述でそのまま使える表現へ変換します。"
+      description="頻出テーマを、午後Ⅰの短答と午後Ⅱの論述ですぐ使える表現に整理します。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">答案パーツ</p>
           <p className="text-xl font-black text-slate-900 mt-1">{smAnswerPartPacks.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">弱い答案から強い答案へ変換</p>
+          <p className="text-[11px] text-slate-500 mt-1">改善前後の答案を比較</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">完了</p>
@@ -120,6 +124,7 @@ export default function SmAnswerParts() {
           const checked = !!checks[pack.id]
           return (
             <article
+              id={pack.id}
               key={pack.id}
               className={`rounded-xl border px-4 py-4 ${
                 checked ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200'
@@ -173,11 +178,11 @@ export default function SmAnswerParts() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
                 <div className="rounded-lg bg-rose-50 border border-rose-100 px-3 py-3">
-                  <p className="text-[11px] font-black text-rose-700">弱い答案</p>
+                  <p className="text-[11px] font-black text-rose-700">改善前の答案</p>
                   <p className="text-sm text-slate-700 leading-relaxed mt-1">{pack.weakAnswer}</p>
                 </div>
                 <div className="rounded-lg bg-emerald-50 border border-emerald-100 px-3 py-3">
-                  <p className="text-[11px] font-black text-emerald-700">強い答案</p>
+                  <p className="text-[11px] font-black text-emerald-700">改善後の答案</p>
                   <p className="text-sm text-slate-800 leading-relaxed mt-1">{pack.strongAnswer}</p>
                 </div>
               </div>
@@ -186,7 +191,7 @@ export default function SmAnswerParts() {
                 <div className="rounded-lg bg-white border border-slate-200 px-3 py-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-cyan-700" />
-                    <p className="text-[11px] font-black text-slate-500">使い回す表現</p>
+                    <p className="text-[11px] font-black text-slate-500">再利用できる表現</p>
                   </div>
                   <ul className="space-y-1.5 mt-2">
                     {pack.reusablePhrases.map((phrase) => (
@@ -195,7 +200,7 @@ export default function SmAnswerParts() {
                   </ul>
                 </div>
                 <div className="rounded-lg bg-white border border-slate-200 px-3 py-3">
-                  <p className="text-[11px] font-black text-slate-500">採点で拾われる要素</p>
+                  <p className="text-[11px] font-black text-slate-500">採点で見られる要素</p>
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {pack.scoringKeys.map((key) => (
                       <span key={key} className="rounded-md bg-slate-50 border border-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">

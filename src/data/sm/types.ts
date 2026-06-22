@@ -56,6 +56,10 @@ export interface SmKnowledgeSection {
   minutes: number
   summary: string
   keyPoints: string[]
+  standards?: {
+    title: string
+    detail: string
+  }[]
   morningUse: string
   afternoonUse: string
   essayUse: string

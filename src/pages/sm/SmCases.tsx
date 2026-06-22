@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight, CheckCircle2, FilePenLine, FileText, GitBranch, Layers, Save, Target } from 'lucide-react'
 import { smEssayAdaptationTemplates, smEssayCases, smEvidenceDrills, smFrequentThemes } from '../../data/sm/content'
 import {
@@ -16,9 +16,14 @@ type ThemeFilter = 'all' | string
 
 export default function SmCases() {
   const sortedThemes = useMemo(() => [...smFrequentThemes].sort((a, b) => a.rank - b.rank), [])
-  const [themeFilter, setThemeFilter] = useState<ThemeFilter>('all')
-  const [selectedCaseId, setSelectedCaseId] = useState(smEssayCases[0]?.id ?? '')
-  const [openDrillId, setOpenDrillId] = useState(smEvidenceDrills[0]?.id ?? '')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requestedDrillId = searchParams.get('drill')
+  const requestedCaseId = searchParams.get('case')
+  const initialDrill = smEvidenceDrills.find((drill) => drill.id === requestedDrillId)
+  const initialCase = smEssayCases.find((item) => item.id === requestedCaseId)
+  const [themeFilter, setThemeFilter] = useState<ThemeFilter>(initialDrill?.themeId ?? initialCase?.themeIds[0] ?? 'all')
+  const [selectedCaseId, setSelectedCaseId] = useState(initialCase?.id ?? smEssayCases[0]?.id ?? '')
+  const [openDrillId, setOpenDrillId] = useState(initialDrill?.id ?? smEvidenceDrills[0]?.id ?? '')
   const [savedCaseId, setSavedCaseId] = useState(() => loadSmSelectedEssayCase()?.caseId ?? '')
   const [drillChecks, setDrillChecks] = useState(() => loadSmEvidenceDrillChecks())
   const [drillAttempts, setDrillAttempts] = useState(() => loadSmEvidenceDrillAttempts())
@@ -44,6 +49,7 @@ export default function SmCases() {
     const nextDrill = smEvidenceDrills.find((item) => id === 'all' || item.themeId === id)
     setSelectedCaseId(nextCase?.id ?? '')
     setOpenDrillId(nextDrill?.id ?? '')
+    setSearchParams(new URLSearchParams(), { replace: true })
   }
 
   const chooseCase = (caseId: string) => {
@@ -52,6 +58,11 @@ export default function SmCases() {
   }
 
   const toggleDrill = (drillId: string, checked: boolean) => {
+    const hasAttempt = drillAttempts.some((attempt) => attempt.drillId === drillId)
+    if (checked && !hasAttempt) {
+      alert('自分の回答を記録してから完了にしてください。')
+      return
+    }
     setSmEvidenceDrillCheck(drillId, checked)
     setDrillChecks(loadSmEvidenceDrillChecks())
   }
@@ -102,7 +113,7 @@ export default function SmCases() {
   return (
     <SmPageChrome
       title="ケース"
-      description="午後Ⅰで根拠を拾う練習と、午後Ⅱで使えるインフラ案件の答案素材をまとめます。"
+      description="午後Ⅰで根拠を見つける練習と、午後Ⅱで使えるインフラ案件の答案材料をまとめます。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
@@ -124,10 +135,10 @@ export default function SmCases() {
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
             <GitBranch className="w-4 h-4 text-emerald-700" />
-            <p className="text-[11px] font-bold text-slate-400">変換テンプレ</p>
+            <p className="text-[11px] font-bold text-slate-400">組み替えテンプレート</p>
           </div>
           <p className="text-xl font-black text-slate-900 mt-1">{smEssayAdaptationTemplates.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">題意に合わせて組み替え</p>
+          <p className="text-[11px] text-slate-500 mt-1">問われ方に合わせて組み替え</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
@@ -173,7 +184,7 @@ export default function SmCases() {
               <h2 className="text-sm font-black text-slate-900">頻出テーマの素材カバー</h2>
             </div>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
-              午後Ⅰはドリル、午後Ⅱはケースと変換テンプレで、どのテーマを答案化できるか確認します。
+              午後Ⅰはドリル、午後Ⅱはケースとテンプレートで、どのテーマを答案に使える形へ整理できるか確認します。
             </p>
           </div>
           <Link to="/it-service-manager/themes" className="text-[11px] font-bold text-cyan-700 hover:underline flex-shrink-0">
@@ -195,7 +206,7 @@ export default function SmCases() {
                 <FrequencyBadge value={theme.frequency} />
               </div>
               <p className="text-[11px] text-slate-500 mt-1">
-                {drillCount}ドリル / {caseCount}ケース / {templateCount}テンプレ
+                {drillCount}ドリル / {caseCount}ケース / {templateCount}テンプレート
               </p>
             </button>
           ))}
@@ -210,7 +221,7 @@ export default function SmCases() {
               <h2 className="text-sm font-black text-slate-900">午後Ⅱの事例バンク</h2>
             </div>
             <p className="text-[11px] text-slate-500 leading-relaxed mt-1">
-              本番では題意に合わせて削り、ア・イ・ウに配置します。
+              本番では問われ方に合わせて情報を絞り、ア・イ・ウに配置します。
             </p>
           </div>
           <div className="space-y-1">
@@ -218,7 +229,13 @@ export default function SmCases() {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => setSelectedCaseId(item.id)}
+                onClick={() => {
+                  setSelectedCaseId(item.id)
+                  const nextParams = new URLSearchParams(searchParams)
+                  nextParams.set('case', item.id)
+                  nextParams.delete('drill')
+                  setSearchParams(nextParams, { replace: true })
+                }}
                 className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
                   selectedCase?.id === item.id ? 'bg-cyan-50 text-cyan-900' : 'hover:bg-slate-50 text-slate-700'
                 }`}
@@ -324,7 +341,7 @@ export default function SmCases() {
               <div className="rounded-lg border border-emerald-100 bg-emerald-50/70 px-3 py-3 mt-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
-                    <p className="text-[11px] font-black text-emerald-800">この事例で狙いやすい題意</p>
+                    <p className="text-[11px] font-black text-emerald-800">この事例で答えやすい問われ方</p>
                     <p className="text-xs text-slate-600 leading-relaxed mt-1">
                       午後Ⅱでは、同じ事例を問われ方に合わせて強調し直します。
                     </p>
@@ -346,7 +363,7 @@ export default function SmCases() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-3">
               <div className="rounded-lg bg-slate-900 text-white px-3 py-3">
-                <p className="text-[11px] font-black text-cyan-200 mb-2">使い回せる表現</p>
+                <p className="text-[11px] font-black text-cyan-200 mb-2">再利用できる表現</p>
                 <ul className="space-y-1.5">
                   {selectedCase.reusablePhrases.map((item) => (
                     <li key={item} className="text-xs text-slate-200 leading-relaxed">・{item}</li>
@@ -390,7 +407,13 @@ export default function SmCases() {
                 <button
                   key={drill.id}
                   type="button"
-                  onClick={() => setOpenDrillId(drill.id)}
+                  onClick={() => {
+                    setOpenDrillId(drill.id)
+                    const nextParams = new URLSearchParams(searchParams)
+                    nextParams.set('drill', drill.id)
+                    nextParams.delete('case')
+                    setSearchParams(nextParams, { replace: true })
+                  }}
                   className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
                     openDrill?.id === drill.id ? 'bg-violet-50 text-violet-900' : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
                   }`}
@@ -417,6 +440,7 @@ export default function SmCases() {
                 const openDrillAttempts = drillAttempts
                   .filter((attempt) => attempt.drillId === openDrill.id)
                   .sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))
+                const canRevealModel = !!draft.answer.trim() || openDrillAttempts.length > 0
                 return (
                   <>
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
@@ -452,7 +476,7 @@ export default function SmCases() {
                   </ul>
                 </div>
                 <div className="rounded-lg bg-white border border-slate-200 px-3 py-2">
-                  <p className="text-[11px] font-black text-cyan-800">拾う根拠</p>
+                  <p className="text-[11px] font-black text-cyan-800">見つける根拠</p>
                   <ul className="space-y-1 mt-1">
                     {openDrill.evidence.map((item) => (
                       <li key={item} className="text-xs text-slate-700 leading-relaxed">・{item}</li>
@@ -469,10 +493,18 @@ export default function SmCases() {
                 <p className="text-xs text-slate-700 leading-relaxed mt-1">{openDrill.avoid}</p>
               </div>
 
-              <div className="rounded-lg bg-white border border-slate-200 px-3 py-3 mt-3">
-                <p className="text-[11px] font-black text-slate-500">模範答案</p>
-                <p className="text-sm text-slate-800 leading-relaxed mt-1">{openDrill.modelAnswer}</p>
-              </div>
+              <details className="rounded-lg bg-white border border-slate-200 px-3 py-3 mt-3">
+                <summary className="cursor-pointer text-[11px] font-black text-slate-500">
+                  模範答案{canRevealModel ? '' : '（自分の回答を書いてから確認）'}
+                </summary>
+                {canRevealModel ? (
+                  <p className="text-sm text-slate-800 leading-relaxed mt-2">{openDrill.modelAnswer}</p>
+                ) : (
+                  <p className="text-xs text-slate-500 leading-relaxed mt-2">
+                    先に自分の回答欄へ本文根拠と答案骨子を書いてください。午後Ⅰの練習では、模範答案を見る前に根拠を選ぶことが大切です。
+                  </p>
+                )}
+              </details>
 
               <div className="rounded-lg bg-white border border-cyan-100 px-3 py-3 mt-3">
                 <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-2">
@@ -517,14 +549,14 @@ export default function SmCases() {
                     value={draft.reflection}
                     onChange={(event) => updateDrillDraft(openDrill.id, { reflection: event.target.value })}
                     className="rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    placeholder="振り返り（例: 根拠は拾えたが、改善計画へのつなぎが弱い）"
+                    placeholder="振り返り（例: 根拠は見つけたが、改善計画へのつなぎが不足している）"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 mt-3">
                 <div className="rounded-lg bg-white border border-slate-200 px-3 py-2">
-                  <p className="text-[11px] font-black text-cyan-800">採点で拾われる点</p>
+                  <p className="text-[11px] font-black text-cyan-800">採点で見られる点</p>
                   <ul className="space-y-1 mt-1">
                     {openDrill.scoringPoints.map((item) => (
                       <li key={item} className="text-xs text-slate-700 leading-relaxed">・{item}</li>

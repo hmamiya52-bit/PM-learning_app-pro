@@ -33,7 +33,7 @@ function checkpointDone(summary: ReturnType<typeof getSmSummary>, sThemesReady: 
       && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total)
       && summary.evidenceDrills.attemptCount >= Math.min(8, summary.evidenceDrills.total)
   }
-  if (checkpointId === 'essay-finish') return summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5
+  if (checkpointId === 'essay-finish') return summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 4
   if (checkpointId === 'theme-finish') return sThemesReady
   return false
 }
@@ -65,7 +65,7 @@ export default function SmFinalSprint() {
   return (
     <SmPageChrome
       title="直前仕上げ"
-      description="本番前に残り時間を点に変えるための、午前Ⅱ・午後Ⅰ・午後Ⅱの最終チェックリストです。"
+      description="本番前の残り時間を得点につなげるための、午前Ⅱ・午後Ⅰ・午後Ⅱの最終チェックリストです。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
@@ -94,7 +94,7 @@ export default function SmFinalSprint() {
         <section className="bg-slate-900 text-white rounded-xl px-4 py-3">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
             <div>
-              <p className="text-[11px] font-black text-cyan-200">次に潰す</p>
+              <p className="text-[11px] font-black text-cyan-200">次に確認すること</p>
               <h2 className="text-base font-black leading-snug mt-1">{nextTask.title}</h2>
               <p className="text-xs text-slate-300 leading-relaxed mt-1">{nextTask.goal}</p>
             </div>
@@ -181,11 +181,11 @@ export default function SmFinalSprint() {
           <section className="bg-white border border-slate-200 rounded-xl px-4 py-3">
             <div className="flex items-center gap-2">
               <Target className="w-5 h-5 text-cyan-700" />
-              <h2 className="text-sm font-black text-slate-900">まだ戻る候補</h2>
+              <h2 className="text-sm font-black text-slate-900">まだ見直す候補</h2>
             </div>
             <div className="space-y-2 mt-3">
               {topWeakThemes.length === 0 ? (
-                <p className="text-xs text-slate-500 leading-relaxed">優先して戻るテーマはありません。</p>
+                <p className="text-xs text-slate-500 leading-relaxed">優先して見直すテーマはありません。</p>
               ) : (
                 topWeakThemes.map((item) => (
                   <Link

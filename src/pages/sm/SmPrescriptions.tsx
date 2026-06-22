@@ -70,31 +70,31 @@ export default function SmPrescriptions() {
   }
 
   const reset = () => {
-    if (!confirm('弱点処方箋の完了チェックだけをリセットしますか？')) return
+    if (!confirm('弱点対策の完了チェックだけをリセットしますか？')) return
     clearSmPrescriptionChecks()
     setChecks({})
   }
 
   return (
     <SmPageChrome
-      title="弱点処方箋"
-      description="失点の症状から、短時間で直す順番と戻るページを決めます。"
+      title="弱点対策"
+      description="失点パターンから、短時間で見直す順番と戻るページを決めます。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
-          <p className="text-[11px] font-bold text-slate-400">処方箋</p>
+          <p className="text-[11px] font-bold text-slate-400">弱点対策</p>
           <p className="text-xl font-black text-slate-900 mt-1">{completionRate}%</p>
           <p className="text-[11px] text-slate-500 mt-1">{completedCount}/{sortedPrescriptions.length}項目</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
-          <p className="text-[11px] font-bold text-slate-400">今日の処方</p>
+          <p className="text-[11px] font-bold text-slate-400">今日の対策</p>
           <p className="text-xl font-black text-slate-900 mt-1">{todaySet.length}件</p>
           <p className="text-[11px] text-slate-500 mt-1">目安 {todayMinutes}分</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">頻出S</p>
           <p className="text-xl font-black text-slate-900 mt-1">{sCompleted}/{sItems.length}</p>
-          <p className="text-[11px] text-slate-500 mt-1">優先して潰す症状</p>
+          <p className="text-[11px] text-slate-500 mt-1">優先して見直す症状</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[11px] font-bold text-slate-400">次に直す</p>
@@ -108,7 +108,7 @@ export default function SmPrescriptions() {
             <div>
               <div className="flex items-center gap-2">
                 <Wrench className="w-5 h-5 text-cyan-200" />
-                <h2 className="text-sm font-black">今日の処方セット</h2>
+                <h2 className="text-sm font-black">今日の対策セット</h2>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed mt-1">
                 頻出度が高く、本番で失点に直結しやすい症状から並べています。
@@ -176,6 +176,7 @@ export default function SmPrescriptions() {
             .filter((theme): theme is NonNullable<typeof theme> => !!theme)
           return (
             <article
+              id={item.id}
               key={item.id}
               className={`rounded-xl border px-4 py-4 ${
                 checked ? 'bg-emerald-50 border-emerald-200' : 'bg-white border-slate-200'
@@ -281,7 +282,7 @@ export default function SmPrescriptions() {
       <section className="bg-white border border-cyan-100 rounded-xl px-4 py-3">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
           <div>
-            <h2 className="text-sm font-black text-slate-900">処方したら本番形式で確認</h2>
+            <h2 className="text-sm font-black text-slate-900">対策したら本番形式で確認</h2>
             <p className="text-xs text-slate-500 leading-relaxed mt-1">
               直した症状は、弱点集中または本番リハーサルで時間内に再現できるかを確認します。
             </p>
@@ -298,7 +299,7 @@ export default function SmPrescriptions() {
               to="/it-service-manager/simulation"
               className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700"
             >
-              本番リハへ
+              本番リハーサルへ
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

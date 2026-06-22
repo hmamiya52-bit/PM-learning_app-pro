@@ -37,7 +37,7 @@ export default function SmReport() {
       && (summary.afternoon.bestScore ?? 0) >= 30
       && summary.evidenceDrills.completed >= Math.min(8, summary.evidenceDrills.total)
       && summary.evidenceDrills.attemptCount >= Math.min(8, summary.evidenceDrills.total),
-    'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 3.5,
+    'essay-finish': summary.essay.attemptCount >= 2 && (summary.essay.averageReview ?? 0) >= 4,
     'theme-finish': sThemeReadiness.length > 0 && sThemeReadiness.every((item) => item.score >= 75),
   }
   const passedCheckpointCount = smFinalCheckpoints.filter((item) => checkpointPassed[item.id]).length
@@ -81,7 +81,7 @@ export default function SmReport() {
   return (
     <SmPageChrome
       title="仕上げレポート"
-      description="午前Ⅱ・午後Ⅰ・午後Ⅱの演習記録から、次に戻るテーマを優先順で確認します。"
+      description="午前Ⅱ・午後Ⅰ・午後Ⅱの演習記録から、次に見直すテーマを優先順で確認します。"
     >
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
@@ -98,7 +98,7 @@ export default function SmReport() {
             <p className="text-[11px] font-bold text-slate-400">補強テーマ</p>
           </div>
           <p className="text-xl font-black text-slate-900 mt-1">{needsWork}</p>
-          <p className="text-[11px] text-slate-500 mt-1">優先して戻る候補</p>
+          <p className="text-[11px] text-slate-500 mt-1">優先して見直す候補</p>
         </div>
         <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <div className="flex items-center gap-2">
@@ -197,10 +197,10 @@ export default function SmReport() {
               答案パーツへ
             </Link>
             <Link to="/it-service-manager/prescriptions" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
-              処方箋へ
+              弱点対策へ
             </Link>
             <Link to="/it-service-manager/simulation" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
-              本番リハへ
+              本番リハーサルへ
             </Link>
             <Link to="/it-service-manager/cases" className="text-[11px] font-bold text-cyan-200 hover:underline flex-shrink-0">
               ケースを見る
@@ -250,7 +250,7 @@ export default function SmReport() {
             to="/it-service-manager/simulation"
             className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700 flex-shrink-0"
           >
-            本番リハへ
+            本番リハーサルへ
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -275,9 +275,9 @@ export default function SmReport() {
           <div className="flex items-start gap-2">
             <Wrench className="w-5 h-5 text-cyan-700 flex-shrink-0 mt-0.5" />
             <div>
-              <h2 className="text-sm font-black text-slate-900">弱点処方箋</h2>
+              <h2 className="text-sm font-black text-slate-900">弱点対策</h2>
               <p className="text-xs text-slate-500 leading-relaxed mt-1">
-                演習で出た失点の症状を、短時間で直すドリルへ変換します。
+                演習で見えた失点パターンを、短時間で見直せるドリルに整理します。
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export default function SmReport() {
             to="/it-service-manager/prescriptions"
             className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-black text-white hover:bg-cyan-700 flex-shrink-0"
           >
-            処方箋へ
+            弱点対策へ
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -312,7 +312,7 @@ export default function SmReport() {
             <div>
               <h2 className="text-sm font-black text-slate-900">答案パーツの仕上がり</h2>
               <p className="text-xs text-slate-500 leading-relaxed mt-1">
-                午後Ⅰの短答と午後Ⅱの論述で使い回す表現を、頻出Sから先に固めます。
+                午後Ⅰの短答と午後Ⅱの論述で再利用できる表現を、頻出Sから先に確認します。
               </p>
             </div>
           </div>
@@ -334,7 +334,7 @@ export default function SmReport() {
             <p className="text-lg font-black text-slate-900">{answerPartSCompleted}/{answerPartSTotal}</p>
           </div>
           <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
-            <p className="text-[10px] font-black text-slate-400">次に効く</p>
+            <p className="text-[10px] font-black text-slate-400">次に効きやすいこと</p>
             <p className="text-sm font-black text-slate-900 leading-snug">
               {answerPartCompleted < smAnswerPartPacks.length ? '未完了の頻出表現を暗唱する' : '午後Ⅰ・午後Ⅱで使って定着させる'}
             </p>
@@ -356,7 +356,7 @@ export default function SmReport() {
                   {selectedCase.service} / {selectedCase.metrics[0]}
                 </p>
                 <p className="text-[11px] text-emerald-700 font-bold mt-1">
-                  この題材で使いやすい題意テンプレ {selectedCaseTemplateCount} 本
+                  この題材で使いやすい問われ方別テンプレート {selectedCaseTemplateCount} 本
                 </p>
               </>
             ) : (
@@ -378,7 +378,7 @@ export default function SmReport() {
                 to="/it-service-manager/essay"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-black text-white hover:bg-cyan-700"
               >
-                題意で組み替える
+                問われ方に合わせる
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
@@ -459,7 +459,7 @@ export default function SmReport() {
                   {item.afternoon.bestScore === null ? '未記録' : `${item.afternoon.bestScore}/50点`}
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  着手 {item.afternoon.attempted}/{item.afternoon.total}問 / 30点未満 {item.afternoon.lowScoreCount}回
+                  着手 {item.afternoon.attempted}/{item.afternoon.total}問 / 30点未満 {item.afternoon.lowScoreCount}問
                 </p>
               </div>
               <div className="rounded-lg bg-slate-50 border border-slate-100 px-3 py-2">
@@ -477,7 +477,7 @@ export default function SmReport() {
                   {item.essay.averageReview === null ? '未記録' : `${item.essay.averageReview}/5`}
                 </p>
                 <p className="text-[11px] text-slate-500 mt-0.5">
-                  練習 {item.essay.attempts}本 / 評価3.5未満 {item.essay.lowReviewCount}回
+                  練習 {item.essay.attempts}本 / 評価4.0未満 {item.essay.lowReviewCount}問
                 </p>
               </div>
             </div>

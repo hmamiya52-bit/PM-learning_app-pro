@@ -1,16 +1,19 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { smFrequentThemes, smKnowledgeSections, smQuickDrills } from '../../data/sm/content'
 import { FrequencyBadge, SmPageChrome } from './SmPageChrome'
 
 export default function SmKnowledge() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const sortedSections = [...smKnowledgeSections].sort((a, b) => {
     const rankA = smFrequentThemes.find((theme) => theme.id === a.themeId)?.rank ?? 99
     const rankB = smFrequentThemes.find((theme) => theme.id === b.themeId)?.rank ?? 99
     return rankA - rankB
   })
-  const [openId, setOpenId] = useState(sortedSections[0]?.id ?? '')
+  const requestedThemeId = searchParams.get('theme')
+  const initialSection = sortedSections.find((section) => section.themeId === requestedThemeId)
+  const [openId, setOpenId] = useState(initialSection?.id ?? sortedSections[0]?.id ?? '')
   const [revealedDrills, setRevealedDrills] = useState<Record<string, boolean>>({})
 
   return (
@@ -24,7 +27,12 @@ export default function SmKnowledge() {
             <button
               key={section.id}
               type="button"
-              onClick={() => setOpenId(section.id)}
+              onClick={() => {
+                setOpenId(section.id)
+                const nextParams = new URLSearchParams(searchParams)
+                nextParams.set('theme', section.themeId)
+                setSearchParams(nextParams, { replace: true })
+              }}
               className={`w-full text-left rounded-lg px-3 py-2 transition-colors ${
                 openId === section.id ? 'bg-cyan-50 text-cyan-900' : 'hover:bg-slate-50 text-slate-700'
               }`}
@@ -45,7 +53,7 @@ export default function SmKnowledge() {
               const theme = smFrequentThemes.find((item) => item.id === section.themeId)
               const drills = smQuickDrills.filter((item) => item.themeId === section.themeId)
               return (
-                <article key={section.id} className="bg-white border border-slate-200 rounded-xl px-4 py-4">
+                <article id={section.themeId} key={section.id} className="bg-white border border-slate-200 rounded-xl px-4 py-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-lg font-black text-slate-900">{section.title}</h2>
                     <FrequencyBadge value={section.frequency} />
@@ -63,6 +71,20 @@ export default function SmKnowledge() {
                       ))}
                     </ul>
                   </div>
+
+                  {section.standards && section.standards.length > 0 && (
+                    <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                      <h3 className="text-xs font-black text-slate-500 mb-2">ITIL / ISO 20000との対応</h3>
+                      <div className="grid gap-2">
+                        {section.standards.map((standard) => (
+                          <div key={standard.title} className="rounded-lg bg-white border border-slate-200 px-3 py-2">
+                            <p className="text-[11px] font-black text-cyan-800">{standard.title}</p>
+                            <p className="text-xs text-slate-700 leading-relaxed mt-1">{standard.detail}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4">
                     <div className="rounded-lg border border-cyan-100 bg-cyan-50/70 p-3">

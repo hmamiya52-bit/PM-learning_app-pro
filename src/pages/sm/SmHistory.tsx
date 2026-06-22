@@ -47,7 +47,7 @@ export default function SmHistory() {
     })
 
   essayAttempts
-    .filter((attempt) => averageReview(attempt.review) < 3.5)
+    .filter((attempt) => averageReview(attempt.review) < 4)
     .forEach((attempt) => {
       const problem = smEssayProblems.find((item) => item.id === attempt.problemId)
       problem?.themeIds.forEach((themeId) => addWeakness(themeId, `午後Ⅱ 問${problem.number} 自己評価${averageReview(attempt.review)}/5`))
@@ -127,7 +127,7 @@ export default function SmHistory() {
         </div>
         {weakThemes.length === 0 ? (
           <p className="text-sm text-slate-500 leading-relaxed">
-            不正解・低得点の記録が増えると、ここに優先して戻るテーマが出ます。まずは午前Ⅱを数問解いて、午後Ⅰを1問記録してみましょう。
+            不正解・低得点の記録が増えると、ここに優先して見直すテーマが出ます。まずは午前Ⅱを数問解いて、午後Ⅰを1問記録してみましょう。
           </p>
         ) : (
           <div className="grid gap-2">
