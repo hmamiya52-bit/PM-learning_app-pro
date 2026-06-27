@@ -67,6 +67,8 @@ export default function OfficialMorningSession() {
   const [logs, setLogs] = useState<SessionLog[]>([])
   const [selectedIndex, setSelectedIndex] = useState<0 | 1 | 2 | 3 | null>(null)
   const [showExplanation, setShowExplanation] = useState(false)
+  // ★消去法: 「ありえない」と判断して消した選択肢（originalIndex の集合、問題ごとにリセット）
+  const [eliminated, setEliminated] = useState<Set<number>>(() => new Set())
   const [lastXpGained, setLastXpGained] = useState(0)
   const [pendingBadges, setPendingBadges] = useState<BadgeDefinition[]>([])
   // ★デバッグモード（開発時のみ有効 / 本番ビルドでは import.meta.env.DEV=false で完全に無効）
@@ -178,6 +180,20 @@ export default function OfficialMorningSession() {
     [currentQuestion, showExplanation, debugMode],
   )
 
+  // ★消去法: 選択肢の「消去」を切り替える（解答確定後は不可）
+  const toggleEliminate = useCallback(
+    (idx: number) => {
+      if (showExplanation) return
+      setEliminated((prev) => {
+        const next = new Set(prev)
+        if (next.has(idx)) next.delete(idx)
+        else next.add(idx)
+        return next
+      })
+    },
+    [showExplanation],
+  )
+
   // ★デバッグモード: 問題切替時に解説を自動表示
   useEffect(() => {
     if (debugMode && currentQuestion) {
@@ -193,6 +209,7 @@ export default function OfficialMorningSession() {
       setSelectedIndex(null)
       setShowExplanation(false)
       setLastXpGained(0)
+      setEliminated(new Set())
     }
   }, [currentIndex])
 
@@ -202,6 +219,7 @@ export default function OfficialMorningSession() {
       setSelectedIndex(null)
       setShowExplanation(false)
       setLastXpGained(0)
+      setEliminated(new Set())
     }
   }, [currentIndex, questionList.length])
 
@@ -282,6 +300,7 @@ export default function OfficialMorningSession() {
       setSelectedIndex(null)
       setShowExplanation(false)
       setLastXpGained(0)
+      setEliminated(new Set())
     }
   }, [currentQuestion, selectedIndex, isCorrect, logs, isLast, navigate, state.scope, state.yearLabel, debugMode, currentIndex, questionList.length, handleDebugNext])
 
@@ -395,6 +414,13 @@ export default function OfficialMorningSession() {
           {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
         </div>
 
+        {/* 消去法ヒント（解答前のみ） */}
+        {!showExplanation && (
+          <p className="text-[11px] text-slate-400 mb-2">
+            各選択肢の <span className="font-bold text-slate-500">✕</span> で「ありえない選択肢」を消去できます（消去法）。もう一度押すと戻せます。
+          </p>
+        )}
+
         {/* 4択（表示モードに応じた順序） */}
         <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
           {displayChoices.map((choice, displayIdx) => {
@@ -402,26 +428,48 @@ export default function OfficialMorningSession() {
             const isSelected = selectedIndex === originalIdx
             const isAnswer = originalIdx === currentQuestion.correctIndex
             const showCorrectness = showExplanation
+            const isEliminated = !showExplanation && eliminated.has(originalIdx)
             const optionLabel = shouldShuffleChoices ? DISPLAY_LABELS[displayIdx] : ANSWER_LABELS[originalIdx]
             let buttonClass = 'bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light/30'
             if (showCorrectness && isSelected && isCorrect) buttonClass = 'bg-emerald-50 border-2 border-emerald-500'
             else if (showCorrectness && isSelected && !isCorrect) buttonClass = 'bg-red-50 border-2 border-red-500'
             else if (showCorrectness && isAnswer && !isSelected) buttonClass = 'bg-emerald-50 border-2 border-emerald-400'
+            else if (isEliminated) buttonClass = 'bg-slate-100 border-2 border-slate-200'
             return (
-              <button
-                key={originalIdx}
-                onClick={() => handleSelect(originalIdx)}
-                disabled={showExplanation}
-                className={`w-full text-left rounded-xl px-3.5 py-3 ${textClass} text-slate-700 font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass}`}
-              >
-                {shouldShuffleChoices && showExplanation && (
-                  <span className="block text-xs font-bold text-red-600 mb-1">
-                    解答記号：{ANSWER_LABELS[originalIdx]}
+              <div key={originalIdx} className="flex items-stretch gap-2">
+                <button
+                  onClick={() => handleSelect(originalIdx)}
+                  disabled={showExplanation || isEliminated}
+                  aria-disabled={isEliminated}
+                  className={`flex-1 min-w-0 text-left rounded-xl px-3.5 py-3 ${textClass} font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass} ${isEliminated ? 'opacity-60' : 'text-slate-700'}`}
+                >
+                  {shouldShuffleChoices && showExplanation && (
+                    <span className="block text-xs font-bold text-red-600 mb-1">
+                      解答記号：{ANSWER_LABELS[originalIdx]}
+                    </span>
+                  )}
+                  <span className={`inline-block text-xs font-bold mr-2 ${isEliminated ? 'text-slate-400' : 'text-brand-dark'}`}>{optionLabel}.</span>
+                  <span className={isEliminated ? 'line-through decoration-slate-400' : ''}>
+                    <MathText text={choice.text} />
                   </span>
+                </button>
+                {!showExplanation && (
+                  <button
+                    type="button"
+                    onClick={() => toggleEliminate(originalIdx)}
+                    aria-pressed={isEliminated}
+                    aria-label={isEliminated ? `選択肢${ANSWER_LABELS[originalIdx]}の消去を取り消す` : `選択肢${ANSWER_LABELS[originalIdx]}を消去する`}
+                    title={isEliminated ? '消去を取り消す' : '消去する'}
+                    className={`flex-shrink-0 w-11 rounded-xl border-2 text-xs font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                      isEliminated
+                        ? 'border-slate-300 bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        : 'border-slate-200 bg-white text-slate-400 hover:border-red-300 hover:text-red-500'
+                    }`}
+                  >
+                    {isEliminated ? '戻す' : '✕'}
+                  </button>
                 )}
-                <span className="inline-block text-xs font-bold text-brand-dark mr-2">{optionLabel}.</span>
-                <MathText text={choice.text} />
-              </button>
+              </div>
             )
           })}
         </div>

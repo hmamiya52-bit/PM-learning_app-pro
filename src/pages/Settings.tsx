@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { resetAllData, getAllProgress, getAnswerRecords, getStudySessions } from '../lib/storage'
+import { getAllProgress, getAnswerRecords, getStudySessions } from '../lib/storage'
+import { resetModeData, resetAllStudyData, type StudyModeKey } from '../lib/resetData'
 import { questions } from '../data/questions'
 import { categories } from '../data/categories'
 import { VERSION_LABEL } from '../version'
 import { useAuth } from '../auth/useAuth'
 import { loadRecords } from '../lib/tracker'
+import { loadMorningRecords } from '../lib/morningRecords'
+import { loadAttempts } from '../lib/essay'
 import { loadSyncMeta } from '../lib/sync/device'
 import { getImportantIds } from '../lib/importantMarks'
 import { getDevMode, setDevMode } from '../lib/preferences'
@@ -32,6 +35,9 @@ export default function Settings() {
   const [resetDone, setResetDone] = useState(false)
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
   const [devMode, setDevModeState] = useState(() => getDevMode())
+  // モード別リセット: 確認中のモード / 完了表示中のモード
+  const [confirmMode, setConfirmMode] = useState<StudyModeKey | null>(null)
+  const [doneMode, setDoneMode] = useState<StudyModeKey | null>(null)
 
   const handleLogout = () => {
     logout()
@@ -54,10 +60,26 @@ export default function Settings() {
   // 重要マーク件数（F1-P2）
   const importantCount = useMemo(() => getImportantIds().length, [])
 
+  // モード別の学習データ件数（毎レンダー時に LocalStorage から再読込。リセット後の再描画で自動更新）
+  const modeResets: { key: StudyModeKey; label: string; desc: string; count: number; unit: string }[] = [
+    { key: 'quiz', label: '一問一答（カテゴリ別）', desc: '解答履歴・正答率・連続正解', count: records.length, unit: '回答' },
+    { key: 'morning', label: '午前Ⅱ（公式過去問）', desc: '出題・正誤の記録', count: loadMorningRecords().length, unit: '回答' },
+    { key: 'afternoon', label: '午後Ⅰ', desc: '演習記録・自己採点・保存解答', count: afternoonRecords.length, unit: '回' },
+    { key: 'essay', label: '午後Ⅱ（論述）', desc: '答案履歴・自己評価', count: loadAttempts().length, unit: '本' },
+  ]
+
   const handleReset = () => {
-    resetAllData()
+    resetAllStudyData()
     setResetDone(true)
     setShowConfirm(false)
+    setDoneMode(null)
+    setConfirmMode(null)
+  }
+
+  const handleModeReset = (mode: StudyModeKey) => {
+    resetModeData(mode)
+    setConfirmMode(null)
+    setDoneMode(mode)
   }
 
   return (
@@ -180,9 +202,69 @@ export default function Settings() {
         {/* データリセット */}
         <section>
           <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">データ管理</h2>
+
+          {/* モード別リセット */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-3">
+            <div className="px-4 pt-4 pb-2">
+              <p className="text-sm font-bold text-slate-800">モード別リセット</p>
+              <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                選んだモードの学習記録だけを削除します。他モードの記録と、XP・レベル・バッジ・学習履歴は保持されます。この操作は取り消せません。
+              </p>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {modeResets.map((m) => (
+                <div key={m.key} className="px-4 py-3">
+                  {doneMode === m.key ? (
+                    <div className="flex items-center gap-2 text-green-700">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <p className="text-sm font-medium">「{m.label}」をリセットしました</p>
+                    </div>
+                  ) : confirmMode === m.key ? (
+                    <div className="space-y-3">
+                      <p className="text-sm font-bold text-red-600">
+                        「{m.label}」の学習記録（{m.count}{m.unit}）を削除しますか？
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => setConfirmMode(null)}
+                          className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+                        >
+                          キャンセル
+                        </button>
+                        <button
+                          onClick={() => handleModeReset(m.key)}
+                          className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-bold hover:bg-red-700 transition-colors"
+                        >
+                          削除する
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-800">{m.label}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5 truncate">{m.desc}・{m.count}{m.unit}</p>
+                      </div>
+                      <button
+                        onClick={() => { setDoneMode(null); setConfirmMode(m.key) }}
+                        disabled={m.count === 0}
+                        className="flex-shrink-0 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                      >
+                        {m.count === 0 ? '記録なし' : 'リセット'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 全データリセット */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
             <p className="text-sm text-slate-600 mb-4">
-              学習履歴・正答率・セッション記録をすべて削除します。この操作は取り消せません。
+              すべてのモードの学習記録（一問一答・午前Ⅱ・午後Ⅰ・午後Ⅱ・ノート理解度）を一括削除します。この操作は取り消せません。
             </p>
 
             {resetDone ? (
@@ -212,10 +294,10 @@ export default function Settings() {
               </div>
             ) : (
               <button
-                onClick={() => setShowConfirm(true)}
+                onClick={() => { setResetDone(false); setShowConfirm(true) }}
                 className="w-full py-3 rounded-xl border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 transition-colors"
               >
-                学習データをリセット
+                すべての学習データをリセット
               </button>
             )}
           </div>

@@ -62,6 +62,16 @@ export function deleteRecord(id: string): void {
   saveRecords(loadRecords().filter(r => r.id !== id))
 }
 
+/** 午後Ⅰ 演習記録を全件削除（設定画面のモード別リセット用）。学習計画日（plans）は保持する。 */
+export function clearAllRecords(): void {
+  try {
+    localStorage.removeItem(RECORDS_KEY)
+  } catch (e) {
+    console.error('[tracker] 記録の削除に失敗しました:', e)
+    throw e
+  }
+}
+
 function isPlanMap(v: unknown): v is PlanMap {
   if (!v || typeof v !== 'object' || Array.isArray(v)) return false
   return Object.entries(v as object).every(

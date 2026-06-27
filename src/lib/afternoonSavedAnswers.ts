@@ -111,6 +111,20 @@ export function deleteSavedAnswerSnapshot(recordId: string): void {
   }
 }
 
+/** 午後Ⅰ の保存解答スナップショット（pmap:savedAnswers:*）を全件削除（モード別リセット用）。 */
+export function clearAllSavedAnswerSnapshots(): void {
+  try {
+    const keys: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key?.startsWith(SAVED_ANSWERS_PREFIX)) keys.push(key)
+    }
+    keys.forEach((key) => localStorage.removeItem(key))
+  } catch {
+    // localStorage access can fail in private modes; ignore.
+  }
+}
+
 export function loadAllSavedAnswerSnapshots(): Record<string, AfternoonSavedAnswerSnapshot> {
   const snapshots: Record<string, AfternoonSavedAnswerSnapshot> = {}
   try {

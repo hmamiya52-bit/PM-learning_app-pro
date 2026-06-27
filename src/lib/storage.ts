@@ -170,6 +170,19 @@ export function resetAllData(): void {
   localStorage.removeItem('pmap:question_mastery')
 }
 
+/**
+ * 一問一答（カテゴリ別クイズ）の学習データのみをリセットする。
+ * resetAllData と違い、ノート理解度・サイドバー状態には触れない（モード別リセット用）。
+ * 対象: 解答履歴 / 正答率 / セッション記録 / 問題ブックマーク / 問題別マスタリー。
+ */
+export function resetQuizData(): void {
+  localStorage.removeItem(KEYS.ANSWER_RECORDS)
+  localStorage.removeItem(KEYS.USER_PROGRESS)
+  localStorage.removeItem(KEYS.STUDY_SESSIONS)
+  localStorage.removeItem(KEYS.BOOKMARKS)
+  localStorage.removeItem(QUESTION_MASTERY_KEY)
+}
+
 // --- QuestionMastery ---
 const QUESTION_MASTERY_KEY = 'pmap:question_mastery'
 

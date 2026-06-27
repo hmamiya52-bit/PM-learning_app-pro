@@ -100,12 +100,19 @@ export default function OfficialMorningQuiz() {
   }, [])
 
   // カテゴリ一覧（順序維持・問題が存在するものだけ）
+  // 「未正解のみ」選択時は、各カテゴリの表示件数を「まだ正解していない残り問題数」に切り替える。
   const categoryCards = useMemo(
     () =>
       categories
-        .map((c) => ({ ...c, count: byCategory.get(c.id)?.length ?? 0 }))
-        .filter((c) => c.count > 0),
-    [byCategory],
+        .map((c) => {
+          const list = byCategory.get(c.id) ?? []
+          const count = uncorrectedOnly
+            ? list.filter((q) => !correctedQuestionIds.has(q.id)).length
+            : list.length
+          return { ...c, count, total: list.length }
+        })
+        .filter((c) => c.total > 0),
+    [byCategory, uncorrectedOnly, correctedQuestionIds],
   )
 
   const stats = useMemo(() => {
@@ -364,11 +371,11 @@ export default function OfficialMorningQuiz() {
                       selectedCategorySet.has(c.id)
                         ? 'bg-brand-light border-brand text-brand-darker'
                         : 'bg-white border-slate-200 hover:border-brand'
-                    }`}
+                    } ${uncorrectedOnly && c.count === 0 ? 'opacity-50' : ''}`}
                   >
                     <p className="text-sm font-bold leading-tight">{c.name}</p>
                     <p className={`text-[11px] mt-0.5 ${selectedCategorySet.has(c.id) ? 'text-brand-dark/80' : 'text-slate-400'}`}>
-                      {c.count}問
+                      {uncorrectedOnly ? `残り${c.count}問` : `${c.count}問`}
                     </p>
                   </button>
                 ))}

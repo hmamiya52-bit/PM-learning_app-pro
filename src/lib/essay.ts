@@ -64,6 +64,16 @@ export function deleteAttempt(id: string): void {
   saveJson(ATTEMPTS_KEY, loadAttempts().filter((a) => a.id !== id))
 }
 
+/** 論述（午後Ⅱ）の答案履歴を全件削除（設定画面のモード別リセット用）。学習計画日（plans）は保持する。 */
+export function clearAllAttempts(): void {
+  try {
+    localStorage.removeItem(ATTEMPTS_KEY)
+  } catch (e) {
+    console.error('[essay] 答案履歴の削除に失敗しました:', e)
+    throw e
+  }
+}
+
 // ──────────────────────────────────────────────────
 // Plans CRUD（学習計画日）
 // ──────────────────────────────────────────────────
