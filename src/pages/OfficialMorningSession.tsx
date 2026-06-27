@@ -414,13 +414,6 @@ export default function OfficialMorningSession() {
           {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
         </div>
 
-        {/* 消去法ヒント（解答前のみ） */}
-        {!showExplanation && (
-          <p className="text-[11px] text-slate-400 mb-2">
-            各選択肢の <span className="font-bold text-slate-500">✕</span> で「ありえない選択肢」を消去できます（消去法）。もう一度押すと戻せます。
-          </p>
-        )}
-
         {/* 4択（表示モードに応じた順序） */}
         <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
           {displayChoices.map((choice, displayIdx) => {
