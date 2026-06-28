@@ -37,6 +37,7 @@ export default function SyncPreview({ preview, onConfirm, onCancel }: SyncPrevie
         <Info label="XP更新" value={`${preview.newEventCount}件`} />
         <Info label="スキップ" value={`${preview.skippedEventCount}件`} />
         <Info label="問題記録" value={`${preview.addedAnswerRecordCount}件`} />
+        <Info label="午前Ⅱ記録" value={`${preview.addedMorningRecordCount}件`} />
         <Info label="午後記録" value={`${preview.addedAfternoonRecordCount}件`} />
         <Info label="日別XP" value={`${preview.updatedDailyXpDayCount}日`} />
         <Info label="追加XP" value={`${preview.addedXp.toLocaleString()} XP`} />

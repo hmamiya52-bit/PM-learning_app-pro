@@ -55,6 +55,7 @@ export interface LocalMergeStats {
   addedAnswerRecordCount: number
   updatedDailyXpDayCount: number
   addedAfternoonRecordCount: number
+  addedMorningRecordCount: number
   addedBadgeCount: number
 }
 
@@ -105,6 +106,16 @@ function answerRecordKey(record: AnswerRecord): string {
     record.answeredAt,
     record.userAnswer,
   ].join('|')
+}
+
+// 午前Ⅱ記録の内容キー（id ではなく内容で重複排除）。
+// wire 経由の記録は id を内容から決定的に再構成するため、id だと端末ローカルの
+// UUID 記録と二重計上されてしまう。分解像度（QRの圧縮粒度）でタイムスタンプを丸めて
+// 往復同期でも同一記録が重複しないようにする。
+function morningRecordKey(record: MorningRecord): string {
+  // selectedIndex は wire で同期しないためキーに含めない（local UUID 記録と wire 復元記録を揃える）
+  const minute = Math.floor((Date.parse(record.answeredAt) || 0) / 60000)
+  return [record.questionId, record.isCorrect ? '1' : '0', minute].join('|')
 }
 
 function aggregateDailyXp(events: ActivityEvent[]): Record<string, number> {
@@ -416,9 +427,9 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
     new Set([...current.importantQuestions, ...incoming.importantQuestions]),
   ).filter((v): v is string => typeof v === 'string')
 
-  // ★F1-P4 morningRecords: id でユニーク化 + answeredAt 昇順
+  // ★午前Ⅱ morningRecords: 内容キーでユニーク化（wire の決定的id と端末UUIDの二重計上を防ぐ）+ answeredAt 昇順
   const morningRecords = sortByIso(
-    uniqueBy([...current.morningRecords, ...incoming.morningRecords], (r) => r.id),
+    uniqueBy([...current.morningRecords, ...incoming.morningRecords], morningRecordKey),
     (r) => r.answeredAt,
   )
 
@@ -453,6 +464,7 @@ export function mergeLocalSyncState(incoming: LocalSyncState): LocalMergeStats {
     addedAnswerRecordCount: answerRecords.length - current.answerRecords.length,
     updatedDailyXpDayCount: dailyXpLedger.updatedCount,
     addedAfternoonRecordCount: trackerRecords.length - current.trackerRecords.length,
+    addedMorningRecordCount: morningRecords.length - current.morningRecords.length,
     addedBadgeCount: gamification.unlockedBadgeIds.filter((badgeId) => !currentBadges.has(badgeId)).length,
   }
 }
@@ -461,6 +473,7 @@ export function countPotentialStateChanges(incoming: LocalSyncState): LocalMerge
   const current = readLocalSyncState()
   const currentAnswerKeys = new Set(current.answerRecords.map(answerRecordKey))
   const currentAfternoonIds = new Set(current.trackerRecords.map((record) => record.id))
+  const currentMorningKeys = new Set(current.morningRecords.map(morningRecordKey))
   const currentBadges = new Set(normalizeBadgeIds(current.gamification.unlockedBadgeIds))
   const mergedBadgeIds = mergeUnlockedBadgeIds(
     current.gamification.unlockedBadgeIds,
@@ -472,6 +485,7 @@ export function countPotentialStateChanges(incoming: LocalSyncState): LocalMerge
     addedAnswerRecordCount: incoming.answerRecords.filter((record) => !currentAnswerKeys.has(answerRecordKey(record))).length,
     updatedDailyXpDayCount: dailyXpLedger.updatedCount,
     addedAfternoonRecordCount: incoming.trackerRecords.filter((record) => !currentAfternoonIds.has(record.id)).length,
+    addedMorningRecordCount: incoming.morningRecords.filter((record) => !currentMorningKeys.has(morningRecordKey(record))).length,
     addedBadgeCount: mergedBadgeIds.filter((badgeId) => !currentBadges.has(badgeId)).length,
   }
 }

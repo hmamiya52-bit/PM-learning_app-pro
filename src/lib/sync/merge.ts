@@ -33,6 +33,7 @@ export function buildImportPreview(pkg: SyncPackage): ImportPreview {
     addedAnswerRecordCount: stateChanges.addedAnswerRecordCount,
     updatedDailyXpDayCount: stateChanges.updatedDailyXpDayCount,
     addedAfternoonRecordCount: stateChanges.addedAfternoonRecordCount,
+    addedMorningRecordCount: stateChanges.addedMorningRecordCount,
     addedXp: newEvents.reduce((sum, event) => sum + event.xpDelta, 0),
     addedBadgeCount: stateChanges.addedBadgeCount,
   }
@@ -63,6 +64,7 @@ export function applySyncPackage(pkg: SyncPackage): ImportResult {
     addedAnswerRecordCount: stateResult.addedAnswerRecordCount,
     updatedDailyXpDayCount: stateResult.updatedDailyXpDayCount,
     addedAfternoonRecordCount: stateResult.addedAfternoonRecordCount,
+    addedMorningRecordCount: stateResult.addedMorningRecordCount,
     addedBadgeCount: stateResult.addedBadgeCount,
     addedXp: eventResult.added.reduce((sum, event) => sum + event.xpDelta, 0),
   }

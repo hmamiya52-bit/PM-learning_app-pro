@@ -2,6 +2,7 @@ import LZString from 'lz-string'
 import { BADGES } from '../../data/badges'
 import { afternoonProblems } from '../../data/afternoonProblems'
 import { questions } from '../../data/questions'
+import { officialMorningQuestions } from '../../data/officialMorningQuestions'
 import {
   SYNC_APP_ID,
   SYNC_PREFIX,
@@ -11,7 +12,7 @@ import {
   type SyncEvent,
   type SyncPackage,
 } from './types'
-import type { AnswerRecord, Bookmark } from '../../types'
+import type { AnswerRecord, Bookmark, MorningRecord } from '../../types'
 import type { GamificationState } from '../gamification'
 import type { PracticeRecord } from '../tracker'
 import type { AfternoonMarking, AfternoonSavedAnswerSnapshot } from '../afternoonSavedAnswers'
@@ -31,6 +32,9 @@ type CompactSavedAnswerSnapshot = [
   number?,
 ]
 type CompactDailyXpLedger = [string, [number, number][]][]
+// 午前Ⅱ（公式過去問）達成状況: [問題ref, 正誤, 分解像度タイムスタンプ]
+// 達成度・未正解フィルタ・バッジ判定は selectedIndex を参照しないため、サイズ削減のため wire からは省く。
+type CompactMorningRecord = [Ref, 0 | 1, number]
 type CompactEvent = [string, string, number, string, number, number, unknown?]
 type CompactGamification = [
   number,
@@ -53,6 +57,7 @@ interface CompactState {
   r?: CompactSavedAnswerSnapshot[]
   g: CompactGamification
   x: CompactDailyXpLedger
+  m?: CompactMorningRecord[]   // ★午前Ⅱ 達成状況（達成度に必要な分のみ・サイズ抑制）
 }
 
 interface CompactWirePackage {
@@ -80,6 +85,8 @@ const problemIdByIndex = afternoonProblems.map((problem) => problem.id)
 const problemIndexById = new Map(problemIdByIndex.map((id, index) => [id, index]))
 const badgeIdByIndex = BADGES.map((badge) => badge.id)
 const badgeIndexById = new Map(badgeIdByIndex.map((id, index) => [id, index]))
+const morningIdByIndex = officialMorningQuestions.map((question) => question.id)
+const morningIndexById = new Map(morningIdByIndex.map((id, index) => [id, index]))
 
 function stripCompactChecksum(pkg: CompactWirePackage): CompactWirePackageWithoutChecksum {
   const rest = { ...pkg }
@@ -135,6 +142,14 @@ function encodeBadgeRef(badgeId: string): Ref {
 
 function decodeBadgeRef(ref: Ref): string {
   return typeof ref === 'number' ? badgeIdByIndex[ref] ?? String(ref) : ref
+}
+
+function encodeMorningRef(questionId: string): Ref {
+  return morningIndexById.get(questionId) ?? questionId
+}
+
+function decodeMorningRef(ref: Ref): string {
+  return typeof ref === 'number' ? morningIdByIndex[ref] ?? String(ref) : ref
 }
 
 function encodeTimestamp(value: string): number {
@@ -358,6 +373,62 @@ function decodeEvent(event: CompactEvent): SyncEvent {
   }
 }
 
+function encodeMorningRecord(record: MorningRecord): CompactMorningRecord {
+  return [
+    encodeMorningRef(record.questionId),
+    record.isCorrect ? 1 : 0,
+    encodeTimestamp(record.answeredAt),
+  ]
+}
+
+function decodeMorningRecord(record: CompactMorningRecord): MorningRecord {
+  const questionId = decodeMorningRef(record[0])
+  const isCorrect = record[1] === 1
+  // id は内容から決定的に再構成（再同期・往復で重複しないように）。
+  // selectedIndex は同期しないため 0 を入れる（達成度等の表示には使われない）。
+  return {
+    id: `m:${questionId}:${isCorrect ? 1 : 0}:${record[2]}`,
+    questionId,
+    selectedIndex: 0,
+    isCorrect,
+    answeredAt: decodeTimestamp(record[2]),
+  }
+}
+
+/**
+ * 午前Ⅱ 達成状況を「QRに載る最小限」へ圧縮する。
+ *
+ * QRは単一コードで容量上限があるため、解答履歴を丸ごと送るとサイズ超過で
+ * 生成不能になりうる。達成度レポート／未正解フィルタ／バッジ判定が必要とする情報は
+ * 「問題ごとの直近2件（連続正解/不正解の判定用）＋ 一度でも正解した実績」だけなので、
+ * それ以外の古い重複履歴は送らない。これにより送信量は問題数オーダーに収まる。
+ */
+function compactMorningForWire(records: MorningRecord[]): MorningRecord[] {
+  const byQuestion = new Map<string, MorningRecord[]>()
+  for (const record of records) {
+    const list = byQuestion.get(record.questionId) ?? []
+    list.push(record)
+    byQuestion.set(record.questionId, list)
+  }
+  const out: MorningRecord[] = []
+  for (const list of byQuestion.values()) {
+    // 新しい順
+    list.sort((a, b) => b.answeredAt.localeCompare(a.answeredAt))
+    const keep: MorningRecord[] = []
+    if (list[0]) keep.push(list[0])            // 直近（達成度の基準）
+    // 直前は「直近と正誤が一致するとき」だけ保持（連続正解/連続不正解の判定に必要）。
+    // 直前が直近と異なる場合は単発状態となり結果が変わらないため省略してサイズを削減。
+    if (list[1] && list[1].isCorrect === list[0].isCorrect) keep.push(list[1])
+    // 一度でも正解した実績を保持（未正解フィルタ・バッジ用）
+    if (!keep.some((r) => r.isCorrect)) {
+      const correct = list.find((r) => r.isCorrect)  // list は新しい順なので直近の正解
+      if (correct) keep.push(correct)
+    }
+    out.push(...keep)
+  }
+  return out
+}
+
 function encodeState(state: LocalSyncState): CompactState {
   return {
     a: state.answerRecords.map(encodeAnswerRecord),
@@ -369,6 +440,7 @@ function encodeState(state: LocalSyncState): CompactState {
     )),
     g: encodeGamification(state.gamification),
     x: encodeDailyXpLedger(state.dailyXpLedger),
+    m: compactMorningForWire(state.morningRecords ?? []).map(encodeMorningRecord),
   }
 }
 
@@ -391,10 +463,10 @@ function decodeState(state: CompactState): LocalSyncState {
     trackerRecords: state.p.map(decodeTrackerRecord),
     gamification: decodeGamification(state.g),
     dailyXpLedger: decodeDailyXpLedger(state.x),
-    // ★F1-P2/P4/P5: CompactState には importantQuestions / morningRecords / essayAttempts / essayPlans
-    //   未含み。F2-P4 で wire format 拡張時に対応
+    // ★午前Ⅱ 達成状況を wire format に追加（compactMorningForWire で圧縮済みのものを復元）
+    morningRecords: (state.m ?? []).map(decodeMorningRecord),
+    // ★F1-P2/P5: importantQuestions / essayAttempts / essayPlans は引き続き wire 未含み（別途対応）
     importantQuestions: [],
-    morningRecords: [],
     essayAttempts: [],
     essayPlans: {},
     savedAnswerSnapshots,

@@ -93,6 +93,7 @@ export interface ImportPreview {
   addedAnswerRecordCount: number
   updatedDailyXpDayCount: number
   addedAfternoonRecordCount: number
+  addedMorningRecordCount: number
   addedXp: number
   addedBadgeCount: number
 }
