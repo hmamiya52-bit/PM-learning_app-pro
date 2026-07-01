@@ -78,6 +78,18 @@ export default function EssayList() {
           </p>
         </header>
 
+        {/* はじめに: 論述のコツ ガイドへの導線 */}
+        <Link
+          to="/essay/guide"
+          className="block rounded-xl border-2 border-brand/30 bg-brand-light px-4 py-3 hover:border-brand transition-colors"
+        >
+          <p className="text-[11px] font-bold text-brand-dark">💡 はじめにお読みください</p>
+          <p className="text-sm font-bold text-slate-800 mt-0.5">良い論述を書くためのコツ</p>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            出題方式・採点基準・高評価の7原則・インフラ経験のPM目線への変換・当日の時間配分 →
+          </p>
+        </Link>
+
         {/* 続きから バナー */}
         {active && activeProblem && (
           <Link
