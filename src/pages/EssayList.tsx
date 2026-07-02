@@ -86,7 +86,7 @@ export default function EssayList() {
           <p className="text-[11px] font-bold text-brand-dark">💡 はじめにお読みください</p>
           <p className="text-sm font-bold text-slate-800 mt-0.5">良い論述を書くためのコツ</p>
           <p className="text-[11px] text-slate-500 mt-0.5">
-            出題方式・採点基準・高評価の7原則・インフラ経験のPM目線への変換・当日の時間配分 →
+            出題方式・採点基準・高評価の7原則・インフラ経験のPM目線への変換・実例つきの書き方手順 →
           </p>
         </Link>
 

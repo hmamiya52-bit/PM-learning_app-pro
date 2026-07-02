@@ -152,7 +152,43 @@ const TIME_PLAN = [
   },
 ]
 
-// ── §6 よくあるNG ──────────────────────────────────────
+// ── §6 書く手順（実例つき）────────────────────────────────
+// 実例は本アプリ収録の R6 問1「予測型のシステム開発プロジェクトにおける
+// コストのマネジメント」に、クラウド移行案件（§4の題材例）で挑む想定。
+
+// 執筆前に確認する論文の作法
+const WRITING_RULES = [
+  '文体は「である調」で統一する（ですます調と混在させない）',
+  '一人称は「私」。判断の主語を明確にする',
+  '見出し（1.1 など）は1行を使って明示する',
+  '1文は60字以内を目安に短く切る',
+  '略語は初出で定義する（例: プロジェクトマネージャ（以下、PM））',
+  '質問書に書いた数値（期間・規模・役割）と本文を一致させる',
+]
+
+// STEP 2 骨子メモの実例（問題冊子の余白に書く想定）
+const SKELETON_MEMO = [
+  { sec: '1.1', memo: 'EC企業A社の基幹システムをクラウドへ移行。10か月・12名・8,000万円。私=SI企業のPM' },
+  { sec: '1.2', memo: '経営層の要求=移行後3年で運用費20%減・初年度予算8,000万円厳守' },
+  { sec: '1.3', memo: '従量課金が本番負荷に依存し±30%の振れ→計画段階では固定見積りできない' },
+  { sec: '1.4', memo: '見積りの前提と振れ幅を数値で提示し、再見積りの時期と予備費の扱いを合意' },
+  { sec: '2.1', memo: '予測活動=3段階の実測（PoC→性能試験→先行移行）。A社情シスと役割分担' },
+  { sec: '2.2', memo: '再見積り=各段階の完了時。差異が予備費8%以内=PM判断、超過=変更管理委員会' },
+  { sec: '3.1', memo: 'PoC完了時の再見積りで月額運用費15%超過が判明（ピーク負荷が想定超え）' },
+  { sec: '3.2', memo: 'リザーブド契約+ストレージ階層化で3%まで圧縮→経営層に報告し承認' },
+]
+
+// STEP 6 提出前チェックリスト
+const FINAL_CHECKS = [
+  '設問の要求項目が、すべて見出しと本文に対応している',
+  '字数: ア700字前後 / イ800字超 / ウ600字超（下限は絶対）',
+  '質問書と本文の数値（期間・規模・役割）が一致している',
+  '各施策に「私は〜と考えた」という判断の文が入っている',
+  '数値が論文全体で5か所以上ある',
+  '文体が「である調」で統一されている',
+]
+
+// ── §7 よくあるNG ──────────────────────────────────────
 const NG_PATTERNS = [
   {
     ng: '一般論・教科書の解説に終始する',
@@ -180,7 +216,7 @@ const NG_PATTERNS = [
   },
 ]
 
-// ── §7 このアプリでの学習手順 ────────────────────────────
+// ── §8 このアプリでの学習手順 ────────────────────────────
 const APP_STEPS = [
   {
     step: '1',
@@ -233,6 +269,37 @@ function SectionCard({ id, num, title, sub, children }: {
   )
 }
 
+// §6 の手順ステップ（番号＋時間帯つきカード）
+function StepBlock({ step, time, title, children }: {
+  step: string
+  time: string
+  title: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="border border-slate-200 rounded-lg overflow-hidden">
+      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border-b border-slate-100">
+        <span className="flex-shrink-0 w-6 h-6 rounded-md bg-brand text-white text-xs font-black flex items-center justify-center">
+          {step}
+        </span>
+        <p className="text-sm font-bold text-slate-800 leading-snug">{title}</p>
+        <span className="ml-auto flex-shrink-0 text-[10px] font-bold text-slate-400 whitespace-nowrap">{time}</span>
+      </div>
+      <div className="px-3 py-2.5">{children}</div>
+    </div>
+  )
+}
+
+// §6 の実例・実文例ボックス
+function ExampleBox({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mt-2 rounded-lg bg-brand-light/60 border border-brand/20 px-3 py-2.5">
+      <p className="text-[10px] font-black text-brand-dark mb-1.5">✍ {label}</p>
+      {children}
+    </div>
+  )
+}
+
 export default function EssayGuide() {
   const toc = [
     { href: '#format', label: '§1 出題方式' },
@@ -240,8 +307,9 @@ export default function EssayGuide() {
     { href: '#principles', label: '§3 高評価の7原則' },
     { href: '#infra', label: '§4 インフラ経験をPM目線に変換する' },
     { href: '#timeplan', label: '§5 当日120分の使い方' },
-    { href: '#ng', label: '§6 よくあるNG' },
-    { href: '#steps', label: '§7 このアプリでの学習手順' },
+    { href: '#write-steps', label: '§6 書く手順（実例つき）' },
+    { href: '#ng', label: '§7 よくあるNG' },
+    { href: '#steps', label: '§8 このアプリでの学習手順' },
   ]
 
   return (
@@ -476,11 +544,165 @@ export default function EssayGuide() {
           <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
             ※ 最重要は「5〜15分の骨子設計」。ここを削って書き始めると、途中で話が破綻して書き直す方が高くつきます。
             残り時間が苦しくても、イ・ウの<span className="font-bold text-slate-500">字数下限だけは死守</span>してください。
+            各時間帯で実際に何をどう書くかは、次の§6で実例つきで分解します。
           </p>
         </SectionCard>
 
-        {/* §6 よくあるNG */}
-        <SectionCard id="ng" num="6" title="よくあるNGと処方箋" sub="不合格答案の典型パターン">
+        {/* §6 書く手順（実例つき） */}
+        <SectionCard
+          id="write-steps"
+          num="6"
+          title="書く手順を実例で分解する"
+          sub="令和6年 問1「コストのマネジメント」×クラウド移行案件の通し実例"
+        >
+          <p className="text-xs text-slate-600 leading-relaxed mb-3">
+            §5の時間割の中で実際に手を動かす作業を、STEP 1〜6に分解します。実例は、本アプリ収録の
+            <span className="font-bold text-slate-800">令和6年 問1（予測型プロジェクトのコストのマネジメント）</span>に、
+            §4の題材例である<span className="font-bold text-slate-800">クラウド移行案件</span>で挑む想定です。
+            問題が変わっても手順は同じです。
+          </p>
+
+          <div className="space-y-3">
+            {/* STEP 1 */}
+            <StepBlock step="1" time="開始〜10分" title="設問文を分解して章立てを作る">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                設問文を読点と「及び」で区切って要求項目に①②…と番号を振り、
+                <span className="font-bold text-slate-800">要求項目1つ＝節（見出し）1つ</span>に変換する。
+                設問ア＝第1章、イ＝第2章、ウ＝第3章。見出しは設問の言葉をほぼそのまま使ってよい
+                （採点者が要求との対応を確認しやすくなる）。
+              </p>
+              <ExampleBox label="実例 — 設問アを分解して章立てへ">
+                <p className="text-[11px] text-slate-600 leading-relaxed mb-2">
+                  令和6年 問1の設問アの要求は、①予算を含むステークホルダのコストに関する要求事項 /
+                  ②不確かさ、及びそれがコストの見積りに与える影響 /
+                  ③影響についての認識を共有するために実施したこと、の3つに分解できる。
+                  これに「プロジェクトの概要」（設問に明示されなくても冒頭に必須）を加えて章立てにする。
+                </p>
+                <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed">
+                  <p className="font-bold">第1章　プロジェクトの特徴とコストに関する要求事項</p>
+                  <p>　1.1　プロジェクトの特徴 <span className="text-slate-400">← 概要＋テーマの伏線</span></p>
+                  <p>　1.2　コストに関する要求事項 <span className="text-slate-400">← ①</span></p>
+                  <p>　1.3　不確かさとコスト見積りへの影響 <span className="text-slate-400">← ②</span></p>
+                  <p>　1.4　認識の共有のために実施したこと <span className="text-slate-400">← ③</span></p>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed mt-2">
+                  同様に、イ（計画段階で合意した4点）は「2.1 予測活動の計画と協力の内容 /
+                  2.2 再見積りの条件と差異への対応方針」、ウ（実行段階）は
+                  「3.1 再見積りの実施と差異の内容 / 3.2 差異への対応策と承認」へ振り分ける。
+                </p>
+              </ExampleBox>
+            </StepBlock>
+
+            {/* STEP 2 */}
+            <StepBlock step="2" time="〜15分" title="各節に「結論1行＋数値」の骨子メモを書く">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                文章にせず、キーワードと数値だけで各節の結論をメモする。これが論文の設計図。
+                <span className="font-bold text-slate-800">埋まらない節がある＝その題材では書けない</span>ということなので、
+                この時点で題材の細部（または選択する問題）を調整する。書き始めてからの破綻を防ぐ最重要ステップ。
+              </p>
+              <ExampleBox label="実例 — 骨子メモ（問題冊子の余白に書く想定）">
+                <div className="bg-white border border-slate-200 rounded divide-y divide-slate-100">
+                  {SKELETON_MEMO.map((m) => (
+                    <div key={m.sec} className="flex gap-2 px-2.5 py-1.5 items-start">
+                      <span className="flex-shrink-0 w-8 text-[11px] font-black text-brand-dark tabular-nums">{m.sec}</span>
+                      <p className="text-[11px] text-slate-600 leading-relaxed min-w-0">{m.memo}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-slate-600 leading-relaxed mt-2">
+                  ここまでできれば、残りは「メモを日本語の文章にする」作業になる。
+                  質問書（プロジェクトの概要）も 1.1 のメモと同じ数値で記入し、本文との矛盾を防ぐ。
+                </p>
+              </ExampleBox>
+            </StepBlock>
+
+            {/* 執筆の作法 */}
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+              <p className="text-xs font-bold text-slate-700 mb-1.5">✒ 執筆前に確認 — 論文の作法</p>
+              <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-1">
+                {WRITING_RULES.map((r) => (
+                  <li key={r} className="flex gap-1.5 text-[11px] text-slate-600 leading-relaxed">
+                    <span className="text-brand font-bold flex-shrink-0">・</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* STEP 3 */}
+            <StepBlock step="3" time="15〜40分" title="設問ア — 概要と「イの伏線」を書く">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                1.1は「業種と事業規模 → プロジェクトの目的 → 規模数値（期間・要員・費用）→ 私の立場 →
+                テーマに関わる特徴（イの伏線）」の順で書くと自然にまとまる。
+                字数配分の目安は、1.1に300字前後、1.2〜1.4に各150〜200字で計700〜800字。
+              </p>
+              <ExampleBox label="実文例 — 1.1 プロジェクトの特徴（冒頭）">
+                <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
+                  <p>　A社は年商300億円規模の消費財ECを営む企業である。A社では基幹システムの老朽化を契機に、オンプレミス環境からパブリッククラウドへ移行するプロジェクトを立ち上げた。期間は10か月、要員は最大12名、予算は8,000万円であり、私はSI企業B社に所属するプロジェクトマネージャ（以下、PM）として、本プロジェクトのマネジメント全般を担った。</p>
+                  <p>　本プロジェクトの特徴は、移行後の運用費が従量課金であり、本番稼働時の負荷が確定しない計画段階では、コストの見積りに大きな不確かさを含むことであった。</p>
+                </div>
+                <p className="text-[10px] font-bold text-brand-dark mt-1.5">
+                  💡 この2段落で「業種・目的・数値・立場・テーマの伏線」がすべて入る。最後の1文が第2章の施策の理由付けになる。
+                </p>
+              </ExampleBox>
+            </StepBlock>
+
+            {/* STEP 4 */}
+            <StepBlock step="4" time="40〜85分" title="設問イ — 「課題→判断→実施→工夫」で書く">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                イの各節は「①課題の提示 → ②私の判断とその理由（私は〜と考えた）→ ③実施内容（具体的・数値入り）→
+                ④独自の工夫」の4段構成で書く。1施策あたり400〜600字、2本柱＋導入で1,000〜1,200字が目安。
+                <span className="font-bold text-slate-800">工夫を1施策に1つ</span>入れることが、独創性・見識の得点源になる。
+              </p>
+              <ExampleBox label="実文例 — 2.1 予測活動の計画（抜粋）">
+                <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
+                  <p>　計画段階の最大の課題は、従量課金の振れ幅±30%をどう縮小するかであった。私は、机上の試算を重ねるより実測に基づいて精度を上げるべきだと考え、予測活動として3段階の実測を計画した。具体的には、(1)主要3機能のPoCで単位負荷当たりの課金額を実測する、(2)性能試験で本番相当のピーク負荷を再現して月額に換算する、(3)先行移行した1業務の実課金で検証する、というものである。</p>
+                  <p>　さらに私は、実測値をそのまま用いない工夫として、A社の販売計画に基づく負荷の季節変動（最繁忙月は平均月の1.8倍）を加味した補正式をA社情報システム部と共同で作成し、再見積りの根拠とすることにした。</p>
+                </div>
+                <p className="text-[10px] font-bold text-brand-dark mt-1.5">
+                  💡 1段落目＝課題→判断→実施、2段落目＝工夫。「私は〜と考え」「工夫として」が、判断力・独創性を採点者に示す目印になる。
+                </p>
+              </ExampleBox>
+            </StepBlock>
+
+            {/* STEP 5 */}
+            <StepBlock step="5" time="85〜110分" title="設問ウ — 結果は数値で着地させる">
+              <p className="text-xs text-slate-600 leading-relaxed">
+                ウは「実施したこと → 結果（数値）→ 締め」。アで設定した数値（予算・期限）に対して
+                どう着地したかを必ず数値で示す。目安は700〜900字。
+              </p>
+              <ExampleBox label="実文例 — 3.2 差異への対応策と承認（抜粋）">
+                <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
+                  <p>　私は対応方針に沿って対応策を作成した。具体的には、稼働が安定した基盤部分に1年間のリザーブド契約を適用し、アクセス頻度の低いデータを低価格のストレージ階層へ移す設計変更によって、15%の超過を予備費8%の範囲内である3%まで圧縮した。私はこの対応策を再見積りの結果とともに経営層に報告し、承認を得た。最終的に、本プロジェクトは予算8,000万円の範囲内で移行を完了した。</p>
+                </div>
+                <p className="text-[10px] font-bold text-brand-dark mt-1.5">
+                  💡 年度によっては設問ウで「評価」「今後の改善」まで要求される。その場合は
+                  「〜が有効に機能したと評価している。一方で〜という課題が残った。今後は〜したい」の型で締める。
+                </p>
+              </ExampleBox>
+            </StepBlock>
+
+            {/* STEP 6 */}
+            <StepBlock step="6" time="110〜120分" title="提出前チェック">
+              <ul className="space-y-1.5">
+                {FINAL_CHECKS.map((c) => (
+                  <li key={c} className="flex gap-2 items-start text-xs text-slate-600 leading-relaxed">
+                    <span className="flex-shrink-0 w-3.5 h-3.5 mt-0.5 rounded-sm border-2 border-brand" aria-hidden="true" />
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </StepBlock>
+          </div>
+
+          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+            ※ 本番で最も差がつくのはSTEP 1〜2です。この2ステップだけを15分で回す練習（§8の骨子練習）を繰り返すと、
+            どのテーマが来ても「メモを日本語にするだけ」の状態で書き始められるようになります。
+          </p>
+        </SectionCard>
+
+        {/* §7 よくあるNG */}
+        <SectionCard id="ng" num="7" title="よくあるNGと処方箋" sub="不合格答案の典型パターン">
           <div className="space-y-2">
             {NG_PATTERNS.map((n) => (
               <div key={n.ng} className="border border-slate-200 rounded-lg px-3 py-2.5">
@@ -491,8 +713,8 @@ export default function EssayGuide() {
           </div>
         </SectionCard>
 
-        {/* §7 このアプリでの学習手順 */}
-        <SectionCard id="steps" num="7" title="このアプリでの学習手順" sub="参考答案 → 骨子 → 全文 → 自己評価 → 周回">
+        {/* §8 このアプリでの学習手順 */}
+        <SectionCard id="steps" num="8" title="このアプリでの学習手順" sub="参考答案 → 骨子 → 全文 → 自己評価 → 周回">
           <ol className="space-y-2.5 mb-3">
             {APP_STEPS.map((s) => (
               <li key={s.step} className="flex gap-2.5">
