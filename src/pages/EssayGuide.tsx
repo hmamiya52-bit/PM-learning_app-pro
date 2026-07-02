@@ -245,6 +245,96 @@ const APP_STEPS = [
   },
 ]
 
+// ── §9 ネタ帳とテンプレート ─────────────────────────────
+// モデルプロジェクトの設定・数値・定型文は「骨格」。丸写しではなく、
+// 当日の設問の言葉と自分の経験に合わせて差し替えて使う前提。
+
+// モデルプロジェクトのネタ集（インフラ案件）
+const MODEL_PROJECTS = [
+  {
+    title: 'オンプレ→クラウド移行',
+    scale: '10か月・12名・8,000万円',
+    themes: ['コスト', 'リスク', 'ステークホルダー'],
+    highlight: '従量課金の見積りの不確かさ、切替失敗時の切戻し基準、利用部門との停止時間調整が山場。§6の通し実例がこの題材。',
+  },
+  {
+    title: '基幹サーバ更改（EOL対応）',
+    scale: '8か月・10名・6,000万円',
+    themes: ['スケジュール', '品質', 'リスク'],
+    highlight: '保守切れという動かせない期限が最大の制約。機器納期の遅延対応、性能・可用性要件の合意、切替リハーサルが山場。',
+  },
+  {
+    title: '全社ネットワーク更改',
+    scale: '12か月・8名・5,000万円',
+    themes: ['ステークホルダー', 'リスク', 'スケジュール'],
+    highlight: '多拠点の切替順序と業務影響の調整が山場。拠点ごとの段階移行、先行拠点での検証、障害時の切り分け体制づくりを描ける。',
+  },
+  {
+    title: 'データセンター移設',
+    scale: '12か月・15名・1億円',
+    themes: ['リスク', 'チーム・育成', 'ステークホルダー'],
+    highlight: '失敗の影響が全社に及ぶためリスク管理が主役。複数ベンダー混成チームの役割分担、移設リハーサル、切戻し計画が山場。',
+  },
+]
+
+// 数値の相場表（質問書・本文で使い回す定番値）
+const NUMBER_CHEATSHEET = [
+  { item: '期間', value: '6か月〜1年（中規模が破綻しにくい）' },
+  { item: '要員数', value: 'ピーク10〜15名（ベンダー含む混成体制）' },
+  { item: '総工数', value: '期間×平均要員数で計算（例: 10か月×8名=80人月）' },
+  { item: '予算', value: '5,000万〜1億円' },
+  { item: '予備費', value: '総予算の5〜10%（PM判断で使える枠を決めておく）' },
+  { item: '会議体', value: '週次定例（ベンダー同席）＋月次報告（経営層・利用部門）' },
+  { item: 'リハーサル', value: '切替リハーサル2回（1回目=手順検証、2回目=時間実測）' },
+  { item: '是正の閾値', value: '計画比10%の遅延・超過で対策を発動' },
+]
+
+// 章立てテンプレート（テーマ非依存の骨格）
+const CHAPTER_TEMPLATE = [
+  '第1章　プロジェクトの特徴と〔テーマ〕',
+  '　1.1　プロジェクトの特徴',
+  '　1.2　〔設問アの要求2つ目〕',
+  '　1.3　〔設問アの要求3つ目〕',
+  '第2章　〔テーマ〕のために実施した施策',
+  '　2.1　〔施策1（計画・体制面）〕',
+  '　2.2　〔施策2（実行・モニタリング面）〕',
+  '第3章　実施した結果と評価',
+  '　3.1　実施した結果',
+  '　3.2　評価と今後の改善',
+]
+
+// 場面別の定型文（〔 〕を差し替えて使う）
+const PHRASE_TEMPLATES = [
+  {
+    scene: 'ア: 書き出し（1.1）',
+    text: 'A社は〔業種・事業規模〕を営む企業である。A社では〔背景・契機〕を受けて、〔目的〕のために〔対象システム〕を〔移行／更改／構築〕するプロジェクトを立ち上げた。期間は〔N〕か月、要員は最大〔N〕名、予算は〔金額〕であり、私はSI企業B社に所属するプロジェクトマネージャ（以下、PM）として、本プロジェクト全体のマネジメントを担った。',
+  },
+  {
+    scene: 'ア: テーマの伏線（1.1の締め）',
+    text: '本プロジェクトの特徴は、〔テーマに直結する制約・不確かさ〕を含むことであった。',
+  },
+  {
+    scene: 'イ: 判断を示す',
+    text: '私は〔状況・得た情報〕を踏まえ、〔案A〕ではなく〔案B〕を採ることにした。なぜなら、〔1.1で述べた特徴〕を考えると〔理由〕だからである。',
+  },
+  {
+    scene: 'イ: 施策の展開',
+    text: 'そこで私は、〔施策名〕を実施した。具体的には、(1)〔活動1〕、(2)〔活動2〕、(3)〔活動3〕である。',
+  },
+  {
+    scene: 'イ: 工夫を示す',
+    text: 'さらに私は、〔標準的な方法〕をそのまま適用するのではなく、〔独自の工夫〕を加えた。これは〔プロジェクトの特徴・制約〕に対応するためである。',
+  },
+  {
+    scene: 'ウ: 結果を数値で着地',
+    text: 'その結果、〔目標数値〕に対して〔実績数値〕で完了し、〔納期／予算／品質目標〕を達成できた。',
+  },
+  {
+    scene: 'ウ: 評価と改善（締め）',
+    text: '私は、〔施策〕が〔効果〕に有効に機能したと評価している。一方で、〔残った課題〕という課題も残った。今後は〔改善策〕に取り組んでいきたい。',
+  },
+]
+
 // ── 小物コンポーネント ───────────────────────────────────
 function SectionCard({ id, num, title, sub, children }: {
   id: string
@@ -300,6 +390,20 @@ function ExampleBox({ label, children }: { label: string; children: React.ReactN
   )
 }
 
+// §9 テンプレート中の〔穴埋め箇所〕をブランド色で強調する
+function FillInText({ text }: { text: string }) {
+  const parts = text.split(/(〔[^〕]*〕)/g)
+  return (
+    <>
+      {parts.map((p, i) =>
+        p.startsWith('〔')
+          ? <span key={i} className="font-bold text-brand-dark">{p}</span>
+          : <span key={i}>{p}</span>
+      )}
+    </>
+  )
+}
+
 export default function EssayGuide() {
   const toc = [
     { href: '#format', label: '§1 出題方式' },
@@ -310,6 +414,7 @@ export default function EssayGuide() {
     { href: '#write-steps', label: '§6 書く手順（実例つき）' },
     { href: '#ng', label: '§7 よくあるNG' },
     { href: '#steps', label: '§8 このアプリでの学習手順' },
+    { href: '#templates', label: '§9 ネタ帳とテンプレート' },
   ]
 
   return (
@@ -522,7 +627,7 @@ export default function EssayGuide() {
             </li>
             <li className="flex gap-2">
               <span className="text-brand font-bold flex-shrink-0">・</span>
-              <span><span className="font-bold text-slate-800">数値はメモ帳に「相場表」を作って覚える。</span>工数（人月）・期間・要員数・予備費率・レビュー指摘密度など、自分のモデルプロジェクトの数値を固定しておくと、当日迷わず矛盾も生まれない。</span>
+              <span><span className="font-bold text-slate-800">数値はメモ帳に「相場表」を作って覚える。</span>工数（人月）・期間・要員数・予備費率・レビュー指摘密度など、自分のモデルプロジェクトの数値を固定しておくと、当日迷わず矛盾も生まれない。たたき台は§9の相場表を使うとよい。</span>
             </li>
           </ul>
         </SectionCard>
@@ -732,6 +837,90 @@ export default function EssayGuide() {
             ※ 自己評価の5項目（題意適合・構造・具体性・一貫性・字数達成）は、§2の評価項目のうち
             「型で対策できる内容面」に対応しています。まずこの5つを安定させることがA評価への最短路です。
           </p>
+        </SectionCard>
+
+        {/* §9 ネタ帳とテンプレート */}
+        <SectionCard
+          id="templates"
+          num="9"
+          title="持ち帰り用 — ネタ帳とテンプレート"
+          sub="モデルプロジェクト・数値の相場・章立て・場面別の定型文"
+        >
+          <p className="text-xs text-slate-600 leading-relaxed mb-4">
+            自分のモデルプロジェクトを組み立てるための土台です。<span className="font-bold text-brand-dark">〔 〕</span>の穴埋め箇所と数値を、
+            自分の経験に近い設定へ差し替えて使ってください。立場はSI企業のPMでも自社情報システム部門のPMでもよく、
+            質問書の記載と一致していれば問題ありません。
+          </p>
+
+          {/* 9-1 モデルプロジェクトのネタ集 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">① モデルプロジェクトのネタ集（インフラ案件）</p>
+          <div className="space-y-2 mb-4">
+            {MODEL_PROJECTS.map((m) => (
+              <div key={m.title} className="border border-slate-200 rounded-lg px-3 py-2.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-sm font-bold text-slate-800">{m.title}</p>
+                  <span className="text-[10px] font-bold text-slate-500 bg-slate-100 rounded px-1.5 py-0.5 whitespace-nowrap ml-auto">{m.scale}</span>
+                </div>
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {m.themes.map((t) => (
+                    <span key={t} className="text-[10px] font-bold text-brand-darker bg-brand-light rounded-full px-2 py-0.5">{t}</span>
+                  ))}
+                </div>
+                <p className="text-[11px] text-slate-500 leading-relaxed mt-1.5">{m.highlight}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 9-2 数値の相場表 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">② 数値の相場表（質問書・本文で使い回す）</p>
+          <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 mb-1.5">
+            {NUMBER_CHEATSHEET.map((n) => (
+              <div key={n.item} className="flex gap-3 px-3 py-1.5 items-baseline">
+                <span className="flex-shrink-0 w-24 text-[11px] font-bold text-slate-500">{n.item}</span>
+                <p className="text-[11px] text-slate-700 leading-relaxed min-w-0">{n.value}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+            ※ 一度決めたら固定して覚える。期間×平均要員数≒総工数のように、数値どうしが矛盾しないことが重要（§6 STEP 2）。
+          </p>
+
+          {/* 9-3 章立てテンプレート */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">③ 章立てテンプレート（どのテーマでも使える骨格）</p>
+          <div className="bg-white border border-slate-200 rounded-lg px-3 py-2.5 mb-1.5">
+            {CHAPTER_TEMPLATE.map((line) => (
+              <p
+                key={line}
+                className={`text-[11px] leading-relaxed ${line.startsWith('第') ? 'font-bold text-slate-800' : 'text-slate-600'}`}
+              >
+                <FillInText text={line} />
+              </p>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+            ※ 1.2以降の節は、当日の設問の要求項目の数に合わせて増減させる（§6 STEP 1）。見出しの言葉も設問の言葉に置き換える。
+          </p>
+
+          {/* 9-4 定型文テンプレート */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">④ 場面別の定型文（穴埋めして使う）</p>
+          <div className="space-y-2">
+            {PHRASE_TEMPLATES.map((p) => (
+              <div key={p.scene} className="border border-slate-200 rounded-lg overflow-hidden">
+                <p className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-600">{p.scene}</p>
+                <p className="px-3 py-2 text-[11px] text-slate-700 leading-relaxed">
+                  <FillInText text={p.text} />
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 mt-4">
+            <p className="text-[11px] text-amber-800 leading-relaxed">
+              <span className="font-bold">⚠ テンプレは「骨格」であって「完成品」ではありません。</span>
+              暗記した文章の丸写しは、題意とズレて趣旨逸脱（§7）に直結します。この骨格に、当日の設問の言葉と
+              自分のモデルプロジェクトの数値・状況を流し込んで使ってください。
+            </p>
+          </div>
         </SectionCard>
 
         {/* CTA */}
