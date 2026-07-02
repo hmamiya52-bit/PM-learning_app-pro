@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
  * 論述ガイド（/essay/guide）
  *
  * 午後II（論述式）の演習を始める前に読む「良い論述を書くためのコツ」ページ。
- * - §1 出題方式（120分・2問中1問選択・設問ア/イ/ウの字数）
+ * - §1 出題方式（120分・2問中1問選択・設問ア/イ/ウの字数・質問書の記入項目）
  * - §2 採点のしくみ（A〜D評価・IPA公表の評価項目・評価を下げる要因）
  * - §3 高評価の7原則
  * - §4 インフラエンジニアがPM目線で題材化するコツ（作業者目線→PM目線の変換）
  * - §5 試験当日120分の時間配分
- * - §6 よくあるNGパターン
- * - §7 本アプリでの学習手順（参考答案→骨子→全文→自己評価5項目）
+ * - §6 書く手順の実例分解（R6問1×クラウド移行の通し実例・実文例）
+ * - §7 よくあるNGパターン
+ * - §8 本アプリでの学習手順（参考答案→骨子→全文→自己評価5項目）
+ * - §9 ネタ帳とテンプレート（モデルプロジェクト・数値相場・章立て・定型文）
  *
  * 一覧画面（/essay）ヘッダー直下の「はじめにお読みください」カードから遷移する。
  */
@@ -35,6 +37,15 @@ const SETSUMON_FORMAT = [
     role: '結果・評価・改善',
     detail: 'イの施策の結果と、それに対する評価・反省・今後の改善。うまくいった点だけでなく課題も述べると深みが出る。',
   },
+]
+
+// 質問書（論述の対象とするプロジェクトの概要）の主な記入項目
+const QUESTIONNAIRE_ITEMS = [
+  'プロジェクトの名称',
+  '対象とする企業・機関（業種・規模）と対象業務',
+  'システムの構成・形態、利用者数',
+  'プロジェクトの規模（総工数・総費用・期間）',
+  'あなたの立場（所属、担当フェーズ、役割、管理対象人数、担当期間）',
 ]
 
 // ── §2 評価ランク ───────────────────────────────────────
@@ -212,7 +223,7 @@ const NG_PATTERNS = [
   },
   {
     ng: '準備した論文をそのまま書き写す',
-    fix: '事前準備は「部品」として使い、当日の設問の言葉に合わせて組み替える。題意とズレた完成論文は趣旨逸脱でC評価に直結する。',
+    fix: '事前準備は「部品」として使い、当日の設問の言葉に合わせて組み替える。題意とズレた完成論文は、趣旨からの逸脱として評価を大きく下げる。',
   },
 ]
 
@@ -231,7 +242,7 @@ const APP_STEPS = [
   {
     step: '3',
     title: 'タイマーを使って全文を書き切る（120分）',
-    detail: '練習画面のタイマーと字数カウンタで、時間感覚と字数感覚を体に入れる。本番は手書きなので、仕上げ期には紙に書く練習も挟む。',
+    detail: '練習画面のタイマーと字数カウンタで、時間感覚と字数感覚を体に入れる。',
   },
   {
     step: '4',
@@ -447,15 +458,35 @@ export default function EssayGuide() {
               </li>
             ))}
           </ul>
+          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">
+            初めての方は §1→§2→§4 の順で。書く直前に §6、試験直前期は §5・§9 の読み返しがおすすめです。
+          </p>
         </nav>
 
         {/* §1 出題方式 */}
-        <SectionCard id="format" num="1" title="出題方式を知る" sub="120分・2問中1問選択・合計2,200〜3,600字の手書き論述">
+        <SectionCard id="format" num="1" title="出題方式を知る" sub="120分・2問中1問選択・目安2,200〜3,600字の手書き論述">
           <ul className="text-xs text-slate-600 leading-relaxed space-y-1 mb-3">
             <li className="flex gap-2"><span className="text-brand font-bold flex-shrink-0">・</span><span>試験時間は<span className="font-bold text-slate-800">120分</span>。2問出題され、<span className="font-bold text-slate-800">1問を選択</span>して論述する。</span></li>
             <li className="flex gap-2"><span className="text-brand font-bold flex-shrink-0">・</span><span>解答は原稿用紙形式の解答用紙に<span className="font-bold text-slate-800">手書き</span>。本文とは別に、冒頭で「<span className="font-bold text-slate-800">論述の対象とするプロジェクトの概要</span>」（質問書）に記入する。</span></li>
             <li className="flex gap-2"><span className="text-brand font-bold flex-shrink-0">・</span><span>問題は「問題文（趣旨）＋設問ア・イ・ウ」で構成され、<span className="font-bold text-slate-800">あなたの経験と考え</span>に基づいて論述することが求められる。</span></li>
           </ul>
+
+          {/* 質問書の記入項目（本文と矛盾させないために事前に把握しておく） */}
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 mb-3">
+            <p className="text-xs font-bold text-slate-700 mb-1.5">質問書（プロジェクトの概要）の主な記入項目</p>
+            <ul className="space-y-0.5">
+              {QUESTIONNAIRE_ITEMS.map((q) => (
+                <li key={q} className="flex gap-1.5 text-[11px] text-slate-600 leading-relaxed">
+                  <span className="text-brand font-bold flex-shrink-0">・</span>
+                  <span>{q}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="text-[11px] text-slate-400 leading-relaxed mt-1.5">
+              多くは選択式で、試験時間内に記入します。本文と矛盾しないよう、§9の相場表とセットで数値を事前に決めておきましょう。
+            </p>
+          </div>
+
           <div className="space-y-2">
             {SETSUMON_FORMAT.map((s) => (
               <div key={s.label} className="border border-slate-200 rounded-lg px-3 py-2.5">
@@ -534,7 +565,8 @@ export default function EssayGuide() {
             </ul>
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
-            ※ 逆に言えば、「設問に全部答える・字数を満たす・具体的に書く・矛盾させない」だけでB以上が見えてきます。
+            ※ 内容面の型（設問に全部答える・字数を満たす・具体的に書く・矛盾させない）で合格圏の土台を固め、
+            その上に能力面（判断・工夫）を乗せてAを取りに行く、という二段構えで考えましょう。
             採点は減点合戦ではなく、<span className="font-bold text-slate-500">PMとしての能力・経験が伝わるか</span>の確認です。
           </p>
         </SectionCard>
@@ -630,6 +662,11 @@ export default function EssayGuide() {
               <span><span className="font-bold text-slate-800">数値はメモ帳に「相場表」を作って覚える。</span>工数（人月）・期間・要員数・予備費率・レビュー指摘密度など、自分のモデルプロジェクトの数値を固定しておくと、当日迷わず矛盾も生まれない。たたき台は§9の相場表を使うとよい。</span>
             </li>
           </ul>
+          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+            ※ テーマとの相性はあります。アプリケーション開発固有の話（例: 要件定義の合意形成、テスト工程の品質管理）を
+            深く問う問題は、移行・更改案件では書きにくいことがあります。本番は2問から選べるので、
+            §5のとおり「書ける方」を選べば十分対処できます。
+          </p>
         </SectionCard>
 
         {/* §5 当日120分の使い方 */}
@@ -917,7 +954,7 @@ export default function EssayGuide() {
           <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 mt-4">
             <p className="text-[11px] text-amber-800 leading-relaxed">
               <span className="font-bold">⚠ テンプレは「骨格」であって「完成品」ではありません。</span>
-              暗記した文章の丸写しは、題意とズレて趣旨逸脱（§7）に直結します。この骨格に、当日の設問の言葉と
+              暗記した文章の丸写しは、題意とズレて趣旨逸脱（§7）として評価を大きく下げます。この骨格に、当日の設問の言葉と
               自分のモデルプロジェクトの数値・状況を流し込んで使ってください。
             </p>
           </div>
