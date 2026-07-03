@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { essayProblems } from '../data/essayProblems'
+import { categories } from '../data/categories'
 
 /**
  * 論述ガイド（/essay/guide）
@@ -260,6 +263,19 @@ const APP_STEPS = [
 // モデルプロジェクトの設定・数値・定型文は「骨格」。丸写しではなく、
 // 当日の設問の言葉と自分の経験に合わせて差し替えて使う前提。
 
+// 出題テーマの傾向: 収録全問の分類タグ（categoryIds）を集計して降順に並べる
+const CATEGORY_NAME = new Map(categories.map((c) => [c.id, c.name]))
+const THEME_TREND = (() => {
+  const counts = new Map<string, number>()
+  for (const p of essayProblems) {
+    for (const id of p.categoryIds) counts.set(id, (counts.get(id) ?? 0) + 1)
+  }
+  return [...counts.entries()]
+    .map(([id, count]) => ({ id, label: CATEGORY_NAME.get(id) ?? id, count }))
+    .sort((a, b) => b.count - a.count)
+})()
+const THEME_TREND_MAX = THEME_TREND[0]?.count ?? 1
+
 // モデルプロジェクトのネタ集（インフラ案件）
 const MODEL_PROJECTS = [
   {
@@ -401,6 +417,31 @@ function ExampleBox({ label, children }: { label: string; children: React.ReactN
   )
 }
 
+// クリップボードへコピー（DeviceSync.tsx と同じ Clipboard API + textarea フォールバック）
+async function copyTextToClipboard(text: string): Promise<boolean> {
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch {
+      // 権限拒否などの場合は下の textarea フォールバックへ
+    }
+  }
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'fixed'
+  textarea.style.left = '-9999px'
+  textarea.style.top = '0'
+  document.body.appendChild(textarea)
+  textarea.focus()
+  textarea.select()
+  textarea.setSelectionRange(0, textarea.value.length)
+  const copied = document.execCommand('copy')
+  document.body.removeChild(textarea)
+  return copied
+}
+
 // §9 テンプレート中の〔穴埋め箇所〕をブランド色で強調する
 function FillInText({ text }: { text: string }) {
   const parts = text.split(/(〔[^〕]*〕)/g)
@@ -416,6 +457,16 @@ function FillInText({ text }: { text: string }) {
 }
 
 export default function EssayGuide() {
+  // §9 テンプレートのクリップボードコピー（押したボタンだけ2秒間「コピーしました」表示）
+  const [copiedKey, setCopiedKey] = useState<string | null>(null)
+  const handleCopy = async (key: string, text: string) => {
+    const ok = await copyTextToClipboard(text)
+    if (ok) {
+      setCopiedKey(key)
+      window.setTimeout(() => setCopiedKey((cur) => (cur === key ? null : cur)), 2000)
+    }
+  }
+
   const toc = [
     { href: '#format', label: '§1 出題方式' },
     { href: '#scoring', label: '§2 採点のしくみ' },
@@ -841,6 +892,15 @@ export default function EssayGuide() {
             ※ 本番で最も差がつくのはSTEP 1〜2です。この2ステップだけを15分で回す練習（§8の骨子練習）を繰り返すと、
             どのテーマが来ても「メモを日本語にするだけ」の状態で書き始められるようになります。
           </p>
+          <Link
+            to="/essay/R6-PM2-1/sample"
+            className="mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-brand/30 bg-brand-light px-3 py-2.5 text-xs font-bold text-brand-darker hover:border-brand transition-colors"
+          >
+            📝 この題材（令和6年 問1）の参考答案・完全版を読む →
+          </Link>
+          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">
+            出典: IPA プロジェクトマネージャ試験 令和6年度（秋期）午後Ⅱ 問1（本セクションの設問は要旨として引用）
+          </p>
         </SectionCard>
 
         {/* §7 よくあるNG */}
@@ -881,7 +941,7 @@ export default function EssayGuide() {
           id="templates"
           num="9"
           title="持ち帰り用 — ネタ帳とテンプレート"
-          sub="モデルプロジェクト・数値の相場・章立て・場面別の定型文"
+          sub="出題傾向・モデルプロジェクト・数値の相場・章立て・定型文"
         >
           <p className="text-xs text-slate-600 leading-relaxed mb-4">
             自分のモデルプロジェクトを組み立てるための土台です。<span className="font-bold text-brand-dark">〔 〕</span>の穴埋め箇所と数値を、
@@ -889,8 +949,29 @@ export default function EssayGuide() {
             質問書の記載と一致していれば問題ありません。
           </p>
 
-          {/* 9-1 モデルプロジェクトのネタ集 */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">① モデルプロジェクトのネタ集（インフラ案件）</p>
+          {/* 9-1 出題テーマの傾向 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">① 出題テーマの傾向（どの部品から準備するか）</p>
+          <p className="text-xs text-slate-600 leading-relaxed mb-2">
+            収録{essayProblems.length}問に付与した分類タグの集計です（1問に複数タグあり）。
+            上位のテーマほど繰り返し出題されているので、部品はここから順に揃えると効率的です。
+          </p>
+          <div className="border border-slate-200 rounded-lg px-3 py-2.5 space-y-1.5 mb-1.5">
+            {THEME_TREND.map((t) => (
+              <div key={t.id} className="flex items-center gap-2">
+                <span className="w-28 flex-shrink-0 text-[11px] font-bold text-slate-600 leading-tight">{t.label}</span>
+                <div className="flex-1 h-3.5 bg-slate-100 rounded overflow-hidden">
+                  <div className="h-full bg-brand/70" style={{ width: `${Math.round((t.count / THEME_TREND_MAX) * 100)}%` }} />
+                </div>
+                <span className="w-9 flex-shrink-0 text-right text-[11px] font-bold text-brand-dark tabular-nums">{t.count}問</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+            ※ 分類は本アプリ独自のタグ付けです。§4のマッピング表と合わせて、モデルプロジェクトの山場をどのテーマにも変換できるようにしておきましょう。
+          </p>
+
+          {/* 9-2 モデルプロジェクトのネタ集 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">② モデルプロジェクトのネタ集（インフラ案件）</p>
           <div className="space-y-2 mb-4">
             {MODEL_PROJECTS.map((m) => (
               <div key={m.title} className="border border-slate-200 rounded-lg px-3 py-2.5">
@@ -908,8 +989,8 @@ export default function EssayGuide() {
             ))}
           </div>
 
-          {/* 9-2 数値の相場表 */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">② 数値の相場表（質問書・本文で使い回す）</p>
+          {/* 9-3 数値の相場表 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">③ 数値の相場表（質問書・本文で使い回す）</p>
           <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 mb-1.5">
             {NUMBER_CHEATSHEET.map((n) => (
               <div key={n.item} className="flex gap-3 px-3 py-1.5 items-baseline">
@@ -922,8 +1003,21 @@ export default function EssayGuide() {
             ※ 一度決めたら固定して覚える。期間×平均要員数≒総工数のように、数値どうしが矛盾しないことが重要（§6 STEP 2）。
           </p>
 
-          {/* 9-3 章立てテンプレート */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">③ 章立てテンプレート（どのテーマでも使える骨格）</p>
+          {/* 9-4 章立てテンプレート */}
+          <div className="flex items-center justify-between gap-2 mb-1.5">
+            <p className="text-sm font-bold text-slate-800">④ 章立てテンプレート（どのテーマでも使える骨格）</p>
+            <button
+              type="button"
+              onClick={() => handleCopy('chapter', CHAPTER_TEMPLATE.join('\n'))}
+              className={`flex-shrink-0 text-[10px] font-bold rounded-full px-2.5 py-0.5 border transition-colors ${
+                copiedKey === 'chapter'
+                  ? 'border-brand bg-brand text-white'
+                  : 'border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
+              }`}
+            >
+              {copiedKey === 'chapter' ? '✓ コピーしました' : 'コピー'}
+            </button>
+          </div>
           <div className="bg-white border border-slate-200 rounded-lg px-3 py-2.5 mb-1.5">
             {CHAPTER_TEMPLATE.map((line) => (
               <p
@@ -938,12 +1032,25 @@ export default function EssayGuide() {
             ※ 1.2以降の節は、当日の設問の要求項目の数に合わせて増減させる（§6 STEP 1）。見出しの言葉も設問の言葉に置き換える。
           </p>
 
-          {/* 9-4 定型文テンプレート */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">④ 場面別の定型文（穴埋めして使う）</p>
+          {/* 9-5 定型文テンプレート */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">⑤ 場面別の定型文（穴埋めして使う）</p>
           <div className="space-y-2">
             {PHRASE_TEMPLATES.map((p) => (
               <div key={p.scene} className="border border-slate-200 rounded-lg overflow-hidden">
-                <p className="px-3 py-1.5 bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-600">{p.scene}</p>
+                <div className="flex items-center justify-between gap-2 px-3 py-1.5 bg-slate-50 border-b border-slate-100">
+                  <p className="text-[11px] font-bold text-slate-600">{p.scene}</p>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(p.scene, p.text)}
+                    className={`flex-shrink-0 text-[10px] font-bold rounded-full px-2.5 py-0.5 border transition-colors ${
+                      copiedKey === p.scene
+                        ? 'border-brand bg-brand text-white'
+                        : 'border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
+                    }`}
+                  >
+                    {copiedKey === p.scene ? '✓ コピーしました' : 'コピー'}
+                  </button>
+                </div>
                 <p className="px-3 py-2 text-[11px] text-slate-700 leading-relaxed">
                   <FillInText text={p.text} />
                 </p>
