@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { essayProblems } from '../data/essayProblems'
 import { essaySampleAnswers } from '../data/essaySampleAnswers'
 import { loadAttempts, loadEssayPlans, loadActive } from '../lib/essay'
+import { loadOutlineAttempts } from '../lib/essayOutline'
 
 /**
  * 論述トレーニング 一覧画面（/essay）
@@ -33,6 +34,7 @@ export default function EssayList() {
   const [filter, setFilter] = useState<Filter>('all')
 
   const attempts = useMemo(() => loadAttempts(), [])
+  const outlineAttempts = useMemo(() => loadOutlineAttempts(), [])
   const plans = useMemo(() => loadEssayPlans(), [])
   const active = useMemo(() => loadActive(), [])
 
@@ -44,12 +46,13 @@ export default function EssayList() {
       return {
         problem: p,
         attemptCount: myAttempts.length,
+        outlineCount: outlineAttempts.filter((a) => a.problemId === p.id).length,
         latestEndedAt: myAttempts[0]?.endedAt,
         plannedDate: plans[p.id],
         hasSample: Boolean(essaySampleAnswers[p.id]),
       }
     })
-  }, [attempts, plans])
+  }, [attempts, outlineAttempts, plans])
 
   const filteredRows = useMemo(() => {
     if (filter === 'practiced') return rows.filter((r) => r.attemptCount > 0)
@@ -134,7 +137,7 @@ export default function EssayList() {
           </p>
         ) : (
           <ul className="space-y-1.5">
-            {filteredRows.map(({ problem, attemptCount, latestEndedAt, plannedDate, hasSample }) => (
+            {filteredRows.map(({ problem, attemptCount, outlineCount, latestEndedAt, plannedDate, hasSample }) => (
               <li key={problem.id}>
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-brand hover:shadow-sm transition-all flex items-stretch">
                   {/* 本体: タップで解答画面へ（大きいタップ領域） */}
@@ -154,11 +157,23 @@ export default function EssayList() {
                       ) : (
                         <span className="text-slate-300">未着手</span>
                       )}
+                      {outlineCount > 0 && (
+                        <span className="text-slate-400">・ 骨子<span className="font-bold tabular-nums">{outlineCount}</span>回</span>
+                      )}
                       {plannedDate && <span className="text-brand">・ 計画 {plannedDate}</span>}
                     </div>
                     <p className="text-sm font-bold text-slate-800 leading-snug mt-1">
                       {problem.theme}
                     </p>
+                  </Link>
+                  {/* 右レール: 骨子練習へのショートカット（論述ガイド§8 STEP 2） */}
+                  <Link
+                    to={`/essay/${problem.id}/outline`}
+                    aria-label={`${problem.yearLabel} 問${problem.number} の骨子練習を始める`}
+                    className="flex flex-col items-center justify-center gap-0.5 w-12 flex-shrink-0 border-l border-slate-100 text-[10px] font-bold text-slate-500 hover:bg-slate-50 hover:text-brand transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-inset"
+                  >
+                    <span aria-hidden="true" className="text-sm leading-none">✏</span>
+                    <span className="leading-none">骨子</span>
                   </Link>
                   {/* 右レール: 参考答案へのショートカット（全幅フッタ行を廃し縦幅を圧縮） */}
                   {hasSample && (

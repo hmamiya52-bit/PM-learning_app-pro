@@ -183,6 +183,20 @@ export interface EssayAttempt {
 }
 
 /**
+ * 骨子練習 履歴（骨子練習モードで保存したメモ）
+ * - 全文練習（EssayAttempt）とは別管理。一覧の練習回数・XP・同期には含めない
+ * - 論述ガイド §6 STEP 1〜2（設問分解→骨子メモ）だけを回す練習用
+ */
+export interface EssayOutlineAttempt {
+  id: string                          // UUID
+  problemId: string                   // EssayProblem.id
+  startedAt: string                   // ISO 8601
+  endedAt: string                     // ISO 8601
+  elapsedSec: number                  // 一時停止/再開を考慮した経過秒
+  bodyByLabel: Partial<Record<SetsumonLabel, string>>
+}
+
+/**
  * 論述 アクティブセッション（離脱復帰用）
  * - 入力中のセッション情報を `pmap:essay:active` に保存
  * - ブラウザ強制クローズや別画面遷移時の復帰用
