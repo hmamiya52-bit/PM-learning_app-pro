@@ -7,7 +7,8 @@ import { categories } from '../data/categories'
  * 論述ガイド（/essay/guide）
  *
  * 午後II（論述式）の演習を始める前に読む「良い論述を書くためのコツ」ページ。
- * - §1 出題方式（120分・2問中1問選択・設問ア/イ/ウの字数・質問書の記入項目）
+ * - 冒頭に「A評価の3本柱」（全章の要約。迷ったらここに戻る）
+ * - §1 出題方式（120分・2問中1問選択・設問ア/イ/ウの字数・質問書・出題テーマの傾向）
  * - §2 採点のしくみ（A〜D評価・IPA公表の評価項目・評価を下げる要因）
  * - §3 高評価の7原則
  * - §4 インフラエンジニアがPM目線で題材化するコツ（作業者目線→PM目線の変換）
@@ -263,15 +264,28 @@ const APP_STEPS = [
 // モデルプロジェクトの設定・数値・定型文は「骨格」。丸写しではなく、
 // 当日の設問の言葉と自分の経験に合わせて差し替えて使う前提。
 
-// 出題テーマの傾向: 収録全問の分類タグ（categoryIds）を集計して降順に並べる
+// 出題テーマの傾向（§1）: 収録全問の分類タグ（categoryIds）を集計し、
+// テーマごとの出題数と「直近に出た年度」を降順で並べる
 const CATEGORY_NAME = new Map(categories.map((c) => [c.id, c.name]))
+// 'R6'/'H29' 形式の年度を新しい順に比較できる数値へ（令和を平成より上位に）
+const yearRank = (y: string): number => {
+  const n = parseInt(y.slice(1), 10)
+  return (y.startsWith('R') ? 100 : 0) + (Number.isFinite(n) ? n : 0)
+}
 const THEME_TREND = (() => {
-  const counts = new Map<string, number>()
+  const acc = new Map<string, { count: number; latestYear: string }>()
   for (const p of essayProblems) {
-    for (const id of p.categoryIds) counts.set(id, (counts.get(id) ?? 0) + 1)
+    for (const id of p.categoryIds) {
+      const cur = acc.get(id)
+      if (!cur) acc.set(id, { count: 1, latestYear: p.year })
+      else {
+        cur.count += 1
+        if (yearRank(p.year) > yearRank(cur.latestYear)) cur.latestYear = p.year
+      }
+    }
   }
-  return [...counts.entries()]
-    .map(([id, count]) => ({ id, label: CATEGORY_NAME.get(id) ?? id, count }))
+  return [...acc.entries()]
+    .map(([id, v]) => ({ id, label: CATEGORY_NAME.get(id) ?? id, count: v.count, latestYear: v.latestYear }))
     .sort((a, b) => b.count - a.count)
 })()
 const THEME_TREND_MAX = THEME_TREND[0]?.count ?? 1
@@ -378,7 +392,7 @@ function SectionCard({ id, num, title, sub, children }: {
         </span>
         <div className="min-w-0">
           <h2 className="text-base font-black text-slate-900 leading-snug">{title}</h2>
-          {sub && <p className="text-[11px] text-slate-400 mt-0.5">{sub}</p>}
+          {sub && <p className="text-[11px] text-slate-500 mt-0.5">{sub}</p>}
         </div>
       </div>
       {children}
@@ -442,6 +456,16 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
   return copied
 }
 
+// §6 実文例の文構造ラベル（業種/目的/数値/立場/伏線、課題/判断/実施/工夫 など）
+// 「どの文がどの役割か」を説明文でなく実文の中に直接示す
+function RoleTag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-block align-baseline text-[10px] font-black text-brand-darker bg-brand-light border border-brand/30 rounded px-1 mr-0.5">
+      {children}
+    </span>
+  )
+}
+
 // §9 テンプレート中の〔穴埋め箇所〕をブランド色で強調する
 function FillInText({ text }: { text: string }) {
   const parts = text.split(/(〔[^〕]*〕)/g)
@@ -494,6 +518,19 @@ export default function EssayGuide() {
           </p>
         </header>
 
+        {/* 先に結論: A評価の3本柱（全章の要約。詳細は各章で展開） */}
+        <div className="bg-white border-2 border-brand/30 rounded-xl px-4 py-3">
+          <p className="text-[11px] font-black text-brand-dark mb-1.5">⭐ 先に結論 — A評価の3本柱</p>
+          <ol className="space-y-1 text-xs text-slate-700 leading-relaxed">
+            <li><span className="font-bold">① 設問の要求に全部答え、イ・ウの字数下限を守る</span>（§2・§6）</li>
+            <li><span className="font-bold">② 「私は〜と考えた」で判断と理由を書く</span>（§3・§4）</li>
+            <li><span className="font-bold">③ 数値で具体化し、質問書と矛盾させない</span>（§9）</li>
+          </ol>
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-1.5">
+            以降の章はすべて、この3本柱を実行するための方法です。迷ったらここに戻ってください。
+          </p>
+        </div>
+
         {/* 目次 */}
         <nav aria-label="目次" className="bg-white border border-slate-200 rounded-xl px-4 py-3">
           <p className="text-[10px] font-bold text-slate-400 mb-1.5">目次</p>
@@ -509,7 +546,7 @@ export default function EssayGuide() {
               </li>
             ))}
           </ul>
-          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-2">
             初めての方は §1→§2→§4 の順で。書く直前に §6、試験直前期は §5・§9 の読み返しがおすすめです。
           </p>
         </nav>
@@ -533,7 +570,7 @@ export default function EssayGuide() {
                 </li>
               ))}
             </ul>
-            <p className="text-[11px] text-slate-400 leading-relaxed mt-1.5">
+            <p className="text-[11px] text-slate-500 leading-relaxed mt-1.5">
               多くは選択式で、試験時間内に記入します。本文と矛盾しないよう、§9の相場表とセットで数値を事前に決めておきましょう。
             </p>
           </div>
@@ -550,8 +587,30 @@ export default function EssayGuide() {
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-3">
             ※ ア＝状況設定、イ＝施策、ウ＝結果と評価。この「ア・イ・ウの型」はどの年度・テーマでも共通です。
+          </p>
+
+          {/* よく出るテーマ（収録全問の分類タグ集計。学習戦略の起点なので§1に置く） */}
+          <p className="text-sm font-bold text-slate-800 mt-4 mb-1.5">よく出るテーマ（収録{essayProblems.length}問の集計）</p>
+          <p className="text-xs text-slate-600 leading-relaxed mb-2">
+            収録問題に付与した分類タグの集計です（1問に複数タグあり）。上位のテーマほど繰り返し出題されています。
+            §9のネタ帳を揃える優先順位に使ってください。
+          </p>
+          <div className="border border-slate-200 rounded-lg px-3 py-2.5 space-y-1.5 mb-1.5">
+            {THEME_TREND.map((t) => (
+              <div key={t.id} className="flex items-center gap-2">
+                <span className="w-28 flex-shrink-0 text-[11px] font-bold text-slate-600 leading-tight">{t.label}</span>
+                <div className="flex-1 h-3.5 bg-slate-100 rounded overflow-hidden">
+                  <div className="h-full bg-brand/70" style={{ width: `${Math.round((t.count / THEME_TREND_MAX) * 100)}%` }} />
+                </div>
+                <span className="w-9 flex-shrink-0 text-right text-[11px] font-bold text-brand-dark tabular-nums">{t.count}問</span>
+                <span className="w-12 flex-shrink-0 text-right text-[10px] text-slate-500 tabular-nums">直近{t.latestYear}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-slate-500 leading-relaxed">
+            ※ 分類は本アプリ独自のタグ付けです。インフラ案件の素材を各テーマへ変換する方法は§4で扱います。
           </p>
         </SectionCard>
 
@@ -615,7 +674,7 @@ export default function EssayGuide() {
               ))}
             </ul>
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-3">
             ※ 内容面の型（設問に全部答える・字数を満たす・具体的に書く・矛盾させない）で合格圏の土台を固め、
             その上に能力面（判断・工夫）を乗せてAを取りに行く、という二段構えで考えましょう。
             採点は減点合戦ではなく、<span className="font-bold text-slate-500">PMとしての能力・経験が伝わるか</span>の確認です。
@@ -651,6 +710,9 @@ export default function EssayGuide() {
             インフラ案件は、<span className="font-bold text-slate-800">動かせない期限・切替リスク・多数の関係者調整</span>という
             PM論点の宝庫であり、要件定義から移行まで工程をもつ立派な「システム開発プロジェクト」として論述できます。
             大切なのは題材の派手さではなく、<span className="font-bold text-slate-800">PMの椅子から見て書くこと</span>です。
+          </p>
+          <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
+            ※ 開発案件など他の経験がある方は、以降の変換例をご自身の題材に読み替えてください。「作業者目線の罠」とその処方箋はどの題材でも共通です。
           </p>
 
           {/* 最大の罠: 作業者目線 */}
@@ -713,7 +775,7 @@ export default function EssayGuide() {
               <span><span className="font-bold text-slate-800">数値はメモ帳に「相場表」を作って覚える。</span>工数（人月）・期間・要員数・予備費率・レビュー指摘密度など、自分のモデルプロジェクトの数値を固定しておくと、当日迷わず矛盾も生まれない。たたき台は§9の相場表を使うとよい。</span>
             </li>
           </ul>
-          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-3">
             ※ テーマとの相性はあります。アプリケーション開発固有の話（例: 要件定義の合意形成、テスト工程の品質管理）を
             深く問う問題は、移行・更改案件では書きにくいことがあります。本番は2問から選べるので、
             §5のとおり「書ける方」を選べば十分対処できます。
@@ -734,7 +796,7 @@ export default function EssayGuide() {
               </li>
             ))}
           </ol>
-          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-3">
             ※ 最重要は「5〜15分の骨子設計」。ここを削って書き始めると、途中で話が破綻して書き直す方が高くつきます。
             残り時間が苦しくても、イ・ウの<span className="font-bold text-slate-500">字数下限だけは死守</span>してください。
             各時間帯で実際に何をどう書くかは、次の§6で実例つきで分解します。
@@ -831,11 +893,18 @@ export default function EssayGuide() {
               </p>
               <ExampleBox label="実文例 — 1.1 プロジェクトの特徴（冒頭）">
                 <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
-                  <p>　A社は年商300億円規模の消費財ECを営む企業である。A社では基幹システムの老朽化を契機に、オンプレミス環境からパブリッククラウドへ移行するプロジェクトを立ち上げた。期間は10か月、要員は最大12名、予算は8,000万円であり、私はSI企業B社に所属するプロジェクトマネージャ（以下、PM）として、本プロジェクトのマネジメント全般を担った。</p>
-                  <p>　本プロジェクトの特徴は、移行後の運用費が従量課金であり、本番稼働時の負荷が確定しない計画段階では、コストの見積りに大きな不確かさを含むことであった。</p>
+                  <p>
+                    　<RoleTag>業種</RoleTag>A社は年商300億円規模の消費財ECを営む企業である。
+                    <RoleTag>目的</RoleTag>A社では基幹システムの老朽化を契機に、オンプレミス環境からパブリッククラウドへ移行するプロジェクトを立ち上げた。
+                    <RoleTag>数値</RoleTag>期間は10か月、要員は最大12名、予算は8,000万円であり、
+                    <RoleTag>立場</RoleTag>私はSI企業B社に所属するプロジェクトマネージャ（以下、PM）として、本プロジェクトのマネジメント全般を担った。
+                  </p>
+                  <p>
+                    　<RoleTag>伏線</RoleTag>本プロジェクトの特徴は、移行後の運用費が従量課金であり、本番稼働時の負荷が確定しない計画段階では、コストの見積りに大きな不確かさを含むことであった。
+                  </p>
                 </div>
                 <p className="text-[10px] font-bold text-brand-dark mt-1.5">
-                  💡 この2段落で「業種・目的・数値・立場・テーマの伏線」がすべて入る。最後の1文が第2章の施策の理由付けになる。
+                  💡 タグの5要素をこの順に置くだけで1.1が完成する。最後の「伏線」が第2章の施策の理由付けになる。
                 </p>
               </ExampleBox>
             </StepBlock>
@@ -849,11 +918,17 @@ export default function EssayGuide() {
               </p>
               <ExampleBox label="実文例 — 2.1 予測活動の計画（抜粋）">
                 <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
-                  <p>　計画段階の最大の課題は、従量課金の振れ幅±30%をどう縮小するかであった。私は、机上の試算を重ねるより実測に基づいて精度を上げるべきだと考え、予測活動として3段階の実測を計画した。具体的には、(1)主要3機能のPoCで単位負荷当たりの課金額を実測する、(2)性能試験で本番相当のピーク負荷を再現して月額に換算する、(3)先行移行した1業務の実課金で検証する、というものである。</p>
-                  <p>　さらに私は、実測値をそのまま用いない工夫として、A社の販売計画に基づく負荷の季節変動（最繁忙月は平均月の1.8倍）を加味した補正式をA社情報システム部と共同で作成し、再見積りの根拠とすることにした。</p>
+                  <p>
+                    　<RoleTag>課題</RoleTag>計画段階の最大の課題は、従量課金の振れ幅±30%をどう縮小するかであった。
+                    <RoleTag>判断</RoleTag>私は、机上の試算を重ねるより実測に基づいて精度を上げるべきだと考え、予測活動として3段階の実測を計画した。
+                    <RoleTag>実施</RoleTag>具体的には、(1)主要3機能のPoCで単位負荷当たりの課金額を実測する、(2)性能試験で本番相当のピーク負荷を再現して月額に換算する、(3)先行移行した1業務の実課金で検証する、というものである。
+                  </p>
+                  <p>
+                    　<RoleTag>工夫</RoleTag>さらに私は、実測値をそのまま用いない工夫として、A社の販売計画に基づく負荷の季節変動（最繁忙月は平均月の1.8倍）を加味した補正式をA社情報システム部と共同で作成し、再見積りの根拠とすることにした。
+                  </p>
                 </div>
                 <p className="text-[10px] font-bold text-brand-dark mt-1.5">
-                  💡 1段落目＝課題→判断→実施、2段落目＝工夫。「私は〜と考え」「工夫として」が、判断力・独創性を採点者に示す目印になる。
+                  💡 「課題→判断→実施→工夫」のタグの順に書くだけで型になる。「私は〜と考え」「工夫として」が、判断力・独創性を採点者に示す目印。
                 </p>
               </ExampleBox>
             </StepBlock>
@@ -866,7 +941,11 @@ export default function EssayGuide() {
               </p>
               <ExampleBox label="実文例 — 3.2 差異への対応策と承認（抜粋）">
                 <div className="bg-white border border-slate-200 rounded px-3 py-2 text-[11px] text-slate-700 leading-relaxed space-y-1">
-                  <p>　私は対応方針に沿って対応策を作成した。具体的には、稼働が安定した基盤部分に1年間のリザーブド契約を適用し、アクセス頻度の低いデータを低価格のストレージ階層へ移す設計変更によって、15%の超過を予備費8%の範囲内である3%まで圧縮した。私はこの対応策を再見積りの結果とともに経営層に報告し、承認を得た。最終的に、本プロジェクトは予算8,000万円の範囲内で移行を完了した。</p>
+                  <p>
+                    　<RoleTag>対応策</RoleTag>私は対応方針に沿って対応策を作成した。具体的には、稼働が安定した基盤部分に1年間のリザーブド契約を適用し、アクセス頻度の低いデータを低価格のストレージ階層へ移す設計変更によって、15%の超過を予備費8%の範囲内である3%まで圧縮した。
+                    <RoleTag>承認</RoleTag>私はこの対応策を再見積りの結果とともに経営層に報告し、承認を得た。
+                    <RoleTag>数値で着地</RoleTag>最終的に、本プロジェクトは予算8,000万円の範囲内で移行を完了した。
+                  </p>
                 </div>
                 <p className="text-[10px] font-bold text-brand-dark mt-1.5">
                   💡 年度によっては設問ウで「評価」「今後の改善」まで要求される。その場合は
@@ -888,17 +967,29 @@ export default function EssayGuide() {
             </StepBlock>
           </div>
 
-          <p className="text-[11px] text-slate-400 leading-relaxed mt-3">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-3">
             ※ 本番で最も差がつくのはSTEP 1〜2です。この2ステップだけを15分で回す練習（§8の骨子練習）を繰り返すと、
             どのテーマが来ても「メモを日本語にするだけ」の状態で書き始められるようになります。
           </p>
+
+          {/* 別テーマへの転移: 手順がテーマ非依存であることを示す */}
+          <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+            <p className="text-xs font-bold text-slate-700 mb-1">🔁 別テーマでも手順は同じ</p>
+            <p className="text-[11px] text-slate-600 leading-relaxed">
+              例えば令和6年 問2（リーダーシップの選択）なら、設問アは「チームの特性／外部環境の変化／阻害すると考えた理由」の
+              3分解→1.1〜1.3、イは「悪化した状態と把握したメンバーの状況」「選択したリーダーシップと行動・使い分けた理由」の2節、
+              ウは「改善したチームの状態と対応結果」「評価」に振り分けるだけです。
+              題材も§9のモデルプロジェクト（チーム・育成が山場のデータセンター移設など）がそのまま使えます。
+            </p>
+          </div>
+
           <Link
             to="/essay/R6-PM2-1/sample"
             className="mt-3 flex items-center justify-center gap-1.5 rounded-lg border border-brand/30 bg-brand-light px-3 py-2.5 text-xs font-bold text-brand-darker hover:border-brand transition-colors"
           >
             📝 この題材（令和6年 問1）の参考答案・完全版を読む →
           </Link>
-          <p className="text-[10px] text-slate-400 leading-relaxed mt-2">
+          <p className="text-[11px] text-slate-500 leading-relaxed mt-2">
             出典: IPA プロジェクトマネージャ試験 令和6年度（秋期）午後Ⅱ 問1（本セクションの設問は要旨として引用）
           </p>
         </SectionCard>
@@ -930,7 +1021,7 @@ export default function EssayGuide() {
               </li>
             ))}
           </ol>
-          <p className="text-[11px] text-slate-400 leading-relaxed">
+          <p className="text-[11px] text-slate-500 leading-relaxed">
             ※ 自己評価の5項目（題意適合・構造・具体性・一貫性・字数達成）は、§2の評価項目のうち
             「型で対策できる内容面」に対応しています。まずこの5つを安定させることがA評価への最短路です。
           </p>
@@ -941,7 +1032,7 @@ export default function EssayGuide() {
           id="templates"
           num="9"
           title="持ち帰り用 — ネタ帳とテンプレート"
-          sub="出題傾向・モデルプロジェクト・数値の相場・章立て・定型文"
+          sub="モデルプロジェクト・数値の相場・章立て・場面別の定型文"
         >
           <p className="text-xs text-slate-600 leading-relaxed mb-4">
             自分のモデルプロジェクトを組み立てるための土台です。<span className="font-bold text-brand-dark">〔 〕</span>の穴埋め箇所と数値を、
@@ -949,29 +1040,8 @@ export default function EssayGuide() {
             質問書の記載と一致していれば問題ありません。
           </p>
 
-          {/* 9-1 出題テーマの傾向 */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">① 出題テーマの傾向（どの部品から準備するか）</p>
-          <p className="text-xs text-slate-600 leading-relaxed mb-2">
-            収録{essayProblems.length}問に付与した分類タグの集計です（1問に複数タグあり）。
-            上位のテーマほど繰り返し出題されているので、部品はここから順に揃えると効率的です。
-          </p>
-          <div className="border border-slate-200 rounded-lg px-3 py-2.5 space-y-1.5 mb-1.5">
-            {THEME_TREND.map((t) => (
-              <div key={t.id} className="flex items-center gap-2">
-                <span className="w-28 flex-shrink-0 text-[11px] font-bold text-slate-600 leading-tight">{t.label}</span>
-                <div className="flex-1 h-3.5 bg-slate-100 rounded overflow-hidden">
-                  <div className="h-full bg-brand/70" style={{ width: `${Math.round((t.count / THEME_TREND_MAX) * 100)}%` }} />
-                </div>
-                <span className="w-9 flex-shrink-0 text-right text-[11px] font-bold text-brand-dark tabular-nums">{t.count}問</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
-            ※ 分類は本アプリ独自のタグ付けです。§4のマッピング表と合わせて、モデルプロジェクトの山場をどのテーマにも変換できるようにしておきましょう。
-          </p>
-
-          {/* 9-2 モデルプロジェクトのネタ集 */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">② モデルプロジェクトのネタ集（インフラ案件）</p>
+          {/* 9-1 モデルプロジェクトのネタ集 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">① モデルプロジェクトのネタ集（インフラ案件）</p>
           <div className="space-y-2 mb-4">
             {MODEL_PROJECTS.map((m) => (
               <div key={m.title} className="border border-slate-200 rounded-lg px-3 py-2.5">
@@ -989,8 +1059,8 @@ export default function EssayGuide() {
             ))}
           </div>
 
-          {/* 9-3 数値の相場表 */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">③ 数値の相場表（質問書・本文で使い回す）</p>
+          {/* 9-2 数値の相場表 */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">② 数値の相場表（質問書・本文で使い回す）</p>
           <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 mb-1.5">
             {NUMBER_CHEATSHEET.map((n) => (
               <div key={n.item} className="flex gap-3 px-3 py-1.5 items-baseline">
@@ -999,17 +1069,17 @@ export default function EssayGuide() {
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+          <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
             ※ 一度決めたら固定して覚える。期間×平均要員数≒総工数のように、数値どうしが矛盾しないことが重要（§6 STEP 2）。
           </p>
 
-          {/* 9-4 章立てテンプレート */}
+          {/* 9-3 章立てテンプレート */}
           <div className="flex items-center justify-between gap-2 mb-1.5">
-            <p className="text-sm font-bold text-slate-800">④ 章立てテンプレート（どのテーマでも使える骨格）</p>
+            <p className="text-sm font-bold text-slate-800">③ 章立てテンプレート（どのテーマでも使える骨格）</p>
             <button
               type="button"
               onClick={() => handleCopy('chapter', CHAPTER_TEMPLATE.join('\n'))}
-              className={`flex-shrink-0 text-[10px] font-bold rounded-full px-2.5 py-0.5 border transition-colors ${
+              className={`flex-shrink-0 text-[11px] font-bold rounded-full px-2.5 py-1 border transition-colors ${
                 copiedKey === 'chapter'
                   ? 'border-brand bg-brand text-white'
                   : 'border-slate-300 text-slate-500 hover:border-brand hover:text-brand'
@@ -1028,12 +1098,12 @@ export default function EssayGuide() {
               </p>
             ))}
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+          <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
             ※ 1.2以降の節は、当日の設問の要求項目の数に合わせて増減させる（§6 STEP 1）。見出しの言葉も設問の言葉に置き換える。
           </p>
 
-          {/* 9-5 定型文テンプレート */}
-          <p className="text-sm font-bold text-slate-800 mb-1.5">⑤ 場面別の定型文（穴埋めして使う）</p>
+          {/* 9-4 定型文テンプレート */}
+          <p className="text-sm font-bold text-slate-800 mb-1.5">④ 場面別の定型文（穴埋めして使う）</p>
           <div className="space-y-2">
             {PHRASE_TEMPLATES.map((p) => (
               <div key={p.scene} className="border border-slate-200 rounded-lg overflow-hidden">
@@ -1042,7 +1112,7 @@ export default function EssayGuide() {
                   <button
                     type="button"
                     onClick={() => handleCopy(p.scene, p.text)}
-                    className={`flex-shrink-0 text-[10px] font-bold rounded-full px-2.5 py-0.5 border transition-colors ${
+                    className={`flex-shrink-0 text-[11px] font-bold rounded-full px-2.5 py-1 border transition-colors ${
                       copiedKey === p.scene
                         ? 'border-brand bg-brand text-white'
                         : 'border-slate-300 text-slate-500 hover:border-brand hover:text-brand'

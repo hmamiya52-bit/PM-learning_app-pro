@@ -7,8 +7,12 @@
  * - 具体性 (concreteness)
  * - 一貫性 (consistency)
  * - 字数達成 (charCount)
+ *
+ * 各項目に論述ガイド（/essay/guide）の該当章リンクを付け、
+ * 評価が低かった観点をその場で復習できるようにする（練習→ガイドの逆導線）。
  */
 
+import { Link } from 'react-router-dom'
 import type { EssaySelfReview } from '../../types'
 
 interface Props {
@@ -19,12 +23,12 @@ interface Props {
 type ReviewKey = keyof EssaySelfReview
 type ReviewScore = 1 | 2 | 3 | 4 | 5
 
-const ITEMS: { key: ReviewKey; label: string; hint: string }[] = [
-  { key: 'relevance',    label: '題意適合', hint: '設問にきちんと答えているか' },
-  { key: 'structure',    label: '構造',     hint: '導入・本文・結論の流れが明確か' },
-  { key: 'concreteness', label: '具体性',   hint: '事例・数値が具体的か' },
-  { key: 'consistency',  label: '一貫性',   hint: '主張がブレずに通っているか' },
-  { key: 'charCount',    label: '字数達成', hint: '推奨字数を満たしているか' },
+const ITEMS: { key: ReviewKey; label: string; hint: string; guideHref: string; guideLabel: string }[] = [
+  { key: 'relevance',    label: '題意適合', hint: '設問にきちんと答えているか',       guideHref: '/essay/guide#principles',  guideLabel: 'ガイド§3' },
+  { key: 'structure',    label: '構造',     hint: '導入・本文・結論の流れが明確か',   guideHref: '/essay/guide#write-steps', guideLabel: 'ガイド§6' },
+  { key: 'concreteness', label: '具体性',   hint: '事例・数値が具体的か',             guideHref: '/essay/guide#principles',  guideLabel: 'ガイド§3' },
+  { key: 'consistency',  label: '一貫性',   hint: '主張がブレずに通っているか',       guideHref: '/essay/guide#principles',  guideLabel: 'ガイド§3' },
+  { key: 'charCount',    label: '字数達成', hint: '推奨字数を満たしているか',         guideHref: '/essay/guide#timeplan',    guideLabel: 'ガイド§5' },
 ]
 
 const SCORES: ReviewScore[] = [1, 2, 3, 4, 5]
@@ -41,7 +45,12 @@ export default function EssaySelfReview({ value, onChange }: Props) {
           <div className="flex items-baseline justify-between mb-2">
             <div>
               <p className="text-sm font-bold text-slate-800">{item.label}</p>
-              <p className="text-[11px] text-slate-400">{item.hint}</p>
+              <p className="text-[11px] text-slate-500">
+                {item.hint}
+                <Link to={item.guideHref} className="ml-1.5 font-bold text-brand hover:underline whitespace-nowrap">
+                  → {item.guideLabel}
+                </Link>
+              </p>
             </div>
             <span className="text-xs text-brand-dark font-bold tabular-nums">
               {value[item.key]} / 5

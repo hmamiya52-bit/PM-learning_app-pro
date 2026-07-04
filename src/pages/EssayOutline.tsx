@@ -271,7 +271,7 @@ export default function EssayOutline() {
                 <span className="text-slate-500">目標は15分。骨子の型（§6 STEP 1〜2）を意識して周回しましょう</span>
               )}
             </p>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-slate-500 leading-relaxed">
               次は参考答案と見比べて、見出しの立て方・数値の入れ方の差分を確認するのがおすすめです。
             </p>
           </div>
@@ -395,7 +395,7 @@ export default function EssayOutline() {
             破棄
           </button>
         </div>
-        <p className="text-[11px] text-slate-400 leading-relaxed">
+        <p className="text-[11px] text-slate-500 leading-relaxed">
           ※ 下書きは自動保存されます（このモードの記録は練習回数・XPには含まれません）。
           書き方の型は<Link to="/essay/guide#write-steps" className="font-bold text-brand hover:underline">論述ガイド §6</Link>を参照。
         </p>
