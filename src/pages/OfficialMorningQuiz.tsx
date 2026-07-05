@@ -115,16 +115,24 @@ export default function OfficialMorningQuiz() {
     [byCategory, uncorrectedOnly, correctedQuestionIds],
   )
 
+  // ヘッダー用の午前Ⅱ統計（この画面ローカルで完結）
+  // - answered      : 解答済み問題数（プール内・異なり）
+  // - accuracyRate  : 直近正答率＝直近正解 ÷ 解答済み（延べ試行ではなく「今の実力」）
   const stats = useMemo(() => {
-    const total = morningRecords.length
-    const correct = morningRecords.filter((r) => r.isCorrect).length
-    return {
-      total,
-      correct,
-      rate: total > 0 ? Math.round((correct / total) * 100) : 0,
-      latestDate: morningRecords[0]?.answeredAt.slice(0, 10) ?? null,
+    let answered = 0
+    let correct = 0
+    for (const q of officialMorningQuestions) {
+      const latest = latestResults.get(q.id)
+      if (latest === undefined) continue
+      answered++
+      if (latest) correct++
     }
-  }, [morningRecords])
+    return {
+      answered,
+      poolTotal: officialMorningQuestions.length,
+      accuracyRate: answered > 0 ? Math.round((correct / answered) * 100) : 0,
+    }
+  }, [latestResults])
 
   const selectedCategorySet = useMemo(() => new Set(selectedCategoryIds), [selectedCategoryIds])
   const selectedYearSet = useMemo(() => new Set(selectedYears), [selectedYears])
@@ -262,10 +270,10 @@ export default function OfficialMorningQuiz() {
               <h1 className="text-base font-black leading-snug">公式午前Ⅱ問題</h1>
               <p className="text-xs text-white/80 mt-0.5">
                 IPA公式 過去問4択 全{allCount}問
-                {stats.total > 0 && (
+                {stats.answered > 0 && (
                   <>
                     <span className="mx-1.5 opacity-50">|</span>
-                    これまでに {stats.total}問 解答（正答率 {stats.rate}%）
+                    解答済み {stats.answered}/{stats.poolTotal}問 ・ 直近正答率 {stats.accuracyRate}%
                   </>
                 )}
               </p>
