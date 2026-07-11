@@ -2332,7 +2332,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           'PMBOK第7版「計画」パフォーマンス領域 = 第6版の3知識エリア（__第5章 スコープ__／__第6章 スケジュール__／__第7章 コスト__）を統合した活動領域',
           '__計画は反復的__: 進行に伴い==段階的詳細化==（progressive elaboration）される',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「計画」パフォーマンス領域 / PMBOK第6版 第5/6/7章', style: 'navy' }]],
       },
       {
         heading: '2. プロジェクトマネジメント計画書とサブシディアリー計画書',
@@ -2343,7 +2342,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__ベースライン__: ==スコープ／スケジュール／コスト==の3つ（変更管理の基準）',
           '計画書は__生きた文書__で、変更承認とともに更新',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §4.2 プロジェクトマネジメント計画書の作成', style: 'navy' }]],
       },
       {
         heading: '3. 計画のテーラリング',
@@ -2360,7 +2358,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__段階的詳細化__: 近期は詳細に、遠期は粗く計画する',
           '__プランニング・ポーカー__（Planning Poker）: チームでストーリーポイントを相対見積もり',
         ],
-        navyItems: [[{ text: '出典: アジャイル実務ガイド §3 / Scrum Guide', style: 'navy' }]],
       },
       // ── B. スコープマネジメント（PMBOK6 第5章） ──
       {
@@ -2369,7 +2366,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '5.1 スコープマネジメント計画（Plan Scope Management）: スコープの計画／妥当性確認／コントロール方法を文書化',
           '__主要アウトプット__: スコープマネジメント計画書と==要求事項マネジメント計画書==（後者も本プロセスのアウトプットである点がひっかけ）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §5.1', style: 'navy' }]],
       },
       {
         heading: '6. 5.2 要求事項収集',
@@ -2492,7 +2488,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__依存関係の性質__: ==強制／任意／外部／内部==の4分類（物理的必須か・選好か・プロジェクト外か内か）',
           '==リード==（前倒し）／==ラグ==（遅延）: 依存関係に時間調整を加える',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §6.3。試験頻出: 4依存関係（特にFSとSF）の例示問題', style: 'navy' }]],
+        navyItems: [[{ text: '試験頻出: 4依存関係（特にFSとSF）の例示問題', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -2738,7 +2734,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==ROM 見積もり==（Rough Order of Magnitude, 超概算）: ==-25%〜+75%==',
           '　==確定見積もり==（Definitive）: ==-5%〜+10%==',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §7.2.2。ROM と確定見積もりの精度範囲は午前Ⅱ 出題実績あり', style: 'navy' }]],
+        navyItems: [[{ text: 'ROM と確定見積もりの精度範囲は午前Ⅱ 出題実績あり', style: 'navy' }]],
       },
       {
         heading: '21. 見積もり手法の比較と適用条件',
@@ -2874,7 +2870,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '4.2 プロジェクトマネジメント計画書作成（Develop Project Management Plan）: サブシディアリー計画書（§2）を統合して全体計画書を作成',
           '計画書はキックオフ会議で合意を得て、承認後にベースライン化。以降の変更は統合変更管理で扱う',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §4.2', style: 'navy' }]],
       },
       {
         heading: '30. PMBOK第7版「計画」パフォーマンス領域',
@@ -2882,7 +2877,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__第7版の8パフォーマンス領域__の1つ（概観は §1、テーラリングは §3 を参照）',
           '__主な検討事項__: スコープ・スケジュール・予算のバランス、チーム能力、組織の方針・標準、市場環境',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「計画」パフォーマンス領域', style: 'navy' }]],
       },
       {
         heading: '31. PMBOK第6版と第7版の対応関係（試験での扱い）',
@@ -2944,7 +2938,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__13. 標準プロセスはテーラリングして使う__: 組織標準をそのまま強制せず、案件特性に合わせ==修整（テーラリング）==する。全体で揃える所とチームに任せる所を見極める（R6問3）',
           '__14. 設問の限定語で解答の向きを固定__: 「事業の観点で」「理由を」等の限定語が解答の方向を決める。因果（〜だから〜する）で書き、本文の言葉を言い換えて使う（R6問1ほか全問共通）',
         ],
-        navyItems: [[{ text: '出典: 収録38問の午後Ⅰ解説（keyKnowledge）から計画系の定石を統合。各定石末尾は出題実績。定石名を見て「なぜそうするか」を自答できれば午後Ⅰ対応力が付く', style: 'navy' }]],
+        navyItems: [[{ text: '各定石末尾の（）は出題実績。定石名を見て「なぜそうするか」を自答できれば午後Ⅰ対応力が付く', style: 'navy' }]],
       },
     ],
     exam_tips: [
