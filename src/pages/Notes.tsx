@@ -155,7 +155,7 @@ export default function Notes() {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="セクション見出しを検索（例: SYNフラッド、SLAAC、SSL-VPN）"
+              placeholder="セクション見出しを検索（例: EVM、クラッシング、サーバントリーダーシップ）"
               className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand"
               aria-label="ノート内のセクション見出しを検索"
             />
