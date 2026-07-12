@@ -429,7 +429,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '効果的なステークホルダー関与は__プロジェクト成功確率__を直接的に高める',
           '個人だけでなくグループ・部門・組織・規制当局など__法人格を持たない集団__も含む',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第13章「ステークホルダー・マネジメント」／PMBOK第7版「ステークホルダー・パフォーマンス領域」／IPA PM試験シラバス Ver7.1 §1', style: 'navy' }]],
       },
       {
         heading: '2. ステークホルダーの分類軸',
@@ -487,7 +486,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '活動サイクル: ==識別 → 理解 → 分析 → 優先順位付け → 関与 → 監視==',
           'PMBOK7 では「予測型」「適応型」いずれのライフサイクルでも同じ成果が適用される',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「ステークホルダー・パフォーマンス領域」目的セクション', style: 'navy' }]],
       },
 
       // ── B. 識別プロセス ──
@@ -979,7 +977,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　主要アウトプット: 作業パフォーマンス情報／変更要求／プロジェクトマネジメント計画書の更新',
           '__試験頻出ポイント__: ITTOの主要項目（==データ表現==／==対人スキル==／==データ分析==）、==ステークホルダー登録簿==と==エンゲージメント計画書==の位置づけ、各プロセスのプロセス群所属',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第13章「ステークホルダー・マネジメント」', style: 'navy' }]],
       },
       {
         heading: '33. PMBOK第6版と第7版の対応関係（試験での扱い）',
@@ -995,7 +992,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==第7版==は「==成果を達成する==」視点（原則と価値実現重視）',
           '__試験対策上の意味__: 用語の出典が第6版／第7版どちらか判別できるようにする（ひっかけ対策）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第13章 / PMBOK第7版「ステークホルダー」パフォーマンス領域 / IPA PM試験シラバス Ver7.1', style: 'navy' }]],
       },
 
       // ── G. IPA PM試験 出題傾向 ──
@@ -1059,7 +1055,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           'PMBOK第6版では同領域は==資源マネジメント==知識エリア（旧 人的資源マネジメント、第5版から名称変更）として扱われ、6プロセスで構成される',
           '第7版は「原則・領域」、第6版は「プロセス・ITTO」の枠組みで、IPA PM試験は両方の用語が出題される',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「チーム・パフォーマンス領域」／PMBOK第6版 第9章「資源マネジメント」／IPA PM試験シラバス Ver7.1 §3.4', style: 'navy' }]],
       },
       {
         heading: '2. チームとグループの違い／プロジェクトチームの構成',
@@ -1096,7 +1091,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '==誠実さ==（Integrity）と==倫理==（Ethics）: PMI 行動規範に基づく振る舞い',
           'これらは__役割によらず__チーム全員に求められる（リーダーシップは分散される）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「リーダーシップ」原則', style: 'navy' }]],
       },
       {
         heading: '5. PMI Talent Triangle — プロジェクトマネージャに求められる役割',
@@ -1120,7 +1114,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           'チーム領域での対応: 第6版「資源マネジメント」=第7版「チーム」パフォーマンス領域',
           '本アプリは両版を==併記==。試験頻出の==赤字==は第6版用語を優先付与',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9 / 第7版「チーム」領域。試験対策上は両版用語の混同が頻出ひっかけ', style: 'navy' }]],
+        navyItems: [[{ text: '試験対策上は両版用語の混同が頻出ひっかけ', style: 'navy' }]],
       },
       // ── B. リーダーシップ理論 ──
       {
@@ -1301,7 +1295,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__順序は固定__。スキップ不可。混乱期で適切な対処をしないとチームは機能しない',
           'リーダーは段階に応じて関与レベルを変える（形成期は指示型→遂行期は委任型）',
         ],
-        navyItems: [[{ text: '出典: Bruce Tuckman 1965年 / PMBOK第6版 §9.4.2.3 チーム開発技法', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -1379,7 +1372,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           'チーム==形成期==に==全員参加==で策定することで==自主性==が生まれる',
           'チームメンバーの==入れ替わり==時には==見直し==が必要',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.1.3.2 チーム憲章', style: 'navy' }]],
       },
       {
         heading: '21. 心理的安全性とチーム規範',
@@ -1427,7 +1419,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主要アウトプット__: ==チーム・パフォーマンス評価==／==エンタープライズ環境要因の更新==',
           '試験頻出: ITTOの主要項目（特にツール&技法）を覚えること',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.4。第7版では「チーム」パフォーマンス領域に統合', style: 'navy' }]],
+        navyItems: [[{ text: '第7版では「チーム」パフォーマンス領域に統合', style: 'navy' }]],
       },
       // ── E. 組織と役割 ──
       {
@@ -1454,7 +1446,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__欠点__: ==指揮命令系統の二重==／==忠誠の対立==（two-boss problem）',
           'IPA午前Ⅱ頻出: 弱・均衡・強の特徴一覧',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §2.4.1.2 / 第7版「テーラリング」', style: 'navy' }]],
       },
       {
         heading: '26. 責任分担マトリクス（RAM）とRACIチャート',
@@ -1469,7 +1460,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '==Aは必ず1人==、==R は複数可==。試験頻出ルール',
           '派生形式: ==RACI-VS==（V=Verify、S=Sign-off を追加）／==RASCI==（S=Support）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.1.2.1 データ表現「責任分担マトリクス」', style: 'navy' }]],
       },
       {
         heading: '27. PMBOK第6版「資源マネジメント計画」プロセス（9.1）',
@@ -1485,7 +1475,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==資源の特定==／==獲得==／==役割と責任==／==組織図==／==育成計画==／==チーム管理==／==認知と報奨==／==コンプライアンス==',
           '試験頻出: 計画書とチーム憲章は==別アウトプット==で混同しないこと',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.1', style: 'navy' }]],
       },
       {
         heading: '28. PMBOK第6版「活動資源見積もり／資源獲得／資源コントロール」',
@@ -1501,7 +1490,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　アウトプット: ==作業パフォーマンス情報==／==変更要求==',
           '__注意__: 9.6 は==物的資源==のみが対象。==チーム==の監視は==9.5 チームのマネジメント==',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.2 / §9.3 / §9.6', style: 'navy' }]],
       },
       {
         heading: '29. 要員管理計画・要員育成・キャリア開発',
@@ -1533,7 +1521,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==組織変革管理==',
           '試験頻出: 3類型のコントロール度と提供サービスの対応',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §2.4.4.3 PMO の種類', style: 'navy' }]],
       },
       // ── F. 紛争マネジメント ──
       {
@@ -1550,7 +1537,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '紛争は==否定すべきものではなく==、適切に==マネジメント==することで==創造性==を生む',
           '==サプレッシング==（抑圧）は短期的に有効でも長期的には悪化',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.5.2.1 対人スキル「コンフリクト・マネジメント」', style: 'navy' }]],
       },
       {
         heading: '32. トーマス-キルマンの5つの対処モード',
@@ -1564,7 +1550,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           'PMBOK第6版／第7版とも==問題解決==を==推奨==',
           '状況に応じて使い分け、==問題解決==を==デフォルト==に',
         ],
-        navyItems: [[{ text: '出典: Thomas & Kilmann 1974年 / PMBOK第6版 §9.5.2.1', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
@@ -1619,7 +1604,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主要アウトプット__: ==変更要求==／==プロジェクトマネジメント計画書の更新==／==プロジェクト文書の更新==',
           '注: 9.5 は==チーム==の管理、9.6 は==物的資源==のコントロール（混同しない）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §9.5', style: 'navy' }]],
       },
       {
         heading: '34. 紛争解決の優先順位とエスカレーション',
@@ -1718,7 +1702,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           'PMBOK第6版 §1.2.4 で4種類のライフサイクル（予測型／反復型／漸進型／適応型）を整理',
           'PMBOK第7版は==ライフサイクル==と==開発アプローチ==を==パフォーマンス領域==の中心概念に格上げ',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §1.2.4 プロジェクトライフサイクル／PMBOK第7版「開発アプローチとライフサイクル」パフォーマンス領域', style: 'navy' }]],
       },
       {
         heading: '2. 開発アプローチの3類型（予測型／適応型／ハイブリッド）',
@@ -1733,7 +1716,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__漸進型__（incremental）: 部分機能を順次==完成==させて積み上げる',
           'アジャイル = 反復型 + 漸進型の==両方==を採用',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §1.2.4.2-4 / アジャイル実務ガイド §3', style: 'navy' }]],
       },
       {
         heading: '3. PMBOK第7版「開発アプローチとライフサイクル」パフォーマンス領域',
@@ -1746,7 +1728,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主な検討事項__: 成果物の性質／納期／組織・市場の状況／チーム能力',
           '__テーラリング__の対象: アプローチ選定そのものがテーラリング',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「開発アプローチとライフサイクル」パフォーマンス領域。第6版では §1.2.4 と アジャイル実務ガイドが該当', style: 'navy' }]],
+        navyItems: [[{ text: '第6版では §1.2.4 と アジャイル実務ガイドが該当', style: 'navy' }]],
       },
       {
         heading: '4. PMBOK第6版とアジャイル実務ガイドの関係',
@@ -1758,7 +1740,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__注意__: アジャイル実務ガイドは==PMBOK第6版の一部==として扱われる（試験対象）',
           'PMBOK第7版で==アジャイルがメインストリーム化==され、本体に統合された',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 アジャイル実務ガイド（PMI/Agile Alliance 共同制作）', style: 'navy' }]],
       },
       {
         heading: '5. 開発アプローチの選定基準',
@@ -1774,7 +1755,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__Cynefin フレームワーク__: ==単純==／==困難==／==複雑==／==混沌==の4領域でアプローチを変える',
           '試験頻出: 「適応型が==適する条件==／適さない条件」の判別問題',
         ],
-        navyItems: [[{ text: '出典: アジャイル実務ガイド §3「ライフサイクルの選定」', style: 'navy' }]],
       },
       // ── B. 予測型ライフサイクル ──
       {
@@ -1862,7 +1842,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__リーン思想の影響__: ==トヨタ生産方式==（TPS）由来の==ムダ排除==／==ジャストインタイム==／==カイゼン==／==自働化==',
           'アジャイル ⊂ リーン思想（リーン・ソフトウェア開発が橋渡し）',
         ],
-        navyItems: [[{ text: '出典: Agile Manifesto agilemanifesto.org / リーン思想は大野耐一「トヨタ生産方式」', style: 'navy' }]],
       },
       {
         heading: '12. アジャイルソフトウェア開発宣言（4価値・12原則）',
@@ -1884,7 +1863,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==振り返り==による定期的な調整',
           '試験頻出: 4価値の==右辺・左辺==の逆転や、別文言への差し替えがひっかけパターン',
         ],
-        navyItems: [[{ text: '出典: agilemanifesto.org（2001年）。IPA午前Ⅱ R6秋期 問17 で出題実績', style: 'navy' }]],
+        navyItems: [[{ text: 'IPA午前Ⅱ R6秋期 問17 で出題実績', style: 'navy' }]],
       },
       {
         heading: '13. イテラティブ vs インクリメンタル（適応型の2つの軸）',
@@ -2025,7 +2004,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__経験的プロセス制御__: 計画通りではなく==実績に基づく==調整',
           '__複雑な領域__（要求と技術が両方不確実）に最も適する',
         ],
-        navyItems: [[{ text: '出典: Scrum Guide（最新版 2020年）。Jeff Sutherland & Ken Schwaber 作成', style: 'navy' }]],
+        navyItems: [[{ text: 'Jeff Sutherland & Ken Schwaber 作成', style: 'navy' }]],
       },
       {
         heading: '18. スクラムチームの役割',
@@ -2163,7 +2142,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__スクラムとの違い__: タイムボックスなし・役割固定なし・継続フロー',
           '__スクラムバン__（Scrumban）: スクラムにカンバン要素を取り入れたハイブリッド',
         ],
-        navyItems: [[{ text: '出典: David J. Anderson「カンバン仕事術」／アジャイル実務ガイド §A3.3', style: 'navy' }]],
       },
       {
         heading: '24. XP（Extreme Programming）',
@@ -2269,7 +2247,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '==DevSecOps==: セキュリティをDevOpsに統合（==Shift Left==アプローチ）',
           'アジャイルが「==作り方==」、DevOpsが「==届け方==」の革新',
         ],
-        navyItems: [[{ text: '出典: Forsgren et al.「Accelerate」DORA Metrics（4キーメトリクス）', style: 'navy' }]],
       },
       // ── G. IPA PM試験 出題傾向 ──
       {
@@ -2968,7 +2945,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==チーム学習==の==促進==',
           '__主な検討事項__: プロセス・制約・チーム能力・組織変革管理・継続学習',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「プロジェクト作業」パフォーマンス領域', style: 'navy' }]],
       },
       {
         heading: '2. PMBOK第6版での対応知識エリア',
@@ -3039,7 +3015,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主要アウトプット__: ==教訓登録簿==（lessons learned register）／プロジェクト文書の更新',
           '__教訓__は==継続的に==収集（プロジェクト終結時だけでない）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §4.4。形式知 vs 暗黙知（野中郁次郎 SECIモデル）は試験頻出', style: 'navy' }]],
+        navyItems: [[{ text: '形式知 vs 暗黙知（野中郁次郎 SECIモデル）は試験頻出', style: 'navy' }]],
       },
       {
         heading: '6. 4.5 プロジェクト作業の監視・コントロール',
@@ -3255,7 +3231,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==プロジェクト計画書の更新==',
           '　==プロジェクト文書・OPAs の更新==',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §10.2。コミュニケーションの3方法（プッシュ/プル/インタラクティブ）は stakeholder §24 と整合', style: 'navy' }]],
+        navyItems: [[{ text: 'コミュニケーションの3方法（プッシュ/プル/インタラクティブ）は stakeholder §24 と整合', style: 'navy' }]],
       },
       {
         heading: '16. 10.3 コミュニケーションの監視',
@@ -3596,7 +3572,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主な検討事項__: スコープと要求／品質計画／受入基準／継続的価値提供／適応型vs予測型のデリバリー方式',
           '__PMBOK第6版での対応__: 第8章 品質マネジメント（3プロセス）＋第5章 スコープマネジメントの受入関連',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「デリバリー」パフォーマンス領域 / PMBOK第6版 第8章 品質マネジメント', style: 'navy' }]],
       },
       {
         heading: '2. 要求事項マネジメントと価値実現',
@@ -3626,7 +3601,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==クロスビー==（Philip Crosby）: 「品質は無償」「ゼロ・デフェクト」',
           '　==石川馨==: 特性要因図（フィッシュボーン）／QCサークル',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第8章「品質マネジメント」', style: 'navy' }]],
       },
       // ── B. 要求とトレーサビリティ ──
       {
@@ -3696,7 +3670,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==プロジェクトマネジメント計画書の更新==',
           '　==プロジェクト文書の更新==（==リスク登録簿==・==ステークホルダー登録簿==等）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §8.1', style: 'navy' }]],
       },
       {
         heading: '8. 8.2 品質マネジメント（実行）',
@@ -3786,7 +3759,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__予防に投資__することで全体コストが下がる（フィリップ・クロスビー「==品質は無償==」）',
           '__1-10-100の法則__: 設計段階での修正コスト1、製造段階10、市場段階100',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §8.1.2.2 / Crosby「品質は無償」1979年', style: 'navy' }]],
       },
       // ── D. 品質ツール・技法 ──
       {
@@ -4149,7 +4121,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__主な検討事項__: 何を測定するか／どう測定するか／誰に報告するか／頻度／予測の活用',
           '__PMBOK第6版での対応__: 第7章 コスト（EVM 中心）／第6章 スケジュール監視／第4章 統合監視',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「測定」パフォーマンス領域 / PMBOK第6版 §7.4 コストコントロール', style: 'navy' }]],
       },
       {
         heading: '2. メトリクスの分類',
@@ -4636,7 +4607,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==機会==の活用と==脅威==の管理',
           '__PMBOK第6版での対応__: 第11章 リスクマネジメント 7プロセス（11.1〜11.7）',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「不確かさ」パフォーマンス領域 / PMBOK第6版 第11章 リスクマネジメント', style: 'navy' }]],
       },
       {
         heading: '2. リスクの定義（脅威と機会）',
@@ -4672,7 +4642,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__11.6 は PMBOK第6版で新設__（旧第5版にはなかった）',
           '試験頻出: ==プロセス群所属==の判別問題',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第11章。11.6 は2017年改訂で新設', style: 'navy' }]],
+        navyItems: [[{ text: '11.6 は2017年改訂で新設', style: 'navy' }]],
       },
       // ── B. リスク特定 ──
       {
@@ -5199,7 +5169,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==プロジェクト・ライフサイクル==全体に渡る',
           '　==戦略目標==と==プロジェクト目標==の整合',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 第4章「プロジェクト統合マネジメント」', style: 'navy' }]],
       },
       {
         heading: '2. PMBOK第6版 第4章 7プロセス概観',
@@ -5432,7 +5401,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==プロジェクトマネジメント計画書の更新==',
           '　==プロジェクト文書の更新==',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §4.6。CCB（変更管理委員会）は本プロセスの中核', style: 'navy' }]],
+        navyItems: [[{ text: 'CCB（変更管理委員会）は本プロセスの中核', style: 'navy' }]],
       },
       {
         heading: '14. 変更要求の種類',
@@ -5537,7 +5506,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==ブランチ戦略==（master/develop/feature）',
           '__統合変更管理との関係__: 変更管理は==プロセス==、構成管理は==成果物==',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §4.6.2.2 構成管理ツール。ISO 10007 が国際規格', style: 'navy' }]],
+        navyItems: [[{ text: 'ISO 10007 が国際規格', style: 'navy' }]],
       },
       {
         heading: '19. ベースラインと変更管理',
@@ -5694,7 +5663,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__コーポレートガバナンス__（企業統治）の==下位概念==として位置づけられる',
           '__プログラムガバナンス__・==ポートフォリオガバナンス==も同様の構造',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §2.4.5 プロジェクト・ガバナンス / PMI Standard for Program Management', style: 'navy' }]],
       },
       {
         heading: '2. プロジェクト・ガバナンス・フレームワーク',
@@ -5731,7 +5699,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==社会的責任==（持続可能性・SDGs）',
           '　==透明性==の確保',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版 第3章「プロジェクトマネジメントの原則」12原則のうちガバナンス関連', style: 'navy' }]],
       },
       // ── B. 階層構造 ──
       {
@@ -5750,7 +5717,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__階層の上位ほど不確実性が高い__・==戦略寄り==',
           '試験頻出: 3階層の==目的の違い==を問う設問',
         ],
-        navyItems: [[{ text: '出典: PMI Standard for Portfolio Management / PMI Standard for Program Management', style: 'navy' }]],
       },
       {
         heading: '5. OPM（Organizational Project Management）',
@@ -5812,7 +5778,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==並列実行==（同時進行）',
           '　==共有資源依存==',
         ],
-        navyItems: [[{ text: '出典: PMI Standard for Program Management 第4版', style: 'navy' }]],
       },
       // ── C. PMO 詳細 ──
       {
@@ -5838,7 +5803,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==メリット==: 完全な一貫性、明確な権限',
           '　==デメリット==: 柔軟性低下、PM の自律性なし',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 §2.4.4.3 / Kerzner Project Management Maturity Model', style: 'navy' }]],
       },
       {
         heading: '9. PMO のサービス',
@@ -5963,7 +5927,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　ITIL（運用）, ISO/IEC 27001（セキュリティ）, PMBOK（プロジェクト）と==補完的==',
           '__試験出題__: 主に「IT ガバナンスのフレームワーク」として概念問題',
         ],
-        navyItems: [[{ text: '出典: ISACA COBIT 2019。情報処理試験では概念問題で出題', style: 'navy' }]],
+        navyItems: [[{ text: '情報処理試験では概念問題で出題', style: 'navy' }]],
       },
       {
         heading: '15. JIS Q 38500（IT ガバナンス）',
@@ -5983,7 +5947,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==モニター==（Monitor）: パフォーマンスと適合を監視',
           '__COBIT との関係__: COBIT は JIS Q 38500 の==実装==フレームワーク',
         ],
-        navyItems: [[{ text: '出典: JIS Q 38500:2015（ISO/IEC 38500:2015 翻訳）', style: 'navy' }]],
       },
       {
         heading: '16. ISO/IEC 27001（情報セキュリティ）と関連標準',
@@ -6024,7 +5987,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__PMI 認定資格者__は==違反通報==義務あり',
           '日本では「==情報処理技術者倫理綱領==」も類似（IPA）',
         ],
-        navyItems: [[{ text: '出典: PMI Code of Ethics and Professional Conduct（2007年制定、改訂継続）', style: 'navy' }]],
       },
       {
         heading: '18. コンプライアンス・法令遵守',
@@ -6157,7 +6119,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '__PMBOK第7版が特に強調__: 「==テーラリング==」が==12原則==の1つ',
           '__PMBOK第6版__: 各知識エリアの章末に「テーラリング考慮事項」を記載 + 付録 X1',
         ],
-        navyItems: [[{ text: '出典: PMBOK第6版 付録 X1 / PMBOK第7版「テーラリング」セクション', style: 'navy' }]],
       },
       {
         heading: '2. テーラリングの判断要素',
@@ -6184,7 +6145,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==戦略重要度==:',
           '　　高 → 経営層関与・ガバナンス強化',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版「テーラリング」§3', style: 'navy' }]],
       },
       {
         heading: '3. PMBOK第7版におけるテーラリングの位置づけ',
@@ -6244,7 +6204,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==経験==の==継承==',
           '__注意__: モデルは==現実を完全には反映しない==。状況に応じた==テーラリング==が必要',
         ],
-        navyItems: [[{ text: '出典: PMBOK第7版 §4.1 主要モデル', style: 'navy' }]],
       },
       {
         heading: '6. 状況対応モデル（リーダーシップ・コミュニケーション）',
@@ -6631,7 +6590,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==ITサービスマネージャ試験==（SM）が中心',
           '　==プロジェクトマネージャ試験==でも==運用引継ぎ==・==SLA==・==法務==が出題',
         ],
-        navyItems: [[{ text: '出典: ITIL v4 / ISO/IEC 20000 / IPA PM試験シラバス Ver7.1 §4', style: 'navy' }]],
       },
       {
         heading: '2. ITIL の歴史と位置づけ（v3 → v4）',
@@ -6650,7 +6608,7 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　==情報処理試験==では==v3 用語==が中心（v4 概念も近年出題）',
           '　==SLA==・==インシデント管理==・==問題管理==・==変更管理==・==構成管理==の==基本用語==は両版共通',
         ],
-        navyItems: [[{ text: '出典: AXELOS ITIL 4 Foundation。情報処理試験は v3 用語ベースだが v4 概念も増加', style: 'navy' }]],
+        navyItems: [[{ text: '情報処理試験は v3 用語ベースだが v4 概念も増加', style: 'navy' }]],
       },
       {
         heading: '3. ISO/IEC 20000（JIS Q 20000）概観',
@@ -7127,7 +7085,6 @@ export const NOTE_DB: Record<string, NoteData> = {
           '　　==指摘事項==・==改善提案==',
           '__フォローアップ__: 改善状況の確認',
         ],
-        navyItems: [[{ text: '出典: 経済産業省「システム監査基準」「システム管理基準」（2023年改訂版）', style: 'navy' }]],
       },
       // ── G. 関連法令 ──
       {
@@ -7274,7 +7231,7 @@ const PMBOK_V8_APPENDIX: Record<string, NoteSection> = {
       '第7版 12 原則の「ステークホルダーと効果的に関与する」「リーダーシップを示す」などが第8版で 6 原則に統合',
       'IPA 試験への影響: 試験要綱は 2022-05 第7版反映のまま、第8版要素の出題は 2027-2028 以降の見込み。本ノートの第6版＋第7版内容を優先して学習',
     ],
-    navyItems: [[{ text: '出典: PMBOK®ガイド第8版（2026-04 日本語版）/ docs/pmbok_v7_to_v8_mapping.md。第8版は第7版の原則を 12→6 に統合、領域を 8→7 に統合。試験対策の優先度は第6版・第7版より低い。', style: 'navy' }]],
+    navyItems: [[{ text: '第8版は第7版の原則を 12→6 に統合、領域を 8→7 に統合。試験対策の優先度は第6版・第7版より低い。', style: 'navy' }]],
   },
   team: {
     heading: '38. PMBOK 第8版での位置づけ（補足）',
