@@ -2,9 +2,18 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from './NoteDetail'
-import { getNoteUnderstanding } from '../lib/storage'
+import { getNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
 
 const NOTE_AVAILABLE = new Set(NOTE_CATEGORY_IDS)
+
+// 弱点フィルタ（理解度ベース）。'all' は絞り込みなし
+type WeakFilter = 'all' | 'red' | 'yellow'
+
+const WEAK_FILTERS: { value: WeakFilter; label: string; dot: string; activeClass: string }[] = [
+  { value: 'all', label: 'すべて', dot: '', activeClass: 'text-white border-transparent' },
+  { value: 'red', label: 'まだ難しい', dot: '#ef4444', activeClass: 'bg-red-500 text-white border-red-500' },
+  { value: 'yellow', label: 'なんとなく', dot: '#f59e0b', activeClass: 'bg-amber-500 text-white border-amber-500' },
+]
 
 const CARD_BORDER_COLORS: string[] = [
   'border-l-blue-300',
@@ -92,6 +101,7 @@ function UnderstandingBadges({ categoryId }: { categoryId: string }) {
 
 export default function Notes() {
   const [query, setQuery] = useState('')
+  const [weakFilter, setWeakFilter] = useState<WeakFilter>('all')
   const trimmed = query.trim()
 
   // 表示用のカテゴリ一覧（ノート未収録は除外）
@@ -99,6 +109,34 @@ export default function Notes() {
     () => categories.filter((cat) => NOTE_AVAILABLE.has(cat.id)),
     [],
   )
+
+  // 理解度マップ（このページ上では変化しないためマウント時に一度だけ読む）
+  const understanding = useMemo(() => getNoteUnderstanding(), [])
+
+  // 理解度レベルごとの総セクション数（チップに表示）
+  const weakCounts = useMemo(() => {
+    const counts: Record<UnderstandingLevel, number> = { green: 0, yellow: 0, red: 0 }
+    for (const e of NOTE_SECTION_INDEX) {
+      const level = understanding[`${e.categoryId}:${e.sectionIndex}`]
+      if (level) counts[level] += 1
+    }
+    return counts
+  }, [understanding])
+
+  // 弱点フィルタ結果：該当理解度のセクションを持つカテゴリのみ
+  const weakResults = useMemo(() => {
+    if (weakFilter === 'all') return null
+    const byCat = new Map<string, { sectionIndex: number; heading: string }[]>()
+    for (const e of NOTE_SECTION_INDEX) {
+      if (understanding[`${e.categoryId}:${e.sectionIndex}`] !== weakFilter) continue
+      const arr = byCat.get(e.categoryId) ?? []
+      arr.push({ sectionIndex: e.sectionIndex, heading: e.heading })
+      byCat.set(e.categoryId, arr)
+    }
+    return availableCategories
+      .map((cat) => ({ cat, headings: byCat.get(cat.id) ?? [] }))
+      .filter((x) => x.headings.length > 0)
+  }, [weakFilter, understanding, availableCategories])
 
   // 検索結果：カテゴリごとにマッチした見出しを集める
   const searchResults = useMemo(() => {
@@ -154,7 +192,11 @@ export default function Notes() {
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                // 検索とフィルタは併用しない（検索優先）
+                if (e.target.value.trim()) setWeakFilter('all')
+              }}
               placeholder="セクション見出しを検索（例: EVM、クラッシング、サーバントリーダーシップ）"
               className="w-full pl-9 pr-9 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand"
               aria-label="ノート内のセクション見出しを検索"
@@ -177,10 +219,46 @@ export default function Notes() {
                 : '一致なし'}
             </p>
           )}
+
+          {/* 弱点フィルタ（理解度ベース） */}
+          <div className="flex items-center gap-2 mt-3 flex-wrap" role="group" aria-label="理解度で絞り込み">
+            {WEAK_FILTERS.map(({ value, label, dot, activeClass }) => {
+              const isActive = weakFilter === value
+              const count = value === 'all' ? null : weakCounts[value]
+              return (
+                <button
+                  key={value}
+                  onClick={() => {
+                    setWeakFilter(value)
+                    // フィルタ選択時は検索を解除（検索優先のため両立させない）
+                    if (value !== 'all') setQuery('')
+                  }}
+                  aria-pressed={isActive}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-bold transition-colors ${
+                    isActive
+                      ? activeClass
+                      : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                  }`}
+                  style={isActive && value === 'all' ? { backgroundColor: '#9d5b8b' } : undefined}
+                >
+                  {dot && (
+                    <span
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: isActive ? '#ffffff' : dot }}
+                    />
+                  )}
+                  <span>{label}</span>
+                  {count !== null && (
+                    <span className={isActive ? 'text-white/80' : 'text-slate-400'}>{count}</span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {/* 通常モード：カテゴリ一覧 */}
-        {!trimmed && (
+        {!trimmed && weakFilter === 'all' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {availableCategories.map((cat, idx) => {
               const borderColor = CARD_BORDER_COLORS[idx % CARD_BORDER_COLORS.length]
@@ -207,6 +285,75 @@ export default function Notes() {
               )
             })}
           </div>
+        )}
+
+        {/* 弱点フィルタモード：該当理解度のセクションを持つカテゴリ + 見出しリスト */}
+        {!trimmed && weakResults && weakResults.length === 0 && (
+          <div className="bg-white rounded-xl border border-slate-200 px-4 py-10 text-center">
+            <p className="text-sm text-slate-500">
+              「{WEAK_FILTERS.find((f) => f.value === weakFilter)?.label}」を付けたセクションはありません
+            </p>
+            <p className="text-xs text-slate-400 mt-1.5">
+              各ノートのセクション見出し右のチェックボックスで理解度を記録できます
+            </p>
+          </div>
+        )}
+        {!trimmed && weakResults && weakResults.length > 0 && (
+          <>
+            <p className="mb-3 text-xs text-slate-500">
+              「<span className="font-bold text-slate-700">
+                {WEAK_FILTERS.find((f) => f.value === weakFilter)?.label}
+              </span>」のセクション：
+              {`${weakResults.length}カテゴリ・${weakResults.reduce((s, r) => s + r.headings.length, 0)}見出し`}
+            </p>
+            <div className="space-y-3">
+              {weakResults.map(({ cat, headings }, idx) => {
+                const borderColor = CARD_BORDER_COLORS[idx % CARD_BORDER_COLORS.length]
+                const dotColor = weakFilter === 'red' ? '#ef4444' : '#f59e0b'
+                return (
+                  <div
+                    key={cat.id}
+                    className={`bg-white rounded-xl border border-slate-200 border-l-4 ${borderColor} overflow-hidden`}
+                  >
+                    {/* カテゴリヘッダ */}
+                    <Link
+                      to={`/notes/${cat.id}`}
+                      className="flex items-center gap-3 px-4 py-3 border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-slate-800 truncate">{cat.name}</p>
+                        <p className="text-[11px] text-slate-400 leading-snug line-clamp-1">
+                          {cat.description}
+                        </p>
+                      </div>
+                      <span className="text-[11px] font-bold text-slate-400 flex-shrink-0">
+                        {headings.length}件
+                      </span>
+                      <ArrowRightIcon />
+                    </Link>
+
+                    {/* 該当セクション見出し */}
+                    <ul className="px-4 py-2 divide-y divide-slate-100">
+                      {headings.map(({ sectionIndex, heading }) => (
+                        <li key={sectionIndex}>
+                          <Link
+                            to={`/notes/${cat.id}#note-section-${sectionIndex}`}
+                            className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-brand-dark transition-colors"
+                          >
+                            <span
+                              className="w-2 h-2 rounded-full flex-shrink-0"
+                              style={{ backgroundColor: dotColor }}
+                            />
+                            <span className="flex-1 min-w-0 truncate">{heading}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              })}
+            </div>
+          </>
         )}
 
         {/* 検索モード：マッチしたカテゴリ + 見出しリスト */}
