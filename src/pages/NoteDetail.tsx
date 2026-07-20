@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useLocation, Link } from 'react-router-dom'
 import { categories } from '../data/categories'
-import { getNoteUnderstanding, setNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
+import { getNoteUnderstanding, setNoteUnderstanding, getNoteHideRed, setNoteHideRed, type UnderstandingLevel } from '../lib/storage'
 import { addActivityEvent } from '../lib/activityLog'
 import { QuestionFigureView } from '../components/QuestionFigureView'
 
@@ -137,7 +137,8 @@ export default function NoteDetail() {
   const location = useLocation()
   const category = categories.find((c) => c.id === categoryId)
   const note = categoryId ? NOTE_DB[categoryId] : undefined
-  const [hideRed, setHideRed] = useState(false)
+  // 赤字マスクは LocalStorage で永続化（前後カテゴリ遷移・リロードをまたいで維持）
+  const [hideRed, setHideRed] = useState(() => getNoteHideRed())
   // 検索ジャンプ時のハイライト対象セクション
   const [highlightedSection, setHighlightedSection] = useState<number | null>(null)
   // マスクモードを ON にするたびにインクリメントして RedWord をリセット
@@ -173,16 +174,15 @@ export default function NoteDetail() {
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const toggleHide = () => {
-    setHideRed((v) => {
-      const next = !v
-      if (next) {
-        setMaskVersion((k) => k + 1) // ONにするとき全リセット
-        if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
-        setToastVisible(true)
-        toastTimerRef.current = setTimeout(() => setToastVisible(false), 3000)
-      }
-      return next
-    })
+    const next = !hideRed
+    setHideRed(next)
+    setNoteHideRed(next)
+    if (next) {
+      setMaskVersion((k) => k + 1) // ONにするとき全リセット
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
+      setToastVisible(true)
+      toastTimerRef.current = setTimeout(() => setToastVisible(false), 3000)
+    }
   }
 
   // セクションへのジャンプ（検索ジャンプ・目次クリック共通）
@@ -384,7 +384,10 @@ export default function NoteDetail() {
         </div>
 
         {/* Sections */}
-        <div className="space-y-5">
+        {/* key にカテゴリを指定して、カテゴリ移動時に RedWord を作り直す。
+            同一ルートのパラメータ変更ではインスタンスが再利用され、
+            めくった赤字（revealed）が次のカテゴリへ引き継がれてしまうため。 */}
+        <div className="space-y-5" key={categoryId}>
           {note.sections.map((section, i) => (
             <div
               key={i}
@@ -510,11 +513,11 @@ export default function NoteDetail() {
           <div className="px-5 py-3 border-b border-amber-200 bg-amber-100">
             <h2 className="text-sm font-bold text-amber-800">★ 試験で狙われるポイント</h2>
           </div>
-          <ul className="px-5 py-4 space-y-2">
+          <ul className="px-5 py-4 space-y-2" key={categoryId}>
             {note.exam_tips.map((tip, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-amber-900 leading-relaxed">
                 <span className="flex-shrink-0 mt-0.5 text-amber-500 font-bold">!</span>
-                <span>{renderText(tip, false, maskVersion)}</span>
+                <span>{renderText(tip, hideRed, maskVersion)}</span>
               </li>
             ))}
           </ul>

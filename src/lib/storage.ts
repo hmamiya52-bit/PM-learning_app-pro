@@ -240,3 +240,16 @@ export function setNoteUnderstanding(
   save(NOTE_UNDERSTANDING_KEY, map)
   touchNoteUnderstandingSyncMeta(categoryId, sectionIndex)
 }
+
+// --- NoteHideRed ---
+// ノートの赤字マスク（暗記テスト）の ON/OFF。前後カテゴリへの遷移やリロードを
+// またいで維持するため永続化する（めくった赤字はページごとにリセットされる）。
+const NOTE_HIDE_RED_KEY = 'pmap:note_hide_red'
+
+export function getNoteHideRed(): boolean {
+  return load(NOTE_HIDE_RED_KEY, false)
+}
+
+export function setNoteHideRed(hide: boolean): void {
+  save(NOTE_HIDE_RED_KEY, hide)
+}
