@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useParams, useLocation, Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { getNoteUnderstanding, setNoteUnderstanding, getNoteHideRed, setNoteHideRed, type UnderstandingLevel } from '../lib/storage'
@@ -16,6 +16,84 @@ export type { NoteSectionIndexEntry, NoteData, NoteSection, EmphasisToken, Empha
 
 import { RedWord } from '../components/NoteWords'
 import { renderTokens, renderText } from '../components/NoteMarkup'
+import { MaskProgressContext, type MaskProgressApi } from '../components/noteMaskProgress'
+
+// ─────────────────────────────────────────────
+// 赤字マスクの進捗（セクション単位）
+// ─────────────────────────────────────────────
+interface MaskCounts {
+  total: number
+  revealed: number
+}
+
+// セクション配下の RedWord から開封状況を集めて親へ通知するスコープ。
+// 実際に描画された RedWord だけが登録されるため、items / navyItems /
+// headerDiagrams のいずれに置かれていても自動的に数に入る。
+function MaskScope({
+  index,
+  onCounts,
+  children,
+}: {
+  index: number
+  onCounts: (index: number, total: number, revealed: number) => void
+  children: React.ReactNode
+}) {
+  // id → めくられたか（マスク中の RedWord だけを保持する）
+  const registry = useRef(new Map<string, boolean>())
+
+  const flush = useCallback(() => {
+    let total = 0
+    let revealed = 0
+    registry.current.forEach((isRevealed) => {
+      total += 1
+      if (isRevealed) revealed += 1
+    })
+    onCounts(index, total, revealed)
+  }, [index, onCounts])
+
+  const api = useMemo<MaskProgressApi>(
+    () => ({
+      report: (id, masked, isRevealed) => {
+        if (masked) registry.current.set(id, isRevealed)
+        else registry.current.delete(id)
+        flush()
+      },
+      unregister: (id) => {
+        registry.current.delete(id)
+        flush()
+      },
+    }),
+    [flush],
+  )
+
+  return <MaskProgressContext.Provider value={api}>{children}</MaskProgressContext.Provider>
+}
+
+// セクションヘッダに出す「残りN」／「完了」バッジ
+function MaskProgressBadge({ counts }: { counts?: MaskCounts }) {
+  if (!counts || counts.total === 0) return null
+  const remaining = counts.total - counts.revealed
+  // 見出しの折り返しを増やさないよう、狭い画面では「残り」の語を省いて数字だけにする
+  if (remaining === 0) {
+    return (
+      <span
+        className="text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-400 text-white whitespace-nowrap flex-shrink-0"
+        title={`${counts.total} 個すべて表示しました`}
+      >
+        ✓<span className="hidden sm:inline"> 完了</span>
+      </span>
+    )
+  }
+  return (
+    <span
+      className="text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-white/25 text-white whitespace-nowrap flex-shrink-0"
+      title={`未開封の赤字 ${remaining} / ${counts.total} 個`}
+      aria-label={`未開封の赤字 ${remaining} 個`}
+    >
+      <span className="hidden sm:inline">残り </span>{remaining}
+    </span>
+  )
+}
 
 // ─────────────────────────────────────────────
 // ヘッダ構成図ビュー（HTML表＋色分け＋赤字隠し）
@@ -145,6 +223,17 @@ export default function NoteDetail() {
   const [maskVersion, setMaskVersion] = useState(0)
   // ページ内目次の開閉（既定は折りたたみ）
   const [tocOpen, setTocOpen] = useState(false)
+  // セクションごとの赤字マスク進捗（配下の RedWord から通知される）
+  const [maskCounts, setMaskCounts] = useState<Record<number, MaskCounts>>({})
+
+  const handleMaskCounts = useCallback((index: number, total: number, revealed: number) => {
+    setMaskCounts((prev) => {
+      const cur = prev[index]
+      // 変化が無ければ同じ state を返して再レンダリングを止める（通知ループ防止）
+      if (cur && cur.total === total && cur.revealed === revealed) return prev
+      return { ...prev, [index]: { total, revealed } }
+    })
+  }, [])
 
   const [understanding, setUnderstanding] = useState(() => getNoteUnderstanding())
 
@@ -400,8 +489,10 @@ export default function NoteDetail() {
                 className="px-5 py-3 border-b border-slate-100 flex items-center justify-between gap-2"
                 style={{ backgroundColor: '#9d5b8b' }}
               >
-                <h2 className="text-sm font-bold text-white leading-snug flex-1">{section.heading}</h2>
+                <h2 className="text-sm font-bold text-white leading-snug flex-1 min-w-0">{section.heading}</h2>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
+                  {/* 赤字マスク中のみ、未開封の赤字数を表示 */}
+                  {hideRed && <MaskProgressBadge counts={maskCounts[i]} />}
                   {(['green', 'yellow', 'red'] as UnderstandingLevel[]).map((level) => {
                     const isActive = understanding[`${categoryId}:${i}`] === level
                     const fillColor = { green: '#10b981', yellow: '#f59e0b', red: '#ef4444' }[level]
@@ -442,6 +533,7 @@ export default function NoteDetail() {
                   })}
                 </div>
               </div>
+              <MaskScope index={i} onCounts={handleMaskCounts}>
               {section.headerDiagrams ? (
                 <div className="px-5 py-4 space-y-4">
                   {section.headerDiagrams.map((dg, k) => (
@@ -496,6 +588,7 @@ export default function NoteDetail() {
                   })}
                 </ul>
               )}
+              </MaskScope>
               {/* SVG/table 図表（F2-figures で導入） — items/navyItems/その他レンダリングの直後に表示 */}
               {section.figures && section.figures.length > 0 && (
                 <div className="px-5 pb-4 space-y-2">

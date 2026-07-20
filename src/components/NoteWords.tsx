@@ -6,7 +6,8 @@
 // 描画ヘルパー（renderText / renderTokens）は NoteMarkup.tsx 側にある
 // （Fast Refresh の制約でコンポーネントと関数を同居させない）。
 // ─────────────────────────────────────────────
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext, useId } from 'react'
+import { MaskProgressContext } from './noteMaskProgress'
 
 // ─────────────────────────────────────────────
 // 赤字ワードのトグルコンポーネント
@@ -19,11 +20,23 @@ interface RedWordProps {
 
 export function RedWord({ text, masked, version }: RedWordProps) {
   const [revealed, setRevealed] = useState(false)
+  const progress = useContext(MaskProgressContext)
+  const instanceId = useId()
 
   // マスクモードが再度 ON になったらリセット
   useEffect(() => {
     if (masked) setRevealed(false)
   }, [masked, version])
+
+  // 開封状況を集計コンテキストへ通知（Provider が無ければ何もしない）
+  useEffect(() => {
+    progress?.report(instanceId, masked, revealed)
+  }, [progress, instanceId, masked, revealed])
+
+  useEffect(() => {
+    if (!progress) return
+    return () => progress.unregister(instanceId)
+  }, [progress, instanceId])
 
   if (!masked) {
     return <span className="text-red-600 font-bold">{text}</span>
