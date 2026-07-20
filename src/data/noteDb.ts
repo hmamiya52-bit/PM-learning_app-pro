@@ -5032,35 +5032,70 @@ for (const categoryId of Object.keys(PMBOK_V8_APPENDIX)) {
 // ─────────────────────────────────────────────
 export interface NoteSectionIndexEntry {
   categoryId: string
+  /** exam-tips エントリは -1（セクションではないため） */
   sectionIndex: number
   heading: string
-  /** 本文（items + navyItems）の平文。全文検索・スニペット生成に使う */
+  /** 本文の平文。全文検索・スニペット生成に使う */
   searchText: string
+  /** 通常セクションか、カテゴリ末尾の「試験で狙われるポイント」か */
+  kind: 'section' | 'exam-tips'
+  /** ジャンプ先アンカー（/notes/<categoryId>#<anchor>） */
+  anchor: string
+}
+
+/** 検索用にマークアップ記号（== / __）と先頭の全角空白インデントを除去する */
+function stripMarkup(text: string): string {
+  return text.replace(/^　+/, '').replace(/==/g, '').replace(/__/g, '')
 }
 
 // セクション本文を検索用の平文へ変換する。
-// items のマークアップ記号（== / __）と先頭の全角空白インデントを除去し、
-// navyItems はトークンの text を連結する（定石セクションも自動的に対象になる）。
+// items / navyItems に加え、headerDiagrams の図タイトル・キャプション・セルラベルも
+// 対象にする（定石セクションも自動的に含まれる）。
 function toSearchText(section: NoteSection): string {
   const parts: string[] = []
   for (const item of section.items ?? []) {
-    parts.push(item.replace(/^　+/, '').replace(/==/g, '').replace(/__/g, ''))
+    parts.push(stripMarkup(item))
   }
   for (const tokens of section.navyItems ?? []) {
-    parts.push(tokens.map((t) => t.text).join('').replace(/^　+/, ''))
+    parts.push(stripMarkup(tokens.map((t) => t.text).join('')))
+  }
+  for (const dg of section.headerDiagrams ?? []) {
+    parts.push(dg.title)
+    if (dg.caption) parts.push(dg.caption)
+    for (const row of dg.rows) {
+      for (const cell of row.cells) parts.push(cell.label)
+    }
   }
   return parts.join(' ')
 }
+
+/** 「★ 試験で狙われるポイント」ブロックのアンカー（NoteDetail 側の id と一致させる） */
+export const EXAM_TIPS_ANCHOR = 'note-exam-tips'
+export const EXAM_TIPS_HEADING = '★ 試験で狙われるポイント'
 
 export const NOTE_SECTION_INDEX: NoteSectionIndexEntry[] = NOTE_CATEGORY_IDS.flatMap(
   (categoryId) => {
     const note = NOTE_DB[categoryId]
     if (!note) return []
-    return note.sections.map((section, sectionIndex) => ({
+    const sections: NoteSectionIndexEntry[] = note.sections.map((section, sectionIndex) => ({
       categoryId,
       sectionIndex,
       heading: section.heading,
       searchText: toSearchText(section),
+      kind: 'section',
+      anchor: `note-section-${sectionIndex}`,
     }))
+    // exam_tips はセクション配下ではないため、カテゴリごとに1エントリを足して検索可能にする
+    if (note.exam_tips.length > 0) {
+      sections.push({
+        categoryId,
+        sectionIndex: -1,
+        heading: EXAM_TIPS_HEADING,
+        searchText: note.exam_tips.map(stripMarkup).join(' '),
+        kind: 'exam-tips',
+        anchor: EXAM_TIPS_ANCHOR,
+      })
+    }
+    return sections
   },
 )

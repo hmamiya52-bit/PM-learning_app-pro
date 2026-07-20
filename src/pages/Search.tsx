@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { questions } from '../data/questions'
 import { categories } from '../data/categories'
 import type { Question } from '../types'
 import { isImportant } from '../lib/importantMarks'
+import { searchNoteSections, noteHitHref } from '../lib/noteSearch'
 
 // dangerouslySetInnerHTML を使わず React 要素でハイライト
 function highlight(text: string, kw: string): React.ReactNode {
@@ -167,13 +168,16 @@ export default function Search() {
     )
   }, [query])
 
+  // ノート（見出し・本文）も同じキーワードで横断検索する
+  const noteResults = useMemo(() => searchNoteSections(query), [query])
+
   const kw = query.trim()
 
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="max-w-2xl mx-auto px-4 py-4 pb-12">
         {/* ページタイトル */}
-        <h1 className="text-lg font-black text-slate-800 mb-4">問題を検索</h1>
+        <h1 className="text-lg font-black text-slate-800 mb-4">問題・ノートを検索</h1>
 
         {/* 検索ボックス */}
         <div className="relative mb-4">
@@ -183,8 +187,8 @@ export default function Search() {
           <input
             autoFocus
             type="text"
-            aria-label="問題を検索"
-            placeholder="キーワードで問題を検索（例：BPDU、OSPF…）"
+            aria-label="問題とノートを検索"
+            placeholder="キーワードで検索（例：EVM、クリティカルパス、テーラリング…）"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full pl-10 pr-10 py-3 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand shadow-sm"
@@ -208,8 +212,8 @@ export default function Search() {
             <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 mx-auto mb-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
             </svg>
-            <p className="text-sm">キーワードを入力して問題を検索</p>
-            <p className="text-xs mt-1 opacity-70">問題文・正解・解説から全文検索</p>
+            <p className="text-sm">キーワードを入力して検索</p>
+            <p className="text-xs mt-1 opacity-70">問題（問題文・正解・解説）とノート（見出し・本文）から全文検索</p>
           </div>
         )}
 
@@ -217,10 +221,60 @@ export default function Search() {
         {query && (
           <>
             <p className="text-xs text-slate-400 mb-3">
-              {results.length > 0
-                ? `${results.length} 件の問題が見つかりました（タップで詳細表示）`
-                : '該当する問題がありません'}
+              {results.length + noteResults.length > 0
+                ? `問題 ${results.length} 件・ノート ${noteResults.length} 件が見つかりました`
+                : '該当する問題・ノートがありません'}
             </p>
+
+            {/* ── ノートの結果 ── */}
+            {noteResults.length > 0 && (
+              <div className="mb-5">
+                <h2 className="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1.5">
+                  ノート
+                  <span className="font-normal text-slate-400">{noteResults.length} 件</span>
+                </h2>
+                <div className="space-y-2">
+                  {noteResults.map(({ entry, snippet }) => {
+                    const cat = categoryMap.get(entry.categoryId)
+                    return (
+                      <Link
+                        key={`${entry.categoryId}-${entry.anchor}`}
+                        to={noteHitHref(entry)}
+                        className="block bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm hover:border-brand hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                      >
+                        <div className="flex items-center gap-2 mb-1.5">
+                          {cat && (
+                            <span
+                              className="text-xs px-2 py-0.5 rounded-full text-white"
+                              style={{ backgroundColor: '#9d5b8b' }}
+                            >
+                              {cat.name}
+                            </span>
+                          )}
+                          <span className="text-[11px] text-slate-400">ノート</span>
+                        </div>
+                        <p className="text-sm text-slate-800 leading-snug font-medium">
+                          {highlight(entry.heading, kw)}
+                        </p>
+                        {snippet && (
+                          <p className="text-xs text-slate-500 leading-snug mt-1 line-clamp-2">
+                            {highlight(snippet, kw)}
+                          </p>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── 問題の結果 ── */}
+            {results.length > 0 && (
+              <h2 className="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1.5">
+                問題
+                <span className="font-normal text-slate-400">{results.length} 件（タップで詳細表示）</span>
+              </h2>
+            )}
             <div className="space-y-3">
               {results.map((q) => {
                 const cat = categoryMap.get(q.topicId)

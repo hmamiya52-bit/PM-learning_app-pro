@@ -5,7 +5,7 @@ import { getNoteUnderstanding, setNoteUnderstanding, getNoteHideRed, setNoteHide
 import { addActivityEvent } from '../lib/activityLog'
 import { QuestionFigureView } from '../components/QuestionFigureView'
 
-import { NOTE_DB, NOTE_CATEGORY_IDS } from '../data/noteDb'
+import { NOTE_DB, NOTE_CATEGORY_IDS, EXAM_TIPS_ANCHOR } from '../data/noteDb'
 import type { EmphasisToken, HeaderDiagram } from '../data/noteDb'
 
 // ノートデータは src/data/noteDb.ts へ分離（2026-07-20）。
@@ -288,25 +288,39 @@ export default function NoteDetail() {
     if (timers.fade) clearTimeout(timers.fade)
   }, [])
 
-  const jumpToSection = useCallback((idx: number) => {
+  // 任意のアンカーへスクロールする。highlightIndex を渡すとセクション枠を一時強調する
+  // （exam_tips ブロックはセクションではないため null を渡す）
+  const jumpToAnchor = useCallback((elementId: string, highlightIndex: number | null) => {
     const timers = jumpTimersRef.current
     clearJumpTimers()
-    setHighlightedSection(idx)
+    setHighlightedSection(highlightIndex)
     // 描画後にスクロール
     timers.scroll = setTimeout(() => {
-      const el = document.getElementById(`note-section-${idx}`)
+      const el = document.getElementById(elementId)
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
     // 2秒後にハイライトを解除
     timers.fade = setTimeout(() => setHighlightedSection(null), 2200)
   }, [clearJumpTimers])
 
+  // 目次クリック用（セクション枠を強調する）
+  const jumpToSection = useCallback(
+    (idx: number) => jumpToAnchor(`note-section-${idx}`, idx),
+    [jumpToAnchor],
+  )
+
   // アンマウント時に保留中のタイマーを破棄
   useEffect(() => clearJumpTimers, [clearJumpTimers])
 
-  // 検索ジャンプ：URLのハッシュ #note-section-N に対応するセクションへスクロール＆ハイライト
+  // 検索ジャンプ：URLのハッシュ（#note-section-N / #note-exam-tips）に対応する箇所へ
+  // スクロール＆ハイライト
   useEffect(() => {
-    const m = location.hash.match(/^#note-section-(\d+)$/)
+    const hash = location.hash
+    if (hash === `#${EXAM_TIPS_ANCHOR}`) {
+      jumpToAnchor(EXAM_TIPS_ANCHOR, null)
+      return
+    }
+    const m = hash.match(/^#note-section-(\d+)$/)
     if (!m) {
       clearJumpTimers()
       setHighlightedSection(null)
@@ -318,7 +332,7 @@ export default function NoteDetail() {
       return
     }
     jumpToSection(idx)
-  }, [location.hash, note, categoryId, jumpToSection, clearJumpTimers])
+  }, [location.hash, note, categoryId, jumpToSection, jumpToAnchor, clearJumpTimers])
 
   // 前後のノートカテゴリ
   const currentIdx = categoryId ? NOTE_CATEGORY_IDS.indexOf(categoryId) : -1
@@ -602,7 +616,10 @@ export default function NoteDetail() {
         </div>
 
         {/* Exam Tips */}
-        <div className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl overflow-hidden">
+        <div
+          id={EXAM_TIPS_ANCHOR}
+          className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl overflow-hidden scroll-mt-20"
+        >
           <div className="px-5 py-3 border-b border-amber-200 bg-amber-100">
             <h2 className="text-sm font-bold text-amber-800">★ 試験で狙われるポイント</h2>
           </div>

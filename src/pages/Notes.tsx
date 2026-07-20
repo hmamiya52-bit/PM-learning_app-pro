@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from './NoteDetail'
 import { getNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
+import { searchNoteSections, noteHitHref } from '../lib/noteSearch'
 
 const NOTE_AVAILABLE = new Set(NOTE_CATEGORY_IDS)
 
@@ -53,18 +54,11 @@ function SearchIcon() {
 
 // 検索でマッチしたセクション。snippet は本文のみヒットした場合に入る
 interface SearchHit {
-  sectionIndex: number
   heading: string
   snippet: string | null
-}
-
-// 本文マッチ箇所の前後を切り出したスニペットを作る（前後 RADIUS 字）
-const SNIPPET_RADIUS = 20
-
-function makeSnippet(text: string, matchIndex: number, queryLength: number): string {
-  const start = Math.max(0, matchIndex - SNIPPET_RADIUS)
-  const end = Math.min(text.length, matchIndex + queryLength + SNIPPET_RADIUS)
-  return (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '')
+  href: string
+  /** リスト内 key 用（exam-tips は sectionIndex が -1 のため anchor を使う） */
+  anchor: string
 }
 
 // マッチした部分をハイライト表示
@@ -132,7 +126,9 @@ export default function Notes() {
   // 理解度レベルごとの総セクション数（チップに表示）
   const weakCounts = useMemo(() => {
     const counts: Record<UnderstandingLevel, number> = { green: 0, yellow: 0, red: 0 }
+    // 理解度はセクション単位のため exam-tips エントリは対象外
     for (const e of NOTE_SECTION_INDEX) {
+      if (e.kind !== 'section') continue
       const level = understanding[`${e.categoryId}:${e.sectionIndex}`]
       if (level) counts[level] += 1
     }
@@ -144,6 +140,7 @@ export default function Notes() {
     if (weakFilter === 'all') return null
     const byCat = new Map<string, { sectionIndex: number; heading: string }[]>()
     for (const e of NOTE_SECTION_INDEX) {
+      if (e.kind !== 'section') continue
       if (understanding[`${e.categoryId}:${e.sectionIndex}`] !== weakFilter) continue
       const arr = byCat.get(e.categoryId) ?? []
       arr.push({ sectionIndex: e.sectionIndex, heading: e.heading })
@@ -159,20 +156,18 @@ export default function Notes() {
     if (!trimmed) return null
     const q = trimmed.toLowerCase()
 
-    // カテゴリ ID → マッチしたセクション
+    // カテゴリ ID → マッチしたセクション（検索ロジックは lib/noteSearch と共通）
     // 見出しヒットは従来どおり見出しのみ、本文のみヒットはスニペットを添える
     const byCat = new Map<string, SearchHit[]>()
-    for (const e of NOTE_SECTION_INDEX) {
-      const headingHit = e.heading.toLowerCase().includes(q)
-      const bodyIndex = headingHit ? -1 : e.searchText.toLowerCase().indexOf(q)
-      if (!headingHit && bodyIndex === -1) continue
-      const arr = byCat.get(e.categoryId) ?? []
+    for (const hit of searchNoteSections(trimmed)) {
+      const arr = byCat.get(hit.entry.categoryId) ?? []
       arr.push({
-        sectionIndex: e.sectionIndex,
-        heading: e.heading,
-        snippet: headingHit ? null : makeSnippet(e.searchText, bodyIndex, trimmed.length),
+        heading: hit.entry.heading,
+        snippet: hit.snippet,
+        href: noteHitHref(hit.entry),
+        anchor: hit.entry.anchor,
       })
-      byCat.set(e.categoryId, arr)
+      byCat.set(hit.entry.categoryId, arr)
     }
 
     // カテゴリ名 / 説明文にもマッチさせる（見出しヒット無しでもカテゴリは表示）
@@ -436,10 +431,10 @@ export default function Notes() {
                   {/* マッチしたセクション見出し */}
                   {headings.length > 0 && (
                     <ul className="px-4 py-2 divide-y divide-slate-100">
-                      {headings.map(({ sectionIndex, heading, snippet }) => (
-                        <li key={sectionIndex}>
+                      {headings.map(({ anchor, heading, snippet, href }) => (
+                        <li key={anchor}>
                           <Link
-                            to={`/notes/${cat.id}#note-section-${sectionIndex}`}
+                            to={href}
                             className="flex items-start gap-2 py-2 text-sm text-slate-700 hover:text-brand-dark transition-colors"
                           >
                             <span className="text-slate-300 text-xs mt-0.5 flex-shrink-0">▶</span>
