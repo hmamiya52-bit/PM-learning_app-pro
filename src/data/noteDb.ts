@@ -5034,6 +5034,22 @@ export interface NoteSectionIndexEntry {
   categoryId: string
   sectionIndex: number
   heading: string
+  /** 本文（items + navyItems）の平文。全文検索・スニペット生成に使う */
+  searchText: string
+}
+
+// セクション本文を検索用の平文へ変換する。
+// items のマークアップ記号（== / __）と先頭の全角空白インデントを除去し、
+// navyItems はトークンの text を連結する（定石セクションも自動的に対象になる）。
+function toSearchText(section: NoteSection): string {
+  const parts: string[] = []
+  for (const item of section.items ?? []) {
+    parts.push(item.replace(/^　+/, '').replace(/==/g, '').replace(/__/g, ''))
+  }
+  for (const tokens of section.navyItems ?? []) {
+    parts.push(tokens.map((t) => t.text).join('').replace(/^　+/, ''))
+  }
+  return parts.join(' ')
 }
 
 export const NOTE_SECTION_INDEX: NoteSectionIndexEntry[] = NOTE_CATEGORY_IDS.flatMap(
@@ -5044,6 +5060,7 @@ export const NOTE_SECTION_INDEX: NoteSectionIndexEntry[] = NOTE_CATEGORY_IDS.fla
       categoryId,
       sectionIndex,
       heading: section.heading,
+      searchText: toSearchText(section),
     }))
   },
 )

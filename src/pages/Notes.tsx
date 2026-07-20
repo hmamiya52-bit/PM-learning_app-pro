@@ -51,6 +51,22 @@ function SearchIcon() {
   )
 }
 
+// 検索でマッチしたセクション。snippet は本文のみヒットした場合に入る
+interface SearchHit {
+  sectionIndex: number
+  heading: string
+  snippet: string | null
+}
+
+// 本文マッチ箇所の前後を切り出したスニペットを作る（前後 RADIUS 字）
+const SNIPPET_RADIUS = 20
+
+function makeSnippet(text: string, matchIndex: number, queryLength: number): string {
+  const start = Math.max(0, matchIndex - SNIPPET_RADIUS)
+  const end = Math.min(text.length, matchIndex + queryLength + SNIPPET_RADIUS)
+  return (start > 0 ? '…' : '') + text.slice(start, end) + (end < text.length ? '…' : '')
+}
+
 // マッチした部分をハイライト表示
 function highlight(text: string, query: string) {
   if (!query) return text
@@ -138,21 +154,24 @@ export default function Notes() {
       .filter((x) => x.headings.length > 0)
   }, [weakFilter, understanding, availableCategories])
 
-  // 検索結果：カテゴリごとにマッチした見出しを集める
+  // 検索結果：カテゴリごとにマッチしたセクションを集める（見出し + 本文の全文検索）
   const searchResults = useMemo(() => {
     if (!trimmed) return null
     const q = trimmed.toLowerCase()
 
-    // セクション見出しにマッチしたエントリ
-    const matchedEntries = NOTE_SECTION_INDEX.filter((e) =>
-      e.heading.toLowerCase().includes(q),
-    )
-
-    // カテゴリ ID → マッチ見出しリスト
-    const byCat = new Map<string, { sectionIndex: number; heading: string }[]>()
-    for (const e of matchedEntries) {
+    // カテゴリ ID → マッチしたセクション
+    // 見出しヒットは従来どおり見出しのみ、本文のみヒットはスニペットを添える
+    const byCat = new Map<string, SearchHit[]>()
+    for (const e of NOTE_SECTION_INDEX) {
+      const headingHit = e.heading.toLowerCase().includes(q)
+      const bodyIndex = headingHit ? -1 : e.searchText.toLowerCase().indexOf(q)
+      if (!headingHit && bodyIndex === -1) continue
       const arr = byCat.get(e.categoryId) ?? []
-      arr.push({ sectionIndex: e.sectionIndex, heading: e.heading })
+      arr.push({
+        sectionIndex: e.sectionIndex,
+        heading: e.heading,
+        snippet: headingHit ? null : makeSnippet(e.searchText, bodyIndex, trimmed.length),
+      })
       byCat.set(e.categoryId, arr)
     }
 
@@ -233,7 +252,16 @@ export default function Notes() {
             <p className="mt-2 text-xs text-slate-500">
               「<span className="font-bold text-slate-700">{trimmed}</span>」の検索結果：
               {searchResults && searchResults.length > 0
-                ? `${searchResults.length}カテゴリ・${searchResults.reduce((s, r) => s + r.headings.length, 0)}見出し`
+                ? (() => {
+                    const total = searchResults.reduce((s, r) => s + r.headings.length, 0)
+                    const bodyOnly = searchResults.reduce(
+                      (s, r) => s + r.headings.filter((h) => h.snippet !== null).length,
+                      0,
+                    )
+                    return `${searchResults.length}カテゴリ・${total}見出し${
+                      bodyOnly > 0 ? `（うち本文一致 ${bodyOnly}）` : ''
+                    }`
+                  })()
                 : '一致なし'}
             </p>
           )}
@@ -377,7 +405,7 @@ export default function Notes() {
         {/* 検索モード：マッチしたカテゴリ + 見出しリスト */}
         {trimmed && searchResults && searchResults.length === 0 && (
           <div className="bg-white rounded-xl border border-slate-200 px-4 py-10 text-center text-sm text-slate-500">
-            一致するセクション見出しが見つかりませんでした
+            見出し・本文ともに一致するセクションが見つかりませんでした
           </div>
         )}
         {trimmed && searchResults && searchResults.length > 0 && (
@@ -408,15 +436,23 @@ export default function Notes() {
                   {/* マッチしたセクション見出し */}
                   {headings.length > 0 && (
                     <ul className="px-4 py-2 divide-y divide-slate-100">
-                      {headings.map(({ sectionIndex, heading }) => (
+                      {headings.map(({ sectionIndex, heading, snippet }) => (
                         <li key={sectionIndex}>
                           <Link
                             to={`/notes/${cat.id}#note-section-${sectionIndex}`}
-                            className="flex items-center gap-2 py-2 text-sm text-slate-700 hover:text-brand-dark transition-colors"
+                            className="flex items-start gap-2 py-2 text-sm text-slate-700 hover:text-brand-dark transition-colors"
                           >
-                            <span className="text-slate-300 text-xs">▶</span>
-                            <span className="flex-1 min-w-0 truncate">
-                              {highlight(heading, trimmed)}
+                            <span className="text-slate-300 text-xs mt-0.5 flex-shrink-0">▶</span>
+                            <span className="flex-1 min-w-0">
+                              <span className="block truncate">
+                                {highlight(heading, trimmed)}
+                              </span>
+                              {/* 本文のみマッチ：該当箇所のスニペットを添える */}
+                              {snippet && (
+                                <span className="block text-xs text-slate-500 leading-snug mt-0.5 line-clamp-2">
+                                  {highlight(snippet, trimmed)}
+                                </span>
+                              )}
                             </span>
                           </Link>
                         </li>
