@@ -20,6 +20,7 @@ import EssayAttemptDetail from './pages/EssayAttemptDetail'               // F1-
 import EssaySampleAnswerView from './pages/EssaySampleAnswerView'         // F2-P9 参考答案
 import Notes from './pages/Notes'
 import NoteDetail from './pages/NoteDetail'
+import AfternoonTips from './pages/AfternoonTips'                         // 午後Ⅰ定石一覧
 import Search from './pages/Search'
 import Settings from './pages/Settings'
 import ImportantMarks from './pages/ImportantMarks'                       // F1-P2 で追加
@@ -68,6 +69,8 @@ export default function App() {
           <Route path="/applied-refresh" element={<AppliedRefresh />} />
           <Route path="/how-to-use" element={<HowToUse />} />
           <Route path="/notes" element={<Notes />} />
+          {/* 午後Ⅰ定石一覧（静的セグメントのため :categoryId より先に配置） */}
+          <Route path="/notes/afternoon-tips" element={<AfternoonTips />} />
           <Route path="/notes/:categoryId" element={<NoteDetail />} />
 
           {/* クイズ・公式午前Ⅱ（F1-P4、F2-UX で Layout 配下に移動） */}

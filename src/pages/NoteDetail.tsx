@@ -14,65 +14,8 @@ import type { EmphasisToken, HeaderDiagram } from '../data/noteDb'
 export { NOTE_DB, NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from '../data/noteDb'
 export type { NoteSectionIndexEntry, NoteData, NoteSection, EmphasisToken, EmphasisStyle, HeaderDiagram } from '../data/noteDb'
 
-// ─────────────────────────────────────────────
-// 赤字ワードのトグルコンポーネント
-// ─────────────────────────────────────────────
-interface RedWordProps {
-  text: string
-  masked: boolean
-  version: number // この値が変わると revealed がリセットされる
-}
-
-function RedWord({ text, masked, version }: RedWordProps) {
-  const [revealed, setRevealed] = useState(false)
-
-  // マスクモードが再度 ON になったらリセット
-  useEffect(() => {
-    if (masked) setRevealed(false)
-  }, [masked, version])
-
-  if (!masked) {
-    return <span className="text-red-600 font-bold">{text}</span>
-  }
-  if (revealed) {
-    return (
-      <span
-        role="button"
-        tabIndex={0}
-        className="text-red-600 font-bold cursor-pointer underline decoration-dotted"
-        title="クリックで再び隠す"
-        onClick={() => setRevealed(false)}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(false) } }}
-      >
-        {text}
-      </span>
-    )
-  }
-  return (
-    <span
-      role="button"
-      tabIndex={0}
-      className="rounded px-0.5 cursor-pointer select-none"
-      style={{ backgroundColor: '#c0392b', color: 'transparent' }}
-      title="クリックで表示"
-      onClick={() => setRevealed(true)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(true) } }}
-    >
-      {text}
-    </span>
-  )
-}
-
-// ─────────────────────────────────────────────
-// ネイビー強調（隠す機能なし）
-// ─────────────────────────────────────────────
-function NavyWord({ text }: { text: string }) {
-  return (
-    <span className="font-bold" style={{ color: '#9d5b8b' }}>
-      {text}
-    </span>
-  )
-}
+import { RedWord } from '../components/NoteWords'
+import { renderTokens, renderText } from '../components/NoteMarkup'
 
 // ─────────────────────────────────────────────
 // ヘッダ構成図ビュー（HTML表＋色分け＋赤字隠し）
@@ -184,45 +127,6 @@ function indentStyles(level: number, palette: 'blue' | 'slate' = 'blue') {
     dotSize: 'w-1 h-1',
     textClass: 'text-slate-600',
   }
-}
-
-// ─────────────────────────────────────────────
-// 強調トークン配列 → React ノード（記号マークアップ不使用）
-// ─────────────────────────────────────────────
-function renderTokens(
-  tokens: EmphasisToken[],
-  hideRed: boolean,
-  version: number,
-): React.ReactNode {
-  return tokens.map((tok, i) => {
-    if (tok.style === 'red') {
-      return <RedWord key={i} text={tok.text} masked={hideRed} version={version} />
-    }
-    if (tok.style === 'navy') {
-      return <NavyWord key={i} text={tok.text} />
-    }
-    return <span key={i}>{tok.text}</span>
-  })
-}
-
-// ─────────────────────────────────────────────
-// Render helper:
-//   ==text== → RedWord（赤字・マスク可、暗記対象キーワード用）
-//   __text__ → NavyWord（ネイビー・マスクなし、ラベルや構造的強調用）
-// ─────────────────────────────────────────────
-function renderText(text: string, hideRed: boolean, version: number): React.ReactNode {
-  const parts = text.split(/(==.+?==|__.+?__)/g)
-  return parts.map((part, i) => {
-    if (part.startsWith('==') && part.endsWith('==')) {
-      const inner = part.slice(2, -2)
-      return <RedWord key={i} text={inner} masked={hideRed} version={version} />
-    }
-    if (part.startsWith('__') && part.endsWith('__')) {
-      const inner = part.slice(2, -2)
-      return <NavyWord key={i} text={inner} />
-    }
-    return <span key={i}>{part}</span>
-  })
 }
 
 // ─────────────────────────────────────────────

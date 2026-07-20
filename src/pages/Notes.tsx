@@ -183,6 +183,24 @@ export default function Notes() {
           <p className="text-sm text-slate-500">各分野の重要知識を1ページで確認</p>
         </div>
 
+        {/* 午後Ⅰ定石一覧への導線 */}
+        <Link
+          to="/notes/afternoon-tips"
+          className="group flex items-center gap-3 rounded-xl px-4 py-3 mb-4 text-white shadow-sm hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          style={{ backgroundColor: '#9d5b8b' }}
+        >
+          <span className="text-xl flex-shrink-0" aria-hidden="true">📌</span>
+          <span className="flex-1 min-w-0">
+            <span className="block text-sm font-bold">午後Ⅰ定石一覧</span>
+            <span className="block text-xs text-white/80 leading-snug">
+              全カテゴリの「午後Ⅰの定石」＋共通の解き方をまとめて通し読み
+            </span>
+          </span>
+          <span className="flex-shrink-0 text-white/70 group-hover:text-white transition-colors">
+            <ArrowRightIcon />
+          </span>
+        </Link>
+
         {/* Search box */}
         <div className="mb-5">
           <div className="relative">
