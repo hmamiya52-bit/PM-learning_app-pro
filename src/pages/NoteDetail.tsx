@@ -19,32 +19,11 @@ export const NOTE_CATEGORY_IDS: string[] = [
 // ─────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────
-interface ProtocolEntry {
-  name: string
-  transport: string
-  ports: string
-}
-
 // 強調トークン（記号マークアップ廃止のための構造化データ）
 type EmphasisStyle = 'red' | 'navy' | 'plain'
 interface EmphasisToken {
   text: string
   style: EmphasisStyle
-}
-
-// 復習ノート準拠のリッチプロトコル
-interface RichProtocolEntry {
-  name: string
-  nameStyle?: EmphasisStyle      // プロトコル名の強調（既定 plain）
-  layer?: string                 // "レイヤ2" / "レイヤ3" / "レイヤ4" 等（下位レイヤ表用）。数字部分のみ赤字化される
-  portTokens?: EmphasisToken[]   // ポート番号トークン（上位レイヤ表用）
-  description: EmphasisToken[]   // 説明文（強調混在）
-}
-
-interface RichProtocolTable {
-  heading: string                // テーブル見出し
-  hasPort: boolean               // ポート列を表示するか
-  rows: RichProtocolEntry[]
 }
 
 // ヘッダ構成図（HTML表＋色分け＋赤字隠し対応）
@@ -69,9 +48,6 @@ interface HeaderDiagram {
 interface NoteSection {
   heading: string
   items?: string[]
-  protocols?: ProtocolEntry[]
-  richProtocolTables?: RichProtocolTable[]   // 復習ノート準拠のプロトコル表
-  richItems?: EmphasisToken[][]              // 構造化された箇条書き（赤・ネイビー混在可）
   headerDiagrams?: HeaderDiagram[]           // ヘッダ構成図（HTML表）
   navyItems?: EmphasisToken[][]              // ネイビー強調のみで残す既存項目（各セクション末尾）
   figures?: QuestionFigure[]                 // SVG/table 図表（F2-figures で導入。マトリクス/ベン図/キューブ/フロー等）
@@ -292,106 +268,6 @@ function renderText(text: string, hideRed: boolean, version: number): React.Reac
     }
     return <span key={i}>{part}</span>
   })
-}
-
-// ─────────────────────────────────────────────
-// プロトコルテーブル用：名前/ポートを個別トグル
-// ─────────────────────────────────────────────
-interface ProtoCellProps {
-  text: string
-  isRed: boolean    // この列が「赤字対象」か
-  isHidden: boolean // 赤字を隠す状態か（= isRed && hideRed）
-  isPort?: boolean  // ポート列：数字のみ赤字・マスク、記号は残す
-  version: number
-}
-
-function ProtoCell({ text, isRed, isHidden, isPort, version }: ProtoCellProps) {
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    setRevealed(false)
-  }, [isRed, isHidden, version])
-
-  // 赤字対象でない → 通常表示
-  if (!isRed) {
-    return <span className="font-semibold text-slate-800">{text}</span>
-  }
-
-  // ── ポート列：数字のみ対象 ──
-  if (isPort) {
-    const parts = text.split(/(\d+)/g)
-    const renderParts = (numClass: string) =>
-      parts.map((part, i) =>
-        /^\d+$/.test(part) ? (
-          <span key={i} className={numClass}>{part}</span>
-        ) : (
-          <span key={i} className="text-slate-600">{part}</span>
-        )
-      )
-
-    if (!isHidden) {
-      // 赤字表示（非マスク）：数字だけ赤
-      return <span>{renderParts('text-red-600 font-bold')}</span>
-    }
-    // マスク状態
-    return (
-      <span
-        role="button" tabIndex={0}
-        className="cursor-pointer"
-        title={revealed ? 'タップで再び隠す' : 'タップで表示'}
-        onClick={() => setRevealed((v) => !v)}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed((v) => !v) } }}
-      >
-        {parts.map((part, i) =>
-          /^\d+$/.test(part) ? (
-            revealed ? (
-              <span key={i} className="text-red-600 font-bold underline decoration-dotted">{part}</span>
-            ) : (
-              <span
-                key={i}
-                className="rounded select-none"
-                style={{ backgroundColor: '#c0392b', color: 'transparent', padding: '0 2px' }}
-              >{part}</span>
-            )
-          ) : (
-            <span key={i} className="text-slate-500">{part}</span>
-          )
-        )}
-      </span>
-    )
-  }
-
-  // ── 名前列：全体を対象 ──
-  if (!isHidden) {
-    // 赤字表示（非マスク）
-    return <span className="text-red-600 font-bold">{text}</span>
-  }
-  // マスク状態
-  if (revealed) {
-    return (
-      <span
-        role="button" tabIndex={0}
-        className="text-red-600 font-bold cursor-pointer underline decoration-dotted"
-        title="タップで再び隠す"
-        onClick={() => setRevealed(false)}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(false) } }}
-      >
-        {text}
-      </span>
-    )
-  }
-  return (
-    <span
-      role="button" tabIndex={0}
-      className="rounded px-0.5 cursor-pointer select-none"
-      style={{ backgroundColor: '#c0392b', color: 'transparent' }}
-      title="タップで表示"
-      onClick={() => setRevealed(true)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setRevealed(true) } }}
-    >
-      {text}
-    </span>
-  )
 }
 
 // ─────────────────────────────────────────────
@@ -5391,14 +5267,6 @@ export default function NoteDetail() {
   const [highlightedSection, setHighlightedSection] = useState<number | null>(null)
   // マスクモードを ON にするたびにインクリメントして RedWord をリセット
   const [maskVersion, setMaskVersion] = useState(0)
-  // プロトコルテーブル専用マスクモード（protocol-review ページのみ）
-  const [protoMask, setProtoMask] = useState<'none' | 'name' | 'port'>('none')
-  const [protoVersion, setProtoVersion] = useState(0)
-
-  const setProtoMaskMode = (mode: 'none' | 'name' | 'port') => {
-    setProtoMask(mode)
-    setProtoVersion((v) => v + 1)
-  }
 
   const [understanding, setUnderstanding] = useState(() => getNoteUnderstanding())
 
@@ -5540,7 +5408,7 @@ export default function NoteDetail() {
             <span className="text-red-600 font-bold">赤字</span>
             <span>= 重要暗記ワード</span>
             <span className="mx-1 text-slate-300">|</span>
-            {hideRed || (categoryId === 'protocol-review' && protoMask !== 'none') ? (
+            {hideRed ? (
               <span className="flex items-center gap-1 flex-wrap">
                 <span className="inline-block w-10 rounded text-center text-xs" style={{ backgroundColor: '#c0392b', color: 'transparent' }}>隠れ</span>
                 <span>をタップで表示 / もう一度タップで再び隠す</span>
@@ -5575,31 +5443,6 @@ export default function NoteDetail() {
               >
                 <h2 className="text-sm font-bold text-white leading-snug flex-1">{section.heading}</h2>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
-                  {section.protocols && (
-                    <>
-                      <button
-                        onClick={() => setProtoMaskMode(protoMask === 'name' ? 'none' : 'name')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
-                          protoMask === 'name'
-                            ? 'bg-red-500 text-white'
-                            : 'bg-brand-dark text-white/85 hover:bg-brand-dark'
-                        }`}
-                      >
-                        {protoMask === 'name' ? '名前が赤字 ✓' : '名前を赤字に'}
-                      </button>
-                      <button
-                        onClick={() => setProtoMaskMode(protoMask === 'port' ? 'none' : 'port')}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
-                          protoMask === 'port'
-                            ? 'bg-red-500 text-white'
-                            : 'bg-brand-dark text-white/85 hover:bg-brand-dark'
-                        }`}
-                      >
-                        {protoMask === 'port' ? 'ポートが赤字 ✓' : 'ポートを赤字に'}
-                      </button>
-                      <div className="w-px h-4 bg-brand-dark mx-0.5" />
-                    </>
-                  )}
                   {(['green', 'yellow', 'red'] as UnderstandingLevel[]).map((level) => {
                     const isActive = understanding[`${categoryId}:${i}`] === level
                     const fillColor = { green: '#10b981', yellow: '#f59e0b', red: '#ef4444' }[level]
@@ -5640,128 +5483,7 @@ export default function NoteDetail() {
                   })}
                 </div>
               </div>
-              {section.protocols ? (
-                <div className="px-5 py-3 overflow-x-auto">
-                  <table className="w-full text-sm border-collapse">
-                    <thead>
-                      <tr className="text-xs text-slate-400 border-b border-slate-100">
-                        <th className="text-left pb-2 pr-4 font-semibold">プロトコル</th>
-                        <th className="text-left pb-2 pr-4 font-semibold w-20">種別</th>
-                        <th className="text-left pb-2 font-semibold">ポート / 番号</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {section.protocols.map((entry, j) => (
-                        <tr key={j} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                          <td className="py-1.5 pr-4">
-                            <ProtoCell
-                              text={entry.name}
-                              isRed={protoMask === 'name'}
-                              isHidden={protoMask === 'name' && hideRed}
-                              version={protoVersion + maskVersion}
-                            />
-                          </td>
-                          <td className="py-1.5 pr-4 text-slate-400 text-xs font-mono">{entry.transport}</td>
-                          <td className="py-1.5 font-mono text-xs">
-                            <ProtoCell
-                              text={entry.ports}
-                              isRed={protoMask === 'port'}
-                              isHidden={protoMask === 'port' && hideRed}
-                              isPort
-                              version={protoVersion + maskVersion}
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : section.richProtocolTables ? (
-                <div className="px-5 py-3 space-y-4">
-                  {section.richProtocolTables.map((tbl, ti) => (
-                    <div key={ti} className="overflow-x-auto">
-                      <table className="w-full text-sm border-collapse">
-                        <thead>
-                          <tr className="text-xs text-slate-400 border-b border-slate-200 bg-slate-50">
-                            <th className="text-left py-2 px-2 font-semibold w-28">プロトコル名</th>
-                            {!tbl.hasPort && (
-                              <th className="text-left py-2 px-2 font-semibold w-20">レイヤ</th>
-                            )}
-                            {tbl.hasPort && (
-                              <th className="text-left py-2 px-2 font-semibold w-32">ポート番号</th>
-                            )}
-                            <th className="text-left py-2 px-2 font-semibold">説明</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tbl.rows.map((row, j) => (
-                            <tr key={j} className="border-b border-slate-100 hover:bg-slate-50/60 transition-colors align-top">
-                              <td className="py-2 px-2 font-mono text-xs whitespace-nowrap">
-                                {row.nameStyle === 'red' ? (
-                                  <RedWord text={row.name} masked={hideRed} version={maskVersion} />
-                                ) : row.nameStyle === 'navy' ? (
-                                  <NavyWord text={row.name} />
-                                ) : (
-                                  <span className="font-bold text-slate-800">{row.name}</span>
-                                )}
-                              </td>
-                              {!tbl.hasPort && (
-                                <td className="py-2 px-2 text-xs whitespace-nowrap">
-                                  {row.layer ? (() => {
-                                    const m = row.layer.match(/^(レイヤ)(\d+)$/)
-                                    if (m) {
-                                      return (
-                                        <span className="text-slate-500">
-                                          {m[1]}
-                                          <RedWord text={m[2]} masked={hideRed} version={maskVersion} />
-                                        </span>
-                                      )
-                                    }
-                                    return <span className="text-slate-500">{row.layer}</span>
-                                  })() : <span className="text-slate-300">—</span>}
-                                </td>
-                              )}
-                              {tbl.hasPort && (
-                                <td className="py-2 px-2 font-mono text-xs whitespace-nowrap">
-                                  {row.portTokens
-                                    ? renderTokens(row.portTokens, hideRed, maskVersion)
-                                    : <span className="text-slate-300">—</span>}
-                                </td>
-                              )}
-                              <td className="py-2 px-2 text-xs text-slate-700 leading-relaxed whitespace-pre-line">
-                                {renderTokens(row.description, hideRed, maskVersion)}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ))}
-                </div>
-              ) : section.richItems ? (
-                <ul className="px-5 py-4 space-y-2">
-                  {section.richItems.map((tokens, j) => {
-                    const { level, stripped } = detectIndent(tokens)
-                    const s = indentStyles(level, 'blue')
-                    return (
-                      <li
-                        key={j}
-                        className={`flex items-start gap-2 text-sm leading-relaxed ${s.padClass} ${s.textClass}`}
-                      >
-                        <span className={`flex-shrink-0 mt-1.5 rounded-full ${s.dotSize} ${s.dotClass}`} />
-                        <span>{renderTokens(stripped, hideRed, maskVersion)}</span>
-                      </li>
-                    )
-                  })}
-                  {section.headerDiagrams && section.headerDiagrams.length > 0 && (
-                    <li className="list-none pt-2 space-y-4">
-                      {section.headerDiagrams.map((dg, k) => (
-                        <HeaderDiagramView key={k} dg={dg} hideRed={hideRed} version={maskVersion} />
-                      ))}
-                    </li>
-                  )}
-                </ul>
-              ) : section.headerDiagrams ? (
+              {section.headerDiagrams ? (
                 <div className="px-5 py-4 space-y-4">
                   {section.headerDiagrams.map((dg, k) => (
                     <HeaderDiagramView key={k} dg={dg} hideRed={hideRed} version={maskVersion} />
