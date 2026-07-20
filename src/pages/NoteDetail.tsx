@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useLocation, Link } from 'react-router-dom'
 import { categories } from '../data/categories'
 import { getNoteUnderstanding, setNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
@@ -238,6 +238,8 @@ export default function NoteDetail() {
   const [highlightedSection, setHighlightedSection] = useState<number | null>(null)
   // マスクモードを ON にするたびにインクリメントして RedWord をリセット
   const [maskVersion, setMaskVersion] = useState(0)
+  // ページ内目次の開閉（既定は折りたたみ）
+  const [tocOpen, setTocOpen] = useState(false)
 
   const [understanding, setUnderstanding] = useState(() => getNoteUnderstanding())
 
@@ -279,28 +281,51 @@ export default function NoteDetail() {
     })
   }
 
-  // 検索ジャンプ：URLのハッシュ #note-section-N に対応するセクションへスクロール＆ハイライト
-  useEffect(() => {
-    const m = location.hash.match(/^#note-section-(\d+)$/)
-    if (!m) {
-      setHighlightedSection(null)
-      return
-    }
-    const idx = parseInt(m[1], 10)
-    if (!note || idx < 0 || idx >= note.sections.length) return
+  // セクションへのジャンプ（検索ジャンプ・目次クリック共通）
+  // タイマーを ref で一元管理し、連続ジャンプ時に古いハイライト解除が新しいジャンプを
+  // 打ち消さないようにする
+  const jumpTimersRef = useRef<{
+    scroll?: ReturnType<typeof setTimeout>
+    fade?: ReturnType<typeof setTimeout>
+  }>({})
+
+  const clearJumpTimers = useCallback(() => {
+    const timers = jumpTimersRef.current
+    if (timers.scroll) clearTimeout(timers.scroll)
+    if (timers.fade) clearTimeout(timers.fade)
+  }, [])
+
+  const jumpToSection = useCallback((idx: number) => {
+    const timers = jumpTimersRef.current
+    clearJumpTimers()
     setHighlightedSection(idx)
     // 描画後にスクロール
-    const timer = setTimeout(() => {
+    timers.scroll = setTimeout(() => {
       const el = document.getElementById(`note-section-${idx}`)
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 50)
     // 2秒後にハイライトを解除
-    const fadeTimer = setTimeout(() => setHighlightedSection(null), 2200)
-    return () => {
-      clearTimeout(timer)
-      clearTimeout(fadeTimer)
+    timers.fade = setTimeout(() => setHighlightedSection(null), 2200)
+  }, [clearJumpTimers])
+
+  // アンマウント時に保留中のタイマーを破棄
+  useEffect(() => clearJumpTimers, [clearJumpTimers])
+
+  // 検索ジャンプ：URLのハッシュ #note-section-N に対応するセクションへスクロール＆ハイライト
+  useEffect(() => {
+    const m = location.hash.match(/^#note-section-(\d+)$/)
+    if (!m) {
+      clearJumpTimers()
+      setHighlightedSection(null)
+      return
     }
-  }, [location.hash, note, categoryId])
+    const idx = parseInt(m[1], 10)
+    if (!note || idx < 0 || idx >= note.sections.length) {
+      clearJumpTimers()
+      return
+    }
+    jumpToSection(idx)
+  }, [location.hash, note, categoryId, jumpToSection, clearJumpTimers])
 
   // 前後のノートカテゴリ
   const currentIdx = categoryId ? NOTE_CATEGORY_IDS.indexOf(categoryId) : -1
@@ -396,6 +421,62 @@ export default function NoteDetail() {
               <span>チェックボックスで理解度を記録できます</span>
             </span>
           </div>
+        </div>
+
+        {/* ページ内目次（既定は折りたたみ） */}
+        <div className="mb-5 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <button
+            onClick={() => setTocOpen((v) => !v)}
+            aria-expanded={tocOpen}
+            aria-controls="note-toc-list"
+            className="w-full flex items-center justify-between gap-2 px-4 py-3 text-left hover:bg-slate-50 transition-colors"
+          >
+            <span className="flex items-baseline gap-2 min-w-0">
+              <span className="text-sm font-bold" style={{ color: '#9d5b8b' }}>目次</span>
+              <span className="text-xs text-slate-400">全 {note.sections.length} セクション</span>
+            </span>
+            <svg
+              width="16" height="16" viewBox="0 0 20 20" fill="none"
+              xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+              className={`flex-shrink-0 text-slate-400 transition-transform ${tocOpen ? 'rotate-180' : ''}`}
+            >
+              <path d="M5 7.5 L10 12.5 L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          {tocOpen && (
+            <ol id="note-toc-list" className="border-t border-slate-100 max-h-80 overflow-y-auto py-1">
+              {note.sections.map((section, i) => {
+                const level = understanding[`${categoryId}:${i}`]
+                const dotColor = level
+                  ? { green: '#10b981', yellow: '#f59e0b', red: '#ef4444' }[level]
+                  : '#cbd5e1'
+                const dotLabel = level
+                  ? { green: '理解できた', yellow: 'なんとなく', red: 'まだ難しい' }[level]
+                  : '未記録'
+                return (
+                  <li key={i}>
+                    <button
+                      onClick={() => {
+                        jumpToSection(i)
+                        setTocOpen(false)
+                      }}
+                      className="w-full flex items-start gap-2.5 px-4 py-2 text-left hover:bg-slate-50 transition-colors group"
+                    >
+                      <span
+                        className="flex-shrink-0 mt-1.5 w-2 h-2 rounded-full"
+                        style={{ backgroundColor: dotColor }}
+                        title={dotLabel}
+                        aria-label={dotLabel}
+                      />
+                      <span className="text-xs text-slate-600 leading-snug group-hover:text-brand-dark transition-colors">
+                        {section.heading}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ol>
+          )}
         </div>
 
         {/* Sections */}
