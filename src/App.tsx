@@ -1,50 +1,57 @@
+import { lazy } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import AuthGuard from './auth/AuthGuard'
+
+// 初期表示に必要な画面は即時読み込み（ログイン直後・ホームで待たせないため）
 import Login from './pages/Login'
 import Home from './pages/Home'
-import AppliedRefresh from './pages/AppliedRefresh'
-import Quiz from './pages/Quiz'
-import OfficialMorningQuiz from './pages/OfficialMorningQuiz'          // F1-P4 で追加
-import OfficialMorningSession from './pages/OfficialMorningSession'    // F1-P4 で追加
-import OfficialMorningSummary from './pages/OfficialMorningSummary'    // F1-P4 で追加
-import AfternoonProblems from './pages/AfternoonProblems'
-import AfternoonAnswerDetail from './pages/AfternoonAnswerDetail'
-import AfternoonMyAnswer from './pages/AfternoonMyAnswer'
-import AfternoonExplanationDetail from './pages/AfternoonExplanationDetail'   // F2-P8 詳細解説
-import EssayList from './pages/EssayList'                                 // F1-P5 で追加
-import EssayGuide from './pages/EssayGuide'                               // 論述のコツ ガイド
-import EssayOutline from './pages/EssayOutline'                           // 骨子練習モード
-import EssayTraining from './pages/EssayTraining'                         // F1-P5 で追加
-import EssayAttemptDetail from './pages/EssayAttemptDetail'               // F1-P5 で追加
-import EssaySampleAnswerView from './pages/EssaySampleAnswerView'         // F2-P9 参考答案
-import Notes from './pages/Notes'
-import NoteDetail from './pages/NoteDetail'
-import AfternoonTips from './pages/AfternoonTips'                         // 午後Ⅰ定石一覧
-import Search from './pages/Search'
-import Settings from './pages/Settings'
-import ImportantMarks from './pages/ImportantMarks'                       // F1-P2 で追加
-import Badges from './pages/Badges'
-import HowToUse from './pages/HowToUse'
-import ActivityHistory from './pages/ActivityHistory'
-import DeviceSync from './pages/DeviceSync'
 import NotFound from './pages/NotFound'
-import ItServiceManager from './pages/ItServiceManager'
-import SmStrategy from './pages/sm/SmStrategy'
-import SmCases from './pages/sm/SmCases'
-import SmThemes from './pages/sm/SmThemes'
-import SmKnowledge from './pages/sm/SmKnowledge'
-import SmMorning from './pages/sm/SmMorning'
-import SmAfternoon from './pages/sm/SmAfternoon'
-import SmEssay from './pages/sm/SmEssay'
-import SmHistory from './pages/sm/SmHistory'
-import SmReport from './pages/sm/SmReport'
-import SmPlan from './pages/sm/SmPlan'
-import SmFinalSprint from './pages/sm/SmFinalSprint'
-import SmReview from './pages/sm/SmReview'
-import SmAnswerParts from './pages/sm/SmAnswerParts'
-import SmSimulation from './pages/sm/SmSimulation'
-import SmPrescriptions from './pages/sm/SmPrescriptions'
+
+// 以降は遅延読み込み。Suspense 境界は Layout の <Outlet /> 側に置いている。
+// 単一ルートでしか使わない大きなデータ（午後Ⅰ詳細解説・論述参考答案・SM系など）を
+// 初期バンドルから外すのが狙い。
+const AppliedRefresh = lazy(() => import('./pages/AppliedRefresh'))
+const Quiz = lazy(() => import('./pages/Quiz'))
+const OfficialMorningQuiz = lazy(() => import('./pages/OfficialMorningQuiz'))          // F1-P4 で追加
+const OfficialMorningSession = lazy(() => import('./pages/OfficialMorningSession'))    // F1-P4 で追加
+const OfficialMorningSummary = lazy(() => import('./pages/OfficialMorningSummary'))    // F1-P4 で追加
+const AfternoonProblems = lazy(() => import('./pages/AfternoonProblems'))
+const AfternoonAnswerDetail = lazy(() => import('./pages/AfternoonAnswerDetail'))
+const AfternoonMyAnswer = lazy(() => import('./pages/AfternoonMyAnswer'))
+const AfternoonExplanationDetail = lazy(() => import('./pages/AfternoonExplanationDetail'))   // F2-P8 詳細解説
+const EssayList = lazy(() => import('./pages/EssayList'))                                 // F1-P5 で追加
+const EssayGuide = lazy(() => import('./pages/EssayGuide'))                               // 論述のコツ ガイド
+const EssayOutline = lazy(() => import('./pages/EssayOutline'))                           // 骨子練習モード
+const EssayTraining = lazy(() => import('./pages/EssayTraining'))                         // F1-P5 で追加
+const EssayAttemptDetail = lazy(() => import('./pages/EssayAttemptDetail'))               // F1-P5 で追加
+const EssaySampleAnswerView = lazy(() => import('./pages/EssaySampleAnswerView'))         // F2-P9 参考答案
+const Notes = lazy(() => import('./pages/Notes'))
+const NoteDetail = lazy(() => import('./pages/NoteDetail'))
+const AfternoonTips = lazy(() => import('./pages/AfternoonTips'))                         // 午後Ⅰ定石一覧
+const Search = lazy(() => import('./pages/Search'))
+const Settings = lazy(() => import('./pages/Settings'))
+const ImportantMarks = lazy(() => import('./pages/ImportantMarks'))                       // F1-P2 で追加
+const Badges = lazy(() => import('./pages/Badges'))
+const HowToUse = lazy(() => import('./pages/HowToUse'))
+const ActivityHistory = lazy(() => import('./pages/ActivityHistory'))
+const DeviceSync = lazy(() => import('./pages/DeviceSync'))
+const ItServiceManager = lazy(() => import('./pages/ItServiceManager'))
+const SmStrategy = lazy(() => import('./pages/sm/SmStrategy'))
+const SmCases = lazy(() => import('./pages/sm/SmCases'))
+const SmThemes = lazy(() => import('./pages/sm/SmThemes'))
+const SmKnowledge = lazy(() => import('./pages/sm/SmKnowledge'))
+const SmMorning = lazy(() => import('./pages/sm/SmMorning'))
+const SmAfternoon = lazy(() => import('./pages/sm/SmAfternoon'))
+const SmEssay = lazy(() => import('./pages/sm/SmEssay'))
+const SmHistory = lazy(() => import('./pages/sm/SmHistory'))
+const SmReport = lazy(() => import('./pages/sm/SmReport'))
+const SmPlan = lazy(() => import('./pages/sm/SmPlan'))
+const SmFinalSprint = lazy(() => import('./pages/sm/SmFinalSprint'))
+const SmReview = lazy(() => import('./pages/sm/SmReview'))
+const SmAnswerParts = lazy(() => import('./pages/sm/SmAnswerParts'))
+const SmSimulation = lazy(() => import('./pages/sm/SmSimulation'))
+const SmPrescriptions = lazy(() => import('./pages/sm/SmPrescriptions'))
 
 /**
  * App.tsx（正式版 v1.0.0）
@@ -52,6 +59,10 @@ import SmPrescriptions from './pages/sm/SmPrescriptions'
  * 設計書 §7.2 に従い AuthGuard を復活：
  *   - /login は AuthGuard の外側に配置（フルスクリーン・Layout 非適用）
  *   - Layout 配下の全画面を <AuthGuard> でラップ（未認証は /login へリダイレクト）
+ *
+ * 2026-07-21: ルート単位のコード分割を導入（M1）。
+ *   Login / Home / NotFound 以外を React.lazy 化し、Suspense 境界は Layout に置く。
+ *   PWA のプリキャッシュ設定は変更していないため、オフライン利用性は従来どおり。
  */
 export default function App() {
   return (

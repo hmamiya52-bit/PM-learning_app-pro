@@ -10,7 +10,7 @@
  */
 import { categories } from '../src/data/categories'
 import { questions } from '../src/data/questions'
-import { NOTE_DB } from '../src/pages/NoteDetail'
+import { NOTE_DB } from '../src/data/noteDb'
 import { afternoonProblems } from '../src/data/afternoonProblems'
 import { officialAnswers } from '../src/data/officialAnswers'
 import { scoringMap } from '../src/data/scoringMap'

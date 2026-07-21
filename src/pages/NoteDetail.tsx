@@ -8,11 +8,10 @@ import { QuestionFigureView } from '../components/QuestionFigureView'
 import { NOTE_DB, NOTE_CATEGORY_IDS, EXAM_TIPS_ANCHOR } from '../data/noteDb'
 import type { EmphasisToken, HeaderDiagram } from '../data/noteDb'
 
-// ノートデータは src/data/noteDb.ts へ分離（2026-07-20）。
-// Notes.tsx / Quiz.tsx / scripts/validate-static-data.ts が本ファイルから
-// import しているため、互換維持のため re-export する。
-export { NOTE_DB, NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from '../data/noteDb'
-export type { NoteSectionIndexEntry, NoteData, NoteSection, EmphasisToken, EmphasisStyle, HeaderDiagram } from '../data/noteDb'
+// ノートデータは src/data/noteDb.ts にある。
+// 以前はここから re-export していたが、コード分割の妨げになる
+// （/notes 一覧を開くだけで NoteDetail のコンポーネントまで読み込まれる）ため、
+// 利用側は noteDb を直接 import する。
 
 import { RedWord } from '../components/NoteWords'
 import { renderTokens, renderText } from '../components/NoteMarkup'

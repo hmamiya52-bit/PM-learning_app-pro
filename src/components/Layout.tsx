@@ -1,7 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import PwaInstallPrompt from './PwaInstallPrompt'
 import { VERSION_LABEL } from '../version'
+
+// 遅延読み込み中のプレースホルダ（本文領域のみを置き換える）
+function PageLoading() {
+  return (
+    <div className="min-h-screen flex items-start justify-center pt-24" style={{ backgroundColor: '#f8fafc' }}>
+      <div className="flex items-center gap-2 text-sm text-slate-400" role="status" aria-live="polite">
+        <span
+          className="inline-block w-4 h-4 rounded-full border-2 border-slate-300 border-t-brand animate-spin"
+          aria-hidden="true"
+        />
+        読み込み中…
+      </div>
+    </div>
+  )
+}
 
 /**
  * 没入型画面のパス（演習・クイズ）。これらの画面ではサイドバーが
@@ -386,7 +401,11 @@ export default function Layout() {
           className="flex-1 min-w-0 transition-[margin-left] duration-200 ease-in-out"
           style={{ marginLeft: contentMargin }}
         >
-          <Outlet />
+          {/* 各ページは App.tsx で遅延読み込みするため、ここで Suspense 境界を張る。
+              ヘッダ・サイドバーを保ったまま本文だけ差し替わる */}
+          <Suspense fallback={<PageLoading />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
 

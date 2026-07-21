@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { categories } from '../data/categories'
-import { NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from './NoteDetail'
+import { NOTE_CATEGORY_IDS, NOTE_SECTION_INDEX } from '../data/noteDb'
 import { getNoteUnderstanding, type UnderstandingLevel } from '../lib/storage'
 import { searchNoteSections, noteHitHref } from '../lib/noteSearch'
 
