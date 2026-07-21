@@ -69,16 +69,24 @@ function MaskScope({
   return <MaskProgressContext.Provider value={api}>{children}</MaskProgressContext.Provider>
 }
 
+// exam_tips ブロック用の maskCounts キー（セクションではないため負値を使う）
+const EXAM_TIPS_MASK_INDEX = -1
+
 // セクションヘッダに出す「残りN」／「完了」バッジ
+// 背景は白・文字を濃色にしてコントラストを確保する（紫帯・黄帯のどちらの上でも
+// WCAG AA を満たす。白文字＋半透明背景では 3.06 しかなく不足だった）
 function MaskProgressBadge({ counts }: { counts?: MaskCounts }) {
   if (!counts || counts.total === 0) return null
   const remaining = counts.total - counts.revealed
+  const base =
+    'text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-white whitespace-nowrap flex-shrink-0 ring-1 ring-black/5'
   // 見出しの折り返しを増やさないよう、狭い画面では「残り」の語を省いて数字だけにする
   if (remaining === 0) {
     return (
       <span
-        className="text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-400 text-white whitespace-nowrap flex-shrink-0"
+        className={`${base} text-emerald-700`}
         title={`${counts.total} 個すべて表示しました`}
+        aria-label="赤字をすべて表示しました"
       >
         ✓<span className="hidden sm:inline"> 完了</span>
       </span>
@@ -86,7 +94,7 @@ function MaskProgressBadge({ counts }: { counts?: MaskCounts }) {
   }
   return (
     <span
-      className="text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-white/25 text-white whitespace-nowrap flex-shrink-0"
+      className={`${base} text-brand-dark`}
       title={`未開封の赤字 ${remaining} / ${counts.total} 個`}
       aria-label={`未開封の赤字 ${remaining} 個`}
     >
@@ -620,17 +628,21 @@ export default function NoteDetail() {
           id={EXAM_TIPS_ANCHOR}
           className="mt-6 bg-amber-50 border border-amber-200 rounded-2xl overflow-hidden scroll-mt-20"
         >
-          <div className="px-5 py-3 border-b border-amber-200 bg-amber-100">
-            <h2 className="text-sm font-bold text-amber-800">★ 試験で狙われるポイント</h2>
+          <div className="px-5 py-3 border-b border-amber-200 bg-amber-100 flex items-center justify-between gap-2">
+            <h2 className="text-sm font-bold text-amber-800 flex-1 min-w-0">★ 試験で狙われるポイント</h2>
+            {/* 本文と同様、マスク中は未開封数を表示する */}
+            {hideRed && <MaskProgressBadge counts={maskCounts[EXAM_TIPS_MASK_INDEX]} />}
           </div>
-          <ul className="px-5 py-4 space-y-2" key={categoryId}>
-            {note.exam_tips.map((tip, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-amber-900 leading-relaxed">
-                <span className="flex-shrink-0 mt-0.5 text-amber-500 font-bold">!</span>
-                <span>{renderText(tip, hideRed, maskVersion)}</span>
-              </li>
-            ))}
-          </ul>
+          <MaskScope index={EXAM_TIPS_MASK_INDEX} onCounts={handleMaskCounts}>
+            <ul className="px-5 py-4 space-y-2" key={categoryId}>
+              {note.exam_tips.map((tip, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-amber-900 leading-relaxed">
+                  <span className="flex-shrink-0 mt-0.5 text-amber-500 font-bold">!</span>
+                  <span>{renderText(tip, hideRed, maskVersion)}</span>
+                </li>
+              ))}
+            </ul>
+          </MaskScope>
         </div>
 
         {/* 前後ナビ */}
@@ -666,6 +678,12 @@ export default function NoteDetail() {
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-brand hover:text-brand-dark transition-colors"
           >
             ← ノート一覧へ
+          </Link>
+          <Link
+            to="/notes/afternoon-tips"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:border-brand hover:text-brand-dark transition-colors"
+          >
+            📌 午後Ⅰ定石一覧
           </Link>
           <Link
             to={`/quiz?mode=topic&category=${category.id}`}

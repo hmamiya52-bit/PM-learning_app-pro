@@ -168,6 +168,7 @@ export function resetAllData(): void {
   Object.values(KEYS).forEach((k) => localStorage.removeItem(k))
   localStorage.removeItem('pmap:note_understanding')
   localStorage.removeItem('pmap:question_mastery')
+  localStorage.removeItem('pmap:note_hide_red')
 }
 
 /**

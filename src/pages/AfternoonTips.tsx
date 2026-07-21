@@ -4,6 +4,7 @@ import { categories } from '../data/categories'
 import { NOTE_DB, NOTE_CATEGORY_IDS } from '../data/noteDb'
 import type { EmphasisToken } from '../data/noteDb'
 import { renderTokens, renderText } from '../components/NoteMarkup'
+import { getNoteHideRed, setNoteHideRed } from '../lib/storage'
 
 // ─────────────────────────────────────────────
 // 午後Ⅰ定石一覧（試験直前の通し読み用）
@@ -89,16 +90,17 @@ function BackIcon() {
 }
 
 export default function AfternoonTips() {
-  const [hideRed, setHideRed] = useState(false)
+  // 赤字マスクはノート詳細と同じ LocalStorage の設定を共有する
+  // （暗記テスト中にこのページへ来てもマスクが解除されないようにするため）
+  const [hideRed, setHideRed] = useState(() => getNoteHideRed())
   // マスクモードを ON にするたびにインクリメントして RedWord をリセット
   const [maskVersion, setMaskVersion] = useState(0)
 
   const toggleHide = () => {
-    setHideRed((v) => {
-      const next = !v
-      if (next) setMaskVersion((k) => k + 1)
-      return next
-    })
+    const next = !hideRed
+    setHideRed(next)
+    setNoteHideRed(next)
+    if (next) setMaskVersion((k) => k + 1)
   }
 
   return (

@@ -75,10 +75,16 @@ function highlight(text: string, query: string) {
   )
 }
 
-function UnderstandingBadges({ categoryId }: { categoryId: string }) {
-  const understanding = useMemo(() => getNoteUnderstanding(), [])
+// understanding は親から受け取る（カードごとに LocalStorage を読み直さないため）
+function UnderstandingBadges({
+  categoryId,
+  understanding,
+}: {
+  categoryId: string
+  understanding: Record<string, UnderstandingLevel>
+}) {
   const sections = useMemo(
-    () => NOTE_SECTION_INDEX.filter((e) => e.categoryId === categoryId),
+    () => NOTE_SECTION_INDEX.filter((e) => e.categoryId === categoryId && e.kind === 'section'),
     [categoryId],
   )
   const green = sections.filter((e) => understanding[`${categoryId}:${e.sectionIndex}`] === 'green').length
@@ -317,7 +323,7 @@ export default function Notes() {
                     <p className="text-xs text-slate-400 mt-0.5 leading-snug line-clamp-2">
                       {cat.description}
                     </p>
-                    <UnderstandingBadges categoryId={cat.id} />
+                    <UnderstandingBadges categoryId={cat.id} understanding={understanding} />
                   </div>
                   <div className="text-slate-300 group-hover:text-brand transition-colors flex-shrink-0">
                     <ArrowRightIcon />
