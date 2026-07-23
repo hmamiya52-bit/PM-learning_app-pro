@@ -11,6 +11,8 @@
 import { categories } from '../src/data/categories'
 import { questions } from '../src/data/questions'
 import { NOTE_DB } from '../src/data/noteDb'
+import { officialMorningQuestions } from '../src/data/officialMorningQuestions'
+import { questionMeta, officialMorningQuestionIds } from '../src/data/questionMeta'
 import { afternoonProblems } from '../src/data/afternoonProblems'
 import { officialAnswers } from '../src/data/officialAnswers'
 import { scoringMap } from '../src/data/scoringMap'
@@ -968,11 +970,59 @@ for (const p of essayProblems) {
 }
 
 // ─────────────────────────────────────────────
+// 問題メタデータ（questionMeta.ts）の同期チェック
+//
+// questionMeta.ts は本体データから生成した射影のため、問題を増減したまま
+// npm run gen:meta を忘れると集計値がズレる。ここで検出する。
+// ─────────────────────────────────────────────
+function runQuestionMetaValidation(): void {
+  if (questionMeta.length !== questions.length) {
+    error(
+      `questionMeta の件数が questions と不一致（meta ${questionMeta.length} / 実体 ${questions.length}）。` +
+        ' npm run gen:meta を実行してください',
+    )
+  }
+  if (officialMorningQuestionIds.length !== officialMorningQuestions.length) {
+    error(
+      `officialMorningQuestionIds の件数が不一致（meta ${officialMorningQuestionIds.length} / 実体 ${officialMorningQuestions.length}）。` +
+        ' npm run gen:meta を実行してください',
+    )
+  }
+
+  // id と topicId が順序込みで一致するか
+  const metaMismatch = questions.findIndex(
+    (q, i) => questionMeta[i]?.id !== q.id || questionMeta[i]?.topicId !== q.topicId,
+  )
+  if (metaMismatch !== -1) {
+    const q = questions[metaMismatch]
+    const m = questionMeta[metaMismatch]
+    error(
+      `questionMeta[${metaMismatch}] が不一致（meta ${m?.id}/${m?.topicId} → 実体 ${q.id}/${q.topicId}）。` +
+        ' npm run gen:meta を実行してください',
+    )
+  }
+
+  const morningMismatch = officialMorningQuestions.findIndex(
+    (q, i) => officialMorningQuestionIds[i] !== q.id,
+  )
+  if (morningMismatch !== -1) {
+    error(
+      `officialMorningQuestionIds[${morningMismatch}] が不一致。 npm run gen:meta を実行してください`,
+    )
+  }
+
+  console.log(
+    `[QUESTION-META] questionMeta ${questionMeta.length} 件 / morningIds ${officialMorningQuestionIds.length} 件 同期OK`,
+  )
+}
+
+// ─────────────────────────────────────────────
 // 結果
 // ─────────────────────────────────────────────
 runMarkupValidation()
 runAfternoonExplanationStructureAudit()
 runSmDataValidation()
+runQuestionMetaValidation()
 
 if (errorCount === 0) {
   console.log('[OK] 全データの整合性確認完了')

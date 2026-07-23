@@ -7,7 +7,7 @@ import type { MasteryState } from '../storage'
 import { getTotalXpFromSyncEvents } from './events'
 import { loadSyncMeta } from './device'
 import { BADGES } from '../../data/badges'
-import { questions } from '../../data/questions'
+import { questionMeta as questions } from '../../data/questionMeta'
 import {
   loadAllSavedAnswerSnapshots,
   saveAllSavedAnswerSnapshots,

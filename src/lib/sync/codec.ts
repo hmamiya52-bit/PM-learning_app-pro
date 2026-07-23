@@ -1,8 +1,7 @@
 import LZString from 'lz-string'
 import { BADGES } from '../../data/badges'
 import { afternoonProblems } from '../../data/afternoonProblems'
-import { questions } from '../../data/questions'
-import { officialMorningQuestions } from '../../data/officialMorningQuestions'
+import { questionMeta as questions, officialMorningQuestionIds } from '../../data/questionMeta'
 import {
   SYNC_APP_ID,
   SYNC_PREFIX,
@@ -85,7 +84,7 @@ const problemIdByIndex = afternoonProblems.map((problem) => problem.id)
 const problemIndexById = new Map(problemIdByIndex.map((id, index) => [id, index]))
 const badgeIdByIndex = BADGES.map((badge) => badge.id)
 const badgeIndexById = new Map(badgeIdByIndex.map((id, index) => [id, index]))
-const morningIdByIndex = officialMorningQuestions.map((question) => question.id)
+const morningIdByIndex = officialMorningQuestionIds
 const morningIndexById = new Map(morningIdByIndex.map((id, index) => [id, index]))
 
 function stripCompactChecksum(pkg: CompactWirePackage): CompactWirePackageWithoutChecksum {

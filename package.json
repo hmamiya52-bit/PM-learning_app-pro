@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "validate-data": "vite-node scripts/validate-static-data.ts"
+    "validate-data": "vite-node scripts/validate-static-data.ts",
+    "gen:meta": "vite-node scripts/generate-question-meta.ts"
   },
   "dependencies": {
     "@zxing/browser": "^0.2.0",

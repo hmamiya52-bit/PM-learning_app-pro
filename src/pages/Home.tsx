@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { categories } from '../data/categories'
-import { questions } from '../data/questions'
+// 集計に必要なのは件数と id/topicId だけなので、問題本体ではなくメタデータを使う
+// （初期バンドルから questions / officialMorningQuestions 本体を外すため。M1 Step3）
 import { getAllProgress, getQuestionMastery } from '../lib/storage'
 import CategoryCard from '../components/CategoryCard'
 import LevelWidget from '../components/gamification/LevelWidget'
 import { getRecentDaySummaries } from '../lib/activityLog'
 import { StudyHistoryList } from '../components/history/StudyHistoryList'
-import { officialMorningQuestions } from '../data/officialMorningQuestions'
+import { questionMeta, officialMorningQuestionIds } from '../data/questionMeta'
 import { loadMorningRecords } from '../lib/morningRecords'
 import { afternoonProblems } from '../data/afternoonProblems'
 import { loadRecords } from '../lib/tracker'
@@ -293,7 +294,7 @@ export default function Home() {
     const studiedTopicIds = new Set(
       allProgress.filter((p) => p.totalAttempts > 0).map((p) => p.topicId),
     )
-    return questions.filter((q) => studiedTopicIds.has(q.topicId)).length
+    return questionMeta.filter((q) => studiedTopicIds.has(q.topicId)).length
   }, [allProgress])
 
   // 4択／記述の正答率は分離して算出
@@ -320,14 +321,14 @@ export default function Home() {
     }
     let correct = 0
     let incorrect = 0
-    for (const question of officialMorningQuestions) {
-      const latest = latestResults.get(question.id)
+    for (const questionId of officialMorningQuestionIds) {
+      const latest = latestResults.get(questionId)
       if (latest === true) correct++
       else if (latest === false) incorrect++
     }
-    const unstarted = Math.max(0, officialMorningQuestions.length - correct - incorrect)
+    const unstarted = Math.max(0, officialMorningQuestionIds.length - correct - incorrect)
     return {
-      total: officialMorningQuestions.length,
+      total: officialMorningQuestionIds.length,
       segments: [
         { label: '正解', count: correct, color: 'bg-emerald-500' },
         { label: '不正解', count: incorrect, color: 'bg-orange-400' },
@@ -393,7 +394,7 @@ export default function Home() {
   const categoryStats = useMemo(() => {
     const masteryMap = getQuestionMastery()
     return categories.map((cat) => {
-      const catQuestions = questions.filter((q) => q.topicId === cat.id)
+      const catQuestions = questionMeta.filter((q) => q.topicId === cat.id)
       const catProgress = allProgress.filter((p) => p.topicId === cat.id)
       const mcTotal = catProgress.reduce((s, p) => s + p.mcAttempts, 0)
       const mcCorrect = catProgress.reduce((s, p) => s + p.mcCorrect, 0)
