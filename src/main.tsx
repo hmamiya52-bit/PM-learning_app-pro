@@ -2,6 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { migrateNoteUnderstanding } from './lib/storage'
+
+// ─────────────────────────────────────────────
+// ノートのセクション統合に伴う理解度記録のインデックス移行。
+// 描画前に一度だけ実行する（スキーマ版が最新なら即 return）。
+// ─────────────────────────────────────────────
+migrateNoteUnderstanding()
 
 // ─────────────────────────────────────────────
 // PWA: 新 SW がアクティブ化したらページをリロード

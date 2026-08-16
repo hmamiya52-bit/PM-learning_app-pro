@@ -1,5 +1,6 @@
 import type { AnswerRecord, AnswerMode, UserProgress, StudySession, Bookmark } from '../types'
 import { touchNoteUnderstandingSyncMeta } from './sync/adapters'
+import { NOTE_SECTION_SCHEMA_VERSION, NOTE_SECTION_REMAPS } from '../data/noteSectionMigration'
 
 export type MasteryState = 'consecutive' | 'correct' | 'incorrect'
 type MasteryMap = Record<string, MasteryState>
@@ -221,6 +222,52 @@ export type UnderstandingLevel = 'green' | 'yellow' | 'red'
 type NoteUnderstandingMap = Record<string, UnderstandingLevel>
 
 const NOTE_UNDERSTANDING_KEY = 'pmap:note_understanding'
+const NOTE_SECTION_SCHEMA_KEY = 'pmap:note_section_schema'
+
+/** 理解度の弱い順。統合時の衝突はこの順で「より弱い方」を残す */
+const UNDERSTANDING_RANK: Record<UnderstandingLevel, number> = { red: 3, yellow: 2, green: 1 }
+
+/**
+ * セクション統合に伴うインデックス移行。
+ * 保存済みスキーマ版から最新版までの対応表を順に適用し、一度だけ書き戻す。
+ * 対応表が無いカテゴリのキーはそのまま残す（構成を変えていないカテゴリ）。
+ */
+export function migrateNoteUnderstanding(): void {
+  let stored: number
+  try {
+    stored = Number(localStorage.getItem(NOTE_SECTION_SCHEMA_KEY) ?? '0') || 0
+  } catch {
+    return
+  }
+  if (stored >= NOTE_SECTION_SCHEMA_VERSION) return
+
+  let map = getNoteUnderstanding()
+  for (const remap of NOTE_SECTION_REMAPS) {
+    if (remap.version <= stored) continue
+    const next: NoteUnderstandingMap = {}
+    for (const [key, level] of Object.entries(map)) {
+      const sep = key.lastIndexOf(':')
+      const categoryId = key.slice(0, sep)
+      const oldIndex = Number(key.slice(sep + 1))
+      const table = remap.categories[categoryId]
+      // 対応表が無いカテゴリ、exam_tips（-1）等はそのまま持ち越す
+      if (!table || !Number.isInteger(oldIndex) || oldIndex < 0) {
+        next[key] = level
+        continue
+      }
+      const newIndex = table[oldIndex]
+      if (newIndex === undefined || newIndex < 0) continue // 破棄されたセクション
+      const newKey = `${categoryId}:${newIndex}`
+      const existing = next[newKey]
+      next[newKey] =
+        existing && UNDERSTANDING_RANK[existing] >= UNDERSTANDING_RANK[level] ? existing : level
+    }
+    map = next
+  }
+
+  save(NOTE_UNDERSTANDING_KEY, map)
+  localStorage.setItem(NOTE_SECTION_SCHEMA_KEY, String(NOTE_SECTION_SCHEMA_VERSION))
+}
 
 export function getNoteUnderstanding(): NoteUnderstandingMap {
   return load(NOTE_UNDERSTANDING_KEY, {})
