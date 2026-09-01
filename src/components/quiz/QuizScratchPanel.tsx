@@ -36,15 +36,15 @@ export default function QuizScratchPanel() {
             クリア
           </button>
         </div>
-        {/* 高さは画面の高さに追従（電卓の高さ 約 564px を差し引いた残りを 120〜260px の範囲で使う）。
-            低い画面でも電卓の = ボタンまで一画面に収まるようにするため。 */}
+        {/* 高さは画面の高さに追従（電卓の高さ 約 620px = 履歴表示時の実測 を差し引いた残りを
+            120〜250px の範囲で使う）。低い画面でも電卓の = ボタンまで一画面に収まるようにするため。 */}
         <textarea
           value={memo}
           onChange={(e) => setMemo(e.target.value)}
           placeholder={'計算メモ・下書き用\n（保存されません）'}
           aria-label="計算メモ（保存されません）"
           spellCheck={false}
-          className="w-full h-[clamp(120px,calc(100vh-564px),260px)] resize-none rounded-lg border-2 border-slate-200 focus:border-brand bg-slate-50 px-2.5 py-2 text-[13px] leading-relaxed font-mono text-slate-800 outline-none transition-colors placeholder:text-slate-300"
+          className="w-full h-[clamp(120px,calc(100vh-620px),250px)] resize-none rounded-lg border-2 border-slate-200 focus:border-brand bg-slate-50 px-2.5 py-2 text-[13px] leading-relaxed font-mono text-slate-800 outline-none transition-colors placeholder:text-slate-300"
         />
       </section>
 

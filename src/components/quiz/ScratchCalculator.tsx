@@ -84,6 +84,15 @@ export default function ScratchCalculator({ onSendToMemo }: Props) {
     setError(null)
   }, [])
 
+  /**
+   * 式の末尾を書き換える。
+   * 連打しても取りこぼさないよう、直前の値はクロージャではなく関数型更新から受け取る。
+   */
+  const editExpr = useCallback((edit: (prev: string) => string) => {
+    setExpr(edit)
+    setError(null)
+  }, [])
+
   /** Enter / = : 計算を確定して履歴へ積み、結果から計算を続けられるようにする */
   const commit = useCallback(() => {
     const trimmed = expr.trim()
@@ -109,15 +118,15 @@ export default function ScratchCalculator({ onSendToMemo }: Props) {
         setExpr('')
         setError(null)
       } else if (key.token === 'BS') {
-        updateExpr(expr.slice(0, -1))
+        editExpr((prev) => prev.slice(0, -1))
       } else if (key.token === '=') {
         commit()
       } else {
-        updateExpr(expr + key.token)
+        editExpr((prev) => prev + key.token)
       }
       inputRef.current?.focus()
     },
-    [expr, commit, updateExpr],
+    [commit, editExpr],
   )
 
   const handleSendToMemo = useCallback(() => {
@@ -151,7 +160,7 @@ export default function ScratchCalculator({ onSendToMemo }: Props) {
             <li key={h.id}>
               <button
                 type="button"
-                onClick={() => updateExpr(expr + formatCalcNumber(h.value))}
+                onClick={() => editExpr((prev) => prev + formatCalcNumber(h.value))}
                 title="この結果を式に挿入"
                 className="w-full text-right text-[11px] text-slate-400 hover:text-brand transition-colors font-mono truncate px-1 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               >
@@ -183,7 +192,7 @@ export default function ScratchCalculator({ onSendToMemo }: Props) {
           aria-label="計算式"
           autoComplete="off"
           spellCheck={false}
-          className="w-full bg-transparent text-right text-base font-mono text-slate-800 outline-none placeholder:text-slate-300 placeholder:text-sm"
+          className="w-full bg-transparent text-right text-sm font-mono text-slate-800 outline-none placeholder:text-slate-300 placeholder:text-xs"
         />
         <p
           className="text-right text-lg font-bold font-mono text-brand-dark leading-tight min-h-[1.5rem]"

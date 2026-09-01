@@ -355,8 +355,8 @@ export default function OfficialMorningSession() {
 
       {/* PC では本文の右に計算用サイドパネル（メモ+電卓）を並べる 2 カラム。
           lg 未満（タブレット・スマホ）は従来どおり 1 カラムのまま。
-          max-w は 本文 672 + gap 16 + パネル 300 + 左右 padding 32 = 1020px。 */}
-      <div className="max-w-2xl lg:max-w-[1020px] mx-auto px-4 py-6 pb-12 lg:flex lg:items-start lg:gap-4">
+          max-w は 本文 672 + gap 16 + パネル 240 + 左右 padding 32 = 960px。 */}
+      <div className="max-w-2xl lg:max-w-[960px] mx-auto px-4 py-6 pb-12 lg:flex lg:items-start lg:gap-4">
         <main className="flex-1 min-w-0">
 
           {/* 進捗バー + 重要マーク */}
@@ -526,7 +526,7 @@ export default function OfficialMorningSession() {
             高さは内容なり（h ではなく max-h）。固定高にすると本文が短いときに
             サイドパネルが行の高さを決めてしまい、sticky が動く余地を失うため。 */}
         <aside
-          className="hidden lg:block flex-shrink-0 w-[300px] sticky top-[104px] max-h-[calc(100vh-9.5rem)] overflow-y-auto"
+          className="hidden lg:block flex-shrink-0 w-[240px] sticky top-[104px] max-h-[calc(100vh-9.5rem)] overflow-y-auto"
           aria-label="計算用メモと電卓"
         >
           <QuizScratchPanel key={currentQuestion.id} />
