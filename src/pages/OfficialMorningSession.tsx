@@ -12,6 +12,7 @@ import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import MathText from '../components/MathText'
 import { getMorningFontSize, setMorningFontSize, type FontSize } from '../lib/preferences'
 import type { BadgeDefinition } from '../data/badges'
+import QuizScratchPanel from '../components/quiz/QuizScratchPanel'
 
 /**
  * 公式午前Ⅱ 出題画面（没入型、/morning/session）
@@ -352,169 +353,185 @@ export default function OfficialMorningSession() {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-12">
+      {/* PC では本文の右に計算用サイドパネル（メモ+電卓）を並べる 2 カラム。
+          lg 未満（タブレット・スマホ）は従来どおり 1 カラムのまま。
+          max-w は 本文 672 + gap 16 + パネル 300 + 左右 padding 32 = 1020px。 */}
+      <div className="max-w-2xl lg:max-w-[1020px] mx-auto px-4 py-6 pb-12 lg:flex lg:items-start lg:gap-4">
+        <main className="flex-1 min-w-0">
 
-        {/* 進捗バー + 重要マーク */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs text-slate-400">問題 {currentIndex + 1}</span>
-            <ImportantToggle questionId={currentQuestion.id} size="sm" />
-          </div>
-          <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-brand rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        {/* ★デバッグモード: 問題上に前後ナビ（記録に影響しない） */}
-        {debugMode && (
-          <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-yellow-50 border border-yellow-300">
-            <button
-              onClick={handleDebugPrev}
-              disabled={currentIndex === 0}
-              className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              ← 前へ
-            </button>
-            <span className="flex-1 text-center text-xs text-yellow-800 font-medium">
-              DEBUG: 解説常時表示・記録なし
-            </span>
-            <button
-              onClick={handleDebugNext}
-              disabled={currentIndex >= questionList.length - 1}
-              className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              次へ →
-            </button>
-          </div>
-        )}
-
-        {/* 問題文 */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <p className="text-[11px] text-slate-400 flex-1 min-w-0 break-keep">
-              出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前Ⅱ 問{currentQuestion.number}
-            </p>
-            <button
-              type="button"
-              onClick={toggleFontSize}
-              className="flex-shrink-0 inline-flex items-baseline gap-0.5 px-2 py-0.5 rounded border border-slate-200 text-slate-500 hover:border-brand hover:text-brand transition-colors"
-              title={`文字サイズ: ${fontSize === 'compact' ? '標準（クリックで大きく）' : '大（クリックで標準に）'}`}
-              aria-label="文字サイズ切替"
-            >
-              <span className="text-[10px] leading-none">A</span>
-              <span className="text-[14px] leading-none font-bold">A</span>
-            </button>
-          </div>
-          <p className={`${textClass} text-slate-800 leading-relaxed whitespace-pre-wrap`}>
-            <MathText text={currentQuestion.questionText} />
-          </p>
-          {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
-        </div>
-
-        {/* 4択（表示モードに応じた順序） */}
-        <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
-          {displayChoices.map((choice, displayIdx) => {
-            const originalIdx = choice.originalIndex
-            const isSelected = selectedIndex === originalIdx
-            const isAnswer = originalIdx === currentQuestion.correctIndex
-            const showCorrectness = showExplanation
-            const isEliminated = !showExplanation && eliminated.has(originalIdx)
-            const optionLabel = shouldShuffleChoices ? DISPLAY_LABELS[displayIdx] : ANSWER_LABELS[originalIdx]
-            let buttonClass = 'bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light/30'
-            if (showCorrectness && isSelected && isCorrect) buttonClass = 'bg-emerald-50 border-2 border-emerald-500'
-            else if (showCorrectness && isSelected && !isCorrect) buttonClass = 'bg-red-50 border-2 border-red-500'
-            else if (showCorrectness && isAnswer && !isSelected) buttonClass = 'bg-emerald-50 border-2 border-emerald-400'
-            else if (isEliminated) buttonClass = 'bg-slate-100 border-2 border-slate-200'
-            return (
-              <div key={originalIdx} className="flex items-stretch gap-2">
-                <button
-                  onClick={() => handleSelect(originalIdx)}
-                  disabled={showExplanation || isEliminated}
-                  aria-disabled={isEliminated}
-                  className={`flex-1 min-w-0 text-left rounded-xl px-3.5 py-3 ${textClass} font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass} ${isEliminated ? 'opacity-60' : 'text-slate-700'}`}
-                >
-                  {shouldShuffleChoices && showExplanation && (
-                    <span className="block text-xs font-bold text-red-600 mb-1">
-                      解答記号：{ANSWER_LABELS[originalIdx]}
-                    </span>
-                  )}
-                  <span className={`inline-block text-xs font-bold mr-2 ${isEliminated ? 'text-slate-400' : 'text-brand-dark'}`}>{optionLabel}.</span>
-                  <span className={isEliminated ? 'line-through decoration-slate-400' : ''}>
-                    <MathText text={choice.text} />
-                  </span>
-                </button>
-                {!showExplanation && (
-                  <button
-                    type="button"
-                    onClick={() => toggleEliminate(originalIdx)}
-                    aria-pressed={isEliminated}
-                    aria-label={isEliminated ? `選択肢${ANSWER_LABELS[originalIdx]}の消去を取り消す` : `選択肢${ANSWER_LABELS[originalIdx]}を消去する`}
-                    title={isEliminated ? '消去を取り消す' : '消去する'}
-                    className={`flex-shrink-0 w-11 rounded-xl border-2 text-xs font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
-                      isEliminated
-                        ? 'border-slate-300 bg-slate-200 text-slate-600 hover:bg-slate-300'
-                        : 'border-slate-200 bg-white text-slate-400 hover:border-red-300 hover:text-red-500'
-                    }`}
-                  >
-                    {isEliminated ? '戻す' : '✕'}
-                  </button>
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* 正誤判定 + 解説 */}
-        {showExplanation && (
-          <div className="mt-5 space-y-3">
-            {/* 正誤判定ブロック（デバッグモード時は非表示） */}
-            {!debugMode && (
+          {/* 進捗バー + 重要マーク */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-slate-400">問題 {currentIndex + 1}</span>
+              <ImportantToggle questionId={currentQuestion.id} size="sm" />
+            </div>
+            <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
               <div
-                className={`rounded-xl px-4 py-3 flex items-center justify-between ${
-                  isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'
-                }`}
+                className="h-full bg-brand rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* ★デバッグモード: 問題上に前後ナビ（記録に影響しない） */}
+          {debugMode && (
+            <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-yellow-50 border border-yellow-300">
+              <button
+                onClick={handleDebugPrev}
+                disabled={currentIndex === 0}
+                className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
-                  <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
-                    {isCorrect ? '正解！' : '不正解'}
-                    {!isCorrect && selectedIndex !== null && (
-                      <span className="text-xs font-normal ml-2 text-slate-500">
-                        あなたの解答: {ANSWER_LABELS[selectedIndex]} / 正解: {ANSWER_LABELS[currentQuestion.correctIndex]}
+                ← 前へ
+              </button>
+              <span className="flex-1 text-center text-xs text-yellow-800 font-medium">
+                DEBUG: 解説常時表示・記録なし
+              </span>
+              <button
+                onClick={handleDebugNext}
+                disabled={currentIndex >= questionList.length - 1}
+                className="px-3 py-1.5 rounded-lg bg-white border border-yellow-300 text-sm font-bold text-yellow-900 hover:bg-yellow-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                次へ →
+              </button>
+            </div>
+          )}
+
+          {/* 問題文 */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 mb-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <p className="text-[11px] text-slate-400 flex-1 min-w-0 break-keep">
+                出典：{currentQuestion.yearLabel} プロジェクトマネージャ試験 午前Ⅱ 問{currentQuestion.number}
+              </p>
+              <button
+                type="button"
+                onClick={toggleFontSize}
+                className="flex-shrink-0 inline-flex items-baseline gap-0.5 px-2 py-0.5 rounded border border-slate-200 text-slate-500 hover:border-brand hover:text-brand transition-colors"
+                title={`文字サイズ: ${fontSize === 'compact' ? '標準（クリックで大きく）' : '大（クリックで標準に）'}`}
+                aria-label="文字サイズ切替"
+              >
+                <span className="text-[10px] leading-none">A</span>
+                <span className="text-[14px] leading-none font-bold">A</span>
+              </button>
+            </div>
+            <p className={`${textClass} text-slate-800 leading-relaxed whitespace-pre-wrap`}>
+              <MathText text={currentQuestion.questionText} />
+            </p>
+            {currentQuestion.figure && <QuestionFigureView figure={currentQuestion.figure} />}
+          </div>
+
+          {/* 4択（表示モードに応じた順序） */}
+          <div className="flex flex-col gap-3" role="group" aria-label="選択肢">
+            {displayChoices.map((choice, displayIdx) => {
+              const originalIdx = choice.originalIndex
+              const isSelected = selectedIndex === originalIdx
+              const isAnswer = originalIdx === currentQuestion.correctIndex
+              const showCorrectness = showExplanation
+              const isEliminated = !showExplanation && eliminated.has(originalIdx)
+              const optionLabel = shouldShuffleChoices ? DISPLAY_LABELS[displayIdx] : ANSWER_LABELS[originalIdx]
+              let buttonClass = 'bg-white border-2 border-slate-200 hover:border-brand hover:bg-brand-light/30'
+              if (showCorrectness && isSelected && isCorrect) buttonClass = 'bg-emerald-50 border-2 border-emerald-500'
+              else if (showCorrectness && isSelected && !isCorrect) buttonClass = 'bg-red-50 border-2 border-red-500'
+              else if (showCorrectness && isAnswer && !isSelected) buttonClass = 'bg-emerald-50 border-2 border-emerald-400'
+              else if (isEliminated) buttonClass = 'bg-slate-100 border-2 border-slate-200'
+              return (
+                <div key={originalIdx} className="flex items-stretch gap-2">
+                  <button
+                    onClick={() => handleSelect(originalIdx)}
+                    disabled={showExplanation || isEliminated}
+                    aria-disabled={isEliminated}
+                    className={`flex-1 min-w-0 text-left rounded-xl px-3.5 py-3 ${textClass} font-medium leading-relaxed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-default ${buttonClass} ${isEliminated ? 'opacity-60' : 'text-slate-700'}`}
+                  >
+                    {shouldShuffleChoices && showExplanation && (
+                      <span className="block text-xs font-bold text-red-600 mb-1">
+                        解答記号：{ANSWER_LABELS[originalIdx]}
                       </span>
                     )}
-                  </p>
+                    <span className={`inline-block text-xs font-bold mr-2 ${isEliminated ? 'text-slate-400' : 'text-brand-dark'}`}>{optionLabel}.</span>
+                    <span className={isEliminated ? 'line-through decoration-slate-400' : ''}>
+                      <MathText text={choice.text} />
+                    </span>
+                  </button>
+                  {!showExplanation && (
+                    <button
+                      type="button"
+                      onClick={() => toggleEliminate(originalIdx)}
+                      aria-pressed={isEliminated}
+                      aria-label={isEliminated ? `選択肢${ANSWER_LABELS[originalIdx]}の消去を取り消す` : `選択肢${ANSWER_LABELS[originalIdx]}を消去する`}
+                      title={isEliminated ? '消去を取り消す' : '消去する'}
+                      className={`flex-shrink-0 w-11 rounded-xl border-2 text-xs font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
+                        isEliminated
+                          ? 'border-slate-300 bg-slate-200 text-slate-600 hover:bg-slate-300'
+                          : 'border-slate-200 bg-white text-slate-400 hover:border-red-300 hover:text-red-500'
+                      }`}
+                    >
+                      {isEliminated ? '戻す' : '✕'}
+                    </button>
+                  )}
                 </div>
-                {lastXpGained > 0 && (
-                  <span className="text-xs font-bold text-amber-600">+{lastXpGained} XP</span>
-                )}
-              </div>
-            )}
-
-            <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[currentQuestion.correctIndex]}）</span>}
-              </p>
-              <p className={`${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap`}>
-                <MathText text={currentQuestion.explanation} />
-              </p>
-            </div>
-
-            {/* 次の問題へボタン（デバッグモード時は非表示、前後ナビで移動） */}
-            {!debugMode && (
-              <button
-                onClick={handleNext}
-                className="w-full bg-brand text-white font-bold rounded-xl py-3.5 hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-              >
-                {isLast ? 'サマリーへ' : '次の問題へ →'}
-              </button>
-            )}
+              )
+            })}
           </div>
-        )}
-      </main>
+
+          {/* 正誤判定 + 解説 */}
+          {showExplanation && (
+            <div className="mt-5 space-y-3">
+              {/* 正誤判定ブロック（デバッグモード時は非表示） */}
+              {!debugMode && (
+                <div
+                  className={`rounded-xl px-4 py-3 flex items-center justify-between ${
+                    isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{isCorrect ? '✅' : '❌'}</span>
+                    <p className={`text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
+                      {isCorrect ? '正解！' : '不正解'}
+                      {!isCorrect && selectedIndex !== null && (
+                        <span className="text-xs font-normal ml-2 text-slate-500">
+                          あなたの解答: {ANSWER_LABELS[selectedIndex]} / 正解: {ANSWER_LABELS[currentQuestion.correctIndex]}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  {lastXpGained > 0 && (
+                    <span className="text-xs font-bold text-amber-600">+{lastXpGained} XP</span>
+                  )}
+                </div>
+              )}
+
+              <div className="bg-white rounded-xl border border-slate-200 px-4 py-3">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  解説{debugMode && <span className="ml-2 text-yellow-700">（DEBUG: 正解=={ANSWER_LABELS[currentQuestion.correctIndex]}）</span>}
+                </p>
+                <p className={`${textClass} text-slate-700 leading-relaxed whitespace-pre-wrap`}>
+                  <MathText text={currentQuestion.explanation} />
+                </p>
+              </div>
+
+              {/* 次の問題へボタン（デバッグモード時は非表示、前後ナビで移動） */}
+              {!debugMode && (
+                <button
+                  onClick={handleNext}
+                  className="w-full bg-brand text-white font-bold rounded-xl py-3.5 hover:bg-brand-dark transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                >
+                  {isLast ? 'サマリーへ' : '次の問題へ →'}
+                </button>
+              )}
+            </div>
+          )}
+        </main>
+
+        {/* 計算用メモ・電卓（PC のみ）。
+            保存はせず、問題が変わったら key で作り直して中身を破棄する。
+            高さは内容なり（h ではなく max-h）。固定高にすると本文が短いときに
+            サイドパネルが行の高さを決めてしまい、sticky が動く余地を失うため。 */}
+        <aside
+          className="hidden lg:block flex-shrink-0 w-[300px] sticky top-[104px] max-h-[calc(100vh-9.5rem)] overflow-y-auto"
+          aria-label="計算用メモと電卓"
+        >
+          <QuizScratchPanel key={currentQuestion.id} />
+        </aside>
+      </div>
 
       {pendingBadges.length > 0 && (
         <BadgeUnlockToast
