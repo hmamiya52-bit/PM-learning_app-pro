@@ -91,139 +91,197 @@ export const NOTE_DB: Record<string, NoteData> = {
     sections: [
       // ── A. 定義・基本概念 ──
       {
-        heading: '1. ステークホルダーとは',
+        heading: '1. ステークホルダーとは（定義・分類・この領域の目的）',
         items: [
-          'プロジェクトの結果に影響を与える、または影響を受ける可能性のある__個人__または__組織__の総称',
-          'PMBOK第7版では==ステークホルダー・パフォーマンス領域==として独立した章で扱われる（PMBOK7th p.8, p.10）',
-          'ステークホルダーは__プロジェクトのライフサイクル全体__で変動するため、継続的な再識別が必要',
-          '効果的なステークホルダー関与は__プロジェクト成功確率__を直接的に高める',
-          '個人だけでなくグループ・部門・組織・規制当局など__法人格を持たない集団__も含む',
+          '==ステークホルダー==: プロジェクトに __影響を与える__、または __影響を受ける__ 個人・集団・組織',
+          '　__試験で問われる「性質」は4つ__（H25問1 がこの4点を選択肢にした）',
+          '　　__組織の内部にも外部にもいる__。社内だけではない',
+          '　　__直接参加する人だけではない__。間接的にしか関わらない人も含む',
+          '　　__個人として特定できなくてよい__。部門・規制当局・地域社会など ==法人格を持たない集団== も含む',
+          '　　==成果が利益になる者と不利益になる者がいる==。__全員が味方とは限らない__のが要点',
+          '__主なステークホルダーと役割__（H26問5 はこの対応を入れ替えて出した）',
+          '　==スポンサー==: __資金や現物などの財政的資源を提供__ し、プロジェクトを承認する',
+          '　==顧客・利用者==: 成果物である __プロダクトやサービスを使用する__',
+          '　==納入者・サプライヤ==: __契約に基づいて構成アイテムやサービスを提供する__',
+          '　==プログラムマネージャ==: 関連するプロジェクトの __調和がとれるよう支援・指導する__',
+          '　==PMO==（プロジェクトマネジメントオフィス）: __標準化__・__教育訓練__・__プロジェクトの計画と監視__',
+          '　　__PMO の役割は12年で2回、ほぼ同一問題で出題__（R3問1・R1問1）。この領域の最頻出',
+          '__分類の軸__（重ねて使う。「外部かつ主要」なら顧客で最優先、など）',
+          '　==内部==（スポンサー・PM・チーム・機能部門マネジャー）／==外部==（顧客・サプライヤ・規制当局・地域社会）',
+          '　==顕在==（識別済み）／==潜在==（影響を受けるが未識別）',
+          '　==主要==（成功に直接影響）／==副次的==（間接的に影響）',
+          '__この領域が目指す状態__（PMBOK7 のステークホルダー・パフォーマンス領域）',
+          '　==生産的な作業関係== が築けている／ステークホルダーが ==プロジェクト目的に合意== している',
+          '　利益を受ける人が ==支持者== になっている／反対する人が ==悪影響を及ぼさない== 状態にある',
+          '　__活動サイクル__: ==識別 → 理解 → 分析 → 優先順位付け → 関与 → 監視==。予測型でも適応型でも同じ',
+        ],
+        navyItems: [[{ text: 'H25問1 の正解は「成果が利益になる者と不利益になる者がいる」。「内部だけ」「直接参加だけ」「個人として特定できること」はすべて誤りという形で問われた', style: 'navy' }]],
+      },
+      {
+        heading: '2. 影響力を測る4つの軸（Power / Influence / Impact / Interest）',
+        items: [
+          '分析マトリクスはすべてこの4軸の組合せでできている。__まず4語の意味を分けて覚える__',
+          '　==Power==（権力）: __意思決定を強制できる__ 力。組織階層・契約条件・予算権限という __公式の権威__ に由来する',
+          '　==Influence==（影響力）: __他者を動かす__ 力。人脈・専門性・信頼という __非公式のつながり__ に由来する',
+          '　==Impact==（インパクト）: プロジェクトの変更を __引き起こす／受ける度合い__',
+          '　==Interest==（関心）: プロジェクトの結果への __注目度・関与意欲__',
+          '__判別のひとこと__',
+          '　__Power と Influence__: 「命令できる」なら Power、「説得して動かす」なら Influence',
+          '　　__役職は低いのに実質的に話が通る人__（社長秘書・現場主任・古参の担当者）は Power は弱いが Influence が強い',
+          '　__Influence と Impact__: __他者へ及ぼす力__ が Influence、__プロジェクトとの間の変更の受け渡し__ が Impact',
+          '　　__この2語の取り違えが最も多い誤答__。「影響力」と「影響度」で日本語が似ているため',
+        ],
+        navyItems: [[{ text: 'Power は強制力、Influence は説得・誘導力。Influence と Impact の取り違えは午前Ⅱ の定番ひっかけ', style: 'navy' }]],
+      },
+      {
+        heading: '3. 関与レベルの5段階と C／D ギャップ',
+        items: [
+          '==関与度==（エンゲージメント・レベル）は5段階。__下から順に並べられるかが問われる__',
+          '　==不認識==（Unaware）: プロジェクトの __存在自体を知らない__',
+          '　==抵抗==（Resistant）: __知っていて、反対している__',
+          '　==中立==（Neutral）: 知っているが __支持も反対もしない__',
+          '　==支持==（Supportive）: 認識していて __成功を望んでいる__',
+          '　==主導==（Leading）: __積極的に推進する__ 側に回っている',
+          '　　__不認識と抵抗の境目は「知っているか」__。抵抗している時点で認識はしている',
+          '　　__中立と支持の境目は「望んでいるか」__。会議に出るだけなら中立',
+          '==ステークホルダー関与評価マトリクス==: 各人について2つを並べて書く',
+          '　==C==（Current, 現状）と ==D==（Desired, 望ましい状態）を該当欄に記入する',
+          '　__C と D が同じなら追加施策は不要__。合っているものに手を打つ必要はない',
+          '　__C と D が違えばそこが関与戦略の出発点__。例: 抵抗（C）→ 中立（D）なら、まず ==反対の理由を聞いて懸念を解消する==',
+          '　__全員を「主導」にするのが目的ではない__。必要な水準まで上げれば足りる',
+          '　__第6版では 13.2 計画・13.4 監視でこのマトリクスを使う__',
+        ],
+        navyItems: [[{ text: '関与レベルは第6版の 13.2／13.4 と直結する。C と D のギャップを埋める施策が午後Ⅰ の解答骨格になる', style: 'navy' }]],
+        figures: [
+          {
+            type: 'svg',
+            caption: '上ほど関与が強い。C から D へ何段上げるかが施策の量を決める',
+            ariaLabel: '不認識・抵抗・中立・支持・主導の5段階を下から上へ並べ、現状Cが抵抗、望ましい状態Dが支持であることを示す図',
+            viewBox: '0 0 400 340',
+            content: `
+              <defs>
+                <marker id="sh-gap" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+                  <polygon points="0 0, 12 5, 0 10" fill="#2563eb" />
+                </marker>
+              </defs>
+              <text x="14" y="26" fill="#334155" font-size="12.5" font-weight="700">関与レベル（下が弱い / 上が強い）</text>
+
+              <rect x="14" y="36" width="372" height="42" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2" />
+              <text x="28" y="62" fill="#14532d" font-size="14" font-weight="700">主導　積極的に推進する</text>
+
+              <rect x="14" y="84" width="372" height="42" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+              <text x="28" y="110" fill="#334155" font-size="14" font-weight="700">支持　成功を望んでいる</text>
+              
+
+              <rect x="14" y="132" width="372" height="42" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5" />
+              <text x="28" y="158" fill="#1e3a8a" font-size="14" font-weight="700">中立　支持も反対もしない</text>
+              <rect x="248" y="141" width="86" height="24" rx="5" fill="#2563eb" />
+              <text x="291" y="158" fill="#ffffff" font-size="12.5" font-weight="700" text-anchor="middle">D 目標</text>
+
+              <rect x="14" y="180" width="372" height="42" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5" />
+              <text x="28" y="206" fill="#991b1b" font-size="14" font-weight="700">抵抗　知っていて反対</text>
+              <rect x="248" y="189" width="86" height="24" rx="5" fill="#dc2626" />
+              <text x="291" y="206" fill="#ffffff" font-size="12.5" font-weight="700" text-anchor="middle">C 現状</text>
+
+              <rect x="14" y="228" width="372" height="42" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+              <text x="28" y="254" fill="#334155" font-size="14" font-weight="700">不認識　存在を知らない</text>
+
+              <path d="M358 198 L358 166" stroke="#2563eb" stroke-width="3" stroke-dasharray="6 4" marker-end="url(#sh-gap)" />
+
+              <text x="14" y="294" fill="#991b1b" font-size="12.5" font-weight="700">抵抗と不認識の境目は「知っているか」</text>
+              <text x="14" y="314" fill="#1d4ed8" font-size="12.5" font-weight="700">中立と支持の境目は「成功を望んでいるか」</text>
+              <text x="14" y="334" fill="#475569" font-size="12.5" font-weight="700">C と D が同じ相手には施策を打たなくてよい</text>
+            `,
+          },
         ],
       },
       {
-        heading: '2. ステークホルダーの分類軸',
+        heading: '4. 要求と期待の違い（明示か暗黙か）',
         items: [
-          '==内部ステークホルダー==: 組織内部の関係者。スポンサー・PM・チーム・機能部門マネジャー・経営層など',
-          '==外部ステークホルダー==: 組織外の関係者。顧客・ユーザ・サプライヤ・規制当局・地域社会・競合など',
-          '==顕在ステークホルダー==: 関与が明示的で識別済みの関係者',
-          '==潜在ステークホルダー==: 識別されていないが影響を受ける可能性のある関係者',
-          '==主要ステークホルダー==: プロジェクト成功に直接的影響を持つ関係者',
-          '==副次的ステークホルダー==: 間接的に影響する関係者',
-          '分類軸は重ね合わせて使う（例: 「外部かつ主要」=顧客は最優先対応）',
+          '==要求==（Requirements）: __明示され、文書化された__ ニーズ。契約書・要件定義書に書かれている',
+          '==期待==（Expectations）: __暗黙のうちに前提とされている__ ニーズ。__本人が言わない__ことが多い',
+          '　例: 「画面から検索できること」は要求。「3秒以内に返ってくるはず」は言われていなければ期待',
+          '__期待は放置すると必ず問題になる__',
+          '　__受入時に初めて表面化する__。「思っていたものと違う」は、たいてい期待が要求になっていなかったケース',
+          '　==スコープ・クリープ==（じわじわ広がるスコープ）・紛争・==受入拒否== の主因',
+          '__やるべきことは「期待を要求に変換する」__',
+          '　==要求事項収集== のプロセスで、インタビュー・ワークショップ・プロトタイプを使って __暗黙のニーズを言語化する__',
+          '　言語化したら __文書にして合意を取る__。頭の中にあるうちは要求ではない',
+          '__午前Ⅱ では「明示的な要求か、暗黙的な期待か」の分類が問われる__',
         ],
-      },
-      {
-        heading: '3. ステークホルダーの影響と関心',
-        items: [
-          '==Power（権力）==: 意思決定を強制する能力。組織階層・契約条件・予算権限などの公式権威に由来',
-          '==Influence（影響力）==: 他者を動かす能力。非公式ネットワーク・専門性・人脈に基づく',
-          '==Impact（インパクト）==: プロジェクトの変更を引き起こす、または受ける度合い',
-          '==Interest（関心）==: プロジェクト結果への注目度・関与意欲',
-          '4軸（Power/Influence/Impact/Interest）の組合せで分析マトリクスを構築する',
-          'Influence と Impact は混同されやすい（試験頻出のひっかけポイント）',
-        ],
-        navyItems: [[{ text: 'Power は「強制力」、Influence は「説得・誘導力」と区別すると覚えやすい', style: 'navy' }]],
-      },
-      {
-        heading: '4. プロジェクトへの関与レベル（関与度）の5段階',
-        items: [
-          '==不認識==（Unaware）: プロジェクトの存在自体を知らない',
-          '==抵抗==（Resistant）: プロジェクトを認識しているが反対している',
-          '==中立==（Neutral）: 認識しているが支持も反対もしない',
-          '==支持==（Supportive）: プロジェクトを認識し成功を望んでいる',
-          '==主導==（Leading）: 積極的にプロジェクトを推進する',
-          '各レベルは現状（Current, ==C==）と望ましい状態（Desired, ==D==）の2軸で評価する',
-          'C と D のギャップが関与戦略の出発点となる',
-        ],
-      },
-      {
-        heading: '5. 要求と期待の違い',
-        items: [
-          '==要求==（Requirements）: 明示的・文書化されたニーズ。契約・要件定義書に記載',
-          '==期待==（Expectations）: 暗黙的・前提とされているニーズ。明示されないことが多い',
-          '期待を要求に変換するプロセスが==要求事項収集==（インタビュー・ワークショップ等）',
-          '期待の不一致は==スコープ・クリープ==や紛争・受入拒否の主因となる',
-          'PM試験では「明示的要求と暗黙的期待のどちらに分類されるか」を問う設問が頻出',
-        ],
-      },
-      {
-        heading: '6. パフォーマンス領域の目的と成果',
-        items: [
-          '　__成果1__: ステークホルダーとの==生産的な作業関係==の構築',
-          '　__成果2__: ステークホルダーが==プロジェクト目的に合意==している状態',
-          '　__成果3__: 利益を受けるステークホルダーが==支持者==となる',
-          '　__成果4__: 反対するステークホルダーが==プロジェクトに悪影響を及ぼさない==',
-          '活動サイクル: ==識別 → 理解 → 分析 → 優先順位付け → 関与 → 監視==',
-          'PMBOK7 では「予測型」「適応型」いずれのライフサイクルでも同じ成果が適用される',
-        ],
+        navyItems: [[{ text: '期待の管理は第6版 13.3「エンゲージメントのマネジメント」の中心。R1問7 は「交渉やコミュニケーションを通してステークホルダーの期待をマネジメントする」を正解とした', style: 'navy' }]],
       },
 
       // ── B. 識別プロセス ──
       {
-        heading: '7. 識別のタイミングと反復性',
+        heading: '5. ステークホルダーの特定（いつ・どう探し・何を見落とすか）',
         items: [
-          '識別は__プロジェクト開始時__の1回だけでは不十分',
-          'プロジェクトのライフサイクル全体を通じて==反復的==に実施する',
-          '識別のトリガー: 体制変更・スコープ変更・フェーズゲート・課題発生時',
-          '適応型ライフサイクル（アジャイル）では__各イテレーション開始時__に再識別',
-          '識別漏れは__プロジェクト後半での要件追加__・受入拒否のリスクを高める',
+          '__特定は開始時の1回では足りない__。ライフサイクル全体を通じて ==反復的に== 実施する',
+          '　__再特定のきっかけ__: 体制変更／スコープ変更／フェーズゲート／課題の発生',
+          '　__適応型（アジャイル）では各イテレーション開始時__ に見直す',
+          '__探し方の技法__',
+          '　__質問書・ブレーンストーミング__ で候補を洗い出す',
+          '　==ステークホルダー分析==・__文書分析__ で関係を整理する',
+          '　__マッピング__（マトリクス・登録簿）で可視化する',
+          '　__キックオフ__ の場で参加者全員に挙げてもらう（1人の視点では漏れる）',
+          '__特定の入力になる文書__',
+          '　==プロジェクト憲章==: __スポンサーと主要顧客__ が書かれている',
+          '　==合意書・契約書==: __外部ステークホルダー__ が規定されている',
+          '　ビジネス文書・調達文書／過去プロジェクトの登録簿テンプレートと教訓',
+          '__見落とされやすいのは「声を上げない人」__',
+          '　__間接的に影響を受ける人__（地域住民・労働組合）／==規制当局==／__異動・退職を控えた現業ユーザ__',
+          '　__会議に出てこない利用部門__。出席者の意見だけ聞くと、使う人の要求が落ちる',
+          '__漏れた場合に起きること__: 終盤の ==スコープ変更要求==・==受入拒否==・訴訟',
+          '__漏らさないための3手__',
+          '　__複数の視点で洗い出す__（PM・スポンサー・ベテラン・現場の4視点）',
+          '　__類似プロジェクトの教訓を必ず参照する__',
+          '　==フェーズゲート== で特定の妥当性をレビューする',
         ],
-        navyItems: [[{ text: '第6版では 13.1「ステークホルダーの特定」プロセスが対応（立上げプロセス群、§32 参照）', style: 'navy' }]],
+        navyItems: [[{ text: '第6版 13.1「ステークホルダーの特定」は立上げプロセス群。午後Ⅰ では「識別漏れの典型シナリオ」が記述問題で頻出', style: 'navy' }]],
       },
       {
-        heading: '8. 識別の技法',
+        heading: '6. ステークホルダー登録簿',
         items: [
-          '__主要技法__: 質問書・ブレーンストーミング／ステークホルダー分析・文書分析／マッピング（マトリクス・登録簿）／キックオフでの集合的識別',
-          '組織図・プロジェクト憲章・調達文書も識別の入力となる',
+          '==ステークホルダー登録簿==: __特定プロセスの主要なアウトプット__。誰がいて、何を求めていて、どう扱うかの一覧',
+          '__記載する3種類の情報__',
+          '　==識別情報==: 氏名・組織内の位置・役割・所在地・連絡先・プロジェクトでの責任',
+          '　==評価情報==: __主な要求事項__・__期待__・潜在的な影響度・特に関心のあるフェーズ',
+          '　==分類==: 内部／外部、支持／中立／反対、主要／副次的',
+          '登録簿は ==生きた文書==。関与状況が変わるたびに更新する',
+          '　__更新のきっかけ__: 体制変更・関与レベルの変化・課題の発生・是正処置の実施',
+          '　__作って終わりにしない__。更新されない登録簿は誰も見なくなる',
+          '__下流への入力__: ==コミュニケーション・マネジメント計画書== と ==エンゲージメント計画書== の土台になる',
+          '__登録簿と計画書の違い__（混同が誤答肢になる）',
+          '　==登録簿==: __誰がいるかの一覧__。特定（13.1）のアウトプット',
+          '　==エンゲージメント計画書==: __どう関与させるかの戦略__。計画（13.2）のアウトプット',
         ],
-      },
-      {
-        heading: '9. ステークホルダー登録簿の構造',
-        items: [
-          'ステークホルダー識別の__主要なアウトプット__',
-          '==識別情報==: 氏名・組織内の位置・役割・所在地・連絡先・プロジェクトでの責任',
-          '==評価情報==: 主な要求事項・期待・潜在的な影響度・特に関心のあるフェーズ',
-          '==ステークホルダー分類==: 内部/外部・支持/中立/反対・主要/副次など',
-          '登録簿は__生きた文書__であり、関与状況の変化に応じて随時更新する',
-          'コミュニケーション・マネジメント計画の重要な入力となる',
-        ],
-        navyItems: [[{ text: '登録簿の構成項目・更新タイミングは午前Ⅱ・午後I 双方で頻出', style: 'navy' }]],
-      },
-      {
-        heading: '10. 識別の入力情報',
-        items: [
-          '__主要インプット__: ==プロジェクト憲章==（スポンサー・主要顧客が記載）／ビジネス文書／合意書・契約書（外部ステークホルダーが規定）／調達文書',
-          '過去プロジェクトの登録簿テンプレート・教訓も活用する',
-        ],
-      },
-      {
-        heading: '11. 識別漏れのリスクと対策',
-        items: [
-          '識別漏れの典型例: __間接的影響者__（地域住民・労組）、__規制当局__、__退職予定の現業ユーザ__',
-          'リスク: プロジェクト終盤の==スコープ変更要求==・==受入拒否==・__訴訟__',
-          '　__対策1__: __複数視点__で識別する（PM・スポンサー・ベテラン・現場の4視点）',
-          '　__対策2__: __類似プロジェクトの教訓__を必ず参照する',
-          '　__対策3__: ==フェーズゲート==で識別の妥当性をレビューする',
-          'IPA午後Ⅰでは「識別漏れの典型シナリオ」が記述問題として頻出',
-        ],
+        navyItems: [[{ text: '登録簿の構成項目と更新タイミングは午前Ⅱ・午後Ⅰ 双方で頻出。「登録簿 vs 計画書」の入れ替えに注意', style: 'navy' }]],
       },
 
       // ── C. 分析・優先順位付け ──
       {
-        heading: '12. ステークホルダー分析の目的とアウトプット',
+        heading: '7. 分析マトリクスの使い分け（4手法）',
         items: [
-          '目的: 関与戦略・コミュニケーション要求の決定根拠を作る。アウトプットは分析マトリクスと優先順位付きリスト',
-          '分析手法に__単一の正解はない__。複数手法を組み合わせて多角的に分析する',
+          '分析の目的は __関与戦略とコミュニケーション要求を決める根拠を作る__ こと。__唯一の正解手法は無く__、組み合わせて使う',
+          '==権力／関心度グリッド==（Power／Interest Grid）: 最も基本で __試験頻出__',
+          '　縦軸に ==権力==、横軸に ==関心度== を取り、4象限それぞれに戦略を割り当てる（下の表）',
+          '　__右上の「密接に管理」が最重要__。権力も関心も高い人には手間をかける',
+          '　__左下の「監視」は最小限の工数__ でよい。全員に同じ労力をかけない、が要点',
+          '==権力／影響度グリッド==（Power／Influence Grid）: 横軸を関心度ではなく ==影響力== に替えたもの',
+          '　__役職は低いが実質的に話を動かす人__（社長秘書・現場主任）を取りこぼさないために使う',
+          '　==非公式権力== の把握に向く',
+          '==影響／インパクト・マトリクス==: 縦軸は ==Influence==、横軸は ==Impact==',
+          '　__権力を見ない__のが特徴。「変更にどれだけ影響されるか」を見るので、==変更管理==・==リスク対応== の文脈で使う',
+          '==サリエンスモデル==: 2軸ではなく __3属性__ で見る',
+          '　==Power==（権力）: 自分の意思を相手に実行させられるか',
+          '　==Legitimacy==（正当性）: その関与が __社会的に妥当と認められるか__',
+          '　==Urgency==（緊急性）: __即時の対応を要求する度合い__',
+          '　__当てはまる属性の数で3分類__: 1つなら ==Latent==、2つなら ==Expectant==、3つすべてなら ==Definitive==',
+          '　　==Definitive== が __最優先の対応対象__。「3属性そろった人」を答えさせる設問が出る',
+          '__どこが違うかだけ覚えれば足りる__',
+          '　__Power／Interest__ は関心度、__Power／Influence__ は影響力、__Influence／Impact__ は権力を使わない、__サリエンス__ は3属性',
         ],
-      },
-      {
-        heading: '13. 権力／関心度グリッド（Power/Interest Grid）',
-        items: [
-          '横軸: ==関心度==（Interest, 低 → 高）',
-          '縦軸: ==権力==（Power, 低 → 高）',
-          '4象限の対応戦略は下の図表参照',
-          '最も基本的なステークホルダー分析手法で__PM試験頻出__',
-        ],
+        navyItems: [[{ text: 'グリッド系は縦軸がすべて似ているので、横軸（関心度か影響力か）と「権力を使うか」で見分ける。サリエンスだけ属性の数で分類する点が独立', style: 'navy' }]],
         headerDiagrams: [
           {
             title: '権力／関心度グリッド（Power/Interest Grid）',
@@ -254,397 +312,260 @@ export const NOTE_DB: Record<string, NoteData> = {
             totalCols: 3,
           },
         ],
-      },
-      {
-        heading: '14. 権力／影響度グリッド（Power/Influence Grid）',
-        items: [
-          '横軸: ==影響度==（Influence, 低 → 高）',
-          '縦軸: ==権力==（Power, 低 → 高）',
-          'Power/Interest との違い: ==Interest（関心）== ではなく ==Influence（影響力）== を見る',
-          '権力は弱いが影響力の強い人物（__社長秘書__・__現場主任__）を見逃さないために使う',
-          '非公式権力（informal power）の把握に有効',
-        ],
-        navyItems: [[{ text: '権力は公式権威、影響力は非公式に他者を動かす力、と区別する', style: 'navy' }]],
-        figures: [
-          {
-            type: 'table',
-            caption: '権力／影響度グリッド: Power × Influence の4象限',
-            headers: ['', '影響力 低', '影響力 高'],
-            rowHeaderFirstCol: true,
-            rows: [
-              ['権力 高', '満足を保つ: 公式権限は高いが波及力は限定的', '緊密に管理: 意思決定権と影響力が高いコア'],
-              ['権力 低', '監視: 最小工数で変化を確認', '情報共有: 非公式影響力が高いキーパーソン'],
-            ],
-          },
-        ],
-      },
-      {
-        heading: '15. 影響／インパクト・マトリクス',
-        items: [
-          '横軸: ==Impact==（プロジェクトへ与える/受ける影響の大きさ）',
-          '縦軸: ==Influence==（他者への影響力）',
-          'Power/Influence との違い: 縦軸が==Power（権力）== ではなく ==Influence== である点',
-          'ステークホルダーが__プロジェクト変更にどれだけ影響__されるかを評価する観点',
-          '主に==変更管理==・==リスク対応==の文脈で使われる',
-        ],
-        figures: [
-          {
-            type: 'table',
-            caption: '影響／インパクト・マトリクス: 縦軸は Power ではなく Influence',
-            headers: ['', 'Impact 低', 'Impact 高'],
-            rowHeaderFirstCol: true,
-            rows: [
-              ['Influence 高', '巻き込み: 変更説明の協力者にする', '重点対応: 影響大かつ他者も動かす'],
-              ['Influence 低', '観察: 必要時に情報提供', '個別ケア: 影響を受ける当事者として支援'],
-            ],
-          },
-        ],
-      },
-      {
-        heading: '16. サリエンスモデル（Salience Model）',
-        items: [
-          '__3つの属性__で分析: Power・Legitimacy・Urgency',
-          '　==Power（権力）==: 自分の意思を相手に実行させる能力',
-          '　==Legitimacy（合法性／正当性）==: 関与が__社会的に妥当__と認められているか',
-          '　==Urgency（緊急性）==: 即時の対応を要求する度合い',
-          '3属性のうち__いくつ持つか__でステークホルダーを分類（1属性=Latent、2属性=Expectant、3属性=Definitive）',
-          '権力だけでなく__正当性・緊急性__を加えた多次元分析が特徴',
-        ],
-        navyItems: [[{ text: '3属性すべてを持つ Definitive Stakeholder が最優先対応対象', style: 'navy' }]],
         figures: [
           {
             type: 'svg',
-            caption: 'サリエンスモデル: 属性数が多いほど優先度が上がる',
-            ariaLabel: 'Power Legitimacy Urgency の3属性でステークホルダーを分類するベン図',
-            viewBox: '0 0 640 430',
+            caption: 'サリエンスモデル: 当てはまる属性の数だけで優先度が決まる',
+            ariaLabel: 'Power、Legitimacy、Urgency の3属性のベン図。1属性がLatent、2属性がExpectant、3属性がDefinitive',
+            viewBox: '0 0 400 406',
             content: `
-              <defs>
-                <style>
-                  .salience-power { fill: #fee2e2; stroke: #dc2626; stroke-width: 2; fill-opacity: 0.58; }
-                  .salience-legitimacy { fill: #9d5b8b15; stroke: #9d5b8b; stroke-width: 2; fill-opacity: 0.72; }
-                  .salience-urgency { fill: #fef3c7; stroke: #f59e0b; stroke-width: 2; fill-opacity: 0.62; }
-                </style>
-              </defs>
-              <rect x="18" y="18" width="604" height="394" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
-              <text x="320" y="44" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">
-                属性数: 1 = Latent / 2 = Expectant / 3 = Definitive
-              </text>
-              <circle cx="260" cy="170" r="128" class="salience-power" />
-              <circle cx="380" cy="170" r="128" class="salience-legitimacy" />
-              <circle cx="320" cy="272" r="128" class="salience-urgency" />
-              <text x="180" y="86" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Power</text>
-              <text x="460" y="86" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Legitimacy</text>
-              <text x="320" y="390" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Urgency</text>
-              <text x="208" y="160" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="208" dy="0">Latent</tspan><tspan x="208" dy="16">Dormant</tspan>
-              </text>
-              <text x="432" y="160" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="432" dy="0">Latent</tspan><tspan x="432" dy="16">Discretionary</tspan>
-              </text>
-              <text x="320" y="342" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="320" dy="0">Latent</tspan><tspan x="320" dy="16">Demanding</tspan>
-              </text>
-              <text x="320" y="132" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="320" dy="0">Expectant</tspan><tspan x="320" dy="16">Dominant</tspan>
-              </text>
-              <text x="264" y="244" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="264" dy="0">Expectant</tspan><tspan x="264" dy="16">Dangerous</tspan>
-              </text>
-              <text x="376" y="244" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="13" font-weight="700" text-anchor="middle">
-                <tspan x="376" dy="0">Expectant</tspan><tspan x="376" dy="16">Dependent</tspan>
-              </text>
-              <text x="320" y="204" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="16" font-weight="700" text-anchor="middle">
-                <tspan x="320" dy="0">Definitive</tspan><tspan x="320" dy="19">3属性</tspan>
-              </text>
+              <circle cx="152" cy="128" r="82" fill="#fee2e2" fill-opacity="0.62" stroke="#dc2626" stroke-width="2" />
+              <circle cx="248" cy="128" r="82" fill="#ede9fe" fill-opacity="0.62" stroke="#7c3aed" stroke-width="2" />
+              <circle cx="200" cy="212" r="82" fill="#fef3c7" fill-opacity="0.62" stroke="#d97706" stroke-width="2" />
+
+              <text x="96" y="46" fill="#991b1b" font-size="13.5" font-weight="700" text-anchor="middle">Power</text>
+              <text x="96" y="62" fill="#991b1b" font-size="11.5" text-anchor="middle">権力</text>
+              <text x="308" y="46" fill="#5b21b6" font-size="13.5" font-weight="700" text-anchor="middle">Legitimacy</text>
+              <text x="308" y="62" fill="#5b21b6" font-size="11.5" text-anchor="middle">正当性</text>
+              <text x="200" y="314" fill="#92400e" font-size="13.5" font-weight="700" text-anchor="middle">Urgency</text>
+              <text x="200" y="330" fill="#92400e" font-size="11.5" text-anchor="middle">緊急性</text>
+
+              <text x="118" y="112" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">1</text>
+              <text x="282" y="112" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">1</text>
+              <text x="200" y="248" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">1</text>
+              <text x="200" y="106" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">2</text>
+              <text x="140" y="188" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">2</text>
+              <text x="260" y="188" fill="#1e293b" font-size="15" font-weight="700" text-anchor="middle">2</text>
+              <text x="200" y="164" fill="#dc2626" font-size="17" font-weight="700" text-anchor="middle">3</text>
+
+              <text x="14" y="358" fill="#475569" font-size="12.5" font-weight="700">1 = Latent（潜在的）　様子を見る</text>
+              <text x="14" y="378" fill="#475569" font-size="12.5" font-weight="700">2 = Expectant（期待的）　個別に対応する</text>
+              <text x="14" y="398" fill="#991b1b" font-size="12.5" font-weight="700">3 = Definitive（確定的）　最優先で対応する</text>
             `,
           },
         ],
       },
       {
-        heading: '17. 方向性キューブ（Directions of Influence）',
+        heading: '8. 関与の4方向（方向性キューブ）',
         items: [
-          'ステークホルダーをPMから見た__4方向__で分類',
-          '　==上方向==（Upward）: 経営層・スポンサー・運営委員会',
-          '　==下方向==（Downward）: チームメンバ・専門家',
+          'ステークホルダーを __PM から見た位置__ で4方向に分ける。__方向ごとに話し方と説得の仕方を変える__ ための整理',
+          '　==上方向==（Upward）: 経営層・スポンサー・ステアリングコミッティ',
+          '　　__結論と判断材料を先に__。承認・資源・意思決定を引き出すのが目的',
+          '　==下方向==（Downward）: チームメンバー・専門家',
+          '　　__背景と期待を伝える__。動機づけと役割の明確化が目的',
           '　==外方向==（Outward）: 外部顧客・サプライヤ・規制当局・エンドユーザ',
-          '　==横方向==（Sideward）: 他PM・社内同僚・機能部門マネジャー',
-          '方向ごとに__コミュニケーション・スタイル__と__説得アプローチ__を変える',
-        ],
-        figures: [
-          {
-            type: 'svg',
-            caption: '方向性キューブ: PMを中心に影響先を4方向で捉える',
-            ariaLabel: 'PMを中心に上方向下方向外方向横方向の4方向ステークホルダーを示す図',
-            viewBox: '0 0 640 420',
-            content: `
-              <defs>
-                <marker id="dir-arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                  <polygon points="0 0, 10 4, 0 8" fill="#64748b" />
-                </marker>
-              </defs>
-              <rect x="18" y="18" width="604" height="384" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
-              <circle cx="320" cy="210" r="42" fill="#9d5b8b" stroke="white" stroke-width="3" />
-              <text x="320" y="216" fill="white" stroke="white" stroke-width="3" paint-order="stroke" font-size="18" font-weight="700" text-anchor="middle">PM</text>
-              <line x1="320" y1="166" x2="320" y2="82" stroke="#dc2626" stroke-width="4" marker-end="url(#dir-arrow)" />
-              <line x1="320" y1="254" x2="320" y2="338" stroke="#10b981" stroke-width="4" marker-end="url(#dir-arrow)" />
-              <line x1="276" y1="210" x2="108" y2="210" stroke="#f59e0b" stroke-width="4" marker-end="url(#dir-arrow)" />
-              <line x1="364" y1="210" x2="532" y2="210" stroke="#9d5b8b" stroke-width="4" marker-end="url(#dir-arrow)" />
-              <rect x="214" y="44" width="212" height="54" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2" />
-              <rect x="214" y="322" width="212" height="54" rx="8" fill="#dcfce7" stroke="#10b981" stroke-width="2" />
-              <rect x="36" y="172" width="178" height="76" rx="8" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" />
-              <rect x="426" y="172" width="178" height="76" rx="8" fill="#9d5b8b15" stroke="#9d5b8b" stroke-width="2" />
-              <text x="320" y="66" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Upward</text>
-              <text x="320" y="84" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">経営層・スポンサー</text>
-              <text x="320" y="344" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Downward</text>
-              <text x="320" y="362" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">チーム・専門家</text>
-              <text x="125" y="202" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Outward</text>
-              <text x="125" y="220" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">顧客・規制当局</text>
-              <text x="125" y="236" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">サプライヤ</text>
-              <text x="515" y="202" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="15" font-weight="700" text-anchor="middle">Sideward</text>
-              <text x="515" y="220" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">他PM・同僚</text>
-              <text x="515" y="236" fill="#1e293b" stroke="white" stroke-width="3" paint-order="stroke" font-size="12" font-weight="700" text-anchor="middle">機能部門</text>
-            `,
-          },
+          '　　__合意と文書化__。口頭の了解で進めず記録を残す',
+          '　==横方向==（Sideward）: 他の PM・社内の同僚・機能部門マネジャー',
+          '　　__指揮命令権が無い相手__。交渉と互恵で動かすしかないのが特徴',
+          '　　__横方向が最も難しい__。権限で押せないので、相手の利益を示す必要がある',
         ],
       },
 
       // ── D. エンゲージメント計画 ──
       {
-        heading: '18. エンゲージメント・レベル評価マトリクス',
+        heading: '9. エンゲージメント計画とコミュニケーションの設計',
         items: [
-          '5段階の関与レベル（§4 参照）に対し、各ステークホルダーの==現状 C==と==望ましい状態 D==をマッピング',
-          '__C と D が一致__している場合、追加施策不要',
-          '__C と D が異なる__場合、ギャップを埋める関与戦略を立案',
-          '例: 「抵抗(C)→中立(D)」の場合、反対理由を理解し懸念を解消する施策が必要',
+          '==ステークホルダー・エンゲージメント計画書==: __誰をどの水準まで巻き込み、そのために何をするか__ を決めた文書（13.2 のアウトプット）',
+          '　__書く内容__: 現状 C と望ましい状態 D の差分／必要な情報の種類・頻度・配布方法・時間枠',
+          '　==コミュニケーション・マネジメント計画書== と __表裏一体__。関与を上げる手段がコミュニケーションだから',
+          '　__決定要因__: 優先順位／プロジェクトのフェーズ／組織文化／文化的多様性／過去の教訓／チームの能力',
+          '　__一度決めたら不変ではない__。関与状況の変化に応じて見直す',
+          '__コミュニケーション要求は6つの観点で整理する__',
+          '　__誰に__（受信者）／__何を__（情報の内容）／__いつ__（タイミング・頻度）',
+          '　__どこで__（媒体）／__どのように__（プッシュ・プル・インタラクティブ）／__なぜ__（配布の理由）',
+          '__JIS Q 21500 のコミュニケーション3プロセス__（目的の入れ替えで __12年に2回__ 出題: R2問14・R3問14）',
+          '　==コミュニケーションの計画==: ステークホルダーの __情報とコミュニケーションのニーズを決定する__',
+          '　==情報の配布==: 計画で定めたとおりに __要求した情報を利用可能にし、予期せぬ要求にも対応する__',
+          '　==コミュニケーションのマネジメント==: __ニーズを確実に満足させ、課題が起きたら解決する__',
+          '　　__判別のひとこと__: 決めるのが計画、届けるのが配布、__満足させて課題を解決する__のがマネジメント',
+          '__配布の3方式__（情報の重要度と緊急度で使い分ける）',
+          '　==プッシュ型==: 送り手が一方的に配る（メール・レポート）。一斉配信でき記録が残るが、__読んだか・理解したかは分からない__',
+          '　==プル型==: 受け手が必要なときに取りに行く（ポータル・ダッシュボード）。大量情報の集約に向くが、__取りに来ない人には届かない__',
+          '　==インタラクティブ型==: 双方向でやり取りする（会議・電話）。__その場で理解を確認できる__が、時間と場所の制約を受ける',
+          '__コミュニケーション・モデル__（誤解がどこで生まれるかの説明）',
+          '　==送信者== → ==符号化== → ==メディア== → ==復号== → ==受信者==、途中に ==ノイズ==（雑音・思い込み・文化差）が入る',
+          '　__誤解の多くは符号化と復号で起きる__。だから ==フィードバック== で理解を確認する',
+          '　__対策__: 平易な言葉・図解・要約の復唱・確認質問',
+          '__報告と会議体の設計__',
+          '　__定例__（週次の進捗、月次のステアリングコミッティ）と __アドホック__（課題対応・意思決定）を分ける',
+          '　__報告書の型__: ステータス（現状）／トレンド（推移）／予測（見通し）／バリアンス（計画との差異）',
+          '　__会議は目的・参加者・時間・アジェンダを事前に決める__。==アクションアイテム== は責任者と期限つきで記録し次回追跡する',
+          '　__同じ問合せが繰り返されるのは報告内容の設計ミス__。伝える情報の __内容・表現形式・詳細度__ を直す（R1問14）',
         ],
-        headerDiagrams: [
+        navyItems: [[{ text: 'R1問14 は「成果物ごとの進捗の問合せが繰り返される」状況で、是正すべきは配布先でも手段でもスケジュールでもなく「伝達すべき情報の内容・表現形式・詳細度」だとした', style: 'navy' }]],
+        figures: [
           {
-            title: 'エンゲージメント評価マトリクス例',
-            rows: [
-              {
-                cells: [
-                  { label: 'ステークホルダー', bg: '#e2e8f0' },
-                  { label: '不認識', bg: '#f1f5f9', small: true },
-                  { label: '抵抗', bg: '#f1f5f9', small: true },
-                  { label: '中立', bg: '#f1f5f9', small: true },
-                  { label: '支持', bg: '#f1f5f9', small: true },
-                  { label: '主導', bg: '#f1f5f9', small: true },
-                ],
-              },
-              {
-                cells: [
-                  { label: 'スポンサーA', bg: '#fef3c7', small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                  { label: 'C', bg: '#fee2e2', isRed: true, small: true },
-                  { label: 'D', bg: '#dbeafe', isRed: true, small: true },
-                ],
-              },
-              {
-                cells: [
-                  { label: '現業ユーザB', bg: '#fef3c7', small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                  { label: 'C', bg: '#fee2e2', isRed: true, small: true },
-                  { label: 'D', bg: '#dbeafe', isRed: true, small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                  { label: '', bg: '#ffffff', small: true },
-                ],
-              },
-            ],
-            caption: 'C=現状、D=望ましい状態。両者のギャップを埋める施策を計画する。',
-            totalCols: 6,
+            type: 'svg',
+            caption: '誤解は符号化と復号で生まれる。だからフィードバックで理解を確かめる',
+            ariaLabel: '送信者から符号化、メディア、復号を経て受信者へ至るコミュニケーション・モデルと、受信者から送信者へ戻るフィードバックの流れ図',
+            viewBox: '0 0 400 352',
+            content: `
+              <defs>
+                <marker id="sh-cm" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="9" refX="10" refY="4.5" orient="auto">
+                  <polygon points="0 0, 11 4.5, 0 9" fill="#94a3b8" />
+                </marker>
+                <marker id="sh-fb" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="9" refX="10" refY="4.5" orient="auto">
+                  <polygon points="0 0, 11 4.5, 0 9" fill="#16a34a" />
+                </marker>
+              </defs>
+
+              <rect x="60" y="14" width="276" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+              <text x="198" y="39" fill="#334155" font-size="14" font-weight="700" text-anchor="middle">送信者</text>
+
+              <path d="M198 56 L198 66" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#sh-cm)" />
+
+              <rect x="60" y="70" width="276" height="44" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5" />
+              <text x="198" y="91" fill="#991b1b" font-size="13.5" font-weight="700" text-anchor="middle">符号化</text>
+              <text x="198" y="108" fill="#b91c1c" font-size="11.5" text-anchor="middle">言いたいことを言葉や図にする</text>
+
+              <path d="M198 116 L198 126" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#sh-cm)" />
+
+              <rect x="60" y="130" width="276" height="44" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+              <text x="198" y="151" fill="#334155" font-size="13.5" font-weight="700" text-anchor="middle">メディア</text>
+              <text x="198" y="168" fill="#475569" font-size="11.5" text-anchor="middle">メール・会議・資料</text>
+              <rect x="342" y="138" width="46" height="28" rx="5" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+              <text x="365" y="157" fill="#92400e" font-size="11.5" font-weight="700" text-anchor="middle">ノイズ</text>
+
+              <path d="M198 176 L198 186" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#sh-cm)" />
+
+              <rect x="60" y="190" width="276" height="44" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5" />
+              <text x="198" y="211" fill="#991b1b" font-size="13.5" font-weight="700" text-anchor="middle">復号</text>
+              <text x="198" y="228" fill="#b91c1c" font-size="11.5" text-anchor="middle">受け手が自分なりに解釈する</text>
+
+              <path d="M198 236 L198 246" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#sh-cm)" />
+
+              <rect x="60" y="250" width="276" height="40" rx="6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" />
+              <text x="198" y="275" fill="#334155" font-size="14" font-weight="700" text-anchor="middle">受信者</text>
+
+              <path d="M60 270 L34 270 L34 34 L60 34" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#sh-fb)" />
+
+              <text x="14" y="316" fill="#15803d" font-size="12.5" font-weight="700">左に戻る緑の線がフィードバック</text>
+              <text x="14" y="336" fill="#991b1b" font-size="12.5" font-weight="700">赤い2か所（符号化・復号）が誤解の発生源</text>
+            `,
           },
         ],
-        navyItems: [[{ text: '第6版では 13.2 計画／13.4 監視で本マトリクス（ステークホルダー関与評価マトリクス）を使用（§32 参照）', style: 'navy' }]],
       },
       {
-        heading: '19. ステークホルダー・エンゲージメント計画書の構造',
+        heading: '10. 相手別の対応・多様性への配慮・信頼関係の構築',
         items: [
-          '__計画書の主な項目__: 望ましい関与レベルと現状の差分／必要な情報の種類・頻度・配布方法・時間枠',
-          '==コミュニケーション・マネジメント計画書==と密接に連動する',
+          '__相手ごとに効く手は違う__',
+          '　__スポンサー__: 定期的な1on1、__重要な決定は事前に合意__、エスカレーション窓口を決めておく',
+          '　__顧客・エンドユーザ__: ==受入基準を先に合意==、定期デモ、==受入テストへの早期巻き込み==',
+          '　__機能部門マネジャー__: 資源の調整と優先順位の明確化。__権限が無い相手__なので交渉になる',
+          '　__チームメンバー__: 役割の明確化、定期1on1、==心理的安全性== の確保',
+          '　__規制当局__: __早期に確認し、文書化された承認を取る__。口頭の了解で進めない',
+          '　__サプライヤ__: 契約条件を明確にし、定期的にパフォーマンスをレビューする',
+          '__グローバル案件では前提のズレが起きる__',
+          '　__言語__（専門用語の翻訳）／__文化__（直接的か間接的か、合意形成の進め方）',
+          '　__タイムゾーン__（会議時間とレスポンス期待値）／__階層意識__（上下関係の強さ）',
+          '　__意思決定スタイル__（トップダウンかボトムアップか、コンセンサス重視か）',
+          '　==文化的能力==（CQ）: 文化差を前提に振る舞いを調整する力',
+          '__エスカレーションは基準とルートを先に決めておく__',
+          '　==エスカレーション基準==: 影響度・緊急度・__PM の権限範囲を超えるか__',
+          '　　例: 予算・期間・品質への重大な影響／契約条件の変更／組織横断の調整',
+          '　==エスカレーション・ルート==: PM → スポンサー → ステアリングコミッティ → 経営層',
+          '　__基準はプロジェクト開始時に合意し文書化する__。起きてから決めると揉める',
+          '　__基準を守らない過剰なエスカレーションは信頼を損なう__',
+          '__信頼関係を作る対人スキル__',
+          '　==積極的傾聴==: 相手の発言を __要約して返し__、理解が合っているか確認する',
+          '　==ファシリテーション==: 中立の立場で議論を導く。__自分の結論に誘導しない__',
+          '　==交渉==: Win-Win を探す。==BATNA==（合意できない場合の最良の代替案）を持っていると譲りすぎない',
+          '　==紛争解決==: __撤退・緩和・妥協・強制・協調__ の5戦略を状況で使い分ける（協調が最良、強制は最後の手段）',
+          '　==EQ==（感情的知性）: 自己認識・自己管理・社会的認識・関係管理の4要素',
+          '　PMBOK7 は ==対人スキル== を重視する。技法よりも関係づくりが成果を決めるという立場',
         ],
-        navyItems: [[{ text: '第6版では 13.2「エンゲージメントの計画」（計画プロセス群）の主要アウトプット', style: 'navy' }]],
-      },
-      {
-        heading: '20. エンゲージメント戦略の決定要因',
-        items: [
-          '__決定要因__: ステークホルダーの優先順位／プロジェクトのフェーズ／組織文化／文化的多様性／過去の教訓／チームの能力',
-          '戦略は__一度決めたら不変ではなく__、関与状況に応じて見直す',
-        ],
-      },
-      {
-        heading: '21. コミュニケーション要求事項の整理',
-        items: [
-          '__誰に__（受信者）',
-          '__何を__（情報の内容）',
-          '__いつ__（タイミング・頻度）',
-          '__どこで__（媒体・場所）',
-          '__どのように__（プッシュ/プル/インタラクティブ）',
-          '__なぜ__（情報配布の理由）',
-          '上記6Wをコミュニケーション・マネジメント計画書に統合する',
-        ],
-      },
-      {
-        heading: '22. 主要ステークホルダーへの個別対応戦略',
-        items: [
-          '__スポンサー__: 定期的な1on1、重要決定の事前合意、エスカレーション窓口の確立',
-          '__顧客／エンドユーザ__: 受入基準の合意、定期デモ、UATへの早期巻込み',
-          '__機能部門マネジャー__: リソース調整、優先順位の明確化',
-          '__チームメンバ__: 役割明確化、定期1on1、心理的安全性の確保',
-          '__規制当局__: 早期確認、文書化された承認の取得',
-          '__サプライヤ__: 契約条件の明確化、パフォーマンス・レビュー',
-        ],
-      },
-      {
-        heading: '23. 文化的・組織的多様性への配慮',
-        items: [
-          '__言語__: 母国語の違いによる誤解・専門用語の翻訳問題',
-          '__文化__: 直接的/間接的コミュニケーション、合意形成プロセスの違い',
-          '__タイムゾーン__: 会議時間・レスポンス期待値の調整',
-          '__階層意識__: 国・組織による上下関係の強さの違い',
-          '__意思決定スタイル__: トップダウン/ボトムアップ、コンセンサス重視',
-          'グローバルプロジェクトでは==文化的能力==（Cultural Intelligence, CQ）が重要',
-        ],
+        navyItems: [[{ text: '対人スキルは午後Ⅱ 論述でそのまま使える語彙。とくに積極的傾聴・ファシリテーション・BATNA は具体策として書きやすい', style: 'navy' }]],
       },
 
       // ── E. コミュニケーション・関与 ──
-      {
-        heading: '24. プッシュ／プル／インタラクティブ・コミュニケーション',
-        items: [
-          '==プッシュ型==: 送り手が一方的に配布（メール・レポート・メモ）',
-          '　メリット: 一斉配信・記録性',
-          '　デメリット: 受信確認・理解確認ができない',
-          '==プル型==: 受け手が必要時に取得（ポータル・ナレッジリポジトリ・ダッシュボード）',
-          '　メリット: 大量情報の集約・参照性',
-          '　デメリット: 受け手の能動的アクセスが必要',
-          '==インタラクティブ型==: 双方向のリアルタイム（会議・電話・ビデオ会議）',
-          '　メリット: 即時の理解確認・誤解の解消',
-          '　デメリット: 時間的・地理的制約',
-          '情報の__重要度__と__緊急度__で使い分ける',
-        ],
-      },
-      {
-        heading: '25. コミュニケーション・モデル',
-        items: [
-          '==送信者==（Sender）→ ==符号化==（Encode）→ ==メディア==（Medium）→ ==復号==（Decode）→ ==受信者==（Receiver）',
-          '途中に==ノイズ==（Noise）が介在: 物理的雑音・心理的バイアス・文化的解釈',
-          '==フィードバック==（Feedback）で受信者の理解を確認',
-          '誤解の原因の多くは__符号化／復号__段階で発生',
-          '対策: 平易な言葉・図解・要約の復唱・確認質問',
-        ],
-      },
-      {
-        heading: '26. 報告と会議体の設計',
-        items: [
-          '__定例会議__: 進捗報告（週次・隔週）、ステアリングコミッティ（月次）',
-          '__アドホック会議__: 課題対応・意思決定・キックオフ',
-          '__報告書__: ステータスレポート、トレンドレポート、予測レポート、バリアンスレポート',
-          '会議体の設計原則: __目的__・__参加者__・__時間__・__アジェンダ__を事前定義',
-          '__アクションアイテム__は責任者・期限とともに記録し、次回会議で進捗確認',
-        ],
-      },
-      {
-        heading: '27. エスカレーションの基準とルート',
-        items: [
-          '==エスカレーション基準==: 影響度・緊急度・PM権限範囲の超過',
-          '基準の例: 予算/期間/品質への重大影響、契約条件変更、組織横断調整',
-          '==エスカレーション・ルート==: PM → スポンサー → ステアリングコミッティ → 経営層',
-          '基準はプロジェクト開始時に__合意・文書化__しておく',
-          'ステークホルダーの__過剰なエスカレーション__は信頼を損なうため、基準遵守が重要',
-        ],
-      },
-      {
-        heading: '28. 信頼関係構築の技法',
-        items: [
-          '==積極的傾聴==（Active Listening）: 相手の発言を要約して確認、共感的応答',
-          '==ファシリテーション==: 会議・ワークショップの議論を中立的に導く',
-          '==交渉==: Win-Win 解決の探索、BATNA（合意できない場合の最良代替案）の理解',
-          '==紛争解決==: 撤退/緩和/妥協/強制/協調の5戦略を状況で使い分け',
-          '==感情的知性==（EQ）: 自己認識・自己管理・社会的認識・関係管理',
-          'PMBOK7 は==対人スキル==（Interpersonal Skills）を重要視',
-        ],
-      },
 
       // ── F. 監視・コントロール ──
       {
-        heading: '29. エンゲージメント状況の監視',
+        heading: '11. 関与の監視と是正（低下シグナルへの対応）',
         items: [
-          '監視の目的: 関与レベルが__計画通りか__、変化があれば早期検知',
-          '__KPI 例__: 会議出席率、レビュー反応時間、アンケートスコア',
-          '__指標__: ステークホルダー満足度、変更要求件数、エスカレーション件数',
-          '監視は__定量__（数値）と__定性__（観察・対話）の両面で実施',
-          '異常検知時は==根本原因分析==（5 Why、フィッシュボーン）を実施',
+          '__監視の目的は「早期検知」__。関与レベルが計画どおりか、変化していないかを見る',
+          '　__定量で見る__: 会議の出席率、レビューの反応時間、アンケートのスコア、変更要求件数、エスカレーション件数',
+          '　__定性で見る__: 発言の質、態度、非公式な場での反応',
+          '　__両方いる__。数字は遅れて出るので、観察と対話で先に気づく',
+          '__関与が落ちているサイン__: __会議の欠席__が増える／__レビューの返信が遅れる__／__非協力的な発言__が出る',
+          '__落ちたときの手当ては段階的に__',
+          '　__1. まず1on1で理由を聞く__。憶測で対策を打たない',
+          '　__2. コミュニケーションの頻度と内容を見直す__（情報が多すぎる／少なすぎる／粒度が合っていない）',
+          '　__3. 計画づくりに参加してもらう__。決まったものを見せられるより、一緒に作ったほうが当事者になる',
+          '　__4. それでも動かなければスポンサー経由__ で働きかける',
+          '　異常が続くときは ==根本原因分析==（5 Why・特性要因図）で原因まで遡る',
+          '結果は必ず ==ステークホルダー登録簿== に記録し、教訓として残す',
+          '__課題と変更への連携__',
+          '　==課題ログ==（Issue Log）: 発生中の課題を責任者・期限・状況つきで一元管理する。__ステークホルダー起因の課題は登録簿にも反映する__',
+          '　==変更要求== は __ステークホルダーの新しい要求や期待から生まれることが多い__。CCB の影響評価にステークホルダー視点を入れる',
+          '　承認された変更は __コミュニケーション計画・登録簿・分析マトリクスにも反映する__（片方だけ直すと食い違う）',
         ],
-        navyItems: [[{ text: '第6版では 13.4「エンゲージメントの監視」（監視・コントロール群）が対応', style: 'navy' }]],
-      },
-      {
-        heading: '30. 関与レベルの変化への対応・是正処置',
-        items: [
-          '関与レベル低下の典型シグナル: __会議欠席__、__レビュー遅延__、__非協力的態度__',
-          '　__対応1__: __1on1__で個別ヒアリング、懸念の把握',
-          '　__対応2__: __コミュニケーション頻度・内容__の見直し',
-          '　__対応3__: __計画への参加__機会を提供（共同設計）',
-          '　__対応4__: __スポンサー経由__での働きかけ',
-          '是正処置は==ステークホルダー登録簿==に記録し、教訓として保存',
-        ],
-      },
-      {
-        heading: '31. 課題ログ／変更要求への連携',
-        items: [
-          '==課題ログ==（Issue Log）: 発生中の課題を一元管理（責任者・期限・状況）',
-          'ステークホルダー起因の課題は==登録簿==にも反映',
-          '==変更要求==はステークホルダーの新しい要求・期待から発生することが多い',
-          '変更管理委員会（CCB）でステークホルダー視点を考慮した影響評価を実施',
-          '承認された変更はコミュニケーション計画・登録簿・分析マトリクスに反映',
-        ],
+        navyItems: [[{ text: '第6版 13.4「エンゲージメントの監視」は監視・コントロールプロセス群。関与評価マトリクスで現状を再評価する', style: 'navy' }]],
       },
 
       // ── F+. PMBOK第6版 統合（F2-P0 で追加） ──
       {
-        heading: '32. PMBOK第6版「ステークホルダー・マネジメント」知識エリアの4プロセス',
+        heading: '12. 第6版の4プロセス（13.1〜13.4）と版の対応',
         items: [
-          'PMBOK第6版は第13章の知識エリアとして==4プロセス==で整理する。プロセス群所属がひっかけ頻出',
-          '__13.1 ステークホルダーの特定__: ==立上げプロセス群==（計画群と誤答しやすい）。主要アウトプットは==ステークホルダー登録簿==',
-          '__13.2 エンゲージメントの計画__: 計画プロセス群。主要アウトプットは==エンゲージメント計画書==',
-          '__13.3 エンゲージメントのマネジメント__: 実行プロセス群。関与の実践・期待への対応',
-          '__13.4 エンゲージメントの監視__: 監視・コントロール群。関与評価マトリクスで現状を評価',
+          '第6版は第13章の知識エリアとして ==4プロセス== で整理する。__プロセス群の所属と「何をするプロセスか」が問われる__',
+          '　==13.1 ステークホルダーの特定==: ==立上げプロセス群==（__計画群と誤答しやすい__）',
+          '　　__やること__: 影響する／される個人・集団・組織を明らかにし、__利害と関係に関する情報を文書化する__',
+          '　　__アウトプット__: ==ステークホルダー登録簿==',
+          '　==13.2 エンゲージメントの計画==: 計画プロセス群',
+          '　　__やること__: 関与のための __取組み方と計画を策定する__。アウトプットは ==エンゲージメント計画書==',
+          '　==13.3 エンゲージメントのマネジメント==: __実行__ プロセス群',
+          '　　__やること__: ==交渉やコミュニケーションを通してステークホルダーの期待をマネジメントする==（R1問7 の正解）',
+          '　　__「分類する」「分析する」は 13.1・13.2 側__。マネジメントは __実際に関与する__ 段階',
+          '　==13.4 エンゲージメントの監視==: 監視・コントロールプロセス群',
+          '　　__やること__: ==関与評価マトリクス== で現状を評価し、必要なら関与戦略を修正する',
+          '__版ごとの扱い__',
+          '　__第6版__: ==プロセスベース==（49プロセス・ITTO 形式）。午前Ⅱ の用語はこちらが中心',
+          '　__第7版__: ==原則ベース==（12原則＋8パフォーマンス領域）。ステークホルダーは __独立した領域として残っている__',
+          '　__出題傾向__: 登録簿・エンゲージメント計画書・13.x という第6版用語が主。サーバントリーダーシップなど第7版概念も増加',
         ],
-      },
-      {
-        heading: '33. PMBOK第6版と第7版の対応関係（試験での扱い）',
-        items: [
-          '__第6版__: ==プロセスベース==（49プロセス・ITTO形式）／__第7版__: ==原則ベース==（12原則＋8パフォーマンス領域）',
-          '__IPA PM試験__: 午前Ⅱは第6版用語（登録簿・エンゲージメント計画書・13.x）中心。第7版概念（サーバントリーダーシップ・価値実現）も増加',
-        ],
+        navyItems: [[{ text: 'R1問7 は 13.3 の活動を選ばせた。誤答肢は「権限レベルと懸念レベルで分類する」（13.1〜13.2）「リスク選好を決める」（リスク領域）「コミュニケーションの取組み方と計画を策定する」（コミュニケーション計画）', style: 'navy' }]],
       },
 
       // ── G. IPA PM試験 出題傾向 ──
       {
-        heading: '34. 過去問頻出論点（午前Ⅱ）',
+        heading: '13. 過去問頻出論点（午前Ⅱ・出題実績つき）',
         items: [
-          '==ステークホルダー登録簿==の記載項目（識別情報・評価情報・分類）',
-          '==Power/Interest Grid==の象限と対応戦略',
-          '==サリエンスモデル==の3属性（Power/Legitimacy/Urgency）',
-          '==関与レベル==5段階（不認識〜主導）',
-          '==13.1 特定==は立上げプロセス群（プロセス群所属のひっかけ）',
+          '==PMO== の役割が最頻出。__12年で2回、ほぼ同一問題__（R3問1・R1問1）',
+          '　__正解の型__: ==標準化==・==プロジェクトマネジメントの教育訓練==・==プロジェクトの計画と監視==',
+          '　__誤答肢はスポンサ・PM・PMチーム__。役割の対応で切る',
+          '__ステークホルダーの一般的性質__: H25問1。「__利益になる者と不利益になる者がいる__」が正解',
+          '__役割の対応__: H26問5。スポンサは資金提供／納入者は構成アイテム提供／顧客は使用／プログラムマネージャは関連プロジェクトの調和',
+          '__13.3 エンゲージメントのマネジメント__: R1問7。「交渉やコミュニケーションを通して __期待をマネジメントする__」',
+          '__JIS Q 21500 のコミュニケーション3プロセス__: R2問14・R3問14 の __2回__。計画はニーズを決定、配布は情報を利用可能に、マネジメントはニーズを満足させ課題を解決',
+          '__報告書の是正点__: R1問14。問合せが繰り返されるなら直すのは __情報の内容・表現形式・詳細度__',
+          '__以下は本ノートの学習範囲として重要__（直近12年の午前Ⅱ には未出題）',
+          '　==ステークホルダー登録簿== の記載項目（識別情報・評価情報・分類）',
+          '　==権力／関心度グリッド== の4象限と対応戦略',
+          '　==サリエンスモデル== の3属性（Power／Legitimacy／Urgency）と属性数による分類',
+          '　==関与レベル== の5段階（不認識・抵抗・中立・支持・主導）',
+          '　==13.1 特定== は ==立上げプロセス群==（プロセス群所属のひっかけ）',
         ],
+        navyItems: [[{ text: 'PMO の役割は2回出題で、この領域では突出して確実性が高い。まず §1 の役割対応を固めるのが最短', style: 'navy' }]],
       },
       {
-        heading: '35. IPA PM試験 ひっかけパターン',
+        heading: '14. ひっかけパターン',
         items: [
-          '__Influence vs Impact__: 「影響力」と「影響度」を取り違える誤答選択肢に注意',
-          '__Power vs Influence__: 公式権威（Power）と非公式影響力（Influence）の区別',
-          '__関与レベルの段階__: 「中立」と「支持」、「抵抗」と「不認識」の境界を問う設問',
-          '__登録簿 vs 計画書__: ステークホルダー登録簿（識別アウトプット）と==エンゲージメント計画書==（戦略文書）の混同',
-          '__プッシュ／プル／インタラクティブ__: それぞれの適用シーンの誤認',
-          '__サリエンスモデルの属性数__: 1属性のみ（Latent）と2属性（Expectant）の分類混同',
-          '出典の混同: PMBOK第6版（プロセス群）と==第7版==（パフォーマンス領域）の枠組み違い',
+          '__Influence と Impact__: 「影響力」（他者を動かす）と「影響度」（変更を及ぼす／受ける）を取り違えさせる',
+          '__Power と Influence__: ==公式の権威== が Power、==非公式に人を動かす力== が Influence',
+          '__関与レベルの境目__: 「中立」と「支持」（望んでいるか）、「抵抗」と「不認識」（知っているか）',
+          '__登録簿と計画書__: ==登録簿== は特定（13.1）のアウトプットで __誰がいるかの一覧__、==エンゲージメント計画書== は計画（13.2）のアウトプットで __どう関与させるかの戦略__',
+          '__13.1 特定は立上げプロセス群__。計画プロセス群と答えさせるのが定番',
+          '__プッシュ・プル・インタラクティブ__: 適用場面の入れ替え。__理解を確認したいならインタラクティブ__',
+          '__コミュニケーション3プロセスの目的__: ニーズを __決定__ するのが計画、__満足させて課題解決__ するのがマネジメント',
+          '__サリエンスの属性数__: 1属性が ==Latent==、2属性が ==Expectant==、3属性が ==Definitive==',
+          '__ステークホルダーは社内だけではない__。「組織の内部に属しており外部にいることはない」は誤り（H25問1）',
+          '__個人として特定できる必要はない__。部門・規制当局・地域社会も含む',
+          '__版の枠組みの混同__: 第6版は ==プロセス群==、==第7版== は ==パフォーマンス領域==',
         ],
-        navyItems: [[{ text: '本アプリは PMBOK第6版＋第7版を統合的に扱う。第8版での位置づけは本ノートの最終セクション参照', style: 'navy' }]],
+        navyItems: [[{ text: '本ノートは PMBOK第6版＋第7版を統合的に扱う。第8版での位置づけは本ノートの最終セクション参照', style: 'navy' }]],
       },
       {
-        heading: '36. 午後Ⅰの定石（ステークホルダー）',
+        heading: '15. 午後Ⅰの定石（ステークホルダー）',
         items: [
           // 定石集はまとめ系セクションのため赤字密度の上限適用外（方針書 §7）
           '午後Ⅰのステークホルダー系設問は「対立・抵抗・巻き込み不足」の状況に定石を当てはめ、理由を30〜40字で書く。以下を解答の根拠に使う',
@@ -4676,7 +4597,7 @@ export const NOTE_DB: Record<string, NoteData> = {
 // ─────────────────────────────────────────────
 const PMBOK_V8_APPENDIX: Record<string, NoteSection> = {
   stakeholder: {
-    heading: '37. PMBOK 第8版での位置づけ（補足）',
+    heading: '16. PMBOK 第8版での位置づけ（補足）',
     items: [
       '第8版で「==ステークホルダー==」は引き続き独立した__パフォーマンス領域__として継続（7 領域のひとつ）',
       '新原則「==責任あるリーダーであること==（Be an Accountable Leader）」が追加され、ステークホルダーへの__説明責任__・__信頼関係構築__の観点が原則として明文化',
