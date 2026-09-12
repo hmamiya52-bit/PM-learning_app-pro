@@ -5,11 +5,23 @@ import type { QuestionFigure } from '../types'
  *
  * 仕様:
  * - svg: viewBox で自動スケール、`max-w-full` でモバイル幅に追従
+ *   ただし viewBox の幅を超えて拡大はしない（等倍が上限）。
+ *   拡大すると SVG 内の font-size がそのまま倍率ぶん大きく描画され、
+ *   本文（14px）より図の文字が大きくなってバランスが崩れるため。
  * - table: 横スクロール対応ラッパで12列以上の表もモバイルで閲覧可
  * - 共通: aria-label / caption をアクセシビリティのため必須/任意で受ける
  */
+
+/** viewBox の幅（3番目の値）を取り出す。取れなければ null */
+function viewBoxWidth(viewBox: string): number | null {
+  const parts = viewBox.trim().split(/[\s,]+/).map(Number)
+  if (parts.length !== 4 || parts.some((n) => !Number.isFinite(n))) return null
+  return parts[2] > 0 ? parts[2] : null
+}
+
 export function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
   if (figure.type === 'svg') {
+    const intrinsicWidth = viewBoxWidth(figure.viewBox)
     return (
       <figure className="my-4 flex flex-col items-center" aria-label={figure.ariaLabel}>
         <div className="w-full max-w-full overflow-x-auto">
@@ -18,7 +30,8 @@ export function QuestionFigureView({ figure }: { figure: QuestionFigure }) {
             xmlns="http://www.w3.org/2000/svg"
             role="img"
             aria-label={figure.ariaLabel}
-            className="block mx-auto w-full h-auto max-w-2xl"
+            className={`block mx-auto w-full h-auto${intrinsicWidth ? '' : ' max-w-2xl'}`}
+            style={intrinsicWidth ? { maxWidth: `${intrinsicWidth}px` } : undefined}
             dangerouslySetInnerHTML={{ __html: figure.content }}
           />
         </div>
