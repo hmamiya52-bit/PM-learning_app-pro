@@ -157,14 +157,14 @@ function AnswerInputTable({
       {questionKeys.length > 0 && (
         <div className="flex items-center justify-between gap-2 px-3 py-1.5 border-b border-slate-200 bg-slate-50">
           <span className="text-[10px] text-slate-400">
-            設問文は各行の「設問を見る」で開けます
+            各行の「設問の要点を見る」で開けます（本アプリの要約）
           </span>
           <button
             type="button"
             onClick={() => setOpenQuestions(allQuestionsOpen ? new Set() : new Set(questionKeys))}
             className="flex-shrink-0 text-[11px] font-bold text-teal-700 border border-teal-200 bg-white rounded px-2 py-0.5 hover:bg-teal-50 transition-colors"
           >
-            {allQuestionsOpen ? '設問をすべて閉じる' : '設問をすべて開く'}
+            {allQuestionsOpen ? '要点をすべて閉じる' : '要点をすべて開く'}
           </button>
         </div>
       )}
@@ -229,8 +229,10 @@ function AnswerInputTable({
               </div>
             ) : null
 
-            // 設問文（折り畳み）。解答中も答え合わせ中も出す。問題文 PDF を開かずに何を
-            // 問われているか確認できるようにするのが目的。
+            // 設問の要点（折り畳み）。解答中も答え合わせ中も出す。
+            // ★ここで出しているのは IPA 公式の設問文そのものではなく、本アプリ独自の要約
+            //   （afternoonExplanations.asked）である。文言・字数条件が公式と食い違う例が
+            //   確認されているため、公式の設問文だと誤解されない見出しと注記を必ず添える。
             const questionKey = makeRowKey(row.s, row.q, row.t)
             const detail = questionDetails?.[questionKey]
             const questionAccordion = detail ? (
@@ -240,12 +242,17 @@ function AnswerInputTable({
                 className="mx-1 mt-1 mb-0.5 rounded border border-teal-200 bg-teal-50/60"
               >
                 <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-teal-700 marker:text-teal-400">
-                  設問を見る
+                  設問の要点を見る
                 </summary>
-                <p className="px-2 pb-2 pt-0.5 text-[11px] leading-relaxed text-slate-700">
-                  <span className="font-bold text-teal-600 mr-1">{detail.heading}</span>
-                  {detail.asked}
-                </p>
+                <div className="px-2 pb-2 pt-0.5 space-y-1">
+                  <p className="text-[11px] leading-relaxed text-slate-700">
+                    <span className="font-bold text-teal-600 mr-1">{detail.heading}</span>
+                    {detail.asked}
+                  </p>
+                  <p className="text-[10px] leading-snug text-slate-400">
+                    ※本アプリによる要約です。公式の設問文そのものではありません。正確な文言・字数条件は問題文 PDF をご確認ください。
+                  </p>
+                </div>
               </details>
             ) : null
 
