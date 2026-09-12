@@ -1,33 +1,8 @@
-// 午後Ⅰ 公式設問文（IPA 原文引用）
-//
-// 出典：独立行政法人情報処理推進機構（IPA）公開の情報処理技術者試験
-//       プロジェクトマネージャ試験 午後Ⅰ 問題
-//       https://www.ipa.go.jp/shiken/mondai-kaiotu/index.html
-//
-// afternoonExplanations.detail.questionDetails.asked は Claude が書いた「要約」であり、
-// 公式の設問文と文言・字数条件が食い違う例が確認された（ユーザ報告 2026-09-12）。
-// そのため設問文そのものは本ファイルに IPA 原文のまま収める。改変・要約はしない。
-// 午前Ⅱ（officialMorningQuestions）が公式問題文を原文引用しているのと同じ扱い。
-//
-// 転記手順: 公式問題PDFは全年度が画像スキャンでテキスト抽出できないため、
-//          ページを画像化して目視で転記している。
-// 検証: npm run audit:asked（字数条件の突き合わせ）/ npm run validate-data（行の網羅）
+import type { AfternoonQuestionTextSet } from './types'
 
-/** 1 つの解答行に対応する公式設問文 */
-export interface AfternoonQuestionText {
-  /** `${s}|${q ?? ''}|${t ?? ''}` で officialAnswers の行と対応 */
-  rowKey: string
-  /** 表示用の見出し（例「設問1(1)」） */
-  heading: string
-  /** 親設問の導入文（例「〔要件定義に関するプロジェクト計画〕について答えよ。」）。小問が無い設問では省略 */
-  lead?: string
-  /** 公式の設問文（原文のまま。改変しない） */
-  text: string
-}
-
-/** 問題 id → 公式設問文の配列 */
-export const afternoonQuestionTexts: Record<string, AfternoonQuestionText[]> = {
-  // ─── 令和6（2024）午後Ⅰ 問1 ──────────────────────────────────
+/** 令和6（2024）午後Ⅰ 公式設問文（IPA 原文） */
+export const r6: AfternoonQuestionTextSet = {
+  // ─── 問1 ───────────────────────────────────────────────────
   'R6-PM1-1': [
     {
       rowKey: '1|(1)|',
@@ -78,7 +53,7 @@ export const afternoonQuestionTexts: Record<string, AfternoonQuestionText[]> = {
     },
   ],
 
-  // ─── 令和6（2024）午後Ⅰ 問2 ──────────────────────────────────
+  // ─── 問2 ───────────────────────────────────────────────────
   'R6-PM1-2': [
     {
       rowKey: '1|(1)|',
@@ -124,7 +99,7 @@ export const afternoonQuestionTexts: Record<string, AfternoonQuestionText[]> = {
     },
   ],
 
-  // ─── 令和6（2024）午後Ⅰ 問3 ──────────────────────────────────
+  // ─── 問3 ───────────────────────────────────────────────────
   'R6-PM1-3': [
     {
       rowKey: '1|(1)|',
@@ -175,13 +150,4 @@ export const afternoonQuestionTexts: Record<string, AfternoonQuestionText[]> = {
       text: '本文中の下線⑧について，I課長は，週次進捗会議とは別に朝会を実施することで，スケジュール遅延リスクに対して具体的にどのような効果を得たいと考えたのか。30字以内で答えよ。',
     },
   ],
-}
-
-/** 指定した問題の公式設問文を rowKey 引きできる形で返す（未転記の年度は空） */
-export function getAfternoonQuestionTexts(
-  problemId: string,
-): Record<string, AfternoonQuestionText> {
-  const map: Record<string, AfternoonQuestionText> = {}
-  for (const q of afternoonQuestionTexts[problemId] ?? []) map[q.rowKey] = q
-  return map
 }
