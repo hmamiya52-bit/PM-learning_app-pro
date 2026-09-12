@@ -18,8 +18,14 @@ import {
 } from '../lib/afternoonSavedAnswers'
 import BadgeUnlockToast from '../components/gamification/BadgeUnlockToast'
 import type { BadgeDefinition } from '../data/badges'
-import { getAfternoonExplanation, makeRowKey, type AfternoonRowExplanation } from '../data/afternoonExplanations'
+import {
+  getAfternoonExplanation,
+  makeRowKey,
+  type AfternoonRowExplanation,
+  type AfternoonQuestionDetail,
+} from '../data/afternoonExplanations'
 import { MarkupText } from '../components/MarkupText'
+import ScratchMemo from '../components/ScratchMemo'
 
 // ----------------------------------------------------------------
 // Types & storage
@@ -109,6 +115,7 @@ function AnswerInputTable({
   onMark,
   readOnly = false,
   rowExplanations,
+  questionDetails,
 }: {
   answerSet: OfficialAnswerSet
   myAnswers: MyAnswers
@@ -118,11 +125,49 @@ function AnswerInputTable({
   onMark: (rowIndex: string, marking: Marking) => void
   readOnly?: boolean
   rowExplanations?: Record<string, AfternoonRowExplanation>
+  questionDetails?: Record<string, AfternoonQuestionDetail>
 }) {
   const rows = processRows(answerSet.answers)
 
+  // 設問文アコーディオンの開閉。どの行が開いているかを Set で持ち、
+  // details を open/onToggle で完全に制御する（一括開閉と個別開閉を両立させるため）
+  const [openQuestions, setOpenQuestions] = useState<Set<string>>(() => new Set())
+  const questionKeys = useMemo(
+    () =>
+      rows
+        .map((row) => makeRowKey(row.s, row.q, row.t))
+        .filter((key) => !!questionDetails?.[key]),
+    [rows, questionDetails],
+  )
+  const allQuestionsOpen = questionKeys.length > 0 && questionKeys.every((k) => openQuestions.has(k))
+
+  const toggleQuestion = useCallback((key: string, open: boolean) => {
+    setOpenQuestions((prev) => {
+      if (prev.has(key) === open) return prev
+      const next = new Set(prev)
+      if (open) next.add(key)
+      else next.delete(key)
+      return next
+    })
+  }, [])
+
   return (
     <div className="overflow-x-auto">
+      {/* 設問文の一括開閉 */}
+      {questionKeys.length > 0 && (
+        <div className="flex items-center justify-between gap-2 px-3 py-1.5 border-b border-slate-200 bg-slate-50">
+          <span className="text-[10px] text-slate-400">
+            設問文は各行の「設問を見る」で開けます
+          </span>
+          <button
+            type="button"
+            onClick={() => setOpenQuestions(allQuestionsOpen ? new Set() : new Set(questionKeys))}
+            className="flex-shrink-0 text-[11px] font-bold text-teal-700 border border-teal-200 bg-white rounded px-2 py-0.5 hover:bg-teal-50 transition-colors"
+          >
+            {allQuestionsOpen ? '設問をすべて閉じる' : '設問をすべて開く'}
+          </button>
+        </div>
+      )}
       <table className="w-full border-collapse text-xs" style={{ border: BORDER_OUTER }}>
         <colgroup>
           <col style={{ width: '4rem' }} />
@@ -184,7 +229,27 @@ function AnswerInputTable({
               </div>
             ) : null
 
-            const exp = checkMode ? rowExplanations?.[makeRowKey(row.s, row.q, row.t)] : undefined
+            // 設問文（折り畳み）。解答中も答え合わせ中も出す。問題文 PDF を開かずに何を
+            // 問われているか確認できるようにするのが目的。
+            const questionKey = makeRowKey(row.s, row.q, row.t)
+            const detail = questionDetails?.[questionKey]
+            const questionAccordion = detail ? (
+              <details
+                open={openQuestions.has(questionKey)}
+                onToggle={(e) => toggleQuestion(questionKey, e.currentTarget.open)}
+                className="mx-1 mt-1 mb-0.5 rounded border border-teal-200 bg-teal-50/60"
+              >
+                <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-teal-700 marker:text-teal-400">
+                  設問を見る
+                </summary>
+                <p className="px-2 pb-2 pt-0.5 text-[11px] leading-relaxed text-slate-700">
+                  <span className="font-bold text-teal-600 mr-1">{detail.heading}</span>
+                  {detail.asked}
+                </p>
+              </details>
+            ) : null
+
+            const exp = checkMode ? rowExplanations?.[questionKey] : undefined
             const explanationAccordion = exp ? (
               <details className="mx-1 mb-1 mt-0.5 rounded border border-slate-200 bg-slate-50">
                 <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-slate-600 marker:text-slate-400">
@@ -203,6 +268,7 @@ function AnswerInputTable({
 
             const inputContent = row.essay ? (
               <div>
+                {questionAccordion}
                 <textarea
                   className={`w-full min-h-[80px] sm:min-h-[56px] text-xs text-slate-800 border-0 outline-none resize-y bg-transparent leading-snug p-1.5 placeholder:text-slate-300 ${readOnly ? 'cursor-default' : ''}`}
                   placeholder="記述してください"
@@ -224,6 +290,7 @@ function AnswerInputTable({
               </div>
             ) : (
               <div>
+                {questionAccordion}
                 <input
                   type="text"
                   className={`w-full text-xs text-slate-800 border-0 outline-none bg-transparent p-1.5 placeholder:text-slate-300 ${readOnly ? 'cursor-default' : ''}`}
@@ -370,6 +437,16 @@ function AfternoonMyAnswerContent({
     explanation?.rows.forEach((r) => { map[r.rowKey] = r })
     return map
   }, [explanation])
+
+  // 設問文（折り畳み表示用）。解答行と rowKey で 1:1 対応する
+  const questionDetailByRowKey = useMemo(() => {
+    const map: Record<string, AfternoonQuestionDetail> = {}
+    explanation?.detail?.questionDetails.forEach((q) => { map[q.rowKey] = q })
+    return map
+  }, [explanation])
+
+  // その場限りの下書きメモ（保存しない）
+  const [memo, setMemo] = useState('')
 
   useEffect(() => {
     if (id && !isViewMode) saveMyAnswers(id, myAnswers)
@@ -692,8 +769,20 @@ function AfternoonMyAnswerContent({
             onMark={handleMark}
             readOnly={isViewMode}
             rowExplanations={explanationByRowKey}
+            questionDetails={questionDetailByRowKey}
           />
         </div>
+
+        {/* 下書きメモ（保存しない）。解答中の計算・根拠の書き出し用 */}
+        {!isViewMode && (
+          <ScratchMemo
+            value={memo}
+            onChange={setMemo}
+            note="保存されません"
+            placeholder={'根拠の抜き出し・下書きなどにお使いください\n（保存されません）'}
+            textareaClassName="h-[220px] resize-y"
+          />
+        )}
 
         {/* Bottom check button */}
         {!isViewMode && (
