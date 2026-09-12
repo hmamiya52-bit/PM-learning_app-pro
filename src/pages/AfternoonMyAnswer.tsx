@@ -171,10 +171,14 @@ function AnswerInputTable({
           </button>
         </div>
       )}
-      <table className="w-full border-collapse text-xs" style={{ border: BORDER_OUTER }}>
+      <table className="w-full table-fixed border-collapse text-xs" style={{ border: BORDER_OUTER }}>
+        {/* 設問番号の列は狭く、解答欄の列を広く取る。
+            小問列には「品質に関するプロセスの改善を最小限にとどめる理由」のような長いラベルも
+            入るため、table-fixed + 折り返しで列幅が引きずられないようにする
+            （auto レイアウトだと長いラベルが列幅を決めてしまい、解答欄が狭くなる）。 */}
         <colgroup>
-          <col style={{ width: '4rem' }} />
-          <col style={{ width: '3.5rem' }} />
+          <col style={{ width: '2.75rem' }} />
+          <col style={{ width: '4.5rem' }} />
           <col />
         </colgroup>
         <thead>
@@ -261,9 +265,6 @@ function AnswerInputTable({
                       <span className="font-bold text-teal-600 mr-1">{official.heading}</span>
                     )}
                     {official.text}
-                  </p>
-                  <p className="text-[10px] leading-snug text-slate-400">
-                    出典：IPA 公式問題（原文引用）
                   </p>
                 </div>
               </details>
@@ -366,7 +367,7 @@ function AnswerInputTable({
                 {renderQ && (
                   <td
                     rowSpan={row.qRowspan}
-                    className="py-1.5 px-1 text-slate-600 whitespace-nowrap align-middle text-center"
+                    className="py-1.5 px-1 text-slate-600 align-middle text-center break-words leading-snug"
                     style={{ border: BORDER_INNER }}
                   >
                     {row.qLabel}
