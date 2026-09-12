@@ -9,6 +9,8 @@ import { h30 } from './h30'
 import { h29 } from './h29'
 import { h28 } from './h28'
 import { h27 } from './h27'
+import { h26 } from './h26'
+import { h25 } from './h25'
 
 export type { AfternoonQuestionText, AfternoonQuestionTextSet } from './types'
 
@@ -24,6 +26,8 @@ export const afternoonQuestionTexts: AfternoonQuestionTextSet = {
   ...h29,
   ...h28,
   ...h27,
+  ...h26,
+  ...h25,
 }
 
 /** 指定した問題の公式設問文を rowKey 引きできる形で返す（未転記の年度は空） */
