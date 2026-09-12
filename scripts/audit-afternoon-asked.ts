@@ -16,6 +16,7 @@
 
 import { officialAnswers } from '../src/data/officialAnswers'
 import { getAfternoonExplanation, makeRowKey } from '../src/data/afternoonExplanations'
+import { getAfternoonQuestionTexts } from '../src/data/afternoonQuestionTexts'
 
 /**
  * asked（Claude 著作の設問要約）の機械的な整合性監査。
@@ -77,7 +78,19 @@ for (const set of officialAnswers) {
   }
 }
 
-console.log(`=== 監査対象: ${officialAnswers.length}問 / ${rows}行 ===`)
+// 公式設問文の転記カバレッジ
+let done = 0
+const pending: string[] = []
+for (const set of officialAnswers) {
+  const texts = getAfternoonQuestionTexts(set.id)
+  const n = set.answers.filter(r => !!texts[makeRowKey(r.s, r.q, r.t)]).length
+  done += n
+  if (n < set.answers.length) pending.push(`${set.id}(${n}/${set.answers.length})`)
+}
+console.log(`=== 公式設問文の転記: ${done} / ${rows} 行 (${Math.round(done / rows * 100)}%) ===`)
+if (pending.length) console.log(`未転記: ${pending.join(' ')}`)
+console.log('')
+console.log(`=== asked（要約）の監査: ${officialAnswers.length}問 / ${rows}行 ===`)
 console.log(`字数条件を明記している asked: ${withLimit} 行 / 明記なし: ${noLimit} 行`)
 console.log('')
 const byKind = issues.reduce<Record<string, number>>((m, i) => { m[i.kind] = (m[i.kind] ?? 0) + 1; return m }, {})

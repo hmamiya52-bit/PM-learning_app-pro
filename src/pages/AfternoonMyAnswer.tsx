@@ -26,6 +26,7 @@ import {
 } from '../data/afternoonExplanations'
 import { MarkupText } from '../components/MarkupText'
 import ScratchMemo from '../components/ScratchMemo'
+import { getAfternoonQuestionTexts, type AfternoonQuestionText } from '../data/afternoonQuestionTexts'
 
 // ----------------------------------------------------------------
 // Types & storage
@@ -116,6 +117,7 @@ function AnswerInputTable({
   readOnly = false,
   rowExplanations,
   questionDetails,
+  questionTexts,
 }: {
   answerSet: OfficialAnswerSet
   myAnswers: MyAnswers
@@ -126,6 +128,7 @@ function AnswerInputTable({
   readOnly?: boolean
   rowExplanations?: Record<string, AfternoonRowExplanation>
   questionDetails?: Record<string, AfternoonQuestionDetail>
+  questionTexts?: Record<string, AfternoonQuestionText>
 }) {
   const rows = processRows(answerSet.answers)
 
@@ -136,8 +139,8 @@ function AnswerInputTable({
     () =>
       rows
         .map((row) => makeRowKey(row.s, row.q, row.t))
-        .filter((key) => !!questionDetails?.[key]),
-    [rows, questionDetails],
+        .filter((key) => !!questionTexts?.[key] || !!questionDetails?.[key]),
+    [rows, questionTexts, questionDetails],
   )
   const allQuestionsOpen = questionKeys.length > 0 && questionKeys.every((k) => openQuestions.has(k))
 
@@ -157,14 +160,14 @@ function AnswerInputTable({
       {questionKeys.length > 0 && (
         <div className="flex items-center justify-between gap-2 px-3 py-1.5 border-b border-slate-200 bg-slate-50">
           <span className="text-[10px] text-slate-400">
-            各行の「設問の要点を見る」で開けます（本アプリの要約）
+            各行の折り畳みで設問を確認できます
           </span>
           <button
             type="button"
             onClick={() => setOpenQuestions(allQuestionsOpen ? new Set() : new Set(questionKeys))}
             className="flex-shrink-0 text-[11px] font-bold text-teal-700 border border-teal-200 bg-white rounded px-2 py-0.5 hover:bg-teal-50 transition-colors"
           >
-            {allQuestionsOpen ? '要点をすべて閉じる' : '要点をすべて開く'}
+            {allQuestionsOpen ? '設問をすべて閉じる' : '設問をすべて開く'}
           </button>
         </div>
       )}
@@ -229,24 +232,53 @@ function AnswerInputTable({
               </div>
             ) : null
 
-            // 設問の要点（折り畳み）。解答中も答え合わせ中も出す。
-            // ★ここで出しているのは IPA 公式の設問文そのものではなく、本アプリ独自の要約
-            //   （afternoonExplanations.asked）である。文言・字数条件が公式と食い違う例が
-            //   確認されているため、公式の設問文だと誤解されない見出しと注記を必ず添える。
+            // 設問（折り畳み）。解答中も答え合わせ中も出す。
+            // IPA 公式の設問文（afternoonQuestionTexts）を最優先で表示する。
+            // 未転記の年度だけ、暫定で独自の要約（asked）に「要点」と明示して落とす。
             const questionKey = makeRowKey(row.s, row.q, row.t)
+            const official = questionTexts?.[questionKey]
             const detail = questionDetails?.[questionKey]
-            const questionAccordion = detail ? (
+            const questionAccordion = official ? (
               <details
                 open={openQuestions.has(questionKey)}
                 onToggle={(e) => toggleQuestion(questionKey, e.currentTarget.open)}
                 className="mx-1 mt-1 mb-0.5 rounded border border-teal-200 bg-teal-50/60"
               >
                 <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-teal-700 marker:text-teal-400">
+                  設問を見る
+                </summary>
+                <div className="px-2 pb-2 pt-0.5 space-y-1">
+                  {official.lead && (
+                    <p className="text-[11px] leading-relaxed text-slate-500">
+                      <span className="font-bold text-teal-600 mr-1">設問{row.s}</span>
+                      {official.lead}
+                    </p>
+                  )}
+                  <p className="text-[11px] leading-relaxed text-slate-800">
+                    {official.lead ? (
+                      <span className="font-bold text-teal-600 mr-1">{row.q}</span>
+                    ) : (
+                      <span className="font-bold text-teal-600 mr-1">{official.heading}</span>
+                    )}
+                    {official.text}
+                  </p>
+                  <p className="text-[10px] leading-snug text-slate-400">
+                    出典：IPA 公式問題（原文引用）
+                  </p>
+                </div>
+              </details>
+            ) : detail ? (
+              <details
+                open={openQuestions.has(questionKey)}
+                onToggle={(e) => toggleQuestion(questionKey, e.currentTarget.open)}
+                className="mx-1 mt-1 mb-0.5 rounded border border-slate-200 bg-slate-50"
+              >
+                <summary className="cursor-pointer select-none px-2 py-1 text-[11px] font-bold text-slate-600 marker:text-slate-400">
                   設問の要点を見る
                 </summary>
                 <div className="px-2 pb-2 pt-0.5 space-y-1">
                   <p className="text-[11px] leading-relaxed text-slate-700">
-                    <span className="font-bold text-teal-600 mr-1">{detail.heading}</span>
+                    <span className="font-bold text-slate-500 mr-1">{detail.heading}</span>
                     {detail.asked}
                   </p>
                   <p className="text-[10px] leading-snug text-slate-400">
@@ -451,6 +483,9 @@ function AfternoonMyAnswerContent({
     explanation?.detail?.questionDetails.forEach((q) => { map[q.rowKey] = q })
     return map
   }, [explanation])
+
+  // 公式設問文（IPA 原文）。未転記の年度は空になり、UI 側が要約にフォールバックする
+  const questionTextByRowKey = useMemo(() => (id ? getAfternoonQuestionTexts(id) : {}), [id])
 
   // その場限りの下書きメモ（保存しない）
   const [memo, setMemo] = useState('')
@@ -777,6 +812,7 @@ function AfternoonMyAnswerContent({
             readOnly={isViewMode}
             rowExplanations={explanationByRowKey}
             questionDetails={questionDetailByRowKey}
+            questionTexts={questionTextByRowKey}
           />
         </div>
 
