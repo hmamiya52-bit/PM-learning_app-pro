@@ -14,18 +14,20 @@
 |---|---|---|
 | 1 | 対象区分 | **午後Ⅰ（G1）のみ**。午後Ⅱ（G2）は今回対象外。ただし型の `section` は `'G1' \| 'G2'` のまま書き、G2 は「データ未投入」状態にしておく |
 | 2 | 対象問題 | **R6 午後Ⅰ 問1（`R6-G1-1`「コンテンツ配信ネットワーク」）の1問だけ**。全件展開は今回やらない |
-| 3 | 既存への影響 | **既存ページを壊さない・干渉しない**。新規ページは**独立した別ルート・別フォルダ・別ストレージキー**として作る（§5-F） |
+| 3 | 既存への影響 | **既存機能に一切干渉しない**。新規ページは**独立した別ルート・別フォルダ・別ストレージキー**として作る。既存ファイルへの変更は**`App.tsx`（ルート追加）と `Home.tsx`（入口カード1件追加）の2ファイルだけ**に限る（§5-F） |
 | 4 | データ同期 | **新規データは同期対象に含めない**。`src/lib/sync/adapters.ts` の `KEYS` に**新しいキーを登録しない**（同期は明示ホワイトリスト方式なので、登録しなければ自動的に対象外） |
 | 5 | 公式設問文 | **IPA 原文をアプリ内に転記する**（§5-C）。R6 午後Ⅰ 問1 の設問文のみ |
 | 6 | 図表 | **完璧に再現する**（§5-D）。ただし IPA の図を画像で取り込むのではなく、**同じ情報・同じ構造を自作 SVG で描き直す** |
 | 7 | 問題本文 | **PDF を開いて読む前提のまま**。本文（長文プロローグ・〔 〕節の地の文）はアプリ内に転記しない（§5-E） |
+| 8 | 入口 | **トップページ下部の「その他機能」に1枚カードを置く**。名称は **「午後解説（開発中）」**（§5-G） |
+| 9 | 記録 | **XP・バッジ・演習記録はすべて作らない**。採点結果も履歴も保存しない。既存の記録系（`tracker` / `gamification` / `activityLog`）には**一切書き込まない**（§5-H） |
 
 この結果、アプリ内に載るのは **公式設問文＋図表＋解答欄＋解説**、PDF で読むのは **問題本文**、という分担になる。
 NW の設問文は「図1中の(a)に入れる字句」のように図表参照が多いため、**5と6はセットで初めて成立する**（設問文だけ転記しても図が無いと解けない）。この組合せは整合している。
 
 「闇雲に全件作らない」が移植元プロジェクトの原則です。器（UI・型・検証）を先に通し、**1問を完成させてユーザに見せ、OK が出てから次を考える**。
 
-**未確定事項は §11 にある。着手前にそこを確認すること。**
+**実装中にユーザに聞くべき点は §11 の2件だけ。それ以外は確定事項として進める。**
 
 ---
 
@@ -52,7 +54,7 @@ NW の設問文は「図1中の(a)に入れる字句」のように図表参照�
 
 | 層 | 中身 | 学習上の役割 |
 |---|---|---|
-| ① 演習・自己採点 | 解答欄への記入／タイマー／○△✕の自己採点／配点計算 | 解く |
+| ① 演習・自己採点 | 解答欄への記入／タイマー／○△✕の自己採点／配点計算（**記録は残さない**） | 解く |
 | ② 行解説（答え合わせ用） | 各解答行の `point`（何を問うているか）／`basis`（本文のどこが根拠か）／`reasoning`（なぜその解答になるか）／`pitfall?`（ありがちな失点）／`knowledge?`（必要な技術知識・§5-B） | **採点直後に「自分の解答のどこが足りないか」が分かる** |
 | ③ 詳細解説ページ | 問題文のセクション別解説／図解／設問別の「考え方のプロセス」／習得すべき知識／応用できる解法の型 | 腰を据えて復習する |
 | ④ 公式設問文＋図表 | IPA 原文の設問文を解答欄の各行に折り畳みで表示。参照される図表を同じ画面に置く | PDF を行き来せずに設問を解ける |
@@ -62,11 +64,13 @@ NW の設問文は「図1中の(a)に入れる字句」のように図表参照�
 ### 今回作る学習動線（既存 `/afternoon` とは完全に独立）
 
 ```
+トップページ（/）下部「その他機能」の「午後解説（開発中）」カード
+  ↓
 /afternoon1/R6-G1-1                （新規・この1問の入口。問題PDFへのリンク＋「解答欄へ」）
   └ /afternoon1/R6-G1-1/answer     解答欄（公式設問文の折り畳み・図表・タイマー・記入・下書きメモ）
        → 「答え合わせ」で checkMode に入り、
           各行に 自分の解答／公式解答例／行解説アコーディオン が縦に並ぶ
-          ○△✕ を全行付けると配点計算（記録の扱いは §11-1）
+          ○△✕ を全行付けると配点計算（その場で表示するだけ。保存しない＝§0-9）
   └ /afternoon1/R6-G1-1/explanation 詳細解説ページ（?check=1 で解答欄に戻れる）
 ```
 
@@ -87,7 +91,9 @@ NW の設問文は「図1中の(a)に入れる字句」のように図表参照�
 
 ### 触らない（読むだけ・書き込み関数は呼ばない）
 
-- `src/pages/AfternoonProblems.tsx` / `AfternoonAnswerDetail.tsx` / `AfternoonMyAnswer.tsx` — **1行も変更しない**
+- `src/pages/AfternoonProblems.tsx` / `AfternoonAnswerDetail.tsx` / `AfternoonMyAnswer.tsx` — **1行も変更しない**（既存の午後Ⅰ動線はそのまま残す）
+- `src/pages/Home.tsx` — **`OTHER_CARDS`（129行目付近）に1件追加するだけ**。他の箇所は触らない（§5-G）
+- `src/App.tsx` — **ルート3本の追加と `React.lazy` の import だけ**。既存ルートは並べ替えない
 - `src/lib/tracker.ts` / `src/lib/gamification.ts` / `src/lib/activityLog.ts` — localStorage に書き、かつ**同期対象**。§0-4 のため**書き込み関数を呼ばない**
 - `src/lib/sync/adapters.ts` — **`KEYS` に追記しない**
 - `src/data/textbook/types.ts` の `Figure` 型と `FigureRenderer.tsx` — 既存教科書図の**閉じた判別共用体**。ここに `kind` を足すと既存に干渉するので**拡張しない**（§5-D）
@@ -115,13 +121,15 @@ NW の設問文は「図1中の(a)に入れる字句」のように図表参照�
 | `src/pages/AfternoonExplanationDetail.tsx` | `src/pages/afternoon1/ExplanationDetail.tsx` | 見出しと配色を NW に合わせる |
 | `src/pages/AfternoonMyAnswer.tsx` | `src/pages/afternoon1/MyAnswer.tsx`（**新規。既存を改造しない**） | タイマー・記入・checkMode・○△✕・配点計算を自前で持つ。`processRows` と `getRowScores` は既存の純関数を import して再利用 |
 | （PM に無い） | `src/pages/afternoon1/Entry.tsx` | この1問の入口。PDF リンクと解答欄への導線 |
-| `src/lib/afternoonSavedAnswers.ts` | `src/lib/afternoon1/savedAnswers.ts`（prefix `nwsp:a1:savedAnswers:`） | 任意。§11-1 の判断次第 |
+| `src/lib/afternoonSavedAnswers.ts` | **移植しない** | §0-9（記録を持たない）のため不要。答案スナップショット機能は作らない |
 | `src/components/ScratchMemo.tsx` | `src/components/afternoon1/ScratchMemo.tsx` | その場限りの下書き（保存しない）。任意 |
 | `src/data/afternoonQuestionTexts/types.ts` ＋ 年度別ファイル1枚 | `src/data/afternoon1/questionTexts/types.ts` ＋ `r6.ts` | **形（`rowKey` / `heading` / `lead?` / `text`）をそのまま踏襲**。§5-C |
 | `scripts/validate-static-data.ts` の **午後Iブロック / runAfternoonExplanationStructureAudit / runMarkupValidation** | `scripts/validate-static-data.mjs`（新規） | NW には `vite-node` が無い。**既存 `scripts/lint-note-red.mjs` `lint-figure-motion.mjs` と同じ素の Node スクリプトで書くのが第一候補**（依存追加なし・リポジトリの流儀に合う）。`"validate-data"` として package.json に登録 |
 | `scripts/audit-afternoon-asked.ts` | 同等の検査を `validate-static-data.mjs` に内包 | 公式設問文の rowKey が解答行と1:1か突合する（§5-C） |
 | `docs/afternoon_explanation_authoring_rules.md` | `docs/afternoon1_authoring_rules.md`（**NW版に書き換え**） | §5 の判断を反映。次の量産セッションはこの1枚だけ読めば書ける状態を目標にする |
 | `docs/afternoon_explanation_design.md` | 参考（移植先には不要） | 設計判断の経緯。読むだけ |
+| （PM に無い） | **`src/App.tsx`（既存・追記のみ）** | `/afternoon1/:id`・`/answer`・`/explanation` の3ルートと `React.lazy` の import を足すだけ |
+| （PM に無い） | **`src/pages/Home.tsx`（既存・追記のみ）** | `OTHER_CARDS` に「午後解説（開発中）」カード1件＋アイコン import。§5-G |
 
 ### データ型の核（`src/data/afternoon1/explanations.ts`）
 
@@ -206,13 +214,40 @@ PM と同じく、IPA 原文の設問文を年度別ファイルに転記して�
 
 ### F. 既存への非干渉を守るための具体ルール（§0-3・§0-4）
 
-1. **既存ファイルを1行も変更しない**。新規追加のみ。例外は §11-2 の `App.tsx`（ルート追加）だけ。
+1. **既存ファイルの変更は `App.tsx` と `Home.tsx` の2ファイルだけ**（どちらも追記のみ）。それ以外は新規追加のみ。
 2. 新規ルートは `/afternoon1/...`。既存 `/afternoon/...` とはセグメントが別。
 3. 新規 LocalStorage キーは `nwsp:a1:` で始める。**`src/lib/sync/adapters.ts` の `KEYS` に登録しない**。
-4. `tracker.ts` / `gamification.ts` / `activityLog.ts` の**書き込み関数を呼ばない**（既存の演習記録・XP・バッジ・同期に影響させない）。
+4. `tracker.ts` / `gamification.ts` / `activityLog.ts` を **import すらしない**（§0-9。既存の演習記録・XP・バッジ・同期に影響させない）。
 5. 既存の純関数（`processRows` / `getRowScores`）は **import して読み取り再利用**してよい。localStorage 非依存なので副作用が無い。
 6. 既存の型 `Figure` / `FigureRenderer` を拡張しない（§5-D）。
-7. **作業後に `git status` と `git diff --stat` で、既存ファイルの変更が0件であることを確認する**（§8）。
+7. **作業後に `git diff --stat` で、変更された既存ファイルが `App.tsx` と `Home.tsx` の2つだけであることを確認する**（§8）。
+
+### G. 入口カード（§0-8）
+
+`src/pages/Home.tsx` の `OTHER_CARDS`（129行目付近の `MenuCard[]`）に**1件だけ**追加する。既存カードの並びや文言は変えない。
+
+```tsx
+{
+  to: '/afternoon1/R6-G1-1',
+  title: '午後解説（開発中）',
+  description: 'R6 午後Ⅰ 問1 を解いて解説を読む',   // 文言は要相談。1行で収まる長さにする
+  iconBg: 'bg-teal-50',
+  icon: <なにかlucideアイコン className="w-6 h-6 text-teal-600" />,
+}
+```
+
+- **名称は「午後解説（開発中）」で固定**（ユーザ指定）。勝手に「午後Ⅰ解説」等に変えない。
+- 配置は「その他機能」セクション内。**末尾に追加**するのが無難（既存カードの順序を崩さない）。
+- `description` と `iconBg`／アイコンは既存4枚の書式に合わせる。色は既存と重複しないものを選ぶ（既存は red / orange / purple / blue）。
+- 「開発中」と明示しているので、データ未投入の状態で公開されても問題ない。**器が通った P1 の時点でカードを出してよい**。
+
+### H. 記録を一切持たない（§0-9）
+
+- XP・バッジ・演習記録・最高点・演習回数・答案スナップショット、**すべて作らない**。
+- `tracker.ts` / `gamification.ts` / `activityLog.ts` は **import しない**。
+- 採点結果はコンポーネントの state に持つだけ。**ページを離れたら消える**のが正しい挙動。
+- 例外として、**書きかけの答案のドラフトだけ** `nwsp:a1:draft:R6-G1-1` に保存してよい（リロードで書いた内容が消えるのを防ぐため）。これは履歴ではないので §0-9 に反しない。**同期の `KEYS` には登録しない**。不要と判断するなら持たなくてもよい。
+- `src/lib/scoring.ts` の `getRowScores` は**配点の参照（純関数）**なので使ってよい。記録とは無関係。
 
 ---
 
@@ -231,18 +266,19 @@ PM と同じく、IPA 原文の設問文を年度別ファイルに転記して�
 8. ページ3枚（`Entry.tsx` / `MyAnswer.tsx` / `ExplanationDetail.tsx`）を新規作成し、ルート `/afternoon1/:id`・`/answer`・`/explanation` を `React.lazy` で追加。
 9. **データ未投入でも「準備中」フォールバックで動くこと**を確認（解説が空でも解答欄は機能する）。
 10. `scripts/validate-static-data.mjs` と `npm run validate-data` を整備。
-11. §8 の品質ゲート（非干渉チェック含む）を通して commit & push。
+11. `Home.tsx` の `OTHER_CARDS` に「午後解説（開発中）」カードを追加（§5-G）。
+12. §8 の品質ゲート（非干渉チェック含む）を通して commit & push。
 
 ### P2: 1問を書き切る（R6-G1-1）
-12. 公式設問文を転記（§5-C）→ rowKey 突合。
-13. 図表を自作 SVG で再現（§5-D）→ 375px で確認。
-14. `rows[]` 11行の行解説（§5-A の厚み分け）。
-15. `detail`（`problemSections` / `questionDetails` / `keyKnowledge` 4-6件 / `solvingTips` 3件前後）。
-16. §8 を通して commit & push し、**ユーザに見てもらう**。型・分量・粒度をここで確定する。
+13. 公式設問文を転記（§5-C）→ rowKey 突合。
+14. 図表を自作 SVG で再現（§5-D）→ 375px で確認。
+15. `rows[]` 11行の行解説（§5-A の厚み分け）。
+16. `detail`（`problemSections` / `questionDetails` / `keyKnowledge` 4-6件 / `solvingTips` 3件前後）。
+17. §8 を通して commit & push し、**ユーザに見てもらう**。型・分量・粒度をここで確定する。
 
 ### P3: ルール確定（次の量産セッションへの引継ぎ）
-17. OK が出たら `docs/afternoon1_authoring_rules.md` を確定させる。**次の問はこの1枚だけ読めば書ける状態**にする。
-18. 既存ページとの統合（入口リンク・演習記録連携）をやるかどうかは、ここで改めてユーザに確認する。
+18. OK が出たら `docs/afternoon1_authoring_rules.md` を確定させる。**次の問はこの1枚だけ読めば書ける状態**にする。
+19. 2問目以降をどう広げるか（年度単位／記録機能を足すか／カード名から「開発中」を外すか）は、ここで改めてユーザに確認する。
 
 ---
 
@@ -290,14 +326,19 @@ git status --short
 git diff --stat HEAD
 ```
 
-- **既存ファイルの変更が0件**であること（新規追加のみ。例外は §11-2 の `App.tsx` 1ファイルだけ）。
+- **変更された既存ファイルは `src/App.tsx` と `src/pages/Home.tsx` の2つだけ**であること。残りは新規追加のみ。
+- その2ファイルの diff も**追記だけ**であること（`App.tsx` はルート3本＋lazy import、`Home.tsx` は `OTHER_CARDS` 1件＋アイコン import）。
 - 次の diff が**空**であること:
 
 ```bash
-git diff HEAD -- src/lib/sync/adapters.ts src/lib/tracker.ts src/lib/gamification.ts src/pages/AfternoonMyAnswer.tsx src/pages/AfternoonProblems.tsx src/pages/AfternoonAnswerDetail.tsx src/data/textbook/types.ts
+git diff HEAD -- src/lib/sync/adapters.ts src/lib/tracker.ts src/lib/gamification.ts src/lib/activityLog.ts src/pages/AfternoonMyAnswer.tsx src/pages/AfternoonProblems.tsx src/pages/AfternoonAnswerDetail.tsx src/data/textbook/types.ts src/components/textbook/figures/FigureRenderer.tsx
 ```
 
-- 新規コードが `tracker` / `gamification` / `activityLog` の書き込み関数を呼んでいないこと（grep で確認）。
+- 新規コードが記録系を import していないこと（**0件であること**）:
+
+```bash
+grep -rn "tracker\|gamification\|activityLog" src/pages/afternoon1 src/components/afternoon1 src/data/afternoon1 src/lib/afternoon1 2>/dev/null
+```
 
 ### 全角イコールの混入チェック（0件であること）
 
@@ -343,22 +384,15 @@ python -c "import re;[print(i) for i,l in enumerate(open('src/data/afternoon1/ex
 
 ---
 
-## 11. 未確定事項（着手前にユーザに確認する）
+## 11. 判断が要るのはここだけ
 
-### 11-1. 新規ページの演習結果を、既存の演習記録・XP・バッジに反映するか
+方針は §0 で確定済み。実装中に迷いが出るとしたら次の2点なので、**勝手に決めずユーザに聞く**。
 
-§0-3（干渉しない）と §0-4（同期に含まない）を厳密に守ると、**新規ページの採点結果は既存の演習記録に残らず、XP もバッジも付かない**（`tracker.ts` / `gamification.ts` が同期対象のため）。
+1. **入口カードの `description` の文言**（§5-G）。「R6 午後Ⅰ 問1 を解いて解説を読む」を仮に置いてあるが、カード1行に収まる長さで要相談。**`title` の「午後解説（開発中）」は変更不可**。
+2. **図表をどこまで描くか**（§5-D・§6-P0）。「完璧に再現」の対象範囲は PDF の図表棚卸しを見てから確定する。棚卸し結果を**必ず先にユーザへ報告**する。
 
-→ **推奨**: 反映しない。新規ページは `nwsp:a1:` 配下に**自前の記録**（最高点・演習回数・答案スナップショット）だけ持つ。既存と二重管理になるが、1問だけの試作なので害は小さい。統合は §6-P3 で判断する。
-→ もし「XP は付けたい」なら §0-3/§0-4 の一部を緩める判断が必要なので、**実装前に確認**する。
-
-### 11-2. 新規ページへの入口をどこに置くか
-
-独立性を厳密に守ると、既存の問題一覧（`AfternoonProblems.tsx`）にボタンを足すこと自体が「既存ファイルの変更」になる。
-
-→ **推奨**: まず **URL 直打ち**（`/afternoon1/R6-G1-1`）で作り切る。`App.tsx` へのルート追加だけは必要（これは実質避けられないので §0-3 の唯一の例外として扱う）。
-→ 見せる段階で「既存一覧に1リンク足すか」をユーザに確認する。
+それ以外（G1のみ／R6-G1-1の1問／独立構成／同期対象外／設問文は原文転記／本文はPDF前提／記録なし）は**確定事項として扱い、質問で止まらない**。
 
 ---
 
-引継ぎは以上です。§11 を確認してから §6-P0 に着手してください。
+引継ぎは以上です。§6-P0（PDF棚卸し）から着手してください。
